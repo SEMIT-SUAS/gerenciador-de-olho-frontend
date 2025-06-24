@@ -4,13 +4,14 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, Polygon } from 'react-l
 import 'leaflet/dist/leaflet.css';
 import type { Denuncia, Acao } from '../../types/ocorrencias';
 import { iconDenuncia, iconDenunciaSelecionada, iconDenunciaEmAtendimento, iconAcao } from '../../constants/mapIcons';
+import type { StatusModel } from '../../types/StatusModel';
 
 export interface MapComponentProps {
     denuncias: Denuncia[];
     acoes: Acao[];
     modoSelecao: boolean;
     denunciasSelecionadas: number[];
-    onMarkerClick: (id: number, status: 'aberto' | 'em_atendimento') => void;
+    onMarkerClick: (id: number, status: StatusModel) => void;
     onAcaoClick: (acao: Acao) => void;
 }
 

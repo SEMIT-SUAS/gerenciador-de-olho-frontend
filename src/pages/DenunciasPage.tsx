@@ -4,6 +4,7 @@ import { SidePanel } from "../components/SidePanel/SidePanel";
 import { MapComponent } from "../components/Map/MapComponent";
 import { ActionDetailsModal, CreateActionModal } from "../components/Modals/ActionModals";
 import { useOcorrencias } from "../hooks/useOcorrencias";
+import type { StatusModel } from "../types/StatusModel";
 
 export function DenunciasPage() {
     const { denuncias, acoes, criarNovaAcao } = useOcorrencias();
@@ -20,7 +21,7 @@ export function DenunciasPage() {
     const handleBackToList = () => {
         setDetailViewItem(null);
     };
-    const handleMarkerClick = (id: number, status: 'aberto' | 'em_atendimento') => {
+    const handleMarkerClick = (id: number, status: StatusModel) => {
         if (modoSelecao && status === 'aberto') {
             setDenunciasSelecionadas(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
         }
