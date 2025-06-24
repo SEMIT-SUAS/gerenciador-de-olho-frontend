@@ -1,4 +1,5 @@
 import type { LatLngExpression } from 'leaflet';
+import type { StatusModel } from './StatusModel';
 
 export  type Coords = [number, number];
 
@@ -8,7 +9,7 @@ export interface Denuncia {
   descricao: string;
   lat: number;
   lon: number;
-  status: 'aberto' | 'em_atendimento';
+  status: StatusModel;
   acaoId: number | null; 
 }
 
