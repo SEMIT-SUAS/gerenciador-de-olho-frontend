@@ -2,7 +2,6 @@ import React, { useEffect }from 'react';
 import type { FC } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 import type { Denuncia, Acao } from '../../types/ocorrencias';
 import { iconDenuncia, iconDenunciaSelecionada, iconDenunciaEmAtendimento, iconAcao } from '../../constants/mapIcons';
 
