@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import type { Denuncia, Acao } from '../types/ocorrencias.ts';
 import { DADOS_INICIAIS_ACOES, DADOS_INICIAIS_DENUNCIAS } from '../data/initialData.ts';
 import { getConvexHull } from '../utils/geometry.ts';
 import type { StatusModel } from '../types/StatusModel.ts';
+import type { Denuncia } from '../types/Denuncia.ts';
+import type { Acao } from '../types/Acao.ts';
 
 export type filterProps = {
     mapPins: 'all' | 'denuncias' | 'acoes',

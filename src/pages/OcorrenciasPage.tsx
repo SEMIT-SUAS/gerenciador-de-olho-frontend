@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
-import type { Acao, Denuncia } from "../types/ocorrencias";
+import { useState } from "react";
+import type { Acao } from "../types/Acao";
+import type { Denuncia } from "../types/Denuncia";
 import { SidePanel } from "../components/SidePanel/SidePanel";
 import { MapComponent } from "../components/Map/MapComponent";
 import { CreateActionModal } from "../components/Modals/ActionModals";
 import { useOcorrencias } from "../hooks/useOcorrencias";
-import type { StatusModel } from "../types/StatusModel";
 import { MapFilters } from "../components/Map/MapFilters";
 
 export function OcorrenciasPage() {

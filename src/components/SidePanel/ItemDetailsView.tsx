@@ -1,6 +1,6 @@
 import type { FC } from 'react';
-import type { Denuncia, Acao } from '../../types/ocorrencias';
-
+import type { Denuncia } from '../../types/Denuncia';
+import type { Acao } from '../../types/Acao';
 // Função auxiliar para diferenciar os tipos
 function isAcao(item: Denuncia | Acao): item is Acao {
     return 'secretaria' in item;

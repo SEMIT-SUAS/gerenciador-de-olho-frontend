@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import type { FC } from 'react';
-import type { Denuncia, Acao } from '../../types/ocorrencias'; 
-
+import type { Denuncia } from '../../types/Denuncia';
+import type { Acao } from '../../types/Acao';
 
 function isAcao(item: Denuncia | Acao): item is Acao {
     return 'secretaria' in item;
@@ -45,7 +45,7 @@ export const ItemDetailsView: FC<ItemDetailsViewProps> = ({ item, denuncias, onB
                         <h2 className="text-xl font-bold text-gray-800">{item.titulo}</h2>
                         <span className={`text-xs font-medium px-2 py-1 rounded-full ${
                             item.status === 'aberto' ? 'bg-blue-100 text-blue-800' :
-                            item.status === 'em_atendimento' ? 'bg-yellow-100 text-yellow-800' :
+                            item.status === 'em_andamento' ? 'bg-yellow-100 text-yellow-800' :
                             'bg-green-100 text-green-800'
                         }`}>
                             {item.status.replace('_', ' ')}
@@ -152,7 +152,7 @@ export const DenunciasList: FC<{denuncias: Denuncia[], onItemClick: (item: Denun
                 <h3 className="font-semibold text-gray-700">{d.titulo}</h3>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full capitalize ${
                     d.status === 'aberto' ? 'bg-blue-100 text-blue-800' :
-                    d.status === 'em_atendimento' ? 'bg-yellow-100 text-yellow-800' :
+                    d.status === 'em_andamento' ? 'bg-yellow-100 text-yellow-800' :
                     'bg-green-100 text-green-800'
                 }`}>
                     {d.status.replace('_', ' ')}

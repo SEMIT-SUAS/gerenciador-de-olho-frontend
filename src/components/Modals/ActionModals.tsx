@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { FC } from 'react';
-import type { Denuncia, Acao } from '../../types/ocorrencias';
+import type { Acao } from '../../types/Acao';
+import type { Denuncia } from '../../types/Denuncia';
 
 export interface CreateActionModalProps {
   isOpen: boolean;

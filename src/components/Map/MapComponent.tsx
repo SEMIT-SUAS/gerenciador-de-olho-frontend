@@ -1,9 +1,10 @@
 import React, { useEffect, type FC } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import type { Denuncia, Acao } from '../../types/ocorrencias';
 import { iconDenuncia, iconDenunciaSelecionada, iconDenunciaEmAtendimento, iconAcao } from '../../constants/mapIcons';
 import type { StatusModel } from '../../types/StatusModel';
+import type { Denuncia } from '../../types/Denuncia';
+import type { Acao } from '../../types/Acao';
 
 interface MapComponentProps {
     denuncias: Denuncia[];

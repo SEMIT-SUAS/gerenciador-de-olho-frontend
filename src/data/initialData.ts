@@ -1,4 +1,5 @@
-import type { Denuncia, Acao } from '../types/ocorrencias';
+import type { Acao } from "../types/Acao";
+import type { Denuncia } from "../types/Denuncia";
 
 export const DADOS_INICIAIS_DENUNCIAS: Denuncia[] = [
   { "id": 1, "titulo": "Buraco na Av. dos Holandeses", "descricao": "Buraco perigoso perto do retorno.", "lat": -2.4947, "lon": -44.2942, "acaoId": null, "status": "aberto" },
