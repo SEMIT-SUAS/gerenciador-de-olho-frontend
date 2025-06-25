@@ -45,9 +45,11 @@ export function OcorrenciasPage() {
             detailViewItem={detailViewItem}
             onBackToList={() => setDetailViewItem(null)}
         />
-        <main className="flex-1 z-10">
+        <main className="flex-1 z-10 relative">
+            <MapFilters setFilter={setFilter} />
+
             <MapComponent 
-                denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
+                denuncias={filteredData.denuncias} acoes={filteredData.acoes} modoSelecao={modoSelecao}
                 denunciasSelecionadas={denunciasSelecionadas}
                 onMarkerClick={handleItemClick}
                 onSelectionClick={handleSelectionClick}

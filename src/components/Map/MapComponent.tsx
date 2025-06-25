@@ -1,5 +1,4 @@
-import React, { useEffect }from 'react';
-import type { FC } from 'react';
+import React, { useEffect, type FC } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Denuncia, Acao } from '../../types/ocorrencias';
@@ -12,14 +11,14 @@ interface MapComponentProps {
     modoSelecao: boolean;
     denunciasSelecionadas: number[];
     onMarkerClick: (item: Denuncia | Acao) => void;
-    onSelectionClick: (id: number, status: 'aberto' | 'em_atendimento' | 'concluido') => void;
+    onSelectionClick: (id: number, status: StatusModel) => void;
     detailViewItem: Denuncia | Acao | null;
 }
 
 export const MapComponent: FC<MapComponentProps> = ({ denuncias, acoes, modoSelecao, denunciasSelecionadas, onMarkerClick, onSelectionClick, detailViewItem }) => {
     const MapViewUpdater: FC<{ item: Denuncia | Acao | null }> = ({ item }) => {
         const map = useMap();
-        React.useEffect(() => {     
+        useEffect(() => {     
             if (item) {
                 map.flyTo([item.lat, item.lon], 16);
             }
@@ -29,7 +28,7 @@ export const MapComponent: FC<MapComponentProps> = ({ denuncias, acoes, modoSele
    
     const MapCursor: FC<{ modoSelecao: boolean }> = ({ modoSelecao }) => {
         const map = useMap();
-        React.useEffect(() => {
+        useEffect(() => {
             map.getContainer().style.cursor = modoSelecao ? 'pointer' : 'grab';
         }, [modoSelecao, map]);
         return null;
@@ -44,7 +43,7 @@ export const MapComponent: FC<MapComponentProps> = ({ denuncias, acoes, modoSele
     }
 
     return (
-        <MapContainer center={[-2.51, -44.28]} zoom={13} scrollWheelZoom={true} className="h-full w-full">
+        <MapContainer center={[-2.51, -44.28]} zoom={13} scrollWheelZoom={true} className="h-full w-full z-10">
             <MapViewUpdater item={detailViewItem} />
             <MapCursor modoSelecao={modoSelecao} />
             <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>' url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
@@ -53,7 +52,7 @@ export const MapComponent: FC<MapComponentProps> = ({ denuncias, acoes, modoSele
                 const isSelected = modoSelecao && denunciasSelecionadas.includes(d.id);
                 let icon;
                 if (d.status === 'aberto') icon = isSelected ? iconDenunciaSelecionada : iconDenuncia;
-                else if (d.status === 'em_atendimento') icon = iconDenunciaEmAtendimento;
+                else if (d.status === 'em_andamento') icon = iconDenunciaEmAtendimento;
                 
                 return (
                     <Marker key={`d-${d.id}`} position={[d.lat, d.lon]} icon={icon} eventHandlers={{ click: () => handleMarkerClick(d) }}>

@@ -4,9 +4,9 @@ export const DADOS_INICIAIS_DENUNCIAS: Denuncia[] = [
   { "id": 1, "titulo": "Buraco na Av. dos Holandeses", "descricao": "Buraco perigoso perto do retorno.", "lat": -2.4947, "lon": -44.2942, "acaoId": null, "status": "aberto" },
   { "id": 2, "titulo": "Asfalto cedendo na mesma avenida", "descricao": "Próximo ao primeiro buraco, o asfalto está afundando.", "lat": -2.4950, "lon": -44.2945, "acaoId": null, "status": "aberto" },
   { "id": 3, "titulo": "Poste sem luz na Cohama", "descricao": "Poste na praça principal está apagado há dias.", "lat": -2.5204, "lon": -44.2662, "acaoId": null, "status": "aberto" },
-  { "id": 4, "titulo": "Semáforo quebrado no Renascença", "descricao": "O semáforo do cruzamento principal não está funcionando.", "lat": -2.5086, "lon": -44.2882, "acaoId": 101, "status": "em_atendimento" },
-  { "id": 5, "titulo": "Lixo na calçada da Colares Moreira", "descricao": "Lixo acumulado na calçada.", "lat": -2.5113, "lon": -44.2820, "acaoId": 101, "status": "em_atendimento" },
-  { "id": 6, "titulo": "Outro semáforo com defeito", "descricao": "Próximo ao primeiro, também está com problemas.", "lat": -2.5095, "lon": -44.2875, "acaoId": 101, "status": "em_atendimento" },
+  { "id": 4, "titulo": "Semáforo quebrado no Renascença", "descricao": "O semáforo do cruzamento principal não está funcionando.", "lat": -2.5086, "lon": -44.2882, "acaoId": 101, "status": "em_andamento" },
+  { "id": 5, "titulo": "Lixo na calçada da Colares Moreira", "descricao": "Lixo acumulado na calçada.", "lat": -2.5113, "lon": -44.2820, "acaoId": 101, "status": "em_andamento" },
+  { "id": 6, "titulo": "Outro semáforo com defeito", "descricao": "Próximo ao primeiro, também está com problemas.", "lat": -2.5095, "lon": -44.2875, "acaoId": 101, "status": "em_andamento" },
   { "id": 7, "titulo": "Vazamento de água na Guajajaras", "descricao": "Vazamento contínuo de água limpa na Av. Guajajaras.", "lat": -2.5518, "lon": -44.2465, "acaoId": null, "status": "aberto" },
   { "id": 8, "titulo": "Entulho na calçada do Bequimão", "descricao": "Restos de construção bloqueando a passagem de pedestres.", "lat": -2.5367, "lon": -44.2651, "acaoId": null, "status": "aberto" },
   { "id": 9, "titulo": "Falta de iluminação na Litorânea", "descricao": "Trecho da Av. Litorânea completamente às escuras, gerando insegurança.", "lat": -2.4901, "lon": -44.2615, "acaoId": null, "status": "aberto" },
@@ -40,5 +40,5 @@ export const DADOS_INICIAIS_DENUNCIAS: Denuncia[] = [
 ];
 
 export const DADOS_INICIAIS_ACOES: Acao[] = [
-  { id: 101, nome: "Manutenção de Semáforos - Renascença", secretaria: "Secretaria de Trânsito", lat: -2.5098, lon: -44.2859, polygonCoords: [[-2.5086, -44.2882], [-2.5113, -44.2820], [-2.5095, -44.2875]] },
+  { id: 101, nome: "Manutenção de Semáforos - Renascença", secretaria: "Secretaria de Trânsito", lat: -2.5098, lon: -44.2859, polygonCoords: [[-2.5086, -44.2882], [-2.5113, -44.2820], [-2.5095, -44.2875]], status: 'concluido' },
 ];
