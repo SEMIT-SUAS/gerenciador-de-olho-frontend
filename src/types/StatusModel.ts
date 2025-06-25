@@ -1,1 +1,1 @@
-export type StatusModel = 'aberto' | 'em_andamento' | 'indeferido' | 'concluído'
+export type StatusModel = 'aberto' | 'em_andamento' | 'indeferido' | 'concluido'
