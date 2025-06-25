@@ -1,12 +1,12 @@
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { DenunciasPage } from './pages/DenunciasPage';
+import { OcorrenciasPage } from './pages/OcorrenciasPage';
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<DenunciasPage />} />
+        <Route index element={<OcorrenciasPage />} />
       </Routes>
     </BrowserRouter>
   )
