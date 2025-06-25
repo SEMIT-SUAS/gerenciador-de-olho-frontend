@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import type { Acao, Denuncia } from "../types/ocorrencias";
 import { SidePanel } from "../components/SidePanel/SidePanel";
 import { MapComponent } from "../components/Map/MapComponent";
-import { ActionDetailsModal, CreateActionModal } from "../components/Modals/ActionModals";
+import { CreateActionModal } from "../components/Modals/ActionModals";
 import { useOcorrencias } from "../hooks/useOcorrencias";
 import type { StatusModel } from "../types/StatusModel";
 import { MapFilters } from "../components/Map/MapFilters";
@@ -13,8 +13,6 @@ export function OcorrenciasPage() {
     const [modoSelecao, setModoSelecao] = useState<boolean>(false);
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
     const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
-    const [isDetailsModalOpen, setDetailsModalOpen] = useState<boolean>(false);
-    const [acaoSelecionada, setAcaoSelecionada] = useState<Acao | null>(null);
     const [detailViewItem, setDetailViewItem] = useState<Denuncia | Acao | null>(null);
 
     const handleSelectItem = (item: Denuncia | Acao) => {
@@ -23,11 +21,16 @@ export function OcorrenciasPage() {
     const handleBackToList = () => {
         setDetailViewItem(null);
     };
-    const handleMarkerClick = (id: number, status: StatusModel) => {
+    const handleMarkerClick = (id: number, status: 'aberto' | 'em_atendimento') => {
         if (modoSelecao && status === 'aberto') {
             setDenunciasSelecionadas(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
         }
     };
+    
+    const handleItemClick = (item: Denuncia | Acao) => {
+        setDetailViewItem(item);
+    }
+
     const handleFinalizarCriacaoAcao = (nome: string, secretaria: string) => {
         const denunciasParaAcao = denuncias.filter(d => denunciasSelecionadas.includes(d.id));
         criarNovaAcao(nome, secretaria, denunciasParaAcao);
@@ -35,11 +38,6 @@ export function OcorrenciasPage() {
         setModoSelecao(false);
         setDenunciasSelecionadas([]);
     }
-
-    const denunciasVinculadas = useMemo(() => {
-        if (!acaoSelecionada) return [];
-        return denuncias.filter(d => d.acaoId === acaoSelecionada.id);
-    }, [acaoSelecionada, denuncias]);
 
     return (
         <div className="flex flex-col md:flex-row h-screen font-sans bg-gray-100">
@@ -53,12 +51,10 @@ export function OcorrenciasPage() {
                 detailViewItem={detailViewItem}
                 onBackToList={handleBackToList}
             />
-            <main className="flex-1 relative">
-                <MapFilters setFilter={setFilter} />
-
+            <main className="flex-1 z-10">
                 <MapComponent
-                    denuncias={filteredData.denuncias}
-                    acoes={filteredData.acoes}
+                    denuncias={denuncias}
+                    acoes={acoes}
                     modoSelecao={modoSelecao}
                     denunciasSelecionadas={denunciasSelecionadas}
                     onMarkerClick={handleMarkerClick}
