@@ -1,4 +1,4 @@
-import { useOcorrencias, type filterProps } from "../../hooks/useOcorrencias";
+import { type filterProps } from "../../hooks/useOcorrencias";
 
 type MapFiltersProps = {
     setFilter: React.Dispatch<React.SetStateAction<filterProps>>
