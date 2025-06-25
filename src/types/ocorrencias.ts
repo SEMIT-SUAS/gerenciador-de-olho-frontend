@@ -20,5 +20,6 @@ export interface Acao {
   lat: number;
   lon: number;
   polygonCoords: LatLngExpression[];
+  status: StatusModel
 }
 
