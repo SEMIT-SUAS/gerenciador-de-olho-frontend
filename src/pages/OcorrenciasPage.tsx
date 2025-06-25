@@ -15,15 +15,9 @@ export function OcorrenciasPage() {
     const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
     const [detailViewItem, setDetailViewItem] = useState<Denuncia | Acao | null>(null);
 
-    const handleSelectItem = (item: Denuncia | Acao) => {
-        setDetailViewItem(item);
-    };
-    const handleBackToList = () => {
-        setDetailViewItem(null);
-    };
-    const handleMarkerClick = (id: number, status: 'aberto' | 'em_atendimento') => {
-        if (modoSelecao && status === 'aberto') {
-            setDenunciasSelecionadas(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
+    const handleSelectionClick = (id: number) => {
+        if (modoSelecao) {
+        setDenunciasSelecionadas(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
         }
     };
     
@@ -41,28 +35,26 @@ export function OcorrenciasPage() {
 
     return (
         <div className="flex flex-col md:flex-row h-screen font-sans bg-gray-100">
-            <SidePanel
+        <SidePanel 
+            denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
+            denunciasSelecionadasCount={denunciasSelecionadas.length}
+            onIniciarSelecao={() => setModoSelecao(true)}
+            onAbrirFormulario={() => setCreateModalOpen(true)}
+            onCancelarSelecao={() => { setModoSelecao(false); setDenunciasSelecionadas([]); }}
+            onItemClick={handleItemClick}
+            detailViewItem={detailViewItem}
+            onBackToList={() => setDetailViewItem(null)}
+        />
+        <main className="flex-1 z-10">
+            <MapComponent 
                 denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
-                denunciasSelecionadasCount={denunciasSelecionadas.length}
-                onIniciarSelecao={() => setModoSelecao(true)}
-                onAbrirFormulario={() => setCreateModalOpen(true)}
-                onCancelarSelecao={() => { setModoSelecao(false); setDenunciasSelecionadas([]); }}
-                onItemClick={handleSelectItem}
+                denunciasSelecionadas={denunciasSelecionadas}
+                onMarkerClick={handleItemClick}
+                onSelectionClick={handleSelectionClick}
                 detailViewItem={detailViewItem}
-                onBackToList={handleBackToList}
             />
-            <main className="flex-1 z-10">
-                <MapComponent
-                    denuncias={denuncias}
-                    acoes={acoes}
-                    modoSelecao={modoSelecao}
-                    denunciasSelecionadas={denunciasSelecionadas}
-                    onMarkerClick={handleMarkerClick}
-                    onAcaoClick={handleSelectItem}
-                />
-            </main>
-            <CreateActionModal isOpen={isCreateModalOpen} onClose={() => setCreateModalOpen(false)} onSubmit={handleFinalizarCriacaoAcao} selectionCount={denunciasSelecionadas.length} />
-            <ActionDetailsModal isOpen={isDetailsModalOpen} onClose={() => setDetailsModalOpen(false)} acao={acaoSelecionada} denunciasVinculadas={denunciasVinculadas} />
+        </main>
+        <CreateActionModal isOpen={isCreateModalOpen} onClose={() => setCreateModalOpen(false)} onSubmit={handleFinalizarCriacaoAcao} selectionCount={denunciasSelecionadas.length}/>
         </div>
     );
 }
