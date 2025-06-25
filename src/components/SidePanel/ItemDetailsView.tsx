@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import type { Denuncia } from '../../types/Denuncia';
 import type { Acao } from '../../types/Acao';
-// Função auxiliar para diferenciar os tipos
+
 function isAcao(item: Denuncia | Acao): item is Acao {
     return 'secretaria' in item;
 }
@@ -22,7 +22,6 @@ export const ItemDetailsView: FC<ItemDetailsViewProps> = ({ item, denuncias, onB
             </button>
             
             {isAcao(item) ? (
-                // Detalhes da Ação
                 <div>
                     <h2 className="text-xl font-bold text-gray-800 mb-2">{item.nome}</h2>
                     <p className="text-sm text-gray-500 mb-4">Responsável: {item.secretaria}</p>
@@ -38,7 +37,6 @@ export const ItemDetailsView: FC<ItemDetailsViewProps> = ({ item, denuncias, onB
                     </div>
                 </div>
             ) : (
-                // Detalhes da Denúncia
                 <div>
                     <div className="flex justify-between items-center mb-2">
                         <h2 className="text-xl font-bold text-gray-800">{item.titulo}</h2>
