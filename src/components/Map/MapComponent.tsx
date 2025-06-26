@@ -14,6 +14,7 @@ interface MapComponentProps {
     onMarkerClick: (item: Denuncia | Acao) => void;
     onSelectionClick: (id: number, status: StatusModel) => void;
     detailViewItem: Denuncia | Acao | null;
+    setDetailViewItem: (item: Denuncia | Acao | null) => void
 }
 
 export function MapComponent({
@@ -23,14 +24,18 @@ export function MapComponent({
     denunciasSelecionadas,
     onMarkerClick,
     onSelectionClick,
-    detailViewItem
+    detailViewItem,
+    setDetailViewItem
 }: MapComponentProps) {
-    
+
     const MapViewUpdater: FC<{ item: Denuncia | Acao | null }> = ({ item }) => {
         const map = useMap();
         useEffect(() => {
             if (item) {
-                map.flyTo([item.lat, item.lon], 16);
+                map.flyTo([item.lat, item.lon], 16)
+                map.on("moveend", () => {
+                    setDetailViewItem(null)
+                })
             }
         }, [item, map]);
         return null;
