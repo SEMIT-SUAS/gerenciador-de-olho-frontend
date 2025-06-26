@@ -8,7 +8,7 @@ import { useOcorrencias } from "../hooks/useOcorrencias";
 import { MapFilters } from "../components/Map/MapFilters";
 
 export function OcorrenciasPage() {
-    const { denuncias, acoes, criarNovaAcao, filteredData, setFilter } = useOcorrencias();
+    const { denuncias, acoes, criarNovaAcao, filteredData, setFilter } = useOcorrencias();    
 
     const [modoSelecao, setModoSelecao] = useState<boolean>(false);
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
@@ -17,7 +17,7 @@ export function OcorrenciasPage() {
 
     const handleSelectionClick = (id: number) => {
         if (modoSelecao) {
-        setDenunciasSelecionadas(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
+            setDenunciasSelecionadas(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
         }
     };
     
@@ -54,6 +54,7 @@ export function OcorrenciasPage() {
                 onMarkerClick={handleItemClick}
                 onSelectionClick={handleSelectionClick}
                 detailViewItem={detailViewItem}
+                setDetailViewItem={setDetailViewItem}
             />
         </main>
         <CreateActionModal isOpen={isCreateModalOpen} onClose={() => setCreateModalOpen(false)} onSubmit={handleFinalizarCriacaoAcao} selectionCount={denunciasSelecionadas.length}/>
