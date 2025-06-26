@@ -7,7 +7,6 @@ export interface Acao {
   secretaria: string;
   lat: number;
   lon: number;
-  polygonCoords: LatLngExpression[];
-  status: StatusModel
+  polygonCoords: any[]; 
+  status: StatusModel; 
 }
-
