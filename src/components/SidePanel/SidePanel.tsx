@@ -41,8 +41,8 @@ export const SidePanel: FC<SidePanelProps> = ({ denuncias, acoes, modoSelecao, d
             
             <div className="flex-1 overflow-y-auto">
                 {detailViewItem ? (
-                    <ItemDetailsView item={detailViewItem} denuncias={denuncias} onBack={onBackToList} />
-                ) : (
+                    <ItemDetailsView item={detailViewItem} denuncias={denuncias} onBack={onBackToList}/>
+                    ) : (
                     <>
                         <div className="">
                             <nav className="flex">
