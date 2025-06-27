@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { FC } from 'react';
 import type { Denuncia } from '../../types/Denuncia';
 import type { Acao } from '../../types/Acao';
@@ -6,6 +6,7 @@ import { ItemDetailsView } from './ItemDetailsView';
 import { DenunciasList } from './DenunciasList';
 import { AcoesList } from './AcoesList';
 import type { StatusModel } from '../../types/StatusModel';
+import { FilterButtons } from './FilterButtons';
 
 
 interface SidePanelProps {
@@ -34,24 +35,30 @@ export const SidePanel: FC<SidePanelProps> = ({
     onBackToList
 }) => {
     const [abaAtiva, setAbaAtiva] = useState<'denuncias' | 'acoes'>('denuncias');
-    const [filtroStatus, setFiltroStatus] = useState<'todos' | StatusModel>('todos');
 
-    const denunciasFiltradas = useMemo(() => {
-        if (filtroStatus === 'todos') {
-            return denuncias;
-        }
-        return denuncias.filter(d => d.status === filtroStatus);
-    }, [denuncias, filtroStatus]);
+    const [denunciasFilter, setDenunciasFilter] = useState<Denuncia[]>([])
+    const [acoesFilter, setAcoesFilter] = useState<Acao[]>([])
 
-    const getFilterButtonStyle = (status: typeof filtroStatus) => {
-        return filtroStatus === status
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300';
-    };
+    const [filtroStatusDenuncia, setFiltroStatusDenuncia] = useState<'todos' | StatusModel>('todos');
+    const [filtroStatusAcao, setFiltroStatusAcao] = useState<'todos' | StatusModel>('todos');
 
     return (
         <aside className="w-full md:w-[450px] bg-white shadow-lg flex flex-col z-20 h-screen">
             <div className="p-4"><h1 className="text-2xl font-bold text-gray-800">Painel de Ocorrências</h1></div>
+
+            <div className="flex-1 overflow-y-auto">
+                {detailViewItem ? (
+                    <ItemDetailsView
+                        item={detailViewItem}
+                        denuncias={denuncias}
+                        onBack={onBackToList}
+                    />
+                ) : (
+                    <div className=''>
+
+                    </div>  
+                )}
+            </div>
 
             <div className="flex-1 overflow-y-auto">
                 {detailViewItem ? (
@@ -64,22 +71,23 @@ export const SidePanel: FC<SidePanelProps> = ({
                                 <button onClick={() => setAbaAtiva('acoes')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'acoes' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500'}`}>Ações ({acoes.length})</button>
                             </nav>
                         </div>
-                        {abaAtiva === 'denuncias' && (
-                            <div className="p-4">
-                                <div className="grid grid-cols-4 gap-2 text-sm">
-                                    <button onClick={() => setFiltroStatus('todos')} className={`px-2 py-1 rounded-md transition-colors ${getFilterButtonStyle('todos')}`}>Todos</button>
-                                    <button onClick={() => setFiltroStatus('aberto')} className={`px-2 py-1 rounded-md transition-colors ${getFilterButtonStyle('aberto')}`}>Abertas</button>
-                                    <button onClick={() => setFiltroStatus('em_andamento')} className={`px-2 py-1 rounded-md transition-colors ${getFilterButtonStyle('em_andamento')}`}>Atendimento</button>
-                                    <button onClick={() => setFiltroStatus('concluido')} className={`px-2 py-1 rounded-md transition-colors ${getFilterButtonStyle('concluido')}`}>Concluídas</button>
-                                </div>
+
+                        <div className="p-4">
+                            <div className="grid grid-cols-4 gap-2 text-sm">
+                                {abaAtiva ? (
+                                    <FilterButtons setFilterStatus={setFiltroStatusDenuncia} currentFilter={filtroStatusDenuncia} />
+                                ) : (
+                                    <FilterButtons setFilterStatus={setFiltroStatusAcao} currentFilter={filtroStatusAcao} />
+                                )}
                             </div>
-                        )}
+                        </div>
+
                         <div className="p-4 space-y-3">
                             {modoSelecao && (<div className="p-3 bg-blue-100 border-blue-300 text-blue-800 rounded-lg text-center font-semibold">Modo de Seleção Ativo: Clique nos pinos no mapa.</div>)}
 
                             {abaAtiva == 'denuncias'
-                                ? <DenunciasList denuncias={denunciasFiltradas} onItemClick={onItemClick} />
-                                : <AcoesList acoes={acoes} onItemClick={onItemClick} />}
+                                ? <DenunciasList denuncias={denunciasFilter} onItemClick={onItemClick} />
+                                : <AcoesList acoes={acoesFilter} onItemClick={onItemClick} />}
                         </div>
                     </>
                 )}

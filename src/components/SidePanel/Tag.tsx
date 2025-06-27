@@ -13,7 +13,7 @@ export function Tag({ status }: TagProps) {
     }
 
     return (
-        <span className={`text-xs font-medium px-2 py-1 rounded-full capitalize ${styles[status]}`}>
+        <span className={`w-fit text-xs font-medium px-2 py-1 rounded-md capitalize ${styles[status]}`}>
             {status.replace('_', ' ')}
         </span>
     )
