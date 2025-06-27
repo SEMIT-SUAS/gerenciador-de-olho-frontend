@@ -5,10 +5,9 @@ import { SidePanel } from "../components/SidePanel/SidePanel";
 import { MapComponent } from "../components/Map/MapComponent";
 import { CreateActionModal } from "../components/Modals/ActionModals";
 import { useOcorrencias } from "../hooks/useOcorrencias";
-import { MapFilters } from "../components/Map/MapFilters";
 
 export function OcorrenciasPage() {
-    const { denuncias, acoes, criarNovaAcao, filteredData, setFilter } = useOcorrencias();
+    const { denuncias, acoes, criarNovaAcao} = useOcorrencias();
 
     const [modoSelecao, setModoSelecao] = useState<boolean>(false);
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
@@ -46,10 +45,8 @@ export function OcorrenciasPage() {
             onBackToList={() => setDetailViewItem(null)}
         />
         <main className="flex-1 z-10 relative">
-            <MapFilters setFilter={setFilter} />
-
             <MapComponent 
-                denuncias={filteredData.denuncias} acoes={filteredData.acoes} modoSelecao={modoSelecao}
+                denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
                 denunciasSelecionadas={denunciasSelecionadas}
                 onMarkerClick={handleItemClick}
                 onSelectionClick={handleSelectionClick}

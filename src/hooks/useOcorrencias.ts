@@ -1,15 +1,9 @@
-import { useMemo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getConvexHull } from "../utils/geometry.ts";
-import type { StatusModel } from "../types/StatusModel.ts";
 import type { Denuncia } from "../types/Denuncia.ts";
 import type { Acao } from "../types/Acao.ts";
 import denunciasService from "../services/denunciasService.ts";
 import acoesService from "../services/acoesService.ts";
-
-export type filterProps = {
-  mapPins: "all" | "denuncias" | "acoes";
-  status: "all" | StatusModel;
-};
 
 export const useOcorrencias = () => {
   const [denuncias, setDenuncias] = useState<Denuncia[]>([]);
@@ -36,28 +30,6 @@ export const useOcorrencias = () => {
     };
     loadData();
   }, []);
-
-  const [filter, setFilter] = useState<filterProps>({
-    mapPins: "all",
-    status: "all",
-  });
-
-  const filteredData = useMemo(() => {
-    let denunciasTemp = denuncias;
-    let acoesTemp = acoes;
-    if (filter.status !== "all") {
-      denunciasTemp = denunciasTemp.filter((d) => d.status === filter.status);
-      acoesTemp = acoesTemp.filter((a) => a.status === filter.status);
-    }
-    switch (filter.mapPins) {
-      case "denuncias":
-        return { denuncias: denunciasTemp, acoes: [] };
-      case "acoes":
-        return { denuncias: [], acoes: acoesTemp };
-      default:
-        return { denuncias: denunciasTemp, acoes: acoesTemp };
-    }
-  }, [acoes, denuncias, filter]);
 
   const criarNovaAcao = (
     nomeAcao: string,
@@ -111,7 +83,5 @@ export const useOcorrencias = () => {
     denuncias,
     acoes,
     criarNovaAcao,
-    filteredData,
-    setFilter,
   };
 };
