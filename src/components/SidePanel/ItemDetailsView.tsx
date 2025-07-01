@@ -1,8 +1,7 @@
 import type { FC } from 'react';
 import type { Denuncia } from '../../types/Denuncia';
 import type { Acao } from '../../types/Acao';
-import type { StatusModel } from '../../types/StatusModel';
-import { FaArrowLeft } from 'react-icons/fa';
+
 import { DenunciaDetails } from './DenunciaDetails';
 import { AcaoDetails } from './AcaoDetails';
 import { BackButton } from '../Buttons/Backbutton';
