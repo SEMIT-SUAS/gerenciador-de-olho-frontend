@@ -34,7 +34,7 @@ export function OcorrenciasPage() {
 
     return (
         <>
-            <div className="flex flex-col md:flex-row h-screen font-sans bg-gray-100">
+            <div className="flex flex-col md:flex-row h-screen bg-gray-100">
                 <SidePanel
                     denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
                     denunciasSelecionadasCount={denunciasSelecionadas.length}

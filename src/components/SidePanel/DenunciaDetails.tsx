@@ -48,7 +48,7 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
                         {item.images.map(img => (
                             <a key={img.id} href={img.url} target="_blank" rel="noopener noreferrer">
                                 <img 
-                                    src={img.url || `https://placehold.co/100x100/ccc/ffffff?text=${img.name}`}
+                                    src={`http://localhost:3000/files/uploads/${img.name}`}
                                     alt={img.name} 
                                     className="h-40 w-40 object-cover rounded-md hover:opacity-80 transition-opacity" 
                                 />
