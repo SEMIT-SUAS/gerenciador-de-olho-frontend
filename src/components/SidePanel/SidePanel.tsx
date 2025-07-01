@@ -64,9 +64,10 @@ export const SidePanel: FC<SidePanelProps> = ({
                         item={detailViewItem}
                         denuncias={denuncias}
                         onBack={onBackToList}
+                        onDenunciaClick={onItemClick}
                     />
                 ) : (
-                    <>
+                    <>  
                         <div>
                             <nav className="flex">
                                 <button onClick={() => setAbaAtiva('denuncias')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'denuncias' ? 'text-blue-600  border-b-2 border-blue-600' : 'text-gray-500'}`}>Denúncias ({denuncias.length})</button>

@@ -50,7 +50,7 @@ export const useOcorrencias = () => {
       }),
       { lat: 0, lon: 0 }
     );
-
+    
     centroide.lat /= denunciasParaAcao.length;
     centroide.lon /= denunciasParaAcao.length;
 

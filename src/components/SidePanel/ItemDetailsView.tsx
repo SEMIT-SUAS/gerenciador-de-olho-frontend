@@ -11,15 +11,16 @@ interface ItemDetailsViewProps {
     item: Denuncia | Acao;
     denuncias: Denuncia[];
     onBack: () => void;
+    onDenunciaClick: (denuncia: Denuncia) => void;
 }
 
 
 function isAcao(item: Denuncia | Acao): item is Acao {
     return 'secretaria' in item;
-}
+} 
 
 
-export const ItemDetailsView: FC<ItemDetailsViewProps> = ({ item, denuncias, onBack }) => {
+export const ItemDetailsView: FC<ItemDetailsViewProps> = ({ item, denuncias, onBack, onDenunciaClick }) => {
     return (
         <div className="p-4 flex flex-col h-full">
             <BackButton 
@@ -29,7 +30,7 @@ export const ItemDetailsView: FC<ItemDetailsViewProps> = ({ item, denuncias, onB
                 </BackButton>
             
             {isAcao(item) ? (
-                <AcaoDetails item={item} denuncias={denuncias} isAcao={isAcao}/>
+                <AcaoDetails item={item} denuncias={denuncias} onDenunciaClick={onDenunciaClick}/>
             ) : (
                 <DenunciaDetails item={item}/>
             )}
