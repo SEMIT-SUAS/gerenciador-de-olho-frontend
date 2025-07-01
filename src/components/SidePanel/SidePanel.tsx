@@ -36,11 +36,23 @@ export const SidePanel: FC<SidePanelProps> = ({
 }) => {
     const [abaAtiva, setAbaAtiva] = useState<'denuncias' | 'acoes'>('denuncias');
 
-    const [denunciasFilter, setDenunciasFilter] = useState<Denuncia[]>([])
-    const [acoesFilter, setAcoesFilter] = useState<Acao[]>([])
-
     const [filtroStatusDenuncia, setFiltroStatusDenuncia] = useState<'todos' | StatusModel>('todos');
     const [filtroStatusAcao, setFiltroStatusAcao] = useState<'todos' | StatusModel>('todos');
+
+    const denunciasFiltradas = useMemo(() => {
+        if (filtroStatusDenuncia === 'todos') {
+            return denuncias;
+        }
+
+        return denuncias.filter(d => d.status === filtroStatusDenuncia);
+    }, [denuncias, filtroStatusDenuncia]);
+
+    const acoesFiltradas = useMemo(() => {
+        if (filtroStatusAcao === 'todos') {
+            return acoes;
+        }
+        return acoes.filter(a => a.status === filtroStatusAcao);
+    }, [acoes, filtroStatusAcao]);
 
     return (
         <aside className="w-full md:w-[450px] bg-white shadow-lg flex flex-col z-20 h-screen">
@@ -54,18 +66,8 @@ export const SidePanel: FC<SidePanelProps> = ({
                         onBack={onBackToList}
                     />
                 ) : (
-                    <div className=''>
-
-                    </div>  
-                )}
-            </div>
-
-            <div className="flex-1 overflow-y-auto">
-                {detailViewItem ? (
-                    <ItemDetailsView item={detailViewItem} denuncias={denuncias} onBack={onBackToList} />
-                ) : (
                     <>
-                        <div className="">
+                        <div>
                             <nav className="flex">
                                 <button onClick={() => setAbaAtiva('denuncias')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'denuncias' ? 'text-blue-600  border-b-2 border-blue-600' : 'text-gray-500'}`}>Denúncias ({denuncias.length})</button>
                                 <button onClick={() => setAbaAtiva('acoes')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'acoes' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500'}`}>Ações ({acoes.length})</button>
@@ -74,10 +76,16 @@ export const SidePanel: FC<SidePanelProps> = ({
 
                         <div className="p-4">
                             <div className="grid grid-cols-4 gap-2 text-sm">
-                                {abaAtiva ? (
-                                    <FilterButtons setFilterStatus={setFiltroStatusDenuncia} currentFilter={filtroStatusDenuncia} />
+                                {abaAtiva == 'denuncias' ? (
+                                    <FilterButtons
+                                      setFilterStatus={setFiltroStatusDenuncia}
+                                      currentFilter={filtroStatusDenuncia}
+                                    />
                                 ) : (
-                                    <FilterButtons setFilterStatus={setFiltroStatusAcao} currentFilter={filtroStatusAcao} />
+                                    <FilterButtons
+                                      setFilterStatus={setFiltroStatusAcao}
+                                      currentFilter={filtroStatusAcao}
+                                    />
                                 )}
                             </div>
                         </div>
@@ -86,8 +94,8 @@ export const SidePanel: FC<SidePanelProps> = ({
                             {modoSelecao && (<div className="p-3 bg-blue-100 border-blue-300 text-blue-800 rounded-lg text-center font-semibold">Modo de Seleção Ativo: Clique nos pinos no mapa.</div>)}
 
                             {abaAtiva == 'denuncias'
-                                ? <DenunciasList denuncias={denunciasFilter} onItemClick={onItemClick} />
-                                : <AcoesList acoes={acoesFilter} onItemClick={onItemClick} />}
+                                ? <DenunciasList denuncias={denunciasFiltradas} onItemClick={onItemClick} />
+                                : <AcoesList acoes={acoesFiltradas} onItemClick={onItemClick} />}
                         </div>
                     </>
                 )}
