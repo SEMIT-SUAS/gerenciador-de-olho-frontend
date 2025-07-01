@@ -30,7 +30,7 @@ export function MapComponent({
         const map = useMap();
         useEffect(() => {
             if (item) {
-                map.flyTo([item.lat, item.lon], 16);
+                // map.flyTo([item.lat, item.lon], 16);
             }
         }, [item, map]);
         return null;
@@ -66,9 +66,11 @@ export function MapComponent({
                 let icon;
                 if (d.status === 'aberto') icon = isSelected ? iconDenunciaSelecionada : iconDenuncia;
                 else if (d.status === 'em_andamento') icon = iconDenunciaEmAtendimento;
-
+                
+                if (!icon) return null
+                 
                 return (
-                    <Marker key={`d-${d.id}`} position={[d.lat, d.lon]} icon={icon} eventHandlers={{ click: () => handleMarkerClick(d) }}>
+                    <Marker key={`d-${d.id}`} position={[d.endereco.latitude, d.endereco.longitude]} icon={icon} eventHandlers={{ click: () => handleMarkerClick(d) }}>
                         {!modoSelecao && <Popup><b>Denúncia:</b> {d.titulo}<br /><b>Status:</b> <span className="capitalize">{d.status.replace('_', ' ')}</span></Popup>}
                     </Marker>
                 );

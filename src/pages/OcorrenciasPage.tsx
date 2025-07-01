@@ -3,7 +3,6 @@ import type { Acao } from "../types/Acao";
 import type { Denuncia } from "../types/Denuncia";
 import { SidePanel } from "../components/SidePanel/SidePanel";
 import { MapComponent } from "../components/Map/MapComponent";
-import { CreateActionModal } from "../components/Modals/ActionModals";
 import { useOcorrencias } from "../hooks/useOcorrencias";
 
 export function OcorrenciasPage() {
@@ -33,7 +32,7 @@ export function OcorrenciasPage() {
     }
 
     return (
-        <div className="flex flex-col md:flex-row h-screen font-sans bg-gray-100">
+        <div className="flex flex-col md:flex-row h-screen bg-gray-100">
         <SidePanel 
             denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
             denunciasSelecionadasCount={denunciasSelecionadas.length}
@@ -53,7 +52,6 @@ export function OcorrenciasPage() {
                 detailViewItem={detailViewItem}
             />
         </main>
-        <CreateActionModal isOpen={isCreateModalOpen} onClose={() => setCreateModalOpen(false)} onSubmit={handleFinalizarCriacaoAcao} selectionCount={denunciasSelecionadas.length}/>
         </div>
     );
 }
