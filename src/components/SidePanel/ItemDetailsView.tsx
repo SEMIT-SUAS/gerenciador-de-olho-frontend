@@ -22,7 +22,11 @@ function isAcao(item: Denuncia | Acao): item is Acao {
 export const ItemDetailsView: FC<ItemDetailsViewProps> = ({ item, denuncias, onBack }) => {
     return (
         <div className="p-4 flex flex-col h-full">
-            <BackButton onClick={void} />
+            <BackButton 
+                onClick={onBack} 
+                className="mt-8 text-lg">
+                Retornar à pagina anterior 
+                </BackButton>
             
             {isAcao(item) ? (
                 <AcaoDetails item={item} denuncias={denuncias} isAcao={isAcao}/>
