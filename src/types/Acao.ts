@@ -1,4 +1,3 @@
-import type { LatLngExpression } from 'leaflet';
 import type { StatusModel } from './StatusModel';
 
 export interface Acao {
