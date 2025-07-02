@@ -12,7 +12,7 @@ export const useOcorrencias = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadData = async () => {    
       try {
         setLoading(true);
         const [denunciasData, acoesData] = await Promise.all([
@@ -83,5 +83,6 @@ export const useOcorrencias = () => {
     denuncias,
     acoes,
     criarNovaAcao,
+
   };
 };

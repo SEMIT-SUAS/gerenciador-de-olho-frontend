@@ -77,7 +77,7 @@ async function updateDenuncia(denuncia: Denuncia): Promise<Denuncia> {
 }
 
 async function updateDenunciaStatus(id: number, status: StatusModel): Promise<Denuncia> {
-    const response = await fetch(`/api/denuncias/${id}`, {
+    const response = await fetch(`/denuncias/${id}`, {
       method: 'PATCH', 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: status })
@@ -90,10 +90,38 @@ async function updateDenunciaStatus(id: number, status: StatusModel): Promise<De
     return response.json();
 }
 
+async function vincularDenunciaToAcao(id: number, acaoId: number): Promise<Denuncia> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
+        method: 'PATCH', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            acaoId: acaoId,
+            status: 'em_andamento' 
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Não foi possível vincular a denúncia à ação.");
+      }
+
+      return await response.json();
+
+    } catch (error) {
+      console.error("Erro no serviço de vinculação:", error);
+      throw error;
+    }
+}
+
+
 export default {
     getAllDenuncias,
     createDenuncia,
     updateDenuncia,
     getDenunciaById,
-    updateDenunciaStatus
+    updateDenunciaStatus,
+    vincularDenunciaToAcao
 };

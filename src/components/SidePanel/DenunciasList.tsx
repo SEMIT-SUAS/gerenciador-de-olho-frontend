@@ -13,7 +13,7 @@ export function DenunciasList({ denuncias, onItemClick }: DenunciasListProps) {
         return <p className="text-center text-gray-500 mt-4">Nenhuma denúncia encontrada.</p>
     }
 
-    return (
+    return (    
         denuncias.map(denuncia => {
             return (
                 <div

@@ -7,6 +7,8 @@ import { DenunciasList } from './DenunciasList';
 import { AcoesList } from './AcoesList';
 import type { StatusModel } from '../../types/StatusModel';
 import { FilterButtons } from './FilterButtons';
+import { VincularAcaoView } from './VincularAcaoView';
+import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
 
 
 interface SidePanelProps {
@@ -32,12 +34,13 @@ export const SidePanel: FC<SidePanelProps> = ({
     onCancelarSelecao,
     onItemClick,
     detailViewItem,
-    onBackToList
+    onBackToList,
 }) => {
     const [abaAtiva, setAbaAtiva] = useState<'denuncias' | 'acoes'>('denuncias');
 
     const [filtroStatusDenuncia, setFiltroStatusDenuncia] = useState<'todos' | StatusModel>('todos');
     const [filtroStatusAcao, setFiltroStatusAcao] = useState<'todos' | StatusModel>('todos');
+    const { denunciaParaVincular } = useVincularDenunciaContext();
 
     const denunciasFiltradas = useMemo(() => {
         if (filtroStatusDenuncia === 'todos') {
@@ -53,13 +56,16 @@ export const SidePanel: FC<SidePanelProps> = ({
         }
         return acoes.filter(a => a.status === filtroStatusAcao);
     }, [acoes, filtroStatusAcao]);
+    
 
     return (
         <aside className="w-full md:w-[450px] bg-white shadow-lg flex flex-col z-20 h-screen">
             <div className="p-4"><h1 className="text-2xl font-bold text-gray-800">Painel de Ocorrências</h1></div>
 
-            <div className="flex-1 overflow-y-auto">
-                {detailViewItem ? (
+            <div className="flex-1 overflow-y-auto custom-scrollbar-blue">
+                {denunciaParaVincular ? (
+                    <VincularAcaoView  />
+                ) : detailViewItem ? (
                     <ItemDetailsView
                         item={detailViewItem}
                         denuncias={denuncias}
