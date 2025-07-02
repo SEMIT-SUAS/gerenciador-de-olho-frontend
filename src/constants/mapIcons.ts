@@ -36,9 +36,20 @@ const iconAcao = new L.Icon({
     shadowAnchor: [19, 41]
 });
 
+const selectedIcon = new L.Icon({
+    iconUrl: 'selected-pin.png',
+    iconSize: [38, 38],
+    iconAnchor: [19, 38],
+    popupAnchor: [0, -40],
+    shadowSize: [41, 41],
+    shadowAnchor: [19, 41],
+    className: 'pulse-animation'
+})
+
 export {
     iconDenuncia,
     iconDenunciaSelecionada,
     iconDenunciaEmAtendimento,
-    iconAcao
+    iconAcao,
+    selectedIcon
 }

@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../../config/api';
 import type { Denuncia } from '../../types/Denuncia';
 import type { StatusModel } from '../../types/StatusModel';
 import type { FC } from 'react';
@@ -23,7 +24,7 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-start">
-                <h2 className="text-xl font-bold text-gray-800 flex-1">{item.tipo}</h2>
+                <h2 className="text-xl font-bold text-gray-800 flex-1">{item.tipo.name}</h2>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full capitalize whitespace-nowrap ml-2 ${getStatusClass(item.status)}`}>
                     {item.status.replace('_', ' ')}
                 </span>
@@ -48,7 +49,7 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
                         {item.images.map(img => (
                             <a key={img.id} href={img.url} target="_blank" rel="noopener noreferrer">
                                 <img 
-                                    src={`http://localhost:3000/files/uploads/${img.name}`}
+                                    src={`${API_BASE_URL}/files/uploads/${img.name}`}
                                     alt={img.name} 
                                     className="h-40 w-40 object-cover rounded-md hover:opacity-80 transition-opacity" 
                                 />

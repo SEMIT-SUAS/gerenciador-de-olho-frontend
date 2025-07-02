@@ -5,6 +5,7 @@ import { SidePanel } from "../components/SidePanel/SidePanel";
 import { MapComponent } from "../components/Map/MapComponent";
 import { useOcorrencias } from "../hooks/useOcorrencias";
 import { CreateActionModal } from "../components/Modals/CreateActionModal";
+import { AddDenunciaProvider } from "../context/AddDenunciaContext";
 
 export function OcorrenciasPage() {
     const { denuncias, acoes, criarNovaAcao } = useOcorrencias();
@@ -35,29 +36,31 @@ export function OcorrenciasPage() {
     return (
         <>
             <div className="flex flex-col md:flex-row h-screen bg-gray-100">
-                <SidePanel
-                    denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
-                    denunciasSelecionadasCount={denunciasSelecionadas.length}
-                    onIniciarSelecao={() => setModoSelecao(true)}
-                    onAbrirFormulario={() => setCreateModalOpen(true)}
-                    onCancelarSelecao={() => { 
-                        setModoSelecao(false); 
-                        setDenunciasSelecionadas([]); 
-                    }}
-                    onItemClick={handleItemClick}
-                    detailViewItem={detailViewItem}
-                    onBackToList={() => setDetailViewItem(null)}
-                />
-
-                <main className="flex-1 z-10 relative">
-                    <MapComponent
+                <AddDenunciaProvider>
+                    <SidePanel
                         denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
-                        denunciasSelecionadas={denunciasSelecionadas}
-                        onMarkerClick={handleItemClick}
-                        onSelectionClick={handleSelectionClick}
+                        denunciasSelecionadasCount={denunciasSelecionadas.length}
+                        onIniciarSelecao={() => setModoSelecao(true)}
+                        onAbrirFormulario={() => setCreateModalOpen(true)}
+                        onCancelarSelecao={() => {
+                            setModoSelecao(false);
+                            setDenunciasSelecionadas([]);
+                        }}
+                        onItemClick={handleItemClick}
                         detailViewItem={detailViewItem}
+                        onBackToList={() => setDetailViewItem(null)}
                     />
-                </main>
+
+                    <main className="flex-1 z-10 relative">
+                        <MapComponent
+                            denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
+                            denunciasSelecionadas={denunciasSelecionadas}
+                            onMarkerClick={handleItemClick}
+                            onSelectionClick={handleSelectionClick}
+                            detailViewItem={detailViewItem}
+                        />
+                    </main>
+                </AddDenunciaProvider>
             </div>
 
             <CreateActionModal
