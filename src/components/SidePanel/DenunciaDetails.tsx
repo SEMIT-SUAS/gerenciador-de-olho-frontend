@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../../config/api';
 import type { Denuncia } from '../../types/Denuncia';
 import type { FC } from 'react';
 import { Tag } from './Tag';

@@ -17,7 +17,7 @@ export function AcoesList({ acoes, onItemClick }: AcoesListProps) {
         acoes.map(acao => (
             <div
                 key={acao.id}
-                className="flex flex-col gap-0.5 p-3 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
+                className="flex flex-col gap-1 p-3 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
                 onClick={() => onItemClick(acao)}
             >
                 <h3 className="font-semibold text-gray-700">{acao.nome}</h3>
