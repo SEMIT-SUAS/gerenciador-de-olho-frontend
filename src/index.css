@@ -13,4 +13,13 @@
     transform: scale(1.1);
     filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.5));
   }
+  
+/* Adicione isso ao seu arquivo CSS principal */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Para Firefox */
+.scrollbar-hide {
+    scrollbar-width: none;
 }
