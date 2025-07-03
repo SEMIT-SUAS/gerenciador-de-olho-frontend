@@ -2,8 +2,8 @@ import { createContext, useContext, useEffect, useState} from 'react';
 import type { FC, ReactNode } from 'react';
 import type { Denuncia } from '../types/Denuncia';
 import type { Acao } from '../types/Acao';
-import denunciaService from '../services/denunciasService';
-import acaoService from '../services/acoesService';
+import denunciasService from '../services/denunciasService';
+import acoesService from '../services/acoesService';
 
 interface OcorrenciasContextType {
     denuncias: Denuncia[];
@@ -14,6 +14,7 @@ interface OcorrenciasContextType {
 }
 
 const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(undefined);
+
 
 export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [denuncias, setDenuncias] = useState<Denuncia[]>([]);
@@ -26,8 +27,8 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) =
             try {
                 setLoading(true);
                 const [denunciasData, acoesData] = await Promise.all([
-                    denunciaService.getAllDenuncias(),
-                    acaoService.getAllAcoes()
+                    denunciasService.getAllDenuncias(),
+                    acoesService.getAllAcoes()
                 ]);
                 setDenuncias(denunciasData);
                 setAcoes(acoesData);
@@ -36,19 +37,13 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) =
         loadData();
     }, []);
 
+
     const vincularDenunciaAcao = async (denunciaId: number, acaoId: number) => {
         try {
-            const denunciaAtualizada = await denunciaService.vincularDenunciaToAcao(denunciaId, acaoId);
-            const dataUpdated = denuncias.map(d => {
-                    if (d.id === denunciaAtualizada.id) {
-                        return denunciaAtualizada
-                    }
-                    
-                    return d;
-                })
-
-            setDenuncias(dataUpdated)
-        } catch (error) {
+            const denunciaAtualizada = await denunciasService.vincularDenunciaToAcao(denunciaId, acaoId);
+            setDenuncias(prev => prev.map(d => d.id === denunciaId ? denunciaAtualizada : d));
+            console.log("Denúncia vinculada com sucesso:", denunciaAtualizada);
+        } catch (error) {   
             console.error("Falha ao vincular denúncia:", error);
             alert("Não foi possível vincular a denúncia.");
         }

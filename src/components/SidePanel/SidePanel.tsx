@@ -32,7 +32,7 @@ export const SidePanel: FC<SidePanelProps> = ({
     onIniciarSelecao,
     onAbrirFormulario,
     onCancelarSelecao,
-    onItemClick,
+    onItemClick,    
     detailViewItem,
     onBackToList,
 }) => {

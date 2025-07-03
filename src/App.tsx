@@ -1,17 +1,17 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
 import { OcorrenciasProvider } from './context/ocorrenciasContext';
-import { VincularAcaoProvider } from './context/vincularDenunciaContext';
+import { VincularDenunciaProvider } from './context/vincularDenunciaContext';
 
 export function App() {
   return (
     <BrowserRouter>
       <OcorrenciasProvider>
-        <VincularAcaoProvider>
+        <VincularDenunciaProvider>
           <Routes>
             <Route index element={<OcorrenciasPage />} />
           </Routes>
-        </VincularAcaoProvider>
+        </VincularDenunciaProvider>
       </OcorrenciasProvider>
     </BrowserRouter>
   )

@@ -12,7 +12,7 @@ interface VincularDenunciaContextType {
 
 const VincularDenunciaContext = createContext<VincularDenunciaContextType | undefined>(undefined);
 
-export const VincularAcaoProvider: FC<{ children: ReactNode }> = ({ children }) => {
+export const VincularDenunciaProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const { vincularDenunciaAcao } = useOcorrenciasContext();
     const [denunciaParaVincular, setDenunciaParaVincular] = useState<Denuncia | null>(null);
 
@@ -28,8 +28,7 @@ export const VincularAcaoProvider: FC<{ children: ReactNode }> = ({ children }) 
         if (denunciaParaVincular) {
             vincularDenunciaAcao(denunciaParaVincular.id, acaoId);
             setDenunciaParaVincular(null);
-            console.log(`Denúncia ${denunciaParaVincular.id} vinculada à ação ${acaoId}`);
-        }
+        }   
     };
 
     const value = { denunciaParaVincular, startLinking, cancelLinking, confirmLink };
