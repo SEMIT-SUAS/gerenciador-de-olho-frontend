@@ -6,6 +6,7 @@ import type { StatusModel } from '../../types/StatusModel';
 import type { Denuncia } from '../../types/Denuncia';
 import type { Acao } from '../../types/Acao';
 import { AddDenunciaContext } from '../../context/AddDenunciaContext';
+import { getDenunciaIconByTipo } from '../../utils/getPinIcon';
 
 interface MapComponentProps {
     denuncias: Denuncia[];
@@ -87,15 +88,19 @@ export function MapComponent({
             />
 
             {!isSelectingNewDenunciaInMap && denuncias.map(d => {
-                const isSelected = modoSelecao && denunciasSelecionadas.includes(d.id);
-                let icon;
-                if (d.status === 'aberto') icon = isSelected ? iconDenunciaSelecionada : iconDenuncia;
-                else if (d.status === 'em_andamento') icon = iconDenunciaEmAtendimento;
+                // const isSelected = modoSelecao && denunciasSelecionadas.includes(d.id);
+                // let icon;
+                // if (d.status === 'aberto') icon = isSelected ? iconDenunciaSelecionada : iconDenuncia;
+                // else if (d.status === 'em_andamento') icon = iconDenunciaEmAtendimento;
 
-                if (!icon) return null
-
+                // if (!icon) return null
                 return (
-                    <Marker key={`d-${d.id}`} position={[d.endereco.latitude, d.endereco.longitude]} icon={icon} eventHandlers={{ click: () => handleMarkerClick(d) }}>
+                    <Marker
+                        key={`d-${d.id}`}
+                        position={[d.endereco.latitude, d.endereco.longitude]}
+                        icon={getDenunciaIconByTipo(d.tipo)}
+                        eventHandlers={{ click: () => handleMarkerClick(d) }}
+                    >
                         {!modoSelecao && <Popup><b>Denúncia:</b> {d.titulo}<br /><b>Status:</b> <span className="capitalize">{d.status.replace('_', ' ')}</span></Popup>}
                     </Marker>
                 );
