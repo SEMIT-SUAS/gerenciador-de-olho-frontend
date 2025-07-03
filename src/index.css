@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+
+/* Para navegadores Webkit (Chrome, Safari, Edge, etc.) */
+.custom-scrollbar-blue::-webkit-scrollbar {
+  height: 8px; /* Altura da barra de rolagem */
+}
+
+.custom-scrollbar-blue::-webkit-scrollbar-button {
+  display: none;
+}
+
+.custom-scrollbar-blue::-webkit-scrollbar-track {
+  background-color: #fff; /* Cor de fundo da trilha (cinza claro) */
+  border-radius: 10px;
+}
+
+.custom-scrollbar-blue::-webkit-scrollbar-thumb {
+  background-color: #3b82f6; /* Cor da barra (azul do Tailwind) */
+  border-radius: 10px;
+}
+
+.custom-scrollbar-blue::-webkit-scrollbar-thumb:hover {
+  background-color: #2563eb; /* Azul um pouco mais escuro ao passar o mouse */
+}
+
 .pulse-animation {
   animation: pulse 1s infinite ease-in-out;
 }
@@ -21,6 +45,7 @@
 }
 
 /* Para Firefox */
-.scrollbar-hide {
-    scrollbar-width: none;
+.custom-scrollbar-blue {
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 #fff; /* Cor da barra e cor do fundo */
 }

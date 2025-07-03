@@ -13,7 +13,7 @@ export function DenunciasList({ denuncias, onItemClick }: DenunciasListProps) {
         return <p className="text-center text-gray-500 mt-4">Nenhuma denúncia encontrada.</p>
     }
 
-    return (
+    return (    
         denuncias.map(denuncia => {
             return (
                 <div
@@ -22,7 +22,7 @@ export function DenunciasList({ denuncias, onItemClick }: DenunciasListProps) {
                     onClick={() => onItemClick(denuncia)}
                 >
                     <div className="flex justify-between items-center">
-                        <h3 className="font-semibold text-gray-700">{denuncia.titulo}</h3>
+                        <h3 className="font-semibold text-md text-gray-700">{denuncia.titulo}</h3>
                         <Tag status={denuncia.status} />
                     </div>
 

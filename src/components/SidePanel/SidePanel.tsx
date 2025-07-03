@@ -6,6 +6,10 @@ import { DenunciasList } from './DenunciasList';
 import { AcoesList } from './AcoesList';
 import type { StatusModel } from '../../types/StatusModel';
 import { FilterButtons } from './FilterButtons';
+import { VincularAcaoView } from './VincularAcaoView';
+import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
+
+=======
 import { IoIosAdd, IoIosClose } from 'react-icons/io';
 import { AddDenunciaForm } from '../Forms/AddDenunciaForm';
 import { AddDenunciaContext } from '../../context/AddDenunciaContext';
@@ -32,16 +36,17 @@ export function SidePanel({
     onIniciarSelecao,
     onAbrirFormulario,
     onCancelarSelecao,
-    onItemClick,
+    onItemClick,    
     detailViewItem,
     onBackToList,
+
     setDenuncias
 }: SidePanelProps) {
     const [abaAtiva, setAbaAtiva] = useState<'denuncias' | 'acoes'>('denuncias');
     const [filtroStatusDenuncia, setFiltroStatusDenuncia] = useState<'todos' | StatusModel>('todos');
     const [filtroStatusAcao, setFiltroStatusAcao] = useState<'todos' | StatusModel>('todos');
+    const { denunciaParaVincular } = useVincularDenunciaContext();
     const [isAddingDenuncia, setIsAddingDenuncia] = useState(false)
-
     const { setNewDenunciaCoordinates } = useContext(AddDenunciaContext)
 
     const denunciasFiltradas = useMemo(() => {
@@ -58,6 +63,7 @@ export function SidePanel({
         }
         return acoes.filter(a => a.status === filtroStatusAcao);
     }, [acoes, filtroStatusAcao]);
+    
 
     useEffect(() => {
         if (!isAddingDenuncia) {
@@ -105,19 +111,27 @@ export function SidePanel({
                         />
                     }
 
-                    {isAddingDenuncia && 
+            <div className="flex-1 overflow-y-auto custom-scrollbar-blue">
+                {denunciaParaVincular ? (
+                    <VincularAcaoView  />
+                ) : detailViewItem ? (
+                    <ItemDetailsView
+                        item={detailViewItem}
+                        denuncias={denuncias}
+                        onBack={onBackToList}
+                        onDenunciaClick={onItemClick}
+                    />
+                ) : sAddingDenuncia && 
                     <AddDenunciaForm 
                       setIsAddingDenuncia={setIsAddingDenuncia} 
                       setDenuncias={setDenuncias}
-                    />}
-
-                    {!detailViewItem && !isAddingDenuncia &&
-                        <>
-                            <div>
-                                <nav className="flex">
-                                    <button onClick={() => setAbaAtiva('denuncias')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'denuncias' ? 'text-blue-600  border-b-2 border-blue-600' : 'text-gray-500'}`}>Denúncias ({denuncias.length})</button>
-                                    <button onClick={() => setAbaAtiva('acoes')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'acoes' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500'}`}>Ações ({acoes.length})</button>
-                                </nav>
+                    /> : (
+                       <>  
+                        <div>
+                            <nav className="flex">
+                                <button onClick={() => setAbaAtiva('denuncias')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'denuncias' ? 'text-blue-600  border-b-2 border-blue-600' : 'text-gray-500'}`}>Denúncias ({denuncias.length})</button>
+                                <button onClick={() => setAbaAtiva('acoes')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'acoes' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500'}`}>Ações ({acoes.length})</button>
+                            </nav>
                             </div>
 
                             <div className="p-4">

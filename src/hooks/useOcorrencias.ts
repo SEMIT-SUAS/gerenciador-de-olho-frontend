@@ -11,8 +11,9 @@ export const useOcorrencias = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+
   useEffect(() => {
-    const loadData = async () => {
+    const loadData = async () => {    
       try {
         setLoading(true);
         const [denunciasData, acoesData] = await Promise.all([
@@ -50,7 +51,7 @@ export const useOcorrencias = () => {
       }),
       { lat: 0, lon: 0 }
     );
-
+    
     centroide.lat /= denunciasParaAcao.length;
     centroide.lon /= denunciasParaAcao.length;
 
@@ -84,5 +85,6 @@ export const useOcorrencias = () => {
     setDenuncias,
     acoes,
     criarNovaAcao,
+
   };
 };
