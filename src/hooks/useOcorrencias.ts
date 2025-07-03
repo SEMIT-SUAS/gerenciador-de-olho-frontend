@@ -81,6 +81,7 @@ export const useOcorrencias = () => {
     loading,
     error,
     denuncias,
+    setDenuncias,
     acoes,
     criarNovaAcao,
   };

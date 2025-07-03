@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../../config/api';
 import type { Denuncia } from '../../types/Denuncia';
 import type { FC } from 'react';
 import { Tag } from './Tag';
@@ -50,7 +51,7 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
                         {item.images.map(img => (
                             <a key={img.id} href={img.url} target="_blank" rel="noopener noreferrer">
                                 <img 
-                                    src={`http://localhost:3000/files/uploads/${img.name}`}
+                                    src={`${API_BASE_URL}/files/uploads/${img.name}`}
                                     alt={img.name} 
                                     className="h-40 w-full object-cover rounded-lg hover:opacity-80 transition-opacity" 
                                 />

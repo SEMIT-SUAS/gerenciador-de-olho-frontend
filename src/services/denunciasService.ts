@@ -1,6 +1,25 @@
 import type { Denuncia } from '../types/Denuncia.ts';
 import { API_BASE_URL } from '../config/api.ts';
 import type { StatusModel } from '../types/StatusModel.ts';
+import convert from 'xml-js'
+
+type addressResponseData = {
+    rua: string
+    bairro: string
+}
+
+type CreateDenunciaProps = {
+    description: string
+    categoryId: number
+    categoryTipoId: number
+    address: {
+        lon: number,
+        lat: number,
+        rua: string,
+        bairro: string
+        pontoDeReferencia: string
+    }
+}
 
 async function getAllDenuncias() {
     try {
@@ -13,7 +32,7 @@ async function getAllDenuncias() {
         if (response.status != 200) {
             throw new Error("Não foi possível listar as denúncias.");
         }
-        
+
         return data;
     } catch {
         throw new Error("Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde")
@@ -36,7 +55,36 @@ async function getDenunciaById(id: number): Promise<Denuncia> {
     }
 }
 
-async function createDenuncia(denuncia: Denuncia): Promise<Denuncia> {
+async function createDenuncia(denuncia: CreateDenunciaProps): Promise<Denuncia> {
+    //MOCK
+    return {
+        "id": 1000,
+        "titulo": "Buraco na Av. dos Holandeses",
+        descricao: "Teste",
+        acaoId: null,
+        status: 'aberto',
+        tipo: {
+            id: 2,
+            name: "Buraco na rua"
+        },
+        "created_at": "2025-06-15T10:30:00Z",
+        "categoria": {
+            id: 1,
+            name: 'Infraestrutura',
+            description: 'Problemas de infraestrutura em ambientes publicos',
+            tipos: []
+        },
+        images: [],
+        "endereco": {
+            "cep": "65071-380",
+            "rua": "Avenida dos Holandeses",
+            "bairro": "Calhau",
+            "ponto_referencia": "Próximo ao retorno do Calhau, em frente à farmácia",
+            "latitude": -4.4943,
+            "longitude": -34.2941
+        },
+    }
+
     try {
         const response = await fetch(`${API_BASE_URL}/denuncias`, {
             method: 'POST',
@@ -78,16 +126,41 @@ async function updateDenuncia(denuncia: Denuncia): Promise<Denuncia> {
 
 async function updateDenunciaStatus(id: number, status: StatusModel): Promise<Denuncia> {
     const response = await fetch(`/api/denuncias/${id}`, {
-      method: 'PATCH', 
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: status })
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: status })
     });
 
     if (!response.ok) {
-      throw new Error("Falha ao atualizar o status na API");
+        throw new Error("Falha ao atualizar o status na API");
     }
 
     return response.json();
+}
+
+async function getAddressByCoordinates(lon: number, lat: number): Promise<addressResponseData> {
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lon=${lon}&lat=${lat}`)
+
+        if (response.status != 200) {
+            throw new Error("Não foi possível achar as informações desse endereço. Coloque manualmente")
+        }
+
+        const xmlText = await response.text()
+        const jsonString = convert.xml2json(xmlText, { compact: true })
+        const json = JSON.parse(jsonString)
+
+        const address = json.reversegeocode.addressparts
+
+        const infos: addressResponseData = {
+            bairro: address.neighbourhood._text,
+            rua: address.road._text
+        }
+
+        return infos
+    } catch {
+        throw new Error("Não foi possível buscar as informações desse local selecionado. Tente novamente mais tarde")
+    }
 }
 
 export default {
@@ -95,5 +168,6 @@ export default {
     createDenuncia,
     updateDenuncia,
     getDenunciaById,
-    updateDenunciaStatus
+    updateDenunciaStatus,
+    getAddressByCoordinates
 };
