@@ -8,8 +8,6 @@ import type { StatusModel } from '../../types/StatusModel';
 import { FilterButtons } from './FilterButtons';
 import { VincularAcaoView } from './VincularAcaoView';
 import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
-
-=======
 import { IoIosAdd, IoIosClose } from 'react-icons/io';
 import { AddDenunciaForm } from '../Forms/AddDenunciaForm';
 import { AddDenunciaContext } from '../../context/AddDenunciaContext';
@@ -19,9 +17,6 @@ interface SidePanelProps {
     acoes: Acao[];
     modoSelecao: boolean;
     denunciasSelecionadasCount: number;
-    onIniciarSelecao: () => void;
-    onAbrirFormulario: () => void;
-    onCancelarSelecao: () => void;
     onItemClick: (item: Denuncia | Acao) => void;
     detailViewItem: Denuncia | Acao | null;
     onBackToList: () => void;
@@ -32,14 +27,9 @@ export function SidePanel({
     denuncias,
     acoes,
     modoSelecao,
-    denunciasSelecionadasCount,
-    onIniciarSelecao,
-    onAbrirFormulario,
-    onCancelarSelecao,
     onItemClick,    
     detailViewItem,
     onBackToList,
-
     setDenuncias
 }: SidePanelProps) {
     const [abaAtiva, setAbaAtiva] = useState<'denuncias' | 'acoes'>('denuncias');
@@ -101,15 +91,8 @@ export function SidePanel({
                         </button>
                     )}
                 </div>
-
-                <div className="flex-1 overflow-y-auto">
-                    {detailViewItem && !isAddingDenuncia &&
-                        <ItemDetailsView
-                            item={detailViewItem}
-                            denuncias={denuncias}
-                            onBack={onBackToList}
-                        />
-                    }
+            
+            
 
             <div className="flex-1 overflow-y-auto custom-scrollbar-blue">
                 {denunciaParaVincular ? (
@@ -121,12 +104,12 @@ export function SidePanel({
                         onBack={onBackToList}
                         onDenunciaClick={onItemClick}
                     />
-                ) : sAddingDenuncia && 
-                    <AddDenunciaForm 
+                ) : isAddingDenuncia ? (
+                    <AddDenunciaForm  
                       setIsAddingDenuncia={setIsAddingDenuncia} 
                       setDenuncias={setDenuncias}
-                    /> : (
-                       <>  
+                    /> ) : (
+                        <>
                         <div>
                             <nav className="flex">
                                 <button onClick={() => setAbaAtiva('denuncias')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'denuncias' ? 'text-blue-600  border-b-2 border-blue-600' : 'text-gray-500'}`}>Denúncias ({denuncias.length})</button>
@@ -157,22 +140,8 @@ export function SidePanel({
                                     ? <DenunciasList denuncias={denunciasFiltradas} onItemClick={onItemClick} />
                                     : <AcoesList acoes={acoesFiltradas} onItemClick={onItemClick} />}
                             </div>
-                        </>
-                    }
+                    </> )}
                 </div>
-
-                {!detailViewItem && !isAddingDenuncia && (
-                    <div className="p-4 space-y-2">
-                        {!modoSelecao ? (
-                            <button onClick={onIniciarSelecao} className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors">Iniciar Criação de Ação</button>
-                        ) : (
-                            <>
-                                <button onClick={onAbrirFormulario} className="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors">Revisar e Nomear Ação ({denunciasSelecionadasCount})</button>
-                                <button onClick={onCancelarSelecao} className="w-full bg-gray-500 text-white font-bold py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm">Cancelar</button>
-                            </>
-                        )}
-                    </div>
-                )}
             </aside>
         </>
     );
