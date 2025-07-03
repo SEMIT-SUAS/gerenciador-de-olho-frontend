@@ -5,7 +5,9 @@ import { SidePanel } from "../components/SidePanel/SidePanel";
 import { MapComponent } from "../components/Map/MapComponent";
 import { useOcorrencias } from "../hooks/useOcorrencias";
 import { CreateActionModal } from "../components/Modals/CreateActionModal";
+import { useOcorrenciasContext } from "../context/ocorrenciasContext";
 import { AddDenunciaProvider } from "../context/AddDenunciaContext";
+
 
 export function OcorrenciasPage() {
     const { denuncias, setDenuncias, acoes, criarNovaAcao } = useOcorrencias();
@@ -15,6 +17,7 @@ export function OcorrenciasPage() {
     const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
     const [detailViewItem, setDetailViewItem] = useState<Denuncia | Acao | null>(null);
 
+    
     const handleSelectionClick = (id: number) => {
         if (modoSelecao) {
             setDenunciasSelecionadas(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
@@ -32,6 +35,11 @@ export function OcorrenciasPage() {
         setModoSelecao(false);
         setDenunciasSelecionadas([]);
     }
+
+     const { loading, error } = useOcorrenciasContext();
+
+    if (loading) return <div className="flex h-screen w-screen items-center justify-center">Carregando...</div>;
+    if (error) return <div className="flex h-screen w-screen items-center justify-center">Erro: {error}</div>;
 
     return (
         <>

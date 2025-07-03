@@ -85,6 +85,8 @@ export function MapComponent({
             <TileLayer
                 attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
                 url="https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=XLhcrfhE5GT4MmbYP817"
+                tileSize={512}
+                zoomOffset={-1}
             />
 
             {!isSelectingNewDenunciaInMap && denuncias.map(d => {

@@ -2,12 +2,17 @@ import { API_BASE_URL } from '../../config/api';
 import type { Denuncia } from '../../types/Denuncia';
 import type { FC } from 'react';
 import { Tag } from './Tag';
+import { ImageModal } from '../Modals/ImageModal';
+import { useState } from 'react';
+import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
 
 interface DenunciaDetailsViewProps {
     item: Denuncia;
 }
 
 export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
+    const { startLinking } = useVincularDenunciaContext();
+    const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -41,22 +46,26 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
             ) : (
                 <div className=" py-3 px-4 rounded-xl border border-gray-200">
                     <p className="text-sm font-semibold text-gray-800">Nenhuma ação vinculada</p>
+                    <div className="py-2">
+                        <button onClick={() => startLinking(item)} className="w-full bg-blue-600 text-white font-bold py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            Vincular a uma Ação 
+                        </button>
+                    </div>
                 </div>
+                
+                
             )}
 
             {item.images.length > 0 && (
                 <div>
                     <h3 className="font-semibold text-gray-800 mb-2">Imagens:</h3>
-                    <div className="grid grid-flow-col auto-cols-[10rem] gap-x-2 overflow-x-auto pb-4 pt-2 scrollbar-hide">
+                    <div className="grid grid-flow-col auto-cols-[10rem] gap-x-2 overflow-x-auto pb-2 pt-2 custom-scrollbar-blue">
                         {item.images.map(img => (
-                            <a key={img.id} href={img.url} target="_blank" rel="noopener noreferrer">
-                                <img 
-                                    src={`${API_BASE_URL}/files/uploads/${img.name}`}
-                                    alt={img.name} 
-                                    className="h-40 w-full object-cover rounded-lg hover:opacity-80 transition-opacity" 
-                                />
-                            </a>
+                            <button key={img.id} onClick={() => setImagemEmDestaque(`http://localhost:3000/files/uploads/${img.name}`)} className="relative">
+                                <img src={`http://localhost:3000/files/uploads/${img.name}`} alt={img.name} className="h-40 w-full object-cover rounded-lg hover:opacity-80 transition-opacity" />
+                            </button>
                         ))}
+                        <ImageModal imageUrl={imagemEmDestaque} onClose={() => setImagemEmDestaque(null)} />
                     </div>
                 </div>
             )}

@@ -56,7 +56,6 @@ async function getDenunciaById(id: number): Promise<Denuncia> {
 }
 
 async function createDenuncia(denuncia: CreateDenunciaProps): Promise<Denuncia> {
-    //MOCK
     return {
         "id": 1000,
         "titulo": "Buraco na Av. dos Holandeses",
@@ -125,6 +124,7 @@ async function updateDenuncia(denuncia: Denuncia): Promise<Denuncia> {
 }
 
 async function updateDenunciaStatus(id: number, status: StatusModel): Promise<Denuncia> {
+
     const response = await fetch(`/api/denuncias/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -137,6 +137,36 @@ async function updateDenunciaStatus(id: number, status: StatusModel): Promise<De
 
     return response.json();
 }
+
+async function vincularDenunciaToAcao(id: number, acaoId: number): Promise<Denuncia> {
+    try {
+        const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
+            method: 'PATCH', 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                acaoId: acaoId,
+                status: 'em_andamento' 
+            })
+        });
+        await new Promise(r => setTimeout(r, 300));
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Não foi possível vincular a denúncia à ação.");
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        console.error("Erro no serviço de vinculação:", error);
+
+      throw error;
+    }
+}
+
+
 
 async function getAddressByCoordinates(lon: number, lat: number): Promise<addressResponseData> {
     try {
@@ -169,5 +199,6 @@ export default {
     updateDenuncia,
     getDenunciaById,
     updateDenunciaStatus,
+    vincularDenunciaToAcao,
     getAddressByCoordinates
 };
