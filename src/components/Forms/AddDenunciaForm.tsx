@@ -16,6 +16,7 @@ import { FormInputError } from "./FormInputError"
 import { SelectArrowDown } from "./SelectArrowDown"
 import { AddDenunciaContext } from "../../context/AddDenunciaContext"
 import { toast } from "react-toastify"
+import type { Denuncia } from "../../types/Denuncia"
 
 const addDenunciaFormType = z.object({
     categoryId: z.number().min(1, "Selecione uma categoria"),
@@ -29,14 +30,18 @@ const addDenunciaFormType = z.object({
     files: z.array(z.any()).nonempty("Uma denúncia precisa ter no mínimo 1 arquivo").max(5, "No máximo 5 arquivos")
 })
 
-export function AddDenunciaForm() {
+type AddDenunciaFormProps = {
+    setIsAddingDenuncia: (isAdding: boolean) => void
+    setDenuncias: React.Dispatch<React.SetStateAction<Denuncia[]>>
+}
+
+export function AddDenunciaForm({ setIsAddingDenuncia, setDenuncias }: AddDenunciaFormProps) {
     const {
         isSelectingNewDenunciaInMap,
         setIsSelectingNewDenunciaInMap,
         newDenunciaCoordinates,
     } = useContext(AddDenunciaContext)
 
-    const [isLoadingAddressSearch, setIsLoadingAddressSearch] = useState(false)
     const [categories, setCategories] = useState<Categoria[] | null>(null)
     const [formData, setFormData] = useState<z.infer<typeof addDenunciaFormType>>({
         categoryId: -1,
@@ -49,9 +54,10 @@ export function AddDenunciaForm() {
             pontoDeReferencia: ""
         }
     })
-
     const [formErrors, setFormErrors] = useState<Record<string, any>>({})
-
+    const [isLoadingAddressSearch, setIsLoadingAddressSearch] = useState(false)
+    const [isSubmitingForm, setIsSubmitingForm] = useState(false)
+    
     useEffect(() => {
         async function fetchCategorias() {
             try {
@@ -148,7 +154,7 @@ export function AddDenunciaForm() {
         }))
     }
 
-    function handleSubmitForm(e: FormEvent) {
+    async function handleSubmitForm(e: FormEvent) {
         e.preventDefault()
 
         const result = addDenunciaFormType.safeParse(formData)
@@ -159,7 +165,29 @@ export function AddDenunciaForm() {
             return
         }
 
-        console.log("Formulário válido:", result.data)
+        try {
+            setIsSubmitingForm(true)
+            const createDenunciaData = {
+                ...formData,
+                address: {
+                    ...formData.address,
+                    lon: newDenunciaCoordinates!.longitude,
+                    lat: newDenunciaCoordinates!.latitude
+                }
+            }
+
+            const newDenunciaData = await denunciasService.createDenuncia(createDenunciaData)
+            setDenuncias(current => [...current, newDenunciaData])      
+
+            setIsAddingDenuncia(false)
+            toast("Denuncia criada com sucesso!")
+        } catch (error: any) {
+            toast(error.message, {
+                type: 'error'
+            })
+        } finally {
+            setIsSubmitingForm(false)
+        }
     }
 
     const selectedCategory = categories?.find(c => c.id === formData.categoryId)
@@ -293,9 +321,9 @@ export function AddDenunciaForm() {
                 <button
                     type="submit"
                     className="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!newDenunciaCoordinates}
+                    disabled={!newDenunciaCoordinates || isSubmitingForm}
                 >
-                    Adicionar denúncia
+                    {isSubmitingForm ? 'Enviando...' : 'Adicionar denúncia'}
                 </button>
             </div>
         </form>

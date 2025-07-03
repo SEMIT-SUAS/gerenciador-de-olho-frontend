@@ -21,6 +21,7 @@ interface SidePanelProps {
     onItemClick: (item: Denuncia | Acao) => void;
     detailViewItem: Denuncia | Acao | null;
     onBackToList: () => void;
+    setDenuncias: (denuncias: Denuncia[]) => void;
 }
 
 export function SidePanel({
@@ -34,6 +35,7 @@ export function SidePanel({
     onItemClick,
     detailViewItem,
     onBackToList,
+    setDenuncias
 }: SidePanelProps) {
     const [abaAtiva, setAbaAtiva] = useState<'denuncias' | 'acoes'>('denuncias');
     const [filtroStatusDenuncia, setFiltroStatusDenuncia] = useState<'todos' | StatusModel>('todos');
@@ -104,7 +106,10 @@ export function SidePanel({
                     }
 
                     {isAddingDenuncia && 
-                    <AddDenunciaForm />}
+                    <AddDenunciaForm 
+                      setIsAddingDenuncia={setIsAddingDenuncia} 
+                      setDenuncias={setDenuncias}
+                    />}
 
                     {!detailViewItem && !isAddingDenuncia &&
                         <>

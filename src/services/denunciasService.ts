@@ -56,6 +56,35 @@ async function getDenunciaById(id: number): Promise<Denuncia> {
 }
 
 async function createDenuncia(denuncia: CreateDenunciaProps): Promise<Denuncia> {
+    //MOCK
+    return {
+        "id": 1000,
+        "titulo": "Buraco na Av. dos Holandeses",
+        descricao: "Teste",
+        acaoId: null,
+        status: 'aberto',
+        tipo: {
+            id: 2,
+            name: "Buraco na rua"
+        },
+        "created_at": "2025-06-15T10:30:00Z",
+        "categoria": {
+            id: 1,
+            name: 'Infraestrutura',
+            description: 'Problemas de infraestrutura em ambientes publicos',
+            tipos: []
+        },
+        images: [],
+        "endereco": {
+            "cep": "65071-380",
+            "rua": "Avenida dos Holandeses",
+            "bairro": "Calhau",
+            "ponto_referencia": "Próximo ao retorno do Calhau, em frente à farmácia",
+            "latitude": -4.4943,
+            "longitude": -34.2941
+        },
+    }
+
     try {
         const response = await fetch(`${API_BASE_URL}/denuncias`, {
             method: 'POST',

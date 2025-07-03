@@ -8,7 +8,7 @@ import { CreateActionModal } from "../components/Modals/CreateActionModal";
 import { AddDenunciaProvider } from "../context/AddDenunciaContext";
 
 export function OcorrenciasPage() {
-    const { denuncias, acoes, criarNovaAcao } = useOcorrencias();
+    const { denuncias, setDenuncias, acoes, criarNovaAcao } = useOcorrencias();
 
     const [modoSelecao, setModoSelecao] = useState<boolean>(false);
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
@@ -49,6 +49,7 @@ export function OcorrenciasPage() {
                         onItemClick={handleItemClick}
                         detailViewItem={detailViewItem}
                         onBackToList={() => setDetailViewItem(null)}
+                        setDenuncias={setDenuncias}
                     />
 
                     <main className="flex-1 z-10 relative">
