@@ -74,7 +74,7 @@ export function AddDenunciaForm() {
         async function fetchEndereco() {
             try {
                 setIsLoadingAddressSearch(true)
-                const address = await denunciasService.getAddressByCoordinates(newDenunciaCoordinates.longitude, newDenunciaCoordinates.latitude)
+                const address = await denunciasService.getAddressByCoordinates(newDenunciaCoordinates!.longitude, newDenunciaCoordinates!.latitude)
 
                 setFormData(prev => ({
                     ...prev,
@@ -202,8 +202,7 @@ export function AddDenunciaForm() {
                             value={formData.categoryId < 1 ? '' : formData.categoryId}
                             onChange={handleSelectChange}
                             disabled={!newDenunciaCoordinates}
-                            className={`w-full cursor-pointer rounded-lg border bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none ${formErrors.categoryId?._errors ? "border-red-500" : "border-gray-300"
-                                } disabled:opacity-40 disabled:cursor-not-allowed`}
+                            className={`w-full cursor-pointer rounded-lg border bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed`}
                         >
                             <option value="" disabled>
                                 Selecione uma categoria
@@ -230,7 +229,7 @@ export function AddDenunciaForm() {
                                 name="categoryTipoId"
                                 value={formData.categoryTipoId < 1 ? '' : formData.categoryTipoId}
                                 onChange={handleSelectChange}
-                                className={`w-full cursor-pointer rounded-lg border bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none ${formErrors.categoryTipoId?._errors ? "border-red-500" : "border-gray-300"}`}
+                                className={`w-full cursor-pointer rounded-lg border bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none border-gray-300`}
                             >
                                 <option value="" disabled>
                                     Selecione um tipo
@@ -258,24 +257,22 @@ export function AddDenunciaForm() {
                         onChange={handleTextareaChange}
                         disabled={!newDenunciaCoordinates}
                         placeholder="Descreva com detalhes o que está acontecendo..."
-                        className={`block w-full rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm p-3 ${formErrors.description?._errors ? "border-red-500" : "border-gray-300"
-                            } disabled:opacity-40 disabled:cursor-not-allowed`}
+                        className={`block w-full rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm p-3 border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed`}
                     />
                     <FormInputError message={formErrors.description?._errors?.[0]} />
                 </FormGroup>
 
                 {/* Upload de imagens */}
                 <FormGroup>
-                    <Label htmlFor="photos">Fotos (até 5)</Label>
+                    <Label htmlFor="files">Fotos ou Vídeos (até 5)</Label>
                     <input
                         type="file"
-                        id="photos"
+                        id="files"
                         name="files"
                         multiple
-                        accept="image/*, videos/*"
+                        accept=".png, .jpg, .jpeg, .mp4"
                         onChange={handleFileChange}
-                        className={`block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 ${formErrors.files?._errors ? "ring-2 ring-red-500 rounded-lg" : ""
-                            }`}
+                        className={`block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 }`}
                     />
                     <FormInputError message={formErrors.files?._errors?.[0]} />
                 </FormGroup>

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useContext } from 'react';
 import type { Denuncia } from '../../types/Denuncia';
 import type { Acao } from '../../types/Acao';
 import { ItemDetailsView } from './ItemDetailsView';
@@ -8,6 +8,7 @@ import type { StatusModel } from '../../types/StatusModel';
 import { FilterButtons } from './FilterButtons';
 import { IoIosAdd, IoIosClose } from 'react-icons/io';
 import { AddDenunciaForm } from '../Forms/AddDenunciaForm';
+import { AddDenunciaContext } from '../../context/AddDenunciaContext';
 
 interface SidePanelProps {
     denuncias: Denuncia[];
@@ -39,6 +40,8 @@ export function SidePanel({
     const [filtroStatusAcao, setFiltroStatusAcao] = useState<'todos' | StatusModel>('todos');
     const [isAddingDenuncia, setIsAddingDenuncia] = useState(false)
 
+    const { setNewDenunciaCoordinates } = useContext(AddDenunciaContext)
+
     const denunciasFiltradas = useMemo(() => {
         if (filtroStatusDenuncia === 'todos') {
             return denuncias;
@@ -53,6 +56,12 @@ export function SidePanel({
         }
         return acoes.filter(a => a.status === filtroStatusAcao);
     }, [acoes, filtroStatusAcao]);
+
+    useEffect(() => {
+        if (!isAddingDenuncia) {
+            setNewDenunciaCoordinates(null)
+        }
+    }, [isAddingDenuncia, setIsAddingDenuncia])
 
     return (
         <>
