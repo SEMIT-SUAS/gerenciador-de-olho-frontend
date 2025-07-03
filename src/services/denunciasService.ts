@@ -8,6 +8,19 @@ type addressResponseData = {
     bairro: string
 }
 
+type CreateDenunciaProps = {
+    description: string
+    categoryId: number
+    categoryTipoId: number
+    address: {
+        lon: number,
+        lat: number,
+        rua: string,
+        bairro: string
+        pontoDeReferencia: string
+    }
+}
+
 async function getAllDenuncias() {
     try {
         const response = await fetch(`${API_BASE_URL}/denuncias`, {
@@ -42,7 +55,7 @@ async function getDenunciaById(id: number): Promise<Denuncia> {
     }
 }
 
-async function createDenuncia(denuncia: Denuncia): Promise<Denuncia> {
+async function createDenuncia(denuncia: CreateDenunciaProps): Promise<Denuncia> {
     try {
         const response = await fetch(`${API_BASE_URL}/denuncias`, {
             method: 'POST',
