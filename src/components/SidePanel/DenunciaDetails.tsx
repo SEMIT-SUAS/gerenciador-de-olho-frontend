@@ -8,6 +8,8 @@ import { useVincularDenunciaContext } from '../../context/vincularDenunciaContex
 import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
 import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 import { ConfirmModal } from '../Modals/ConfirmModal';
+import { FaTrashAlt } from 'react-icons/fa';
+
 
 
 interface DenunciaDetailsViewProps {
@@ -31,6 +33,7 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
 
     const handleConfirmDesvincularDenunciaAcao = () => {
          desvincularDenunciaAcao(item.id)
+         setIsOpen(false)
     }
 
     return (
@@ -65,14 +68,9 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
                 <>
                 <div className="flex items-center px-4 py-3 justify-between bg-yellow-100 rounded-xl">
                     <p className="text-sm font-semibold text-yellow-800">Ação Vinculada: {item.acaoId}</p>
-
+                    <button onClick={() => handleDesvincularDenunciaAcao()} ><FaTrashAlt /></button>
+                     
                 </div>
-                    <button 
-                        onClick={() => desvincularDenunciaAcao(item.id)}
-                        className="text-xs bg-yellow-500 text-white font-bold py-1 px-2 rounded-md hover:bg-yellow-600"
-                    >
-                        Desvincular
-                    </button>
                 </>
             ) : (
                 <div className=" py-3 px-4 rounded-xl border border-gray-200">
@@ -115,6 +113,12 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
 
         </div>
         <ConfirmModal
+            isOpen={isOpen} 
+            title={"Confirmação de Desvinculo"} 
+            message={`Você tem certeza que deseja desvincular a denúncia "${item.titulo}" da ação:"${item.acaoId}"?`} 
+            onCancel={() => setIsOpen(false)}
+            onConfirm={handleConfirmDesvincularDenunciaAcao}
+        />
         </>
     );
 }
