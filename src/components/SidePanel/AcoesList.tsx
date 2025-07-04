@@ -1,9 +1,10 @@
+import type { ZoomToProps } from "../../pages/OcorrenciasPage";
 import type { Acao } from "../../types/Acao";
 import { Tag } from "./Tag";
 
 type AcoesListProps = {
     acoes: Acao[],
-    onItemClick: (item: Acao) => void
+    onItemClick: (item: Acao, zoomToData: ZoomToProps) => void
 }
 
 export function AcoesList({ acoes, onItemClick }: AcoesListProps) {
@@ -18,7 +19,10 @@ export function AcoesList({ acoes, onItemClick }: AcoesListProps) {
             <div
                 key={acao.id}
                 className="flex flex-col gap-1 p-3 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
-                onClick={() => onItemClick(acao)}
+                onClick={() => onItemClick(acao, {
+                    lat: acao.lat,
+                    lng: acao.lon
+                })}
             >
                 <h3 className="font-semibold text-gray-700">{acao.nome}</h3>
 

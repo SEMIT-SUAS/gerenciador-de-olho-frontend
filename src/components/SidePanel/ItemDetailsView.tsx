@@ -5,13 +5,14 @@ import type { Acao } from '../../types/Acao';
 import { DenunciaDetails } from './DenunciaDetails';
 import { AcaoDetails } from './AcaoDetails';
 import { BackButton } from '../Buttons/Backbutton';
+import type { ZoomToProps } from '../../pages/OcorrenciasPage';
 
 
 interface ItemDetailsViewProps {
     item: Denuncia | Acao;
     denuncias: Denuncia[];
     onBack: () => void;
-    onDenunciaClick: (denuncia: Denuncia) => void;
+    onDenunciaClick: (denuncia: Denuncia, zoomToData: ZoomToProps) => void;
 }
 
 
@@ -29,7 +30,10 @@ export const ItemDetailsView: FC<ItemDetailsViewProps> = ({ item, denuncias, onB
                 Retornar à pagina anterior 
                 </BackButton>
             {isAcao(item) ? (
-                <AcaoDetails item={item} denuncias={denuncias} onDenunciaClick={onDenunciaClick}/>
+                <AcaoDetails item={item} denuncias={denuncias} onDenunciaClick={() => onDenunciaClick(item, {
+                    lat: item.lat,
+                    lng: item.lon
+                })}/>
             ) : (
                 <DenunciaDetails item={item}/>
             )}

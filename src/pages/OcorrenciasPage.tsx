@@ -6,11 +6,18 @@ import { MapComponent } from "../components/Map/MapComponent";
 import { useOcorrenciasContext } from "../context/ocorrenciasContext";
 import { AddDenunciaProvider } from "../context/AddDenunciaContext";
 
+export type ZoomToProps = {
+    lat: number
+    lng: number
+} | null
 
 export function OcorrenciasPage() {
     const { denuncias, setDenuncias, acoes, actualDetailItem, setActualDetailItem  } = useOcorrenciasContext();
     const [modoSelecao, setModoSelecao] = useState<boolean>(false);
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
+    const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
+    const [detailViewItem, setDetailViewItem] = useState<Denuncia | Acao | null>(null);
+    const [zoomTo, setZoomTo] = useState<ZoomToProps>(null)
 
     const handleSelectionClick = (id: number) => {
         if (modoSelecao) {
@@ -18,6 +25,19 @@ export function OcorrenciasPage() {
         }
     }
 
+    const handleItemClick = (item: Denuncia | Acao, zoomToData: ZoomToProps) => {
+        setZoomTo(zoomToData)
+        setDetailViewItem(item);
+    }
+
+    const handleFinalizarCriacaoAcao = (nome: string, secretaria: string) => {
+        const denunciasParaAcao = denuncias.filter(d => denunciasSelecionadas.includes(d.id));
+        criarNovaAcao(nome, secretaria, denunciasParaAcao);
+        setCreateModalOpen(false);
+        setModoSelecao(false);
+        setDenunciasSelecionadas([]);
+    }
+      
     const handleItemClick = (item: Denuncia | Acao) => {
         setActualDetailItem(item);
     }
@@ -38,6 +58,8 @@ export function OcorrenciasPage() {
                         detailViewItem={actualDetailItem}
                         onBackToList={() => setActualDetailItem(null)}
                         setDenuncias={setDenuncias}
+                        setZoomTo={setZoomTo}
+                        zoomTo={zoomTo}
                     />
 
                     <main className="flex-1 z-10 relative">
@@ -46,7 +68,9 @@ export function OcorrenciasPage() {
                             denunciasSelecionadas={denunciasSelecionadas}
                             onMarkerClick={handleItemClick}
                             onSelectionClick={handleSelectionClick}
-                            detailViewItem={actualDetailItem}
+                            detailViewItem={detailViewItem}
+                            setZoomTo={setZoomTo}
+                            zoomTo={zoomTo}
                         />
                     </main>
                 </AddDenunciaProvider>
