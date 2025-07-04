@@ -3,8 +3,6 @@ import type { Acao } from "../types/Acao";
 import type { Denuncia } from "../types/Denuncia";
 import { SidePanel } from "../components/SidePanel/SidePanel";
 import { MapComponent } from "../components/Map/MapComponent";
-import { useOcorrencias } from "../hooks/useOcorrencias";
-import { CreateActionModal } from "../components/Modals/CreateActionModal";
 import { useOcorrenciasContext } from "../context/ocorrenciasContext";
 import { AddDenunciaProvider } from "../context/AddDenunciaContext";
 
@@ -14,8 +12,7 @@ export type ZoomToProps = {
 } | null
 
 export function OcorrenciasPage() {
-    const { denuncias, setDenuncias, acoes, criarNovaAcao } = useOcorrencias();
-
+    const { denuncias, setDenuncias, acoes, actualDetailItem, setActualDetailItem  } = useOcorrenciasContext();
     const [modoSelecao, setModoSelecao] = useState<boolean>(false);
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
     const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
@@ -40,6 +37,10 @@ export function OcorrenciasPage() {
         setModoSelecao(false);
         setDenunciasSelecionadas([]);
     }
+      
+    const handleItemClick = (item: Denuncia | Acao) => {
+        setActualDetailItem(item);
+    }
 
      const { loading, error } = useOcorrenciasContext();
 
@@ -53,15 +54,9 @@ export function OcorrenciasPage() {
                     <SidePanel
                         denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
                         denunciasSelecionadasCount={denunciasSelecionadas.length}
-                        onIniciarSelecao={() => setModoSelecao(true)}
-                        onAbrirFormulario={() => setCreateModalOpen(true)}
-                        onCancelarSelecao={() => {
-                            setModoSelecao(false);
-                            setDenunciasSelecionadas([]);
-                        }}
                         onItemClick={handleItemClick}
-                        detailViewItem={detailViewItem}
-                        onBackToList={() => setDetailViewItem(null)}
+                        detailViewItem={actualDetailItem}
+                        onBackToList={() => setActualDetailItem(null)}
                         setDenuncias={setDenuncias}
                         setZoomTo={setZoomTo}
                         zoomTo={zoomTo}
@@ -80,13 +75,6 @@ export function OcorrenciasPage() {
                     </main>
                 </AddDenunciaProvider>
             </div>
-
-            <CreateActionModal
-                isOpen={isCreateModalOpen}
-                onClose={() => setCreateModalOpen(false)}
-                onSubmit={handleFinalizarCriacaoAcao}
-                selectionCount={denunciasSelecionadas.length}
-            />
         </>
     );
 }

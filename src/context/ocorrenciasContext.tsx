@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState} from 'react';
-import type { FC, ReactNode } from 'react';
+import type { Dispatch, FC, ReactNode, SetStateAction } from 'react';
 import type { Denuncia } from '../types/Denuncia';
 import type { Acao } from '../types/Acao';
 import denunciasService from '../services/denunciasService';
@@ -7,6 +7,9 @@ import acoesService from '../services/acoesService';
 
 interface OcorrenciasContextType {
     denuncias: Denuncia[];
+    setDenuncias: Dispatch<SetStateAction<Denuncia[]>>
+    actualDetailItem: Denuncia | Acao | null;
+    setActualDetailItem: Dispatch<SetStateAction<Denuncia | Acao | null>>;
     acoes: Acao[];
     loading: boolean;
     error: string | null;
@@ -21,6 +24,8 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) =
     const [acoes, setAcoes] = useState<Acao[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [actualDetailItem, setActualDetailItem] = useState<Denuncia | Acao | null>(null);
+
 
     useEffect(() => {
         const loadData = async () => {
@@ -49,7 +54,7 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) =
         }
     };
     
-    const value = { denuncias, acoes, loading, error, vincularDenunciaAcao };
+    const value = { denuncias, setDenuncias, acoes, actualDetailItem, setActualDetailItem, loading, error, vincularDenunciaAcao };
 
     return <OcorrenciasContext.Provider value={value}>{children}</OcorrenciasContext.Provider>;
 };

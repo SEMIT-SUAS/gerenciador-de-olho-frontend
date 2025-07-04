@@ -1,4 +1,3 @@
-import { API_BASE_URL } from '../../config/api';
 import type { Denuncia } from '../../types/Denuncia';
 import type { FC } from 'react';
 import { Tag } from './Tag';
@@ -13,6 +12,7 @@ interface DenunciaDetailsViewProps {
 export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
     const { startLinking } = useVincularDenunciaContext();
     const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
+
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-center">
