@@ -1,19 +1,40 @@
 import type { Denuncia } from '../../types/Denuncia';
 import type { FC } from 'react';
+import type { Acao } from '../../types/Acao';
 import { Tag } from './Tag';
 import { ImageModal } from '../Modals/ImageModal';
 import { useState } from 'react';
 import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
+import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
+import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
+import { ConfirmModal } from '../Modals/ConfirmModal';
+
 
 interface DenunciaDetailsViewProps {
     item: Denuncia;
 }
 
-export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
+//desvincularDenunciaAcao(item.id)
+
+export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
+    const [currentItem, setCurrentItem] = useState<Denuncia | Acao | null>(null)
+    const [isOpen, setIsOpen] = useState(false)
+    const { startIndeferir } = useIndeferirDenunciaContext();
     const { startLinking } = useVincularDenunciaContext();
+    const { desvincularDenunciaAcao } = useOcorrenciasContext();
     const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
 
+
+    const handleDesvincularDenunciaAcao = () => {
+        setIsOpen(true);
+    }
+
+    const handleConfirmDesvincularDenunciaAcao = () => {
+         desvincularDenunciaAcao(item.id)
+    }
+
     return (
+        <>
         <div className="space-y-4">
             <div className="flex justify-between items-center">
                 <div className="flex-row">
@@ -21,6 +42,7 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
                     <h2 className="text-xl font-bold text-gray-800 flex-1">{item.tipo}</h2>
                     <p className="text-sm text-gray-500">Registrado em: {new Date(item.created_at).toLocaleDateString('pt-BR')}</p>
                 </div>
+
                 <Tag status={item.status} />
             </div>
 
@@ -40,9 +62,18 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
             </div> 
 
             {item.acaoId ? (
+                <>
                 <div className="flex items-center px-4 py-3 justify-between bg-yellow-100 rounded-xl">
                     <p className="text-sm font-semibold text-yellow-800">Ação Vinculada: {item.acaoId}</p>
+
                 </div>
+                    <button 
+                        onClick={() => desvincularDenunciaAcao(item.id)}
+                        className="text-xs bg-yellow-500 text-white font-bold py-1 px-2 rounded-md hover:bg-yellow-600"
+                    >
+                        Desvincular
+                    </button>
+                </>
             ) : (
                 <div className=" py-3 px-4 rounded-xl border border-gray-200">
                     <p className="text-sm font-semibold text-gray-800">Nenhuma ação vinculada</p>
@@ -70,6 +101,20 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({item}) => {
                 </div>
             )}
 
+            {item.status === 'indeferido' && item.motivoStatus && (
+                <div className="p-3 bg-red-50 border-l-4 border-red-400 text-red-700">
+                    <p className="font-bold">Motivo do Indeferimento:</p>
+                    <p>{item.motivoStatus}</p>
+                </div>
+            )}
+            {item.status === 'aberto' && (
+                <button onClick={() => startIndeferir(item)} className="w-full bg-red-500 text-white font-bold py-2 rounded-lg hover:bg-red-600">
+                    Indeferir Denúncia
+                </button>   
+            )}
+
         </div>
+        <ConfirmModal
+        </>
     );
 }

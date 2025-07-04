@@ -11,7 +11,9 @@ import { useVincularDenunciaContext } from '../../context/vincularDenunciaContex
 import { IoIosAdd, IoIosClose } from 'react-icons/io';
 import { AddDenunciaForm } from '../Forms/AddDenunciaForm';
 import { AddDenunciaContext } from '../../context/AddDenunciaContext';
-import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
+import { IndeferirDenunciaView } from './IndeferidoStatusView';
+import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
+
 
 interface SidePanelProps {
     denuncias: Denuncia[];
@@ -39,6 +41,7 @@ export function SidePanel({
     const { denunciaParaVincular } = useVincularDenunciaContext();
     const [isAddingDenuncia, setIsAddingDenuncia] = useState(false)
     const { setNewDenunciaCoordinates } = useContext(AddDenunciaContext)
+    const { denunciaParaIndeferir } = useIndeferirDenunciaContext();
 
     const denunciasFiltradas = useMemo(() => {
         if (filtroStatusDenuncia === 'todos') {
@@ -98,7 +101,9 @@ export function SidePanel({
             <div className="flex-1 overflow-y-auto custom-scrollbar-blue">
                 {denunciaParaVincular ? (
                     <VincularAcaoView  />
-                ) : detailViewItem ? (
+                ) : denunciaParaIndeferir ? (
+                        <IndeferirDenunciaView />
+                    ) : detailViewItem ? (
                     <ItemDetailsView
                         item={detailViewItem}
                         denuncias={denuncias}
