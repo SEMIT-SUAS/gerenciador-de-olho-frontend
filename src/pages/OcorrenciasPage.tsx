@@ -12,12 +12,11 @@ export type ZoomToProps = {
 } | null
 
 export function OcorrenciasPage() {
-    const { denuncias, setDenuncias, acoes } = useOcorrenciasContext();
+    const { denuncias, setDenuncias, acoes, setActualDetailItem, actualDetailItem } = useOcorrenciasContext();
 
     const [modoSelecao, setModoSelecao] = useState<boolean>(false);
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
     const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
-    const [detailViewItem, setDetailViewItem] = useState<Denuncia | Acao | null>(null);
     const [zoomTo, setZoomTo] = useState<ZoomToProps>(null)
 
     const handleSelectionClick = (id: number) => {
@@ -28,7 +27,7 @@ export function OcorrenciasPage() {
 
     const handleItemClick = (item: Denuncia | Acao, zoomToData: ZoomToProps) => {
         setZoomTo(zoomToData)
-        setDetailViewItem(item);
+        setActualDetailItem(item)
     }
 
      const { loading, error } = useOcorrenciasContext();
@@ -50,8 +49,8 @@ export function OcorrenciasPage() {
                             setDenunciasSelecionadas([]);
                         }}
                         onItemClick={handleItemClick}
-                        detailViewItem={detailViewItem}
-                        onBackToList={() => setDetailViewItem(null)}
+                        detailViewItem={actualDetailItem}
+                        onBackToList={() => setActualDetailItem(null)}
                         setDenuncias={setDenuncias}
                         setZoomTo={setZoomTo}
                         zoomTo={zoomTo}
@@ -63,7 +62,7 @@ export function OcorrenciasPage() {
                             denunciasSelecionadas={denunciasSelecionadas}
                             onMarkerClick={handleItemClick}
                             onSelectionClick={handleSelectionClick}
-                            detailViewItem={detailViewItem}
+                            detailViewItem={actualDetailItem}
                             setZoomTo={setZoomTo}
                             zoomTo={zoomTo}
                         />

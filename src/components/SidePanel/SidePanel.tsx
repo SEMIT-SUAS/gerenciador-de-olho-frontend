@@ -30,7 +30,6 @@ export function SidePanel({
     denuncias,
     modoSelecao,
     onItemClick,    
-    detailViewItem,
     onBackToList,
     setDenuncias
 }: SidePanelProps) {
@@ -40,6 +39,7 @@ export function SidePanel({
     const { denunciaParaVincular } = useVincularDenunciaContext();
     const [isAddingDenuncia, setIsAddingDenuncia] = useState(false)
     const { setNewDenunciaCoordinates } = useContext(AddDenunciaContext)
+    const { actualDetailItem } = useOcorrenciasContext()
 
     const denunciasFiltradas = useMemo(() => {
         if (filtroStatusDenuncia === 'todos') {
@@ -99,9 +99,9 @@ export function SidePanel({
             <div className="flex-1 overflow-y-auto custom-scrollbar-blue">
                 {denunciaParaVincular ? (
                     <VincularAcaoView  />
-                ) : detailViewItem ? (
+                ) : actualDetailItem ? (
                     <ItemDetailsView
-                        item={detailViewItem}
+                        item={actualDetailItem}
                         denuncias={denuncias}
                         onBack={onBackToList}
                         onDenunciaClick={onItemClick}
