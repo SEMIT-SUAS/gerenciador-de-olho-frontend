@@ -11,6 +11,7 @@ import { useVincularDenunciaContext } from '../../context/vincularDenunciaContex
 import { IoIosAdd, IoIosClose } from 'react-icons/io';
 import { AddDenunciaForm } from '../Forms/AddDenunciaForm';
 import { AddDenunciaContext } from '../../context/AddDenunciaContext';
+import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 
 interface SidePanelProps {
     denuncias: Denuncia[];
@@ -24,8 +25,8 @@ interface SidePanelProps {
 }
 
 export function SidePanel({
-    denuncias,
     acoes,
+    denuncias,
     modoSelecao,
     onItemClick,    
     detailViewItem,
