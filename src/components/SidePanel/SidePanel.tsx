@@ -11,13 +11,14 @@ import { useVincularDenunciaContext } from '../../context/vincularDenunciaContex
 import { IoIosAdd, IoIosClose } from 'react-icons/io';
 import { AddDenunciaForm } from '../Forms/AddDenunciaForm';
 import { AddDenunciaContext } from '../../context/AddDenunciaContext';
+import type { ZoomToProps } from '../../pages/OcorrenciasPage';
 
 interface SidePanelProps {
     denuncias: Denuncia[];
     acoes: Acao[];
     modoSelecao: boolean;
     denunciasSelecionadasCount: number;
-    onItemClick: (item: Denuncia | Acao) => void;
+    onItemClick: (item: Denuncia | Acao, zoomToData: ZoomToProps) => void;
     detailViewItem: Denuncia | Acao | null;
     onBackToList: () => void;
     setDenuncias: (denuncias: Denuncia[]) => void;

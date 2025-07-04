@@ -8,6 +8,10 @@ import { CreateActionModal } from "../components/Modals/CreateActionModal";
 import { useOcorrenciasContext } from "../context/ocorrenciasContext";
 import { AddDenunciaProvider } from "../context/AddDenunciaContext";
 
+export type ZoomToProps = {
+    lat: number
+    lng: number
+} | null
 
 export function OcorrenciasPage() {
     const { denuncias, setDenuncias, acoes, criarNovaAcao } = useOcorrencias();
@@ -16,15 +20,16 @@ export function OcorrenciasPage() {
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
     const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
     const [detailViewItem, setDetailViewItem] = useState<Denuncia | Acao | null>(null);
+    const [zoomTo, setZoomTo] = useState<ZoomToProps>(null)
 
-    
     const handleSelectionClick = (id: number) => {
         if (modoSelecao) {
             setDenunciasSelecionadas(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
         }
     }
 
-    const handleItemClick = (item: Denuncia | Acao) => {
+    const handleItemClick = (item: Denuncia | Acao, zoomToData: ZoomToProps) => {
+        setZoomTo(zoomToData)
         setDetailViewItem(item);
     }
 
@@ -58,6 +63,8 @@ export function OcorrenciasPage() {
                         detailViewItem={detailViewItem}
                         onBackToList={() => setDetailViewItem(null)}
                         setDenuncias={setDenuncias}
+                        setZoomTo={setZoomTo}
+                        zoomTo={zoomTo}
                     />
 
                     <main className="flex-1 z-10 relative">
@@ -67,6 +74,8 @@ export function OcorrenciasPage() {
                             onMarkerClick={handleItemClick}
                             onSelectionClick={handleSelectionClick}
                             detailViewItem={detailViewItem}
+                            setZoomTo={setZoomTo}
+                            zoomTo={zoomTo}
                         />
                     </main>
                 </AddDenunciaProvider>
