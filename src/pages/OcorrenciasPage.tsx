@@ -12,7 +12,8 @@ export type ZoomToProps = {
 } | null
 
 export function OcorrenciasPage() {
-    const { denuncias, setDenuncias, acoes, actualDetailItem, setActualDetailItem  } = useOcorrenciasContext();
+    const { denuncias, setDenuncias, acoes } = useOcorrenciasContext();
+
     const [modoSelecao, setModoSelecao] = useState<boolean>(false);
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
     const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
@@ -30,18 +31,6 @@ export function OcorrenciasPage() {
         setDetailViewItem(item);
     }
 
-    const handleFinalizarCriacaoAcao = (nome: string, secretaria: string) => {
-        const denunciasParaAcao = denuncias.filter(d => denunciasSelecionadas.includes(d.id));
-        criarNovaAcao(nome, secretaria, denunciasParaAcao);
-        setCreateModalOpen(false);
-        setModoSelecao(false);
-        setDenunciasSelecionadas([]);
-    }
-      
-    const handleItemClick = (item: Denuncia | Acao) => {
-        setActualDetailItem(item);
-    }
-
      const { loading, error } = useOcorrenciasContext();
 
     if (loading) return <div className="flex h-screen w-screen items-center justify-center">Carregando...</div>;
@@ -54,9 +43,15 @@ export function OcorrenciasPage() {
                     <SidePanel
                         denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
                         denunciasSelecionadasCount={denunciasSelecionadas.length}
+                        onIniciarSelecao={() => setModoSelecao(true)}
+                        onAbrirFormulario={() => setCreateModalOpen(true)}
+                        onCancelarSelecao={() => {
+                            setModoSelecao(false);
+                            setDenunciasSelecionadas([]);
+                        }}
                         onItemClick={handleItemClick}
-                        detailViewItem={actualDetailItem}
-                        onBackToList={() => setActualDetailItem(null)}
+                        detailViewItem={detailViewItem}
+                        onBackToList={() => setDetailViewItem(null)}
                         setDenuncias={setDenuncias}
                         setZoomTo={setZoomTo}
                         zoomTo={zoomTo}
