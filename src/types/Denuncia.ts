@@ -14,5 +14,6 @@ export interface Denuncia {
   descricao: string;
   images: Imagem[];
   status: StatusModel;
+  motivoStatus?: string; // NOVO CAMPO OPCIONAL
   acaoId: number | null; 
 }

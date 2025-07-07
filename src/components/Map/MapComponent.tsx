@@ -106,7 +106,7 @@ export function MapComponent({
                             }
                         }}
                     >
-                        {!modoSelecao && <Popup><b>Denúncia:</b> {d.titulo}<br /><b>Status:</b> <span className="capitalize">{d.status.replace('_', ' ')}</span></Popup>}
+                        {!modoSelecao && <Popup><b>Denúncia:</b> {d.titulo}<br /><b>Status:</b> <span className="capitalize">{d?.status?.replace('_', ' ')}</span></Popup>}
                     </Marker>
                 );
             })}
