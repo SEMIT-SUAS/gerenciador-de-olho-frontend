@@ -5,7 +5,6 @@ import { ItemDetailsView } from './ItemDetailsView';
 import { DenunciasList } from './DenunciasList';
 import { AcoesList } from './AcoesList';
 import type { StatusModel } from '../../types/StatusModel';
-import { FilterButtons } from './FilterButtons';
 import { VincularAcaoView } from './VincularAcaoView';
 import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
 import { IoIosAdd, IoIosClose } from 'react-icons/io';
@@ -14,7 +13,8 @@ import { AddDenunciaContext } from '../../context/AddDenunciaContext';
 import { IndeferirDenunciaView } from './IndeferidoStatusView';
 import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
 import type { ZoomToProps } from '../../pages/OcorrenciasPage';
-import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
+import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { FilterStatusSelect } from './FilterStatusSelect';
 
 interface SidePanelProps {
     denuncias: Denuncia[];
@@ -31,18 +31,19 @@ export function SidePanel({
     acoes,
     denuncias,
     modoSelecao,
-    onItemClick,    
+    onItemClick,
     onBackToList,
     setDenuncias
 }: SidePanelProps) {
     const [abaAtiva, setAbaAtiva] = useState<'denuncias' | 'acoes'>('denuncias');
-    const [filtroStatusDenuncia, setFiltroStatusDenuncia] = useState<'todos' | StatusModel>('todos');
-    const [filtroStatusAcao, setFiltroStatusAcao] = useState<'todos' | StatusModel>('todos');
     const { denunciaParaVincular } = useVincularDenunciaContext();
     const [isAddingDenuncia, setIsAddingDenuncia] = useState(false)
     const { setNewDenunciaCoordinates } = useContext(AddDenunciaContext)
     const { denunciaParaIndeferir } = useIndeferirDenunciaContext();
     const { actualDetailItem } = useOcorrenciasContext()
+
+    const [filtroStatusDenuncia, setFiltroStatusDenuncia] = useState<'todos' | StatusModel>('aberto');
+    const [filtroStatusAcao, setFiltroStatusAcao] = useState<'todos' | StatusModel>('aberto');
 
     const denunciasFiltradas = useMemo(() => {
         if (filtroStatusDenuncia === 'todos') {
@@ -58,7 +59,7 @@ export function SidePanel({
         }
         return acoes.filter(a => a.status === filtroStatusAcao);
     }, [acoes, filtroStatusAcao]);
-    
+
 
     useEffect(() => {
         if (!isAddingDenuncia) {
@@ -96,48 +97,41 @@ export function SidePanel({
                         </button>
                     )}
                 </div>
-            
-            
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar-blue">
-                {denunciaParaVincular ? (
-                    <VincularAcaoView  />
-                ) : denunciaParaIndeferir ? (
+                <div className="flex-1 overflow-y-auto custom-scrollbar-blue">
+                    {denunciaParaVincular ? (
+                        <VincularAcaoView />
+                    ) : denunciaParaIndeferir ? (
                         <IndeferirDenunciaView />
-                ) : actualDetailItem ? (
-                    <ItemDetailsView
-                        item={actualDetailItem}
-                        denuncias={denuncias}
-                        onBack={onBackToList}
-                        onDenunciaClick={onItemClick}
-                    />
-                ) : isAddingDenuncia ? (
-                    <AddDenunciaForm  
-                      setIsAddingDenuncia={setIsAddingDenuncia} 
-                      setDenuncias={setDenuncias}
-                    /> ) : (
+                    ) : actualDetailItem ? (
+                        <ItemDetailsView
+                            item={actualDetailItem}
+                            denuncias={denuncias}
+                            onBack={onBackToList}
+                            onDenunciaClick={onItemClick}
+                        />
+                    ) : isAddingDenuncia ? (
+                        <AddDenunciaForm
+                            setIsAddingDenuncia={setIsAddingDenuncia}
+                            setDenuncias={setDenuncias}
+                        />) : (
                         <>
-                        <div>
-                            <nav className="flex">
-                                <button onClick={() => setAbaAtiva('denuncias')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'denuncias' ? 'text-blue-600  border-b-2 border-blue-600' : 'text-gray-500'}`}>Denúncias ({denuncias.length})</button>
-                                <button onClick={() => setAbaAtiva('acoes')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'acoes' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500'}`}>Ações ({acoes.length})</button>
-                            </nav>
+                            <div>
+                                <nav className="flex">
+                                    <button onClick={() => setAbaAtiva('denuncias')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'denuncias' ? 'text-blue-600  border-b-2 border-blue-600' : 'text-gray-500'}`}>Denúncias ({denuncias.length})</button>
+                                    <button onClick={() => setAbaAtiva('acoes')} className={`flex-1 p-4 text-center font-medium ${abaAtiva === 'acoes' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500'}`}>Ações ({acoes.length})</button>
+                                </nav>
                             </div>
 
                             <div className="p-4">
-                                <div className="grid grid-cols-4 gap-2 text-sm">
-                                    {abaAtiva == 'denuncias' ? (
-                                        <FilterButtons
-                                            setFilterStatus={setFiltroStatusDenuncia}
-                                            currentFilter={filtroStatusDenuncia}
-                                        />
-                                    ) : (
-                                        <FilterButtons
-                                            setFilterStatus={setFiltroStatusAcao}
-                                            currentFilter={filtroStatusAcao}
-                                        />
-                                    )}
-                                </div>
+                                <FilterStatusSelect
+                                    id='status-filter-select'
+                                    label='Selecione um status'
+                                    onStatusChange={status => abaAtiva === 'denuncias'
+                                        ? setFiltroStatusDenuncia(status)
+                                        : setFiltroStatusAcao(status)}
+                                    value={abaAtiva == 'denuncias' ? filtroStatusDenuncia : filtroStatusAcao}
+                                />
                             </div>
 
                             <div className="p-4 space-y-3">
@@ -147,7 +141,7 @@ export function SidePanel({
                                     ? <DenunciasList denuncias={denunciasFiltradas} onItemClick={onItemClick} />
                                     : <AcoesList acoes={acoesFiltradas} onItemClick={onItemClick} />}
                             </div>
-                    </> )}
+                        </>)}
                 </div>
             </aside>
         </>
