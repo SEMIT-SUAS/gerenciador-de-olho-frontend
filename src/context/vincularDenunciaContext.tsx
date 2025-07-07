@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import type { FC, ReactNode } from 'react';
-import { useOcorrenciasContext } from './ocorrenciasContext';
+import { useOcorrenciasContext } from './OcorrenciasContext';
 import type { Denuncia } from '../types/Denuncia';
 
 interface VincularDenunciaContextType {

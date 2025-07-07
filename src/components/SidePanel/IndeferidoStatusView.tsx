@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import type { FC } from 'react';
 import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
 import { ConfirmModal } from '../Modals/ConfirmModal';
-import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
+import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
 
 export const IndeferirDenunciaView: FC = () => {
     const { denunciaParaIndeferir, cancelIndeferir, confirmIndeferir } = useIndeferirDenunciaContext();

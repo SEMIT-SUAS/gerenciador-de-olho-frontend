@@ -3,7 +3,7 @@ import type { Acao } from "../types/Acao";
 import type { Denuncia } from "../types/Denuncia";
 import { SidePanel } from "../components/SidePanel/SidePanel";
 import { MapComponent } from "../components/Map/MapComponent";
-import { useOcorrenciasContext } from "../context/ocorrenciasContext";
+import { useOcorrenciasContext } from "../context/OcorrenciasContext";
 import { AddDenunciaProvider } from "../context/AddDenunciaContext";
 import { IndeferirDenunciaProvider } from "../context/IndeferirDenunciaContext";
 import { VincularDenunciaProvider } from "../context/vincularDenunciaContext";

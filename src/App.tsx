@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
-import { OcorrenciasProvider } from './context/ocorrenciasContext';
+import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { ToastContainer } from 'react-toastify';
 
 export function App() {
