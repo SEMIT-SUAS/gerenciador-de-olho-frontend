@@ -19,7 +19,6 @@ interface DenunciaDetailsViewProps {
 //desvincularDenunciaAcao(item.id)
 
 export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
-    const [currentItem, setCurrentItem] = useState<Denuncia | Acao | null>(null)
     const [isOpen, setIsOpen] = useState(false)
     const { startIndeferir } = useIndeferirDenunciaContext();
     const { startLinking } = useVincularDenunciaContext();
