@@ -4,6 +4,7 @@ import type { Denuncia } from '../types/Denuncia';
 import type { Acao } from '../types/Acao';
 import denunciasService from '../services/denunciasService';
 import acoesService from '../services/acoesService';
+import type { StatusModel } from '../types/StatusModel';
 
 interface OcorrenciasContextType {
     denuncias: Denuncia[];
@@ -14,6 +15,8 @@ interface OcorrenciasContextType {
     loading: boolean;
     error: string | null;
     vincularDenunciaAcao: (denunciaId: number, acaoId: number) => Promise<void>;
+    indeferirDenuncia: (denunciaId: number, status: StatusModel, motivoStatus: string) => Promise<void>;
+    desvincularDenunciaAcao: (denunciaId: number) => Promise<void>
 }
 
 const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(undefined);
@@ -53,8 +56,29 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) =
             alert("Não foi possível vincular a denúncia.");
         }
     };
+
     
-    const value = { denuncias, setDenuncias, acoes, actualDetailItem, setActualDetailItem, loading, error, vincularDenunciaAcao };
+    const indeferirDenuncia = async (denunciaId: number, status: StatusModel, motivoStatus: string) => {
+        try {
+            const denunciaAtualizada = await denunciasService.indeferirDenuncia(denunciaId, status, motivoStatus);
+            setDenuncias(prev => prev.map(d => d.id === denunciaId ? denunciaAtualizada : d));
+        } catch (error) {
+            console.error("Falha ao indeferir denúncia:", error);
+            alert("Não foi possível indeferir a denúncia.");
+        }
+    };
+
+    const desvincularDenunciaAcao = async (denunciaId: number) => {
+        try {
+            const denunciaAtualizada = await denunciasService.desvincularDenunciaAcao(denunciaId);
+            setDenuncias(prev => prev.map(d => d.id === denunciaId ? denunciaAtualizada : d));
+        } catch (error) {
+            console.error("Falha ao desvincular denúncia:", error);
+            alert("Não foi possível desvincular a denúncia.");
+        }
+    };
+    
+    const value = { denuncias, setDenuncias, acoes, actualDetailItem, setActualDetailItem, loading, error, vincularDenunciaAcao, indeferirDenuncia, desvincularDenunciaAcao };
 
     return <OcorrenciasContext.Provider value={value}>{children}</OcorrenciasContext.Provider>;
 };

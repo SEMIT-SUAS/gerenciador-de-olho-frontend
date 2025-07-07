@@ -5,6 +5,8 @@ import { SidePanel } from "../components/SidePanel/SidePanel";
 import { MapComponent } from "../components/Map/MapComponent";
 import { useOcorrenciasContext } from "../context/ocorrenciasContext";
 import { AddDenunciaProvider } from "../context/AddDenunciaContext";
+import { IndeferirDenunciaProvider } from "../context/IndeferirDenunciaContext";
+import { VincularDenunciaProvider } from "../context/vincularDenunciaContext";
 
 export type ZoomToProps = {
     lat: number
@@ -12,8 +14,7 @@ export type ZoomToProps = {
 } | null
 
 export function OcorrenciasPage() {
-    const { denuncias, setDenuncias, acoes, setActualDetailItem, actualDetailItem } = useOcorrenciasContext();
-
+    const { denuncias, setDenuncias, acoes, actualDetailItem, setActualDetailItem } = useOcorrenciasContext();
     const [modoSelecao, setModoSelecao] = useState<boolean>(false);
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
     const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
@@ -38,7 +39,9 @@ export function OcorrenciasPage() {
     return (
         <>
             <div className="flex flex-col md:flex-row h-screen bg-gray-100">
-                <AddDenunciaProvider>
+            <VincularDenunciaProvider>
+                <IndeferirDenunciaProvider>
+                    <AddDenunciaProvider>
                     <SidePanel
                         denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
                         denunciasSelecionadasCount={denunciasSelecionadas.length}
@@ -59,15 +62,27 @@ export function OcorrenciasPage() {
                     <main className="flex-1 z-10 relative">
                         <MapComponent
                             denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
-                            denunciasSelecionadas={denunciasSelecionadas}
-                            onMarkerClick={handleItemClick}
-                            onSelectionClick={handleSelectionClick}
+                            denunciasSelecionadasCount={denunciasSelecionadas.length}
+                            onItemClick={handleItemClick}
                             detailViewItem={actualDetailItem}
+                            onBackToList={() => setActualDetailItem(null)}
+                            setDenuncias={setDenuncias}
                             setZoomTo={setZoomTo}
                             zoomTo={zoomTo}
                         />
-                    </main>
-                </AddDenunciaProvider>
+
+                        <main className="flex-1 z-10 relative">
+                            <MapComponent
+                                denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
+                                denunciasSelecionadas={denunciasSelecionadas}
+                                onMarkerClick={handleItemClick}
+                                onSelectionClick={handleSelectionClick}
+                                detailViewItem={actualDetailItem}
+                            />
+                        </main>
+                    </AddDenunciaProvider>
+                </IndeferirDenunciaProvider>
+            </VincularDenunciaProvider>
             </div>
         </>
     );

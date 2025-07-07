@@ -1,6 +1,5 @@
 import type { Denuncia } from '../types/Denuncia.ts';
 import { API_BASE_URL } from '../config/api.ts';
-import type { StatusModel } from '../types/StatusModel.ts';
 import convert from 'xml-js'
 
 type addressResponseData = {
@@ -123,19 +122,55 @@ async function updateDenuncia(denuncia: Denuncia): Promise<Denuncia> {
     }
 }
 
-async function updateDenunciaStatus(id: number, status: StatusModel): Promise<Denuncia> {
+async function indeferirDenuncia(id: number, motivoStatus: string): Promise<Denuncia> {
+    try {
+        const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                status: 'indeferido', 
+                motivo: motivoStatus 
+            })
+        });
 
-    const response = await fetch(`/api/denuncias/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: status })
-    });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: "Erro desconhecido na API." }));
+            throw new Error(errorData.message || "Não foi possível atualizar o status na API.");
+        }
 
-    if (!response.ok) {
-        throw new Error("Falha ao atualizar o status na API");
+        return await response.json();
+
+    } catch (error) {
+        console.error("Erro no serviço ao indeferir denúncia:", error);
+        throw error;
     }
+}
 
-    return response.json();
+async function desvincularDenunciaAcao (id: number): Promise<Denuncia> {
+    try {
+        const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                acaoId: null,
+                status: 'aberto'
+            })
+        });
+        await new Promise (r => setTimeout(r, 300));
+
+        if(!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message ||  "Não foi possível desvincular da ação")
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.log("Error no serviço de desvinculação:", error)
+
+        throw error
+    }
 }
 
 async function vincularDenunciaToAcao(id: number, acaoId: number): Promise<Denuncia> {
@@ -198,7 +233,8 @@ export default {
     createDenuncia,
     updateDenuncia,
     getDenunciaById,
-    updateDenunciaStatus,
+    indeferirDenuncia,
     vincularDenunciaToAcao,
+    desvincularDenunciaAcao, 
     getAddressByCoordinates
 };
