@@ -8,11 +8,17 @@ import { AddDenunciaProvider } from "../context/AddDenunciaContext";
 import { IndeferirDenunciaProvider } from "../context/IndeferirDenunciaContext";
 import { VincularDenunciaProvider } from "../context/vincularDenunciaContext";
 
+export type ZoomToProps = {
+    lat: number
+    lng: number
+} | null
 
 export function OcorrenciasPage() {
     const { denuncias, setDenuncias, acoes, actualDetailItem, setActualDetailItem } = useOcorrenciasContext();
     const [modoSelecao, setModoSelecao] = useState<boolean>(false);
     const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([]);
+    const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
+    const [zoomTo, setZoomTo] = useState<ZoomToProps>(null)
 
     const handleSelectionClick = (id: number) => {
         if (modoSelecao) {
@@ -20,8 +26,9 @@ export function OcorrenciasPage() {
         }
     }
 
-    const handleItemClick = (item: Denuncia | Acao) => {
-        setActualDetailItem(item);
+    const handleItemClick = (item: Denuncia | Acao, zoomToData: ZoomToProps) => {
+        setZoomTo(zoomToData)
+        setActualDetailItem(item)
     }
 
      const { loading, error } = useOcorrenciasContext();
@@ -35,13 +42,33 @@ export function OcorrenciasPage() {
             <VincularDenunciaProvider>
                 <IndeferirDenunciaProvider>
                     <AddDenunciaProvider>
-                        <SidePanel
+                    <SidePanel
+                        denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
+                        denunciasSelecionadasCount={denunciasSelecionadas.length}
+                        onIniciarSelecao={() => setModoSelecao(true)}
+                        onAbrirFormulario={() => setCreateModalOpen(true)}
+                        onCancelarSelecao={() => {
+                            setModoSelecao(false);
+                            setDenunciasSelecionadas([]);
+                        }}
+                        onItemClick={handleItemClick}
+                        detailViewItem={actualDetailItem}
+                        onBackToList={() => setActualDetailItem(null)}
+                        setDenuncias={setDenuncias}
+                        setZoomTo={setZoomTo}
+                        zoomTo={zoomTo}
+                    />
+
+                    <main className="flex-1 z-10 relative">
+                        <MapComponent
                             denuncias={denuncias} acoes={acoes} modoSelecao={modoSelecao}
                             denunciasSelecionadasCount={denunciasSelecionadas.length}
                             onItemClick={handleItemClick}
                             detailViewItem={actualDetailItem}
                             onBackToList={() => setActualDetailItem(null)}
                             setDenuncias={setDenuncias}
+                            setZoomTo={setZoomTo}
+                            zoomTo={zoomTo}
                         />
 
                         <main className="flex-1 z-10 relative">

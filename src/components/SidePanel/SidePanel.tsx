@@ -13,14 +13,15 @@ import { AddDenunciaForm } from '../Forms/AddDenunciaForm';
 import { AddDenunciaContext } from '../../context/AddDenunciaContext';
 import { IndeferirDenunciaView } from './IndeferidoStatusView';
 import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
-
+import type { ZoomToProps } from '../../pages/OcorrenciasPage';
+import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 
 interface SidePanelProps {
     denuncias: Denuncia[];
     acoes: Acao[];
     modoSelecao: boolean;
     denunciasSelecionadasCount: number;
-    onItemClick: (item: Denuncia | Acao) => void;
+    onItemClick: (item: Denuncia | Acao, zoomToData: ZoomToProps) => void;
     detailViewItem: Denuncia | Acao | null;
     onBackToList: () => void;
     setDenuncias: (denuncias: Denuncia[]) => void;
@@ -31,7 +32,6 @@ export function SidePanel({
     denuncias,
     modoSelecao,
     onItemClick,    
-    detailViewItem,
     onBackToList,
     setDenuncias
 }: SidePanelProps) {
@@ -42,6 +42,7 @@ export function SidePanel({
     const [isAddingDenuncia, setIsAddingDenuncia] = useState(false)
     const { setNewDenunciaCoordinates } = useContext(AddDenunciaContext)
     const { denunciaParaIndeferir } = useIndeferirDenunciaContext();
+    const { actualDetailItem } = useOcorrenciasContext()
 
     const denunciasFiltradas = useMemo(() => {
         if (filtroStatusDenuncia === 'todos') {
@@ -103,9 +104,9 @@ export function SidePanel({
                     <VincularAcaoView  />
                 ) : denunciaParaIndeferir ? (
                         <IndeferirDenunciaView />
-                    ) : detailViewItem ? (
+                ) : actualDetailItem ? (
                     <ItemDetailsView
-                        item={detailViewItem}
+                        item={actualDetailItem}
                         denuncias={denuncias}
                         onBack={onBackToList}
                         onDenunciaClick={onItemClick}
