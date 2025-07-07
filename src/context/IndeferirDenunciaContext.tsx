@@ -1,6 +1,6 @@
 import type { Denuncia } from "../types/Denuncia";
 import { createContext, useState, useContext, type FC, type ReactNode } from "react";
-import { useOcorrenciasContext } from "./OcorrenciasContext";
+import { useOcorrenciasContext } from "./ocorrenciasContext";
 
 interface IndeferirDenunciaContextType {
     denunciaParaIndeferir: Denuncia | null;

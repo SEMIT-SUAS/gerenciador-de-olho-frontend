@@ -6,7 +6,7 @@ import { ImageModal } from '../Modals/ImageModal';
 import { useState } from 'react';
 import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
 import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 import { ConfirmModal } from '../Modals/ConfirmModal';
 import { FaTrashAlt } from 'react-icons/fa';
 

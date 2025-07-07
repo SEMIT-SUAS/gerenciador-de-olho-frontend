@@ -1,6 +1,6 @@
 import { useState, type FC } from 'react';
 import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 import type { Acao } from '../../types/Acao';
 import { ConfirmModal } from '../Modals/ConfirmModal';
 

@@ -4,7 +4,7 @@ import type { Denuncia } from '../../types/Denuncia';
 import { Tag } from './Tag';
 import { FaTrashAlt } from 'react-icons/fa';
 import { ConfirmModal } from '../Modals/ConfirmModal';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 import { toast } from 'react-toastify';
 import { getPolygonoCenter } from '../../utils/geometry';
 

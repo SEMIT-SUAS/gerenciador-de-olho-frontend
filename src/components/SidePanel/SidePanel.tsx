@@ -14,7 +14,7 @@ import { AddDenunciaContext } from '../../context/AddDenunciaContext';
 import { IndeferirDenunciaView } from './IndeferidoStatusView';
 import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
 import type { ZoomToProps } from '../../pages/OcorrenciasPage';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 
 interface SidePanelProps {
     denuncias: Denuncia[];
