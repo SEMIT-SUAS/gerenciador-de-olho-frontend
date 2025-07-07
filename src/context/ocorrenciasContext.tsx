@@ -12,6 +12,7 @@ interface OcorrenciasContextType {
     actualDetailItem: Denuncia | Acao | null;
     setActualDetailItem: Dispatch<SetStateAction<Denuncia | Acao | null>>;
     acoes: Acao[];
+    setAcoes: Dispatch<SetStateAction<Acao[]>>;
     loading: boolean;
     error: string | null;
     vincularDenunciaAcao: (denunciaId: number, acaoId: number) => Promise<void>;
@@ -29,7 +30,6 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) =
     const [error, setError] = useState<string | null>(null);
     const [actualDetailItem, setActualDetailItem] = useState<Denuncia | Acao | null>(null);
 
-
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -44,7 +44,6 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) =
         };
         loadData();
     }, []);
-
 
     const vincularDenunciaAcao = async (denunciaId: number, acaoId: number) => {
         try {
@@ -78,8 +77,8 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) =
         }
     };
     
-    const value = { denuncias, setDenuncias, acoes, actualDetailItem, setActualDetailItem, loading, error, vincularDenunciaAcao, indeferirDenuncia, desvincularDenunciaAcao };
-
+    const value = { denuncias, setDenuncias, acoes, setAcoes, actualDetailItem, setActualDetailItem, loading, error, vincularDenunciaAcao, indeferirDenuncia, desvincularDenunciaAcao };
+  
     return <OcorrenciasContext.Provider value={value}>{children}</OcorrenciasContext.Provider>;
 };
 

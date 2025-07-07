@@ -6,6 +6,7 @@ import { FaTrashAlt } from 'react-icons/fa';
 import { ConfirmModal } from '../Modals/ConfirmModal';
 import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 import { toast } from 'react-toastify';
+import { getPolygonoCenter } from '../../utils/geometry';
 
 interface AcaoDetailsProps {
     item: Acao;
@@ -15,18 +16,42 @@ interface AcaoDetailsProps {
 
 
 export const AcaoDetails: FC<AcaoDetailsProps> = ({ item, denuncias, onDenunciaClick }) => {
-    const { setDenuncias, setActualDetailItem } = useOcorrenciasContext()
-    const [currentDenuncia, setCurrentDenuncia] = useState<Denuncia | Acao | null>(null)
+    const { setDenuncias, setAcoes, setActualDetailItem } = useOcorrenciasContext()
+    const [currentDenuncia, setCurrentDenuncia] = useState<Denuncia | null>(null)
     const [isOpenRemoveDenunciaConfirmationModal, setIsOpenRemoveDenunciaConfirmationModal] = useState(false)
     const [isOpenIndeferirAcaoConfirmationModal, setIsOpenIndeferirAcaoConfirmationModal] = useState(false)
     const denunciasVinculadas = denuncias.filter(d => d.acaoId === item.id);
 
     async function handleRemoveDenuncia() {
         try {
+            setAcoes(acoes => {
+                const current = acoes.find(acao => acao.id == item.id)
+
+                const newPolygonCoords = current!.polygonCoords.filter(
+                    coord => !(coord[0] === currentDenuncia?.endereco.latitude && coord[1] === currentDenuncia?.endereco.longitude)
+                );
+
+                const newActionCoordinates = getPolygonoCenter(newPolygonCoords)
+
+                return acoes.map(a => {
+                    if (a.id == item.id) {
+                        return {
+                            ...a,
+                            lat: newActionCoordinates[0],
+                            lon: newActionCoordinates[1],
+                            polygonCoords: newPolygonCoords
+                        }
+                    }
+
+                    return a
+                })
+            })
+          
             setDenuncias(current => current.map(d => {
                 if (d.id == currentDenuncia?.id) {
                     return {
                         ...d,
+                        status: 'aberto',
                         acaoId: null
                     }
                 }
@@ -64,6 +89,18 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item, denuncias, onDenunciaC
                 return d
             }))
 
+            setAcoes(current => current.map(a => {
+                if (a.id == item.id) {
+                    return {
+                        ...a,
+                        status: 'indeferido',
+                        polygonCoords: []
+                    }
+                }
+
+                return a
+            }))
+
             setIsOpenIndeferirAcaoConfirmationModal(false)
             toast("Ação indeferida com sucesso!", {
                 type: "success"
@@ -82,13 +119,13 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item, denuncias, onDenunciaC
                     <Tag status={item.status} />
                 </div>
 
-                {item.polygonCoords.length > 0 && (
+                {item.polygonCoords.length > 0 && item.status != 'indeferido' && (
                     <div className="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200">
                         <p className="text-sm font-semibold text-blue-800">Esta ação possui uma área de cobertura (polígono) no mapa.</p>
                     </div>
                 )}
 
-                <div>
+                {item.status != 'indeferido' && <div>
                     <h3 className="font-semibold text-sm text-gray-800 mb-1">Denúncias Vinculadas ({denunciasVinculadas.length}):</h3>
                     <div className="rounded-lg max-h-80 space-y-3 p-2">
                         {denunciasVinculadas.length > 0 ? denunciasVinculadas.map(d => (
@@ -124,7 +161,7 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item, denuncias, onDenunciaC
                             </div>
                         )}
                     </div>
-                </div>
+                </div>}
 
                 {item.status == 'aberto' || item.status == 'em_andamento' && (
                     <button

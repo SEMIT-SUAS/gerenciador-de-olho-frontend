@@ -20,3 +20,26 @@ export function getConvexHull(points: { lat: number, lon: number }[]): LatLngExp
     const hull = lower.concat(upper);
     return hull.map(p => [p.lat, p.lon]);
 }
+
+export function getPolygonoCenter(coordinates: LatLngExpression[]): [number, number] {
+    if (!coordinates || coordinates.length === 0) {
+        return [0, 0];
+    }
+
+    let totalLat = 0;
+    let totalLng = 0;
+
+    coordinates.forEach(coord => {
+        if (Array.isArray(coord)) {
+            totalLat += coord[0];
+            totalLng += coord[1];
+        } else if ('lat' in coord && 'lng' in coord) {
+            totalLat += coord.lat;
+            totalLng += coord.lng;
+        }
+    });
+
+    const count = coordinates.length;
+    return [totalLat / count, totalLng / count];
+}
+ 
