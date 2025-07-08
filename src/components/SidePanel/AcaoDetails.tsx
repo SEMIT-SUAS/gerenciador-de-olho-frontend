@@ -113,7 +113,7 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item, denuncias, onDenunciaC
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <h2 className="text-xl font-bold text-gray-800">{item.nome}</h2>
-            <p className="text-sm text-gray-500">Responsável: {item.secretaria}</p>
+            <p className="text-sm text-gray-500">Responsável: {item.secretaria.name}</p>
           </div>
           <Tag status={item.status} />
         </div>
@@ -132,7 +132,7 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item, denuncias, onDenunciaC
                 <div
                   key={d.id}
                   onClick={() => onDenunciaClick(d)}
-                  aria-label={`Ver detalhes da denúncia ${d.tipo}`}
+                  aria-label={`Ver detalhes da denúncia ${d.tipo.name}`}
                   className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left shadow-sm transition-all hover:border-blue-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <div className="flex flex-col">
@@ -143,24 +143,24 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item, denuncias, onDenunciaC
                   <div className="flex items-center gap-3">
                     <Tag status={d.status} />
                     {item.status != 'concluido' && denunciasVinculadas.length > 1 && <button
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            setCurrentDenuncia(d)
-                            setIsOpenRemoveDenunciaConfirmationModal(true)
-                          }}
-                        aria-label={`Desvincular denúncia ${d.tipo}`}
-                        className="z-10 cursor-pointer rounded-full p-2 text-gray-400 transition-colors hover:bg-red-100 hover:text-red-600"
-                        >
-                        <FaTrashAlt />
-                        </button>}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setCurrentDenuncia(d)
+                        setIsOpenRemoveDenunciaConfirmationModal(true)
+                      }}
+                      aria-label={`Desvincular denúncia ${d.tipo.name}`}
+                      className="z-10 cursor-pointer rounded-full p-2 text-gray-400 transition-colors hover:bg-red-100 hover:text-red-600"
+                    >
+                      <FaTrashAlt />
+                    </button>}
                   </div>
                 </div>
-                ))
+              ))
               : (
                 <div className="flex flex-col items-center justify-center p-6 text-center">
                   <p className="text-sm text-gray-500">Nenhuma denúncia vinculada.</p>
                 </div>
-                )}
+              )}
           </div>
         </div>}
 
