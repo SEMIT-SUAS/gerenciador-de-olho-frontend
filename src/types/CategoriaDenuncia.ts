@@ -1,4 +1,4 @@
-import type { TipoDenuncia } from "./TipoDenuncia";
+import type { TipoDenuncia } from './TipoDenuncia'
 
 export type Categorias = 'Infraestrutura' | 'Meio Ambiente' | 'Trânsito e Mobilidade' | 'Acessibilidade' | 'Saúde pública';
 
@@ -7,4 +7,4 @@ export type Categoria = {
   description: string
   name: Categorias;
   tipos: TipoDenuncia[]
-} 
+}

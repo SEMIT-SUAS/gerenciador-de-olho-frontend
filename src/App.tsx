@@ -1,15 +1,15 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { OcorrenciasPage } from './pages/OcorrenciasPage';
-import { OcorrenciasProvider } from './context/OcorrenciasContext';
-import { ToastContainer } from 'react-toastify';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { OcorrenciasPage } from './pages/OcorrenciasPage'
+import { OcorrenciasProvider } from './context/OcorrenciasContext'
+import { ToastContainer } from 'react-toastify'
 
 export function App() {
   return (
     <BrowserRouter>
       <OcorrenciasProvider>
-          <Routes>
-            <Route index element={<OcorrenciasPage />} />
-          </Routes>
+        <Routes>
+          <Route index element={<OcorrenciasPage />} />
+        </Routes>
       </OcorrenciasProvider>
 
       <ToastContainer

@@ -13,7 +13,7 @@ import { AddDenunciaContext } from '../../context/AddDenunciaContext';
 import { IndeferirDenunciaView } from './IndeferidoStatusView';
 import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
 import type { ZoomToProps } from '../../pages/OcorrenciasPage';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 import { FilterStatusSelect } from './filters/FilterStatusSelect';
 import { SelectCategoriaFilter } from './filters/SelectCategoriaFilter';
 import type { Categorias } from '../../types/CategoriaDenuncia';
@@ -28,7 +28,7 @@ interface SidePanelProps {
     onItemClick: (item: Denuncia | Acao, zoomToData: ZoomToProps) => void;
     detailViewItem: Denuncia | Acao | null;
     onBackToList: () => void;
-    setDenuncias: (denuncias: Denuncia[]) => void;
+    setDenuncias: React.Dispatch<React.SetStateAction<Denuncia[]>>;
 }
 
 export function SidePanel({
@@ -78,7 +78,6 @@ export function SidePanel({
 
         return filtered
     }, [acoes, filtroStatusAcao, filtroSecretaria]);
-
 
     useEffect(() => {
         if (!isAddingDenuncia) {
@@ -175,4 +174,4 @@ export function SidePanel({
             </aside>
         </>
     );
-};
+}

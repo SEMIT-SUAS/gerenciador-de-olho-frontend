@@ -1,5 +1,5 @@
-import type { Secretaria } from './Secretaria';
-import type { StatusModel } from './StatusModel';
+import type { Secretaria } from './Secretaria'
+import type { StatusModel } from './StatusModel'
 
 export interface Acao {
   id: number;
