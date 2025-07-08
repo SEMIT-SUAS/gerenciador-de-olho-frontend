@@ -8,9 +8,9 @@ interface ConfirmModalProps {
     message: string;
 }
 
-export const ConfirmModal:  FC<ConfirmModalProps> = ({ isOpen, onCancel, onConfirm, title, message }) => {
+export const ConfirmModal: FC<ConfirmModalProps> = ({ isOpen, onCancel, onConfirm, title, message }) => {
     if (!isOpen) return null;
-    
+
     return (
         <div className="fixed inset-0 bg-black/75 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-2xl p-6 w-full max-w-sm m-4 text-center">
