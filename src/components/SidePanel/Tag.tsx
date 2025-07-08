@@ -18,7 +18,7 @@ export function Tag({ status = 'undefined' }: TagProps) {
   }
 
     return (
-        <span className={`w-fit text-xs font-medium px-2 py-1 rounded-md capitalize ${styles[status]}`}>
+        <span className={`w-fit text-xs font-medium px-2 py-1 rounded-md capitalize ${styles[status]} whitespace-nowrap`}>
             {status.replace("_", " ")}
         </span>
     )

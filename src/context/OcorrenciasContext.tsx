@@ -17,7 +17,6 @@ interface OcorrenciasContextType {
   error: string | null;
   vincularDenunciaAcao: (denunciaId: number, acaoId: number) => Promise<void>;
   indeferirDenuncia: (denunciaId: number, status: StatusModel, motivoStatus: string) => Promise<void>;
-  desvincularDenunciaAcao: (denunciaId: number) => Promise<void>
 }
 
 const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(undefined)
@@ -57,9 +56,9 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) =
     }
   }
 
-  const indeferirDenuncia = async (denunciaId: number, status: StatusModel, motivoStatus: string) => {
+  const indeferirDenuncia = async (denunciaId: number, motivoStatus: string) => {
     try {
-      const denunciaAtualizada = await denunciasService.indeferirDenuncia(denunciaId, status, motivoStatus)
+      const denunciaAtualizada = await denunciasService.indeferirDenuncia(denunciaId, motivoStatus)
       setDenuncias(prev => prev.map(d => d.id === denunciaId
         ? denunciaAtualizada
         : d))
@@ -69,19 +68,9 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) =
     }
   }
 
-  const desvincularDenunciaAcao = async (denunciaId: number) => {
-    try {
-      const denunciaAtualizada = await denunciasService.desvincularDenunciaAcao(denunciaId)
-      setDenuncias(prev => prev.map(d => d.id === denunciaId
-        ? denunciaAtualizada
-        : d))
-    } catch (error) {
-      console.error('Falha ao desvincular denúncia:', error)
-      alert('Não foi possível desvincular a denúncia.')
-    }
-  }
 
-  const value = { denuncias, setDenuncias, acoes, setAcoes, actualDetailItem, setActualDetailItem, loading, error, vincularDenunciaAcao, indeferirDenuncia, desvincularDenunciaAcao }
+
+  const value = { denuncias, setDenuncias, acoes, setAcoes, actualDetailItem, setActualDetailItem, loading, error, vincularDenunciaAcao, indeferirDenuncia }
 
   return <OcorrenciasContext.Provider value={value}>{children}</OcorrenciasContext.Provider>
 }
