@@ -1,7 +1,7 @@
 import type { ZoomToProps } from "../../pages/OcorrenciasPage";
 import type { Denuncia } from "../../types/Denuncia";
 import { Tag } from "./Tag";
-import { FaMapPin   } from "react-icons/fa6";
+import { FaMapPin } from "react-icons/fa6";
 
 
 type DenunciasListProps = {
@@ -29,15 +29,17 @@ export function DenunciasList({ denuncias, onItemClick }: DenunciasListProps) {
             })}
         >
           <div className="flex justify-between items-center">
-            <h3 className="font-semibold text-md text-gray-700">{denuncia.tipo}</h3>
+            <h3 className="font-semibold text-md text-gray-700">
+              {denuncia.tipo.name}
+            </h3>
             <Tag status={denuncia.status} />
           </div>
 
           <p className="text-sm text-gray-500 mt-1">{denuncia.descricao}</p>
-            <p className="flex text-xs text-gray-400 mt-1">
-                <span className="mr-1"><FaMapPin/></span>
-                {`${denuncia.endereco.rua}, ${denuncia.endereco.bairro}`}</p>
-
+          <p className="flex text-xs text-gray-400 mt-1">
+            <span className="mr-1"><FaMapPin /></span>
+            {`${denuncia.endereco.rua}, ${denuncia.endereco.bairro}`}
+          </p>
         </div>
       )
     })
