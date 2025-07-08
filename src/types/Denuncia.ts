@@ -1,8 +1,8 @@
-import type { StatusModel } from "./StatusModel";
-import type { Endereco } from "./Endereco";
-import type { Categoria } from "./CategoriaDenuncia";
-import type { TipoDenuncia } from "./TipoDenuncia";
-import type { Imagem } from "./Imagem";
+import type { StatusModel } from './StatusModel'
+import type { Endereco } from './Endereco'
+import type { Categoria } from './CategoriaDenuncia'
+import type { TipoDenuncia } from './TipoDenuncia'
+import type { Imagem } from './Imagem'
 
 export interface Denuncia {
   id: number;
@@ -15,5 +15,5 @@ export interface Denuncia {
   images: Imagem[];
   status: StatusModel;
   motivoStatus?: string; // NOVO CAMPO OPCIONAL
-  acaoId: number | null; 
+  acaoId: number | null;
 }

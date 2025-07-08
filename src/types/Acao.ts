@@ -1,4 +1,4 @@
-import type { StatusModel } from './StatusModel';
+import type { StatusModel } from './StatusModel'
 
 export interface Acao {
   id: number;
@@ -6,6 +6,6 @@ export interface Acao {
   secretaria: string;
   lat: number;
   lon: number;
-  polygonCoords: any[]; 
-  status: StatusModel; 
+  polygonCoords: any[];
+  status: StatusModel;
 }
