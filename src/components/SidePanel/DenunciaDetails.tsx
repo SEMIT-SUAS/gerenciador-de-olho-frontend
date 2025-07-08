@@ -16,17 +16,21 @@ interface DenunciaDetailsViewProps {
     item: Denuncia;
 }
 
-//desvincularDenunciaAcao(item.id)
 
 export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
     const [isOpen, setIsOpen] = useState(false)
     const { startIndeferir } = useIndeferirDenunciaContext();
     const { startLinking } = useVincularDenunciaContext();
-    const { desvincularDenunciaAcao } = useOcorrenciasContext();
+    const { desvincularDenunciaAcao, setDenuncias, setActualDetailItem } = useOcorrenciasContext();
     const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
 
 
-    const handleDesvincularDenunciaAcao = () => {
+    async function handleDesvincularDenunciaAcao () {
+        try {
+            setDenuncias(current => current.map( => {
+                if (d)
+            }) ) 
+        }
         setIsOpen(true);
     }
 
@@ -99,16 +103,17 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
             )}
 
             {item.status === 'indeferido' && item.motivoStatus && (
-                <div className="p-3 bg-red-50 border-l-4 border-red-400 text-red-700">
+                <div className="p-3  bg-red-50 border-l-4 border-red-400 text-red-700">
                     <p className="font-bold">Motivo do Indeferimento:</p>
                     <p>{item.motivoStatus}</p>
                 </div>
             )}
             {item.status === 'aberto' && (
-                <button onClick={() => startIndeferir(item)} className="w-full bg-red-500 text-white font-bold py-2 rounded-lg hover:bg-red-600">
+                <button onClick={() => startIndeferir(item)} className="w-full border-2 text-sm border-red-500 text-red-500 font-semibold py-2 rounded-lg transition-colors hover:bg-red-500 hover:text-white">
                     Indeferir Denúncia
                 </button>   
             )}
+            
 
         </div>
         <ConfirmModal

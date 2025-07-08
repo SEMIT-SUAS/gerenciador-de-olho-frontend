@@ -17,4 +17,33 @@ export function Tag({ status = "undefined" }: TagProps) {
             {status.replace("_", " ")}
         </span>
     )
+<<<<<<< Updated upstream
 }
+=======
+}
+
+export function CategoryTag ({categoria}: CategoryTagProps) {
+    const stylesCategory = {
+        'Infraestrutura': 'text-yellow-700',
+        'Saúde Pública': 'text-green-700',
+        'Trânsito e Transporte': 'text-lime-700',
+        'Acessibilidade':  'text-blue-700',
+        'Meio Ambiente': 'text-emerald-700'
+    }
+
+    let categoryNameToUse: Categoria['name'] | undefined;
+
+    if (categoria) { 
+        categoryNameToUse = categoria.name;
+    } else {
+        categoryNameToUse = 'Infraestrutura';
+    }
+
+    return (
+        <span className={`text-xs font-semibold ${categoryNameToUse ? stylesCategory[categoryNameToUse] : ''}`}>
+            {categoryNameToUse}
+        </span>
+    )
+}
+
+>>>>>>> Stashed changes
