@@ -36,8 +36,8 @@ export function DenunciasList({ denuncias, onItemClick }: DenunciasListProps) {
           <p className="text-sm text-gray-500 mt-1">{denuncia.descricao}</p>
             <p className="flex text-xs text-gray-400 mt-1">
                 <span className="mr-1"><FaMapPin/></span>
-                {`${denuncia.endereco.rua}, ${denuncia.endereco.bairro}`}</p>
-
+                {`${denuncia.endereco.rua}, ${denuncia.endereco.bairro}`}
+            </p>
         </div>
       )
     })

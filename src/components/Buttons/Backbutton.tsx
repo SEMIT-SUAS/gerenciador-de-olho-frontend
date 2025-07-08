@@ -13,7 +13,7 @@ export const BackButton: FC<BackButtonProps> = ({ onClick, children, className }
   return (
     <button onClick={onClick} className={finalClassName}>
       <FaArrowLeft className="inline-block mr-2" />
-      {children || 'Voltar'}
+      {children || 'Retornar para a página anterior'}
     </button>
   )
 }

@@ -43,7 +43,7 @@ export const IndeferirDenunciaView: FC = () => {
                     <p className="text-sm text-red-800">Indeferindo denúncia:</p>
                     <p className="font-bold text-red-900">{denunciaParaIndeferir.tipo}</p>
                     <p className='font-semibold text-sm text-red-900'>{`${denunciaParaIndeferir.endereco.rua}, ${denunciaParaIndeferir.endereco.bairro}`}</p>
-                </div>
+                </div>  
                 <div className="flex-1 flex flex-col space-y-4">
                     <label htmlFor="motivo-indeferimento" className="font-semibold text-gray-800">Motivo do Indeferimento:</label>
                     <textarea 
@@ -51,7 +51,7 @@ export const IndeferirDenunciaView: FC = () => {
                         value={motivoStatus}
                         onChange={(e) => setMotivoStatus(e.target.value)}
                         rows={6}
-                        className="w-full resize-none border-gray-300 rounded-md shadow-sm p-2 outline-0 text-sm"
+                        className="w-full resize-none border-gray-300 rounded-md shadow-sm p-2 outline-0 text-"
                         placeholder="Descreva por que esta denúncia está sendo indeferida..."
                     />
                     <div>

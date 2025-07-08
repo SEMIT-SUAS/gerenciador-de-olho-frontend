@@ -19,7 +19,7 @@ export function OcorrenciasPage() {
   const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([])
   const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false)
   const [zoomTo, setZoomTo] = useState<ZoomToProps>(null)
-
+  
   const handleSelectionClick = (id: number) => {
     if (modoSelecao) {
       setDenunciasSelecionadas(prev => prev.includes(id)

@@ -22,7 +22,7 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
     const { startIndeferir } = useIndeferirDenunciaContext();
     const [currentDenuncia, setCurrentDenuncia] = useState<Denuncia | null>(null)
     const { startLinking } = useVincularDenunciaContext();
-    const { setDenuncias, setActualDetailItem, acoes, denuncias } = useOcorrenciasContext();
+    const { setDenuncias, setActualDetailItem, acoes } = useOcorrenciasContext();
     const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
     const acaoVinculada = acoes.filter(a => a.id === item.acaoId)
 
@@ -68,7 +68,6 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
                 </div>
                 <Tag status={item.status} />
             </div>
-
             <div>
                 <h3 className="font-semibold text-sm text-gray-800 mb-1 ">Descrição:</h3>
                 <p className='text-sm  text-gray-600'>{item.descricao}</p>
