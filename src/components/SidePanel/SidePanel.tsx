@@ -70,7 +70,10 @@ export function SidePanel({
         <>
             <aside className="w-full md:w-[450px] bg-white shadow-lg flex flex-col z-20 h-screen">
                 <div className="flex items-center justify-between p-4">
-                    <h1 className="text-2xl font-bold text-gray-800">Painel de Ocorrências</h1>
+                    <div className="flex-row font-bold">
+                        <h1 className="text-2xl font-bold text-gray-800">Gerenciador de Denúncias</h1>
+                        <p className="text-blue-600">De Olho na Cidade</p>
+                    </div>
                     {isAddingDenuncia ? (
                         <button
                             onClick={() => setIsAddingDenuncia(false)}

@@ -14,11 +14,9 @@ interface MapComponentProps {
     denuncias: Denuncia[];
     acoes: Acao[];
     modoSelecao: boolean;
-    denunciasSelecionadas: number[];
     onMarkerClick: (item: Denuncia | Acao, zoomToData: ZoomToProps) => void;
     onSelectionClick: (id: number, status: StatusModel) => void;
     detailViewItem: Denuncia | Acao | null;
-
     zoomTo: ZoomToProps,
     setZoomTo: Dispatch<SetStateAction<ZoomToProps>>
 }
