@@ -145,7 +145,7 @@ async function indeferirDenuncia(id: number, motivoStatus: string): Promise<Denu
   }
 }
 
-async function desvincularDenunciaAcao(id: number): Promise<Denuncia> {
+async function desvincularDenunciaAcao(id: number, motivoStatus: string): Promise<Denuncia> {
   try {
     const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
       method: 'PATCH',
@@ -155,6 +155,7 @@ async function desvincularDenunciaAcao(id: number): Promise<Denuncia> {
       body: JSON.stringify({
         acaoId: null,
         status: 'aberto',
+        motivoStatus: motivoStatus
       }),
     })
     await new Promise(r => setTimeout(r, 300))
