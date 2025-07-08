@@ -14,7 +14,11 @@ import { IndeferirDenunciaView } from './IndeferidoStatusView';
 import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
 import type { ZoomToProps } from '../../pages/OcorrenciasPage';
 import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
-import { FilterStatusSelect } from './FilterStatusSelect';
+import { FilterStatusSelect } from './filters/FilterStatusSelect';
+import { SelectCategoriaFilter } from './filters/SelectCategoriaFilter';
+import type { Categorias } from '../../types/CategoriaDenuncia';
+import { SelectSecretariaFilter } from './filters/SelectSecretariaFilter';
+import type { Secretarias } from '../../types/Secretaria';
 
 interface SidePanelProps {
     denuncias: Denuncia[];
@@ -44,28 +48,43 @@ export function SidePanel({
 
     const [filtroStatusDenuncia, setFiltroStatusDenuncia] = useState<'todos' | StatusModel>('aberto');
     const [filtroStatusAcao, setFiltroStatusAcao] = useState<'todos' | StatusModel>('aberto');
+    const [filtroCategoria, setFiltroCategoria] = useState<'todas' | Categorias | null>('todas');
+    const [filtroSecretaria, setFiltroSecretaria] = useState<'todas' | Secretarias | null>('todas');
 
     const denunciasFiltradas = useMemo(() => {
-        if (filtroStatusDenuncia === 'todos') {
-            return denuncias;
+        let filtered = [...denuncias]
+
+        if (filtroStatusDenuncia !== 'todos') {
+            filtered = filtered.filter(d => d.status === filtroStatusDenuncia);
         }
 
-        return denuncias.filter(d => d.status === filtroStatusDenuncia);
-    }, [denuncias, filtroStatusDenuncia]);
+        if (filtroCategoria !== 'todas') {
+            filtered = filtered.filter(d => d.categoria.name === filtroCategoria);
+        }
+
+        return filtered
+    }, [denuncias, filtroStatusDenuncia, filtroCategoria]);
 
     const acoesFiltradas = useMemo(() => {
-        if (filtroStatusAcao === 'todos') {
-            return acoes;
+        let filtered = [...acoes]
+
+        if (filtroStatusAcao !== 'todos') {
+            filtered = filtered.filter(a => a.status === filtroStatusAcao);
         }
-        return acoes.filter(a => a.status === filtroStatusAcao);
-    }, [acoes, filtroStatusAcao]);
+
+        if (filtroSecretaria !== 'todas') {
+            filtered = filtered.filter(a => a.secretaria.name === filtroSecretaria);
+        }
+
+        return filtered
+    }, [acoes, filtroStatusAcao, filtroSecretaria]);
 
 
     useEffect(() => {
         if (!isAddingDenuncia) {
             setNewDenunciaCoordinates(null)
         }
-    }, [isAddingDenuncia, setIsAddingDenuncia])
+    }, [isAddingDenuncia, setIsAddingDenuncia, setNewDenunciaCoordinates])
 
     return (
         <>
@@ -123,15 +142,25 @@ export function SidePanel({
                                 </nav>
                             </div>
 
-                            <div className="p-4">
+                            <div className="grid grid-cols-2 gap-1 pt-4 px-4">
                                 <FilterStatusSelect
                                     id='status-filter-select'
-                                    label='Selecione um status'
+                                    label='Status'
                                     onStatusChange={status => abaAtiva === 'denuncias'
                                         ? setFiltroStatusDenuncia(status)
                                         : setFiltroStatusAcao(status)}
                                     value={abaAtiva == 'denuncias' ? filtroStatusDenuncia : filtroStatusAcao}
                                 />
+
+                                {abaAtiva === "denuncias" ? (
+                                    <SelectCategoriaFilter
+                                        onCategoriaChange={categoria => setFiltroCategoria(categoria)}
+                                    />
+                                ) : (
+                                    <SelectSecretariaFilter
+                                        onSecretariaChange={secretaria => setFiltroSecretaria(secretaria)}
+                                    />
+                                )}
                             </div>
 
                             <div className="p-4 space-y-3">
