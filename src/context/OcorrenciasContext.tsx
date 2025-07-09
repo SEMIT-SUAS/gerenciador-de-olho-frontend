@@ -1,14 +1,14 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import type { Dispatch, FC, ReactNode, SetStateAction } from 'react'
-import type { Denuncia } from '../types/Denuncia'
-import type { Acao } from '../types/Acao'
-import denunciasService from '../services/denunciasService'
-import acoesService from '../services/acoesService'
-import type { StatusModel } from '../types/StatusModel'
+import { createContext, useContext, useEffect, useState } from 'react';
+import type { Dispatch, FC, ReactNode, SetStateAction } from 'react';
+import type { Denuncia } from '../types/Denuncia';
+import type { Acao } from '../types/Acao';
+import denunciasService from '../services/denunciasService';
+import acoesService from '../services/acoesService';
+import type { StatusModel } from '../types/StatusModel';
 
 interface OcorrenciasContextType {
   denuncias: Denuncia[];
-  setDenuncias: Dispatch<SetStateAction<Denuncia[]>>
+  setDenuncias: Dispatch<SetStateAction<Denuncia[]>>;
   actualDetailItem: Denuncia | Acao | null;
   setActualDetailItem: Dispatch<SetStateAction<Denuncia | Acao | null>>;
   acoes: Acao[];
@@ -16,67 +16,106 @@ interface OcorrenciasContextType {
   loading: boolean;
   error: string | null;
   vincularDenunciaAcao: (denunciaId: number, acaoId: number) => Promise<void>;
-  indeferirDenuncia: (denunciaId: number, status: StatusModel, motivoStatus: string) => Promise<void>;
+  indeferirDenuncia: (
+    denunciaId: number,
+    status: StatusModel,
+    motivoStatus: string,
+  ) => Promise<void>;
 }
 
-const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(undefined)
+const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(
+  undefined,
+);
 
-export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [denuncias, setDenuncias] = useState<Denuncia[]>([])
-  const [acoes, setAcoes] = useState<Acao[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
-  const [actualDetailItem, setActualDetailItem] = useState<Denuncia | Acao | null>(null)
+export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [denuncias, setDenuncias] = useState<Denuncia[]>([]);
+  const [acoes, setAcoes] = useState<Acao[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [actualDetailItem, setActualDetailItem] = useState<
+    Denuncia | Acao | null
+  >(null);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         const [denunciasData, acoesData] = await Promise.all([
           denunciasService.getAllDenuncias(),
           acoesService.getAllAcoes(),
-        ])
-        setDenuncias(denunciasData)
-        setAcoes(acoesData)
-      } catch (err: any) { setError(err.message) } finally { setLoading(false) }
-    }
-    loadData()
-  }, [])
+        ]);
+        setDenuncias(denunciasData);
+        setAcoes(acoesData);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
 
   const vincularDenunciaAcao = async (denunciaId: number, acaoId: number) => {
     try {
-      const denunciaAtualizada = await denunciasService.vincularDenunciaToAcao(denunciaId, acaoId)
-      setDenuncias(prev => prev.map(d => d.id === denunciaId
-        ? denunciaAtualizada
-        : d))
-      console.log('Denúncia vinculada com sucesso:', denunciaAtualizada)
+      const denunciaAtualizada = await denunciasService.vincularDenunciaToAcao(
+        denunciaId,
+        acaoId,
+      );
+      setDenuncias((prev) =>
+        prev.map((d) => (d.id === denunciaId ? denunciaAtualizada : d)),
+      );
+      console.log('Denúncia vinculada com sucesso:', denunciaAtualizada);
     } catch (error) {
-      console.error('Falha ao vincular denúncia:', error)
-      alert('Não foi possível vincular a denúncia.')
+      console.error('Falha ao vincular denúncia:', error);
+      alert('Não foi possível vincular a denúncia.');
     }
-  }
+  };
 
-  const indeferirDenuncia = async (denunciaId: number, motivoStatus: string) => {
+  const indeferirDenuncia = async (
+    denunciaId: number,
+    motivoStatus: string,
+  ) => {
     try {
-      const denunciaAtualizada = await denunciasService.indeferirDenuncia(denunciaId, motivoStatus)
-      setDenuncias(prev => prev.map(d => d.id === denunciaId
-        ? denunciaAtualizada
-        : d))
+      const denunciaAtualizada = await denunciasService.indeferirDenuncia(
+        denunciaId,
+        motivoStatus,
+      );
+      setDenuncias((prev) =>
+        prev.map((d) => (d.id === denunciaId ? denunciaAtualizada : d)),
+      );
     } catch (error) {
-      console.error('Falha ao indeferir denúncia:', error)
-      alert('Não foi possível indeferir a denúncia.')
+      console.error('Falha ao indeferir denúncia:', error);
+      alert('Não foi possível indeferir a denúncia.');
     }
-  }
+  };
 
+  const value = {
+    denuncias,
+    setDenuncias,
+    acoes,
+    setAcoes,
+    actualDetailItem,
+    setActualDetailItem,
+    loading,
+    error,
+    vincularDenunciaAcao,
+    indeferirDenuncia,
+  };
 
-
-  const value = { denuncias, setDenuncias, acoes, setAcoes, actualDetailItem, setActualDetailItem, loading, error, vincularDenunciaAcao, indeferirDenuncia }
-
-  return <OcorrenciasContext.Provider value={value}>{children}</OcorrenciasContext.Provider>
-}
+  return (
+    <OcorrenciasContext.Provider value={value}>
+      {children}
+    </OcorrenciasContext.Provider>
+  );
+};
 
 export const useOcorrenciasContext = () => {
-  const context = useContext(OcorrenciasContext)
-  if (context === undefined) throw new Error('useOcorrenciasContext deve ser usado dentro de um OcorrenciasProvider')
-  return context
-}
+  const context = useContext(OcorrenciasContext);
+  if (context === undefined)
+    throw new Error(
+      'useOcorrenciasContext deve ser usado dentro de um OcorrenciasProvider',
+    );
+  return context;
+};

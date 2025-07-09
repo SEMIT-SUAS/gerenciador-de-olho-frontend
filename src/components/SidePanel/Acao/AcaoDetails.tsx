@@ -1,25 +1,23 @@
 import { useState, type FC } from 'react';
-import type { Acao } from '../../types/Acao';
-import type { Denuncia } from '../../types/Denuncia';
-import { Tag } from './Tag';
+import type { Acao } from '../../../types/Acao';
+import type { Denuncia } from '../../../types/Denuncia';
+import { Tag } from '../Tag';
 import { FaTrashAlt } from 'react-icons/fa';
-import { ConfirmModal } from '../Modals/ConfirmModal';
-import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
+import { ConfirmModal } from '../../Modals/ConfirmModal';
+import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 import { toast } from 'react-toastify';
-import { getPolygonoCenter } from '../../utils/geometry';
+import { getPolygonoCenter } from '../../../utils/geometry';
 
 interface AcaoDetailsProps {
   item: Acao;
-  denuncias: Denuncia[];
   onDenunciaClick: (denuncia: Denuncia) => void;
 }
 
 export const AcaoDetails: FC<AcaoDetailsProps> = ({
   item,
-  denuncias,
   onDenunciaClick,
 }) => {
-  const { setDenuncias, setAcoes, setActualDetailItem } =
+  const { setDenuncias, setAcoes, denuncias, setActualDetailItem } =
     useOcorrenciasContext();
   const [currentDenuncia, setCurrentDenuncia] = useState<Denuncia | null>(null);
   const [
@@ -30,6 +28,7 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({
     isOpenIndeferirAcaoConfirmationModal,
     setIsOpenIndeferirAcaoConfirmationModal,
   ] = useState(false);
+
   const denunciasVinculadas = denuncias.filter((d) => d.acaoId === item.id);
 
   async function handleRemoveDenuncia() {
@@ -159,7 +158,7 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({
                     key={d.id}
                     onClick={() => onDenunciaClick(d)}
                     aria-label={`Ver detalhes da denúncia ${d.tipo}`}
-                    className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left shadow-sm transition-all hover:border-blue-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left shadow-sm transition-all hover:shadow-md focus:outline-none cursor-pointer"
                   >
                     <div className="flex flex-col">
                       <p className="font-semibold text-gray-800">

@@ -25,8 +25,6 @@ import { MapFilters } from './MapFilters';
 import { useFilters } from '../../context/FiltersContext';
 
 interface MapComponentProps {
-  denuncias: Denuncia[];
-  acoes: Acao[];
   modoSelecao: boolean;
   denunciasSelecionadas: number[];
   onMarkerClick: (item: Denuncia | Acao, zoomToData: ZoomToProps) => void;
@@ -38,8 +36,6 @@ interface MapComponentProps {
 }
 
 export function MapComponent({
-  denuncias,
-  acoes,
   modoSelecao,
   onMarkerClick,
   detailViewItem,
@@ -53,7 +49,12 @@ export function MapComponent({
     newDenunciaCoordinates,
   } = useContext(AddDenunciaContext);
 
-  const { isVisibleAcoesInMap, isVisibleDenunciasInMap } = useFilters();
+  const {
+    isVisibleAcoesInMap,
+    isVisibleDenunciasInMap,
+    acoesFiltradas: acoes,
+    denunciasFiltradas: denuncias,
+  } = useFilters();
 
   type MapViewUpdaterProps = {
     item: Denuncia | Acao | null;
