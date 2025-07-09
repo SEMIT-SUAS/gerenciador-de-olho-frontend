@@ -7,6 +7,7 @@ import { useOcorrenciasContext } from '../context/ocorrenciasContext'
 import { AddDenunciaProvider } from '../context/AddDenunciaContext'
 import { IndeferirDenunciaProvider } from '../context/IndeferirDenunciaContext'
 import { VincularDenunciaProvider } from '../context/vincularDenunciaContext'
+import { FiltersProvider } from '../context/FiltersContext'
 
 export type ZoomToProps = {
   lat: number
@@ -41,6 +42,7 @@ export function OcorrenciasPage() {
       <VincularDenunciaProvider>
         <IndeferirDenunciaProvider>
           <AddDenunciaProvider>
+            <FiltersProvider>
             <SidePanel
               denuncias={denuncias}
               acoes={acoes}
@@ -70,6 +72,7 @@ export function OcorrenciasPage() {
                 setZoomTo={setZoomTo}
               />
             </main>
+            </FiltersProvider>
           </AddDenunciaProvider>
         </IndeferirDenunciaProvider>
       </VincularDenunciaProvider>
