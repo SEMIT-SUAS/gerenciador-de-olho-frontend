@@ -19,6 +19,10 @@ export function OcorrenciasPage() {
   const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([])
   const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false)
   const [zoomTo, setZoomTo] = useState<ZoomToProps>(null)
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [currentAcao, setCurrentAcao] = useState<Acao | null>(null);
+
+  
   
   const handleSelectionClick = (id: number) => {
     if (modoSelecao) {
@@ -33,6 +37,8 @@ export function OcorrenciasPage() {
     setActualDetailItem(item)
   }
 
+
+
   if (loading) return <div className="flex h-screen w-screen items-center justify-center">Carregando...</div>
   if (error) return <div className="flex h-screen w-screen items-center justify-center">Erro: {error}</div>
 
@@ -46,12 +52,7 @@ export function OcorrenciasPage() {
               acoes={acoes}
               modoSelecao={modoSelecao}
               denunciasSelecionadasCount={denunciasSelecionadas.length}
-              onIniciarSelecao={() => setModoSelecao(true)}
-              onAbrirFormulario={() => setCreateModalOpen(true)}
-              onCancelarSelecao={() => {
-                setModoSelecao(false)
-                setDenunciasSelecionadas([])
-              }}
+              setDenuncias={setDenuncias}
               onItemClick={handleItemClick}
               detailViewItem={actualDetailItem}
               onBackToList={() => setActualDetailItem(null)}
