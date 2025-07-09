@@ -2,14 +2,17 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { OcorrenciasPage } from './pages/OcorrenciasPage'
 import { OcorrenciasProvider } from './context/OcorrenciasContext'
 import { ToastContainer } from 'react-toastify'
+import { VincularDenunciaProvider } from './context/vincularDenunciaContext'
 
 export function App() {
   return (
     <BrowserRouter>
       <OcorrenciasProvider>
-        <Routes>
-          <Route index element={<OcorrenciasPage />} />
-        </Routes>
+        <VincularDenunciaProvider>
+          <Routes>
+            <Route index element={<OcorrenciasPage />} />
+          </Routes>
+        </VincularDenunciaProvider>
       </OcorrenciasProvider>
 
       <ToastContainer

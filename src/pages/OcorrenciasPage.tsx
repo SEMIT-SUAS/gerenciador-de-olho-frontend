@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Acao } from '../types/Acao'
 import type { Denuncia } from '../types/Denuncia'
 import { SidePanel } from '../components/SidePanel/SidePanel'
 import { MapComponent } from '../components/Map/MapComponent'
-import { useOcorrenciasContext } from '../context/ocorrenciasContext'
+import { useOcorrenciasContext } from '../context/OcorrenciasContext'
 import { AddDenunciaProvider } from '../context/AddDenunciaContext'
 import { IndeferirDenunciaProvider } from '../context/IndeferirDenunciaContext'
-import { VincularDenunciaProvider } from '../context/vincularDenunciaContext'
+import { VincularDenunciaProvider, useVincularDenunciaContext } from '../context/vincularDenunciaContext'
+import { ConfirmModal } from '../components/Modals/ConfirmModal'
+
 
 export type ZoomToProps = {
   lat: number
@@ -17,12 +19,29 @@ export function OcorrenciasPage() {
   const { denuncias, setDenuncias, acoes, actualDetailItem, setActualDetailItem, loading, error } = useOcorrenciasContext()
   const [modoSelecao, setModoSelecao] = useState<boolean>(false)
   const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>([])
-  const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false)
   const [zoomTo, setZoomTo] = useState<ZoomToProps>(null)
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [currentAcao, setCurrentAcao] = useState<Acao | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const { denunciaParaVincular, confirmLink, setAcaoParaVincular, acaoParaVincular } = useVincularDenunciaContext();
 
-  
+
+    useEffect(() => {
+        if (acaoParaVincular) {
+            setIsOpen(true);
+        }
+    }, [acaoParaVincular]);
+
+    const handleConfirm = () => {
+        if (acaoParaVincular) {
+            confirmLink(acaoParaVincular.id);
+        }
+        setIsOpen(false);
+        setAcaoParaVincular(null);
+    };
+
+    const handleCancel = () => {
+        setIsOpen(false);
+        setAcaoParaVincular(null);
+    };
   
   const handleSelectionClick = (id: number) => {
     if (modoSelecao) {
@@ -71,6 +90,13 @@ export function OcorrenciasPage() {
                 setZoomTo={setZoomTo}
               />
             </main>
+              <ConfirmModal
+                isOpen={isOpen}
+                title="Vínculo de denúncia à ação"
+                message={`Deseja vincular a denúncia "${denunciaParaVincular?.tipo}" à ação "${acaoParaVincular?.nome}"?`}
+                onCancel={handleCancel}
+                onConfirm={handleConfirm}
+            />
           </AddDenunciaProvider>
         </IndeferirDenunciaProvider>
       </VincularDenunciaProvider>

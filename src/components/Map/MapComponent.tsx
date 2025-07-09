@@ -9,6 +9,8 @@ import { AddDenunciaContext } from '../../context/AddDenunciaContext'
 import { getDenunciaIconByTipo } from '../../utils/getPinIcon'
 import type { LeafletMouseEvent } from 'leaflet'
 import type { ZoomToProps } from '../../pages/OcorrenciasPage'
+import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext'
+import { useMapEvents } from 'react-leaflet'
 
 interface MapComponentProps {
   denuncias: Denuncia[];
@@ -38,6 +40,8 @@ export function MapComponent({
     newDenunciaCoordinates,
   } = useContext(AddDenunciaContext)
 
+  const {isSelectingAcaoInMap, setIsSelectingAcaoInMap, setAcaoParaVincular, acaoParaVincular} = useVincularDenunciaContext()
+
     type MapViewUpdaterProps = {
       item: Denuncia | Acao | null
     }
@@ -56,10 +60,10 @@ export function MapComponent({
             setIsSelectingNewDenunciaInMap(false)
             map.off('click')
           }
-        }
+      }
 
         map.on('click', handleClick)
-      }, [isSelectingNewDenunciaInMap, setNewDenunciaCoordinates, setIsSelectingNewDenunciaInMap])
+      }, [isSelectingNewDenunciaInMap, setNewDenunciaCoordinates, setIsSelectingNewDenunciaInMap, setAcaoParaVincular, isSelectingAcaoInMap, setIsSelectingAcaoInMap])
 
       useEffect(() => {
         if (zoomTo) {
@@ -81,6 +85,8 @@ export function MapComponent({
         lng: event.latlng.lng,
       })
     }
+
+    console.log(acaoParaVincular)
 
     return (
       <MapContainer center={[-2.51, -44.28]} zoom={13} scrollWheelZoom className="h-full w-full z-10">
@@ -117,7 +123,13 @@ export function MapComponent({
               position={[a.lat, a.lon]}
               icon={iconAcao}
               eventHandlers={{
-                click: event => handleMarkerClick(a, event),
+                click: event => { 
+                if(isSelectingAcaoInMap){
+                    setAcaoParaVincular(a)
+                  } else {
+                    handleMarkerClick(a, event)
+                  }
+                }
               }}
             >
               {!modoSelecao && <Popup><b>Ação:</b> {a.nome}<br /><b>Secretaria:</b> {a.secretaria}</Popup>}

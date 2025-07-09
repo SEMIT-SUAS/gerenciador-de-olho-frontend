@@ -1,16 +1,17 @@
 import { useState, type FC } from 'react'
 import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext'
-import { useOcorrenciasContext } from '../../context/ocorrenciasContext'
+import { useOcorrenciasContext } from '../../context/OcorrenciasContext'
 import type { Acao } from '../../types/Acao'
 import { ConfirmModal } from '../Modals/ConfirmModal'
 import { BackButton } from '../Buttons/Backbutton'
 import { FaMapPin } from 'react-icons/fa'
 
 export const VincularAcaoView: FC = () => {
-  const { acoes, setActualDetailItem } = useOcorrenciasContext()
+  const { acoes, setActualDetailItem, actualDetailItem } = useOcorrenciasContext()
   const [isOpen, setIsOpen] = useState(false)
   const [currentAcao, setCurrentAcao] = useState<Acao | null>(null)
-  const { denunciaParaVincular, confirmLink, cancelLinking } = useVincularDenunciaContext()
+  const { denunciaParaVincular, confirmLink, cancelLinking, acaoParaVincular, setAcaoParaVincular, setIsSelectingAcaoInMap } = useVincularDenunciaContext()
+
 
   if (!denunciaParaVincular) return null
 
@@ -36,6 +37,17 @@ export const VincularAcaoView: FC = () => {
               {`${denunciaParaVincular.endereco.rua}, ${denunciaParaVincular.endereco.bairro}`}
           </p>
         </div>
+        <button
+            onClick={() => setIsSelectingAcaoInMap(true)} 
+            className='w-full border-2 border-blue-600 text-blue-600 font-semibold py-2 rounded-lg mb-4 hover:bg-blue-50 transition-colors'
+        >
+            Selecionar Ação no Mapa
+        </button>
+
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p>{acaoParaVincular?.nome}</p>
+        </div>
+
         <h3 className="font-semibold text-gray-800 mb-2">Selecione uma Ação Existente:</h3>
         <div className="flex-1 rounded-lg overflow-y-auto bg-gray-50 space-y-2 p-2">
           {acoes.map(acao => (
