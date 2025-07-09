@@ -1,15 +1,18 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { OcorrenciasPage } from './pages/OcorrenciasPage'
-import { OcorrenciasProvider } from './context/OcorrenciasContext'
-import { ToastContainer } from 'react-toastify'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { OcorrenciasPage } from './pages/OcorrenciasPage';
+import { OcorrenciasProvider } from './context/OcorrenciasContext';
+import { ToastContainer } from 'react-toastify';
+import { FiltersProvider } from './context/FiltersContext';
 
 export function App() {
   return (
     <BrowserRouter>
       <OcorrenciasProvider>
-        <Routes>
-          <Route index element={<OcorrenciasPage />} />
-        </Routes>
+        <FiltersProvider>
+          <Routes>
+            <Route index element={<OcorrenciasPage />} />
+          </Routes>
+        </FiltersProvider>
       </OcorrenciasProvider>
 
       <ToastContainer
@@ -23,7 +26,6 @@ export function App() {
         theme="light"
         className="z-50"
       />
-
     </BrowserRouter>
-  )
+  );
 }
