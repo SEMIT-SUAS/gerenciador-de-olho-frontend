@@ -167,7 +167,6 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({
                       </p>
                       <p className="text-sm text-gray-500">{d.endereco.rua}</p>
                     </div>
-
                     <div className="flex items-center gap-3">
                       <Tag status={d.status} />
                       {item.status != 'concluido' &&
