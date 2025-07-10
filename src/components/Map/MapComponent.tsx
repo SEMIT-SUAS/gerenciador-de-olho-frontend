@@ -30,7 +30,7 @@ export function MapComponent() {
     setActualDetailItem(item);
   };
 
-  const { isSelectingAcaoInMap, setAcaoParaVincular, setIsSelectingAcaoInMap, setDenunciaParaVincular } = useVincularDenunciaContext()
+  const { isSelectingAcaoInMap, setAcaoParaVincular } = useVincularDenunciaContext()
 
   return (
     <div className="relative h-full w-full">
@@ -76,7 +76,13 @@ export function MapComponent() {
                 position={[a.lat, a.lon]}
                 icon={iconAcao}
                 eventHandlers={{
-                  click: () => handleMarkerClick(a),
+                  click: event => { 
+                  if(isSelectingAcaoInMap){
+                      setAcaoParaVincular(a)
+                    } else {
+                      handleMarkerClick(a, event)
+                    }
+                  }
                 }}
               >
                 <PinDetailsAcao acao={a} />
