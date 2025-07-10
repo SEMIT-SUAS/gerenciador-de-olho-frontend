@@ -9,10 +9,11 @@ import { getDenunciaIconByTipo } from '../../utils/getPinIcon';
 import { MapFilters } from './MapFilters';
 import { useFilters } from '../../context/FiltersContext';
 import { MapViewUpdater } from './MapViewUpdater';
-import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
+import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
 import { PinDetailsAcao } from './PinDetailsAcao';
 import { AcaoPolygon } from './AcaoPolygon';
 import { PinDetailsDenuncia } from './PinDetailsDenuncia';
+import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext'
 
 export function MapComponent() {
   const { isSelectingNewDenunciaInMap, newDenunciaCoordinates } =
@@ -28,6 +29,8 @@ export function MapComponent() {
   const handleMarkerClick = (item: Denuncia | Acao) => {
     setActualDetailItem(item);
   };
+
+  const { isSelectingAcaoInMap, setAcaoParaVincular, setIsSelectingAcaoInMap, setDenunciaParaVincular } = useVincularDenunciaContext()
 
   return (
     <div className="relative h-full w-full">
