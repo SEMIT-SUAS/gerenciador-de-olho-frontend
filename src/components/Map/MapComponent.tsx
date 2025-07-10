@@ -51,7 +51,7 @@ export function MapComponent() {
         />
 
         {!isSelectingNewDenunciaInMap &&
-          isVisibleDenunciasInMap &&
+          isVisibleDenunciasInMap && !isSelectingAcaoInMap &&
           denuncias.map((d) => {
             return (
               <Marker
@@ -76,11 +76,11 @@ export function MapComponent() {
                 position={[a.lat, a.lon]}
                 icon={iconAcao}
                 eventHandlers={{
-                  click: event => { 
+                  click: () => { 
                   if(isSelectingAcaoInMap){
                       setAcaoParaVincular(a)
                     } else {
-                      handleMarkerClick(a, event)
+                      handleMarkerClick(a)
                     }
                   }
                 }}
