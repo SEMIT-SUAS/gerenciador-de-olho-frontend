@@ -1,5 +1,6 @@
-import { Switch } from '../Switch'
-import { useFilters } from '../../context/FiltersContext'
+import { Switch } from '../Switch';
+import { useFilters } from '../../context/FiltersContext';
+import { useAddAcao } from '../../context/AddAcaoContext';
 
 export function MapFilters() {
   const {
@@ -7,8 +8,10 @@ export function MapFilters() {
     isVisibleAcoesInMap,
     setIsVisibleDenunciasInMap,
     setIsVisibleAcoesInMap,
-  } = useFilters()
- 
+  } = useFilters();
+
+  const { isAddingAcao } = useAddAcao();
+
   return (
     <div className="absolute top-3 right-3 z-20 flex flex-col gap-2">
       <div className="flex items-center gap-2 bg-white rounded-lg p-2">
@@ -17,6 +20,7 @@ export function MapFilters() {
         <Switch
           isActive={isVisibleDenunciasInMap}
           onToogle={() => setIsVisibleDenunciasInMap(!isVisibleDenunciasInMap)}
+          disabled={isAddingAcao}
         />
       </div>
 
@@ -26,8 +30,9 @@ export function MapFilters() {
         <Switch
           isActive={isVisibleAcoesInMap}
           onToogle={() => setIsVisibleAcoesInMap(!isVisibleAcoesInMap)}
+          disabled={isAddingAcao}
         />
       </div>
     </div>
-  )
+  );
 }

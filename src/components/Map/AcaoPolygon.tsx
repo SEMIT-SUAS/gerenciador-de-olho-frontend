@@ -8,7 +8,7 @@ export function AcaoPolygon({
 }) {
   return (
     <Polygon
-      pathOptions={{ color: 'green', weight: 2, fillOpacity: 0.1 }}
+      pathOptions={{ color: '#808080', weight: 2, fillOpacity: 0.1 }}
       positions={coordinates}
     />
   );

@@ -1,16 +1,13 @@
 type SwitchProps = {
-  isActive: boolean,
-  onToogle: () => void
-}
+  isActive: boolean;
+  onToogle: () => void;
+  disabled: boolean;
+};
 
-export function Switch({ isActive, onToogle }: SwitchProps) {
-  const bgColor = isActive
-    ? 'bg-green-500'
-    : 'bg-red-500'
+export function Switch({ isActive, onToogle, disabled }: SwitchProps) {
+  const bgColor = isActive ? 'bg-green-500' : 'bg-red-500';
 
-  const position = isActive
-    ? 'translate-x-6'
-    : 'translate-x-0'
+  const position = isActive ? 'translate-x-6' : 'translate-x-0';
 
   return (
     <button
@@ -22,13 +19,12 @@ export function Switch({ isActive, onToogle }: SwitchProps) {
         flex items-center cursor-pointer
         transition-colors duration-300 ease-in-out
         ${bgColor}
+        disabled:opacity-30
+        disabled:cursor-not-allowed
       `}
+      disabled={disabled}
     >
-      <span className="sr-only">
-        {isActive
-          ? 'Ativado'
-          : 'Desativado'}
-      </span>
+      <span className="sr-only">{isActive ? 'Ativado' : 'Desativado'}</span>
       <div
         className={`
           w-6 h-6 bg-white rounded-full shadow-md
@@ -37,5 +33,5 @@ export function Switch({ isActive, onToogle }: SwitchProps) {
         `}
       />
     </button>
-  )
+  );
 }

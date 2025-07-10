@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
+import { useContext } from 'react';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { iconAcao, selectedIcon } from '../../constants/mapIcons';
 import type { Denuncia } from '../../types/Denuncia';
@@ -13,6 +13,9 @@ import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 import { PinDetailsAcao } from './PinDetailsAcao';
 import { AcaoPolygon } from './AcaoPolygon';
 import { PinDetailsDenuncia } from './PinDetailsDenuncia';
+import { useAddAcao } from '../../context/AddAcaoContext';
+import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
+import { getConvexHull } from '../../utils/geometry';
 
 export function MapComponent() {
   const { isSelectingNewDenunciaInMap, newDenunciaCoordinates } =
@@ -24,6 +27,8 @@ export function MapComponent() {
     acoesFiltradas: acoes,
     denunciasFiltradas: denuncias,
   } = useFilters();
+  const { denunciasVinculadas, isAddingAcao, setDenunciasVinculadas } =
+    useAddAcao();
 
   const handleMarkerClick = (item: Denuncia | Acao) => {
     setActualDetailItem(item);
@@ -56,10 +61,27 @@ export function MapComponent() {
                 position={[d.endereco.latitude, d.endereco.longitude]}
                 icon={getDenunciaIconByTipo(d.tipo.name)}
                 eventHandlers={{
-                  click: () => handleMarkerClick(d),
+                  click: () => {
+                    if (isAddingAcao) {
+                      setDenunciasVinculadas([...denunciasVinculadas, d]);
+                    } else {
+                      handleMarkerClick(d);
+                    }
+                  },
                 }}
               >
-                <PinDetailsDenuncia denuncia={d} />
+                {!isAddingAcao && <PinDetailsDenuncia denuncia={d} />}
+
+                {denunciasVinculadas.length > 0 && (
+                  <DenunciasSelecionadasPolygon
+                    coordinates={getConvexHull(
+                      denunciasVinculadas.map((d) => ({
+                        lat: d.endereco.latitude,
+                        lon: d.endereco.longitude,
+                      })),
+                    )}
+                  />
+                )}
               </Marker>
             );
           })}
