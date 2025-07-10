@@ -1,5 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import type { Dispatch, FC, ReactNode, SetStateAction } from 'react';
+import type {
+  AnyActionArg,
+  Dispatch,
+  FC,
+  ReactNode,
+  SetStateAction,
+} from 'react';
 import type { Denuncia } from '../types/Denuncia';
 import type { Acao } from '../types/Acao';
 import denunciasService from '../services/denunciasService';
@@ -10,6 +16,8 @@ interface OcorrenciasContextType {
   denuncias: Denuncia[];
   setDenuncias: Dispatch<SetStateAction<Denuncia[]>>;
   actualDetailItem: Denuncia | Acao | null;
+  prevAction: Acao | null;
+  setPrevAction: Dispatch<SetStateAction<Acao | null>>;
   setActualDetailItem: Dispatch<SetStateAction<Denuncia | Acao | null>>;
   acoes: Acao[];
   setAcoes: Dispatch<SetStateAction<Acao[]>>;
@@ -37,6 +45,7 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
   const [actualDetailItem, setActualDetailItem] = useState<
     Denuncia | Acao | null
   >(null);
+  const [prevAction, setPrevAction] = useState<Acao | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -97,6 +106,8 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
     acoes,
     setAcoes,
     actualDetailItem,
+    prevAction,
+    setPrevAction,
     setActualDetailItem,
     loading,
     error,

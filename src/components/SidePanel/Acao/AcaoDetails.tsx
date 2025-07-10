@@ -17,8 +17,13 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({
   item,
   onDenunciaClick,
 }) => {
-  const { setDenuncias, setAcoes, denuncias, setActualDetailItem } =
-    useOcorrenciasContext();
+  const {
+    setDenuncias,
+    setAcoes,
+    denuncias,
+    setActualDetailItem,
+    setPrevAction,
+  } = useOcorrenciasContext();
   const [currentDenuncia, setCurrentDenuncia] = useState<Denuncia | null>(null);
   const [
     isOpenRemoveDenunciaConfirmationModal,
@@ -156,7 +161,10 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({
                 denunciasVinculadas.map((d) => (
                   <div
                     key={d.id}
-                    onClick={() => onDenunciaClick(d)}
+                    onClick={() => {
+                      setPrevAction(item);
+                      onDenunciaClick(d);
+                    }}
                     aria-label={`Ver detalhes da denúncia ${d.tipo}`}
                     className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left shadow-sm transition-all hover:shadow-md focus:outline-none cursor-pointer"
                   >

@@ -6,6 +6,7 @@ import { DenunciaDetails } from './Denuncia/DenunciaDetails';
 import { AcaoDetails } from './Acao/AcaoDetails';
 import { BackButton } from '../Buttons/Backbutton';
 import type { ZoomToProps } from '../../pages/OcorrenciasPage';
+import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
 
 interface ItemDetailsViewProps {
   item: Denuncia | Acao;
@@ -22,7 +23,15 @@ export const ItemDetailsView: FC<ItemDetailsViewProps> = ({
   onBack,
   onDenunciaClick,
 }) => {
-  function handleOnBackClick() {}
+  const { setPrevAction, prevAction } = useOcorrenciasContext();
+  function handleOnBackClick() {
+    if (prevAction) {
+      onBack(prevAction);
+      setPrevAction(null);
+    } else {
+      onBack(null);
+    }
+  }
 
   return (
     <div className="px-4 flex flex-col h-full">
