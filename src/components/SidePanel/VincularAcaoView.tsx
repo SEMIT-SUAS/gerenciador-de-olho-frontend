@@ -7,17 +7,18 @@ import { BackButton } from '../Buttons/Backbutton'
 import { FaMapPin } from 'react-icons/fa'
 
 export const VincularAcaoView: FC = () => {
-  const { acoes, setActualDetailItem, actualDetailItem } = useOcorrenciasContext()
+  const { acoes, setActualDetailItem } = useOcorrenciasContext()
   const [isOpen, setIsOpen] = useState(false)
   const [currentAcao, setCurrentAcao] = useState<Acao | null>(null)
-  const { denunciaParaVincular, confirmLink, cancelLinking, acaoParaVincular, setAcaoParaVincular, setIsSelectingAcaoInMap } = useVincularDenunciaContext()
+  const { denunciaParaVincular, confirmLink, cancelLinking, acaoParaVincular, setAcaoParaVincular, setIsSelectingAcaoInMap, isSelectingAcaoInMap } = useVincularDenunciaContext()
 
 
   if (!denunciaParaVincular) return null
 
   function handleOnConfirmLink(acao: Acao) {
     confirmLink(acao.id)
-    setActualDetailItem(acao)
+    setActualDetailItem(acaoParaVincular)
+    setAcaoParaVincular(null)
   }
 
   function handleOnSelectAcao(acao: Acao) {
@@ -38,25 +39,35 @@ export const VincularAcaoView: FC = () => {
           </p>
         </div>
         <button
-            onClick={() => setIsSelectingAcaoInMap(true)} 
-            className='w-full border-2 border-blue-600 text-blue-600 font-semibold py-2 rounded-lg mb-4 hover:bg-blue-50 transition-colors'
-        >
-            Selecionar Ação no Mapa
+            onClick={() => setIsSelectingAcaoInMap((current) => !current)}
+            className={`w-full ${
+              isSelectingAcaoInMap
+                ? ' border-2 border-red-600 bg-red-600 hover:bg-red-700 text-white'
+                : ' border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'
+            } text-sm font-semibold py-2 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed mb-2`}
+            >
+            {!isSelectingAcaoInMap? 'Selecionar Ação no Mapa' : 'Cancelar seleção no mapa'}
         </button>
-
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p>{acaoParaVincular?.nome}</p>
-        </div>
+        {acaoParaVincular && (
+            <div className="my-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">Ação selecionada:</p>
+                <p className="font-bold text-blue-900">{acaoParaVincular.nome}</p>
+                <p className='text-sm text-blue-800 font-semibold'>{acaoParaVincular.secretaria}</p>
+            </div>
+        )}
 
         <h3 className="font-semibold text-gray-800 mb-2">Selecione uma Ação Existente:</h3>
         <div className="flex-1 rounded-lg overflow-y-auto bg-gray-50 space-y-2 p-2">
           {acoes.map(acao => (
-            <button key={acao.id} onClick={() => handleOnSelectAcao(acao)} className="w-full text-left p-3 bg-white rounded-lg shadow-sm hover:bg-gray-100 transition-colors">
+            <button key={acao.id} onClick={() => setAcaoParaVincular(acao)} className="w-full text-left p-3 bg-white rounded-lg shadow-sm hover:bg-gray-100 transition-colors">
               <p className="font-semibold text-gray-700">{acao.nome}</p>
               <p className='text-xs font-semibold text-gray-300'>{acao.secretaria}</p>
             </button>
           ))}
         </div>
+        {acaoParaVincular && (
+          <button className='w-full bg-bg-blue-600 bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed' onClick={() => handleOnSelectAcao(acaoParaVincular!)}>Confirmar vínculo</button>
+        )}
       </div>
 
       <ConfirmModal
@@ -64,7 +75,7 @@ export const VincularAcaoView: FC = () => {
         title="Vínculo de denúncia à ação"
         message={`Você deseja vincular essa denúncia ${denunciaParaVincular.tipo} à essa ação ${currentAcao?.nome}?`}
         onCancel={cancelLinking}
-        onConfirm={() => handleOnConfirmLink(currentAcao!)}
+        onConfirm={() => handleOnConfirmLink(acaoParaVincular!)}
       />
     </>
   )
