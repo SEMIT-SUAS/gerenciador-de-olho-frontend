@@ -1,40 +1,13 @@
-import { useState } from 'react';
-import type { Acao } from '../types/Acao';
-import type { Denuncia } from '../types/Denuncia';
 import { SidePanel } from '../components/SidePanel/SidePanel';
 import { MapComponent } from '../components/Map/MapComponent';
 import { useOcorrenciasContext } from '../context/ocorrenciasContext';
 import { AddDenunciaProvider } from '../context/AddDenunciaContext';
 import { IndeferirDenunciaProvider } from '../context/IndeferirDenunciaContext';
 import { VincularDenunciaProvider } from '../context/vincularDenunciaContext';
-
-export type ZoomToProps = {
-  lat: number;
-  lng: number;
-} | null;
+import { AddAcaoProvider } from '../context/AddAcaoContext';
 
 export function OcorrenciasPage() {
-  const { actualDetailItem, setActualDetailItem, loading, error } =
-    useOcorrenciasContext();
-  const [modoSelecao, setModoSelecao] = useState<boolean>(false);
-  const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>(
-    [],
-  );
-  const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
-  const [zoomTo, setZoomTo] = useState<ZoomToProps>(null);
-
-  const handleSelectionClick = (id: number) => {
-    if (modoSelecao) {
-      setDenunciasSelecionadas((prev) =>
-        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-      );
-    }
-  };
-
-  const handleItemClick = (item: Denuncia | Acao, zoomToData: ZoomToProps) => {
-    setZoomTo(zoomToData);
-    setActualDetailItem(item);
-  };
+  const { loading, error } = useOcorrenciasContext();
 
   if (loading)
     return (
@@ -54,31 +27,13 @@ export function OcorrenciasPage() {
       <VincularDenunciaProvider>
         <IndeferirDenunciaProvider>
           <AddDenunciaProvider>
-            <SidePanel
-              modoSelecao={modoSelecao}
-              denunciasSelecionadasCount={denunciasSelecionadas.length}
-              onIniciarSelecao={() => setModoSelecao(true)}
-              onAbrirFormulario={() => setCreateModalOpen(true)}
-              onCancelarSelecao={() => {
-                setModoSelecao(false);
-                setDenunciasSelecionadas([]);
-              }}
-              onItemClick={handleItemClick}
-              detailViewItem={actualDetailItem}
-              onBackToList={() => setActualDetailItem(null)}
-            />
+            <AddAcaoProvider>
+              <SidePanel />
 
-            <main className="flex-1 z-10 relative">
-              <MapComponent
-                modoSelecao={modoSelecao}
-                denunciasSelecionadas={denunciasSelecionadas}
-                onMarkerClick={handleItemClick}
-                onSelectionClick={handleSelectionClick}
-                detailViewItem={actualDetailItem}
-                zoomTo={zoomTo}
-                setZoomTo={setZoomTo}
-              />
-            </main>
+              <main className="flex-1 z-10 relative">
+                <MapComponent />
+              </main>
+            </AddAcaoProvider>
           </AddDenunciaProvider>
         </IndeferirDenunciaProvider>
       </VincularDenunciaProvider>

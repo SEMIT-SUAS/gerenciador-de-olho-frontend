@@ -207,7 +207,7 @@ export function AddDenunciaForm({ onCreateDenuncia }: AddDenunciaFormProps) {
 
   return (
     <>
-      <form onSubmit={handleSubmitForm} className="flex flex-col gap-4 px-4">
+      <form onSubmit={handleSubmitForm} className="flex flex-col gap-4">
         <div className="flex flex-col gap-4 flex-1 overflow-y-autoo">
           <div>
             <h2 className="text-lg font-semibold text-gray-800">Endereço</h2>

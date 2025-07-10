@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { AddButton } from '../Buttons/AddButton';
-import { DenunciasTabContent } from './DenunciasTabContent';
 import { useAddDenuncia } from '../../context/AddDenunciaContext';
-import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
+import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
 import { ItemDetailsView } from './ItemDetailsView';
 import { useFilters } from '../../context/FiltersContext';
-import { AcoesTabContent } from './AcoesTabContent';
+import { AcoesTabContent } from './Acao/AcoesTabContent';
+import { DenunciasTabContent } from './Denuncia/DenunciasTabContent';
+import { useAddAcao } from '../../context/AddAcaoContext';
 
 export function SidePanel() {
   const [abaAtiva, setAbaAtiva] = useState<'denuncias' | 'acoes'>('denuncias');
@@ -13,6 +14,7 @@ export function SidePanel() {
     useAddDenuncia();
   const { actualDetailItem, setActualDetailItem } = useOcorrenciasContext();
   const { denunciasFiltradas, acoesFiltradas } = useFilters();
+  const { isAddingAcao, setIsAddingAcao } = useAddAcao();
 
   useEffect(() => {
     if (!isAddingDenuncia) {
@@ -23,16 +25,28 @@ export function SidePanel() {
   return (
     <>
       <aside className="w-full md:w-[450px] bg-white shadow-lg flex flex-col z-20 h-screen">
-        <div className="flex items-center justify-between p-4">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Painel de Ocorrências
-          </h1>
+        <div className="flex items-center justify-between p-4 border-b-2 border-gray-200">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Painel de Ocorrências
+            </h1>
+
+            <span className="text-blue-500 text-sm font-semibold">
+              De olho na cidade
+            </span>
+          </div>
 
           <AddButton
             label={`Adicionar ${isAddingDenuncia ? 'Denúncia' : 'Ação'}`}
-            isAdding={isAddingDenuncia}
+            isAdding={isAddingDenuncia || isAddingAcao}
             disabled={!!actualDetailItem}
-            onClick={() => setIsAddingDenuncia((current) => !current)}
+            onClick={() => {
+              if (abaAtiva === 'denuncias') {
+                setIsAddingDenuncia((current) => !current);
+              } else {
+                setIsAddingAcao((current) => !current);
+              }
+            }}
           />
         </div>
 
@@ -44,7 +58,7 @@ export function SidePanel() {
           />
         )}
 
-        {!actualDetailItem && !isAddingDenuncia && (
+        {!actualDetailItem && !isAddingDenuncia && !isAddingAcao && (
           <div>
             <nav className="flex">
               <button
@@ -72,11 +86,13 @@ export function SidePanel() {
           </div>
         )}
 
-        {abaAtiva === 'denuncias' ? (
-          <DenunciasTabContent />
-        ) : (
-          <AcoesTabContent />
-        )}
+        <div className="p-4">
+          {abaAtiva === 'denuncias' ? (
+            <DenunciasTabContent />
+          ) : (
+            <AcoesTabContent />
+          )}
+        </div>
       </aside>
     </>
   );

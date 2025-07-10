@@ -1,16 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import type {
-  AnyActionArg,
-  Dispatch,
-  FC,
-  ReactNode,
-  SetStateAction,
-} from 'react';
+import type { Dispatch, FC, ReactNode, SetStateAction } from 'react';
 import type { Denuncia } from '../types/Denuncia';
 import type { Acao } from '../types/Acao';
 import denunciasService from '../services/denunciasService';
 import acoesService from '../services/acoesService';
 import type { StatusModel } from '../types/StatusModel';
+import type { Secretaria } from '../types/Secretaria';
 
 interface OcorrenciasContextType {
   denuncias: Denuncia[];
@@ -29,6 +24,8 @@ interface OcorrenciasContextType {
     status: StatusModel,
     motivoStatus: string,
   ) => Promise<void>;
+  secretarias: Secretaria[];
+  setSecretarias: Dispatch<SetStateAction<Secretaria[]>>;
 }
 
 const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(
@@ -40,12 +37,25 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
 }) => {
   const [denuncias, setDenuncias] = useState<Denuncia[]>([]);
   const [acoes, setAcoes] = useState<Acao[]>([]);
+  const [secretarias, setSecretarias] = useState<Secretaria[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [actualDetailItem, setActualDetailItem] = useState<
     Denuncia | Acao | null
   >(null);
   const [prevAction, setPrevAction] = useState<Acao | null>(null);
+
+  async function fetchSecretarias(): Promise<Secretaria[] | null> {
+    try {
+      return [
+        { id: 1, name: 'SEMMAM' },
+        { id: 2, name: 'SEMOSP' },
+        { id: 3, name: 'SEMURH' },
+      ];
+    } catch (error) {
+      return [];
+    }
+  }
 
   useEffect(() => {
     const loadData = async () => {
@@ -64,6 +74,8 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
       }
     };
     loadData();
+
+    fetchSecretarias().then((data) => setSecretarias(data));
   }, []);
 
   const vincularDenunciaAcao = async (denunciaId: number, acaoId: number) => {
@@ -113,6 +125,8 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
     error,
     vincularDenunciaAcao,
     indeferirDenuncia,
+    secretarias,
+    setSecretarias,
   };
 
   return (

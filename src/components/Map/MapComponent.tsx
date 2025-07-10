@@ -1,54 +1,23 @@
-import React, {
-  useContext,
-  useEffect,
-  type Dispatch,
-  type SetStateAction,
-} from 'react';
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMap,
-  Polygon,
-} from 'react-leaflet';
+import React, { useContext } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { iconAcao, selectedIcon } from '../../constants/mapIcons';
-import type { StatusModel } from '../../types/StatusModel';
 import type { Denuncia } from '../../types/Denuncia';
 import type { Acao } from '../../types/Acao';
 import { AddDenunciaContext } from '../../context/AddDenunciaContext';
 import { getDenunciaIconByTipo } from '../../utils/getPinIcon';
-import type { LeafletMouseEvent } from 'leaflet';
-import type { ZoomToProps } from '../../pages/OcorrenciasPage';
 import { MapFilters } from './MapFilters';
 import { useFilters } from '../../context/FiltersContext';
+import { MapViewUpdater } from './MapViewUpdater';
+import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
+import { PinDetailsAcao } from './PinDetailsAcao';
+import { AcaoPolygon } from './AcaoPolygon';
+import { PinDetailsDenuncia } from './PinDetailsDenuncia';
 
-interface MapComponentProps {
-  modoSelecao: boolean;
-  denunciasSelecionadas: number[];
-  onMarkerClick: (item: Denuncia | Acao, zoomToData: ZoomToProps) => void;
-  onSelectionClick: (id: number, status: StatusModel) => void;
-  detailViewItem: Denuncia | Acao | null;
-
-  zoomTo: ZoomToProps;
-  setZoomTo: Dispatch<SetStateAction<ZoomToProps>>;
-}
-
-export function MapComponent({
-  modoSelecao,
-  onMarkerClick,
-  detailViewItem,
-  zoomTo,
-  setZoomTo,
-}: MapComponentProps) {
-  const {
-    isSelectingNewDenunciaInMap,
-    setIsSelectingNewDenunciaInMap,
-    setNewDenunciaCoordinates,
-    newDenunciaCoordinates,
-  } = useContext(AddDenunciaContext);
-
+export function MapComponent() {
+  const { isSelectingNewDenunciaInMap, newDenunciaCoordinates } =
+    useContext(AddDenunciaContext);
+  const { setActualDetailItem } = useOcorrenciasContext();
   const {
     isVisibleAcoesInMap,
     isVisibleDenunciasInMap,
@@ -56,58 +25,8 @@ export function MapComponent({
     denunciasFiltradas: denuncias,
   } = useFilters();
 
-  type MapViewUpdaterProps = {
-    item: Denuncia | Acao | null;
-  };
-
-  function MapViewUpdater({ item }: MapViewUpdaterProps) {
-    const map = useMap();
-
-    useEffect(() => {
-      function handleClick(event: any) {
-        if (isSelectingNewDenunciaInMap) {
-          setNewDenunciaCoordinates({
-            latitude: event.latlng.lat,
-            longitude: event.latlng.lng,
-          });
-
-          setIsSelectingNewDenunciaInMap(false);
-          map.off('click');
-        }
-      }
-
-      map.on('click', handleClick);
-    }, [
-      isSelectingNewDenunciaInMap,
-      setNewDenunciaCoordinates,
-      setIsSelectingNewDenunciaInMap,
-    ]);
-
-    useEffect(() => {
-      if (zoomTo) {
-        map.flyTo(
-          {
-            lat: zoomTo.lat,
-            lng: zoomTo.lng,
-          },
-          16,
-        );
-
-        setZoomTo(null);
-      }
-    }, [zoomTo, setZoomTo]);
-
-    return null;
-  }
-
-  const handleMarkerClick = (
-    item: Denuncia | Acao,
-    event: LeafletMouseEvent,
-  ) => {
-    onMarkerClick(item, {
-      lat: event.latlng.lat,
-      lng: event.latlng.lng,
-    });
+  const handleMarkerClick = (item: Denuncia | Acao) => {
+    setActualDetailItem(item);
   };
 
   return (
@@ -119,13 +38,15 @@ export function MapComponent({
         scrollWheelZoom
         className="h-full w-full z-10"
       >
-        <MapViewUpdater item={detailViewItem} />
+        <MapViewUpdater />
+
         <TileLayer
           attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
           url="https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=XLhcrfhE5GT4MmbYP817"
           tileSize={512}
           zoomOffset={-1}
         />
+
         {!isSelectingNewDenunciaInMap &&
           isVisibleDenunciasInMap &&
           denuncias.map((d) => {
@@ -135,52 +56,35 @@ export function MapComponent({
                 position={[d.endereco.latitude, d.endereco.longitude]}
                 icon={getDenunciaIconByTipo(d.tipo.name)}
                 eventHandlers={{
-                  click: (event) => {
-                    handleMarkerClick(d, event);
-                  },
+                  click: () => handleMarkerClick(d),
                 }}
               >
-                {!modoSelecao && (
-                  <Popup>
-                    <b>Denúncia:</b> {d.titulo}
-                    <br />
-                    <b>Status:</b>
-                    <span className="capitalize">
-                      {d?.status?.replace('_', ' ')}
-                    </span>
-                  </Popup>
-                )}
+                <PinDetailsDenuncia denuncia={d} />
               </Marker>
             );
           })}
+
         {!isSelectingNewDenunciaInMap &&
           isVisibleAcoesInMap &&
           acoes.map((a) => (
-            <React.Fragment key={`acao-group-${a.id}`}>
+            <>
               <Marker
                 key={`a-${a.id}`}
                 position={[a.lat, a.lon]}
                 icon={iconAcao}
                 eventHandlers={{
-                  click: (event) => handleMarkerClick(a, event),
+                  click: () => handleMarkerClick(a),
                 }}
               >
-                {!modoSelecao && (
-                  <Popup>
-                    <b>Ação:</b> {a.nome}
-                    <br />
-                    <b>Secretaria:</b> {a.secretaria.name}
-                  </Popup>
-                )}
+                <PinDetailsAcao acao={a} />
               </Marker>
+
               {a.polygonCoords.length > 0 && (
-                <Polygon
-                  pathOptions={{ color: 'green', weight: 2, fillOpacity: 0.1 }}
-                  positions={a.polygonCoords}
-                />
+                <AcaoPolygon coordinates={a.polygonCoords} />
               )}
-            </React.Fragment>
+            </>
           ))}
+
         {newDenunciaCoordinates && (
           <Marker
             position={[
