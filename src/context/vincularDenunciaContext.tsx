@@ -13,6 +13,7 @@ interface VincularDenunciaContextType {
 const VincularDenunciaContext = createContext<VincularDenunciaContextType | undefined>(undefined)
 
 export const VincularDenunciaProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  
   const { vincularDenunciaAcao } = useOcorrenciasContext()
   const [denunciaParaVincular, setDenunciaParaVincular] = useState<Denuncia | null>(null)
 
