@@ -35,7 +35,7 @@ export const IndeferirDenunciaView: FC = () => {
 
     return (
         <>
-            <div className="p-4 flex flex-col h-full">
+            <div className="flex flex-col h-full">
                 <BackButton onClick={cancelIndeferir}>
                     Retornar para a página anterior
                 </BackButton>

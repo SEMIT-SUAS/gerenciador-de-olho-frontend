@@ -51,11 +51,14 @@ export function SidePanel() {
         </div>
 
         {actualDetailItem && (
-          <ItemDetailsView
-            onBack={(item) => setActualDetailItem(item)}
-            item={actualDetailItem}
-            onDenunciaClick={(denuncia) => setActualDetailItem(denuncia)}
-          />
+          <div className='p-4'>
+            <ItemDetailsView
+              onBack={(item) => setActualDetailItem(item)}
+              item={actualDetailItem}
+              onDenunciaClick={(denuncia) => setActualDetailItem(denuncia)}
+            />
+          </div>
+
         )}
 
         {!actualDetailItem && !isAddingDenuncia && !isAddingAcao && (
@@ -86,13 +89,14 @@ export function SidePanel() {
           </div>
         )}
 
-        <div className="p-4">
+        {!actualDetailItem &&
+        <div className="p-4 overflow-y-auto">
           {abaAtiva === 'denuncias' ? (
             <DenunciasTabContent />
           ) : (
             <AcoesTabContent />
           )}
-        </div>
+        </div>}
       </aside>
     </>
   );

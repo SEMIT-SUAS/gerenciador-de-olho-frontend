@@ -34,7 +34,7 @@ export const ItemDetailsView: FC<ItemDetailsViewProps> = ({
   }
 
   return (
-    <div className="px-4 flex flex-col h-full">
+    <div className="flex flex-col h-full">
       <BackButton onClick={handleOnBackClick} className="text-lg">
         Retornar à pagina anterior
       </BackButton>

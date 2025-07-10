@@ -28,7 +28,7 @@ export const VincularAcaoView: FC = () => {
 
   return (
     <>
-      <div className="p-4 flex flex-col h-full">
+      <div className="flex flex-col h-full">
         <BackButton onClick={cancelLinking}/>
         <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Vinculando denúncia:</p>
