@@ -7,6 +7,7 @@ import { ConfirmModal } from '../Modals/ConfirmModal'
 import { useOcorrenciasContext } from '../../context/ocorrenciasContext'
 import { toast } from 'react-toastify'
 import { getPolygonoCenter } from '../../utils/geometry'
+import { FaMapPin } from 'react-icons/fa'
 
 interface AcaoDetailsProps {
   item: Acao;
@@ -126,18 +127,21 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item, denuncias, onDenunciaC
 
         {item.status != 'indeferido' && <div>
           <h3 className="font-semibold text-sm text-gray-800 mb-1">Denúncias Vinculadas ({denunciasVinculadas.length}):</h3>
-          <div className="rounded-lg max-h-80 space-y-3 p-2">
+          <div className="rounded-lg max-h-80 space-y-3 py-2">
             {denunciasVinculadas.length > 0
               ? denunciasVinculadas.map(d => (
                 <div
                   key={d.id}
                   onClick={() => onDenunciaClick(d)}
                   aria-label={`Ver detalhes da denúncia ${d.tipo}`}
-                  className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left shadow-sm transition-all hover:border-blue-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left  transition-all hover:border-blue-500 hover:shadow-sm, focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <div className="flex flex-col">
-                    <p className="font-semibold text-gray-800">{d.tipo.name}</p>
-                    <p className="text-sm text-gray-500">{d.endereco.rua}</p>
+                    <p className="font-semibold text-gray-800">{d.tipo}</p>
+                    <p className="flex text-xs text-gray-400 mt-1">
+                        <span className="mr-1"><FaMapPin/></span>
+                        {`${d.endereco.rua}, ${d.endereco.bairro}`}
+                    </p>
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -169,9 +173,9 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item, denuncias, onDenunciaC
             onClick={() => {
               setIsOpenIndeferirAcaoConfirmationModal(true)
             }}
-            className="w-full cursor-pointer font-bold py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Indeferir ação
+            className="w-full cursor-pointer font-semibold py-2 border-2 border-red-600 text-red-600 hover:text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+            Indeferir ação  
           </button>
         )}
       </div>

@@ -73,6 +73,8 @@ async function updateAcao(acao: Acao): Promise<Acao> {
   }
 }
 
+
+
 export default {
   getAllAcoes,
   createAcao,

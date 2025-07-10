@@ -25,7 +25,6 @@ export function AcoesList({ acoes, onItemClick }: AcoesListProps) {
         })}
       >
         <h3 className="font-semibold text-gray-700">{acao.nome}</h3>
-
         <div className="flex items-center justify-between gap-2">
           <p className="text-sm text-gray-500">Responsável: {acao.secretaria}</p>
           <Tag status={acao.status} />

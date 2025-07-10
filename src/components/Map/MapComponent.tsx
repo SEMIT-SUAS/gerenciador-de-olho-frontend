@@ -40,7 +40,7 @@ export function MapComponent({
     newDenunciaCoordinates,
   } = useContext(AddDenunciaContext)
 
-  const {isSelectingAcaoInMap, setIsSelectingAcaoInMap, setAcaoParaVincular, acaoParaVincular} = useVincularDenunciaContext()
+  const {isSelectingAcaoInMap, setAcaoParaVincular, acaoParaVincular} = useVincularDenunciaContext()
 
     type MapViewUpdaterProps = {
       item: Denuncia | Acao | null
@@ -63,7 +63,7 @@ export function MapComponent({
       }
 
         map.on('click', handleClick)
-      }, [isSelectingNewDenunciaInMap, setNewDenunciaCoordinates, setIsSelectingNewDenunciaInMap, setAcaoParaVincular, isSelectingAcaoInMap, setIsSelectingAcaoInMap])
+      }, [isSelectingNewDenunciaInMap, setNewDenunciaCoordinates, setIsSelectingNewDenunciaInMap])
 
       useEffect(() => {
         if (zoomTo) {
@@ -86,8 +86,6 @@ export function MapComponent({
       })
     }
 
-    console.log(acaoParaVincular)
-
     return (
       <MapContainer center={[-2.51, -44.28]} zoom={13} scrollWheelZoom className="h-full w-full z-10">
         <MapViewUpdater item={detailViewItem} />
@@ -99,7 +97,7 @@ export function MapComponent({
           zoomOffset={-1}
         />
 
-        {!isSelectingNewDenunciaInMap && denuncias.map(d => {
+        {!isSelectingNewDenunciaInMap && !isSelectingAcaoInMap && denuncias.map(d => {
           return (
             <Marker
               key={`d-${d.id}`}
@@ -137,6 +135,7 @@ export function MapComponent({
             {a.polygonCoords.length > 0 && <Polygon pathOptions={{ color: 'green', weight: 2, fillOpacity: 0.1 }} positions={a.polygonCoords} />}
           </React.Fragment>
         ))}
+
 
         {newDenunciaCoordinates &&
           <Marker

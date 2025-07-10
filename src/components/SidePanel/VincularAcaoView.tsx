@@ -53,7 +53,7 @@ export const VincularAcaoView: FC = () => {
                 <p className="text-sm text-blue-800">Ação selecionada:</p>
                 <p className="font-bold text-blue-900">{acaoParaVincular.nome}</p>
                 <p className='text-sm text-blue-800 font-semibold'>{acaoParaVincular.secretaria}</p>
-            </div>
+            </div>  
         )}
 
         <h3 className="font-semibold text-gray-800 mb-2">Selecione uma Ação Existente:</h3>
