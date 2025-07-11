@@ -7,12 +7,13 @@ import { useFilters } from '../../context/FiltersContext';
 import { AcoesTabContent } from './Acao/AcoesTabContent';
 import { DenunciasTabContent } from './Denuncia/DenunciasTabContent';
 import { useAddAcao } from '../../context/AddAcaoContext';
+import { TabButtons } from './TabButtons';
 
 export function SidePanel() {
   const [abaAtiva, setAbaAtiva] = useState<'denuncias' | 'acoes'>('denuncias');
   const { setNewDenunciaCoordinates, isAddingDenuncia, setIsAddingDenuncia } =
     useAddDenuncia();
-  const { actualDetailItem, setActualDetailItem } = useOcorrenciasContext();
+  const { actualDetailItem } = useOcorrenciasContext();
   const { denunciasFiltradas, acoesFiltradas } = useFilters();
   const { isAddingAcao, setIsAddingAcao } = useAddAcao();
 
@@ -36,67 +37,45 @@ export function SidePanel() {
             </span>
           </div>
 
-          <AddButton
-            label={`Adicionar ${isAddingDenuncia ? 'Denúncia' : 'Ação'}`}
-            isAdding={isAddingDenuncia || isAddingAcao}
-            disabled={!!actualDetailItem}
-            onClick={() => {
-              if (abaAtiva === 'denuncias') {
-                setIsAddingDenuncia((current) => !current);
-              } else {
-                setIsAddingAcao((current) => !current);
-              }
-            }}
-          />
+          {!actualDetailItem && (
+            <AddButton
+              label={`Adicionar ${isAddingDenuncia ? 'Denúncia' : 'Ação'}`}
+              isAdding={isAddingDenuncia || isAddingAcao}
+              onClick={() => {
+                if (abaAtiva === 'denuncias') {
+                  setIsAddingDenuncia((current) => !current);
+                } else {
+                  setIsAddingAcao((current) => !current);
+                }
+              }}
+            />
+          )}
         </div>
 
         {actualDetailItem && (
-          <div className='p-4'>
-            <ItemDetailsView
-              onBack={(item) => setActualDetailItem(item)}
-              item={actualDetailItem}
-              onDenunciaClick={(denuncia) => setActualDetailItem(denuncia)}
-            />
-          </div>
-
-        )}
-
-        {!actualDetailItem && !isAddingDenuncia && !isAddingAcao && (
-          <div>
-            <nav className="flex">
-              <button
-                onClick={() => setAbaAtiva('denuncias')}
-                className={`flex-1 p-4 text-center font-medium ${
-                  abaAtiva === 'denuncias'
-                    ? 'text-blue-600  border-b-2 border-blue-600'
-                    : 'text-gray-500'
-                }`}
-              >
-                Denúncias ({denunciasFiltradas.length})
-              </button>
-
-              <button
-                onClick={() => setAbaAtiva('acoes')}
-                className={`flex-1 p-4 text-center font-medium ${
-                  abaAtiva === 'acoes'
-                    ? 'text-green-600 border-b-2 border-green-600'
-                    : 'text-gray-500'
-                }`}
-              >
-                Ações ({acoesFiltradas.length})
-              </button>
-            </nav>
+          <div className="p-4 overflow-y-auto custom-scrollbar-blue">
+            <ItemDetailsView />
           </div>
         )}
 
-        {!actualDetailItem &&
-        <div className="p-4 overflow-y-auto">
-          {abaAtiva === 'denuncias' ? (
-            <DenunciasTabContent />
-          ) : (
-            <AcoesTabContent />
-          )}
-        </div>}
+        {!actualDetailItem && !isAddingAcao && !isAddingDenuncia && (
+          <TabButtons
+            acoesAmount={acoesFiltradas.length}
+            denunciasAmount={denunciasFiltradas.length}
+            currentTab={abaAtiva}
+            setCurrentTab={(tab) => setAbaAtiva(tab)}
+          />
+        )}
+
+        {!actualDetailItem && (
+          <div className="p-4 overflow-y-auto custom-scrollbar-blue">
+            {abaAtiva === 'denuncias' ? (
+              <DenunciasTabContent />
+            ) : (
+              <AcoesTabContent />
+            )}
+          </div>
+        )}
       </aside>
     </>
   );

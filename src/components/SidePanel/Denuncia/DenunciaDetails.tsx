@@ -5,7 +5,7 @@ import { ImageModal } from '../../Modals/ImageModal';
 import { useState } from 'react';
 import { useVincularDenunciaContext } from '../../../context/vincularDenunciaContext';
 import { useIndeferirDenunciaContext } from '../../../context/IndeferirDenunciaContext';
-import { useOcorrenciasContext } from '../../../context/ocorrenciasContext';
+import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { FaTrashAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -59,10 +59,10 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
           <div className="flex-row">
             {/* ✅ Melhor de 'refactor/filter': Acessa o nome do objeto */}
             <p className="text-sm font-semibold text-yellow-700">
-              {item.categoria}
+              {item.categoria.name}
             </p>
             <h2 className="text-xl font-bold text-gray-800 flex-1">
-              {item.tipo}
+              {item.tipo.name}
             </h2>
             <p className="text-sm text-gray-500">
               Registrado em:{' '}

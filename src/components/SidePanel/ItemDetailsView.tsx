@@ -1,35 +1,25 @@
-import type { FC } from 'react';
 import type { Denuncia } from '../../types/Denuncia';
 import type { Acao } from '../../types/Acao';
 
 import { DenunciaDetails } from './Denuncia/DenunciaDetails';
 import { AcaoDetails } from './Acao/AcaoDetails';
 import { BackButton } from '../Buttons/Backbutton';
-import type { ZoomToProps } from '../../pages/OcorrenciasPage';
-import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
-
-interface ItemDetailsViewProps {
-  item: Denuncia | Acao;
-  onBack: (item: null | Acao) => void;
-  onDenunciaClick: (denuncia: Denuncia, zoomToData: ZoomToProps) => void;
-}
+import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
 
 function isAcao(item: Denuncia | Acao): item is Acao {
   return 'secretaria' in item;
 }
 
-export const ItemDetailsView: FC<ItemDetailsViewProps> = ({
-  item,
-  onBack,
-  onDenunciaClick,
-}) => {
+export const ItemDetailsView = () => {
   const { setPrevAction, prevAction } = useOcorrenciasContext();
+  const { actualDetailItem, setActualDetailItem } = useOcorrenciasContext();
+
   function handleOnBackClick() {
     if (prevAction) {
-      onBack(prevAction);
+      setActualDetailItem(prevAction);
       setPrevAction(null);
     } else {
-      onBack(null);
+      setActualDetailItem(null);
     }
   }
 
@@ -39,18 +29,10 @@ export const ItemDetailsView: FC<ItemDetailsViewProps> = ({
         Retornar à pagina anterior
       </BackButton>
 
-      {isAcao(item) ? (
-        <AcaoDetails
-          item={item}
-          onDenunciaClick={(denuncia) =>
-            onDenunciaClick(denuncia, {
-              lat: item.lat,
-              lng: item.lon,
-            })
-          }
-        />
+      {isAcao(actualDetailItem!) ? (
+        <AcaoDetails item={actualDetailItem} />
       ) : (
-        <DenunciaDetails item={item} />
+        <DenunciaDetails item={actualDetailItem!} />
       )}
     </div>
   );

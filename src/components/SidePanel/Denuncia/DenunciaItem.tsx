@@ -27,7 +27,7 @@ export function DenunciaItem({
     >
       <div className="flex justify-between items-center">
         <h3 className="font-semibold text-md text-gray-700">
-          {denuncia.tipo}
+          {denuncia.tipo.name}
         </h3>
         {showTag && <Tag status={denuncia.status} />}
         {isDeletable && (

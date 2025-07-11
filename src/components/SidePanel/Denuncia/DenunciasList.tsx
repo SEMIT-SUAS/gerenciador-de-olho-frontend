@@ -1,10 +1,9 @@
-import type { ZoomToProps } from '../../../pages/OcorrenciasPage';
 import type { Denuncia } from '../../../types/Denuncia';
 import { DenunciaItem } from './DenunciaItem';
 
 type DenunciasListProps = {
   denuncias: Denuncia[];
-  onItemClick: (item: Denuncia, zoomToData: ZoomToProps) => void;
+  onItemClick: (item: Denuncia) => void;
 };
 
 export function DenunciasList({ denuncias, onItemClick }: DenunciasListProps) {
@@ -25,12 +24,7 @@ export function DenunciasList({ denuncias, onItemClick }: DenunciasListProps) {
           <DenunciaItem
             key={denuncia.id}
             denuncia={denuncia}
-            onClick={() =>
-              onItemClick(denuncia, {
-                lat: denuncia.endereco.latitude,
-                lng: denuncia.endereco.longitude,
-              })
-            }
+            onClick={() => onItemClick(denuncia)}
             showTag={true}
             showDescription={true}
             isDeletable={false}

@@ -1,11 +1,11 @@
-import type { LatLngExpression, PathOptions } from 'leaflet';
+import type { LatLngExpression } from 'leaflet';
 import { Polygon } from 'react-leaflet';
 
-const defaultStyle: PathOptions = {
-  color: '#0d6efd',
-  fillColor: '#0d6efd',
-  weight: 2.5,
-  fillOpacity: 0.6,
+const subtleStyle = {
+  color: 'orange',
+  fillColor: 'red',
+  weight: 1,
+  fillOpacity: 0.04,
 };
 
 export function DenunciasSelecionadasPolygon({
@@ -13,11 +13,5 @@ export function DenunciasSelecionadasPolygon({
 }: {
   coordinates: LatLngExpression[];
 }) {
-  return (
-    <Polygon
-      pathOptions={defaultStyle}
-      positions={coordinates}
-      {...defaultStyle}
-    />
-  );
+  return <Polygon pathOptions={subtleStyle} positions={coordinates} />;
 }

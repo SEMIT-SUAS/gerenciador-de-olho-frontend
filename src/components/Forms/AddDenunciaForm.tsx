@@ -11,7 +11,7 @@ import { SelectArrowDown } from './SelectArrowDown';
 import { useAddDenuncia } from '../../context/AddDenunciaContext';
 import { toast } from 'react-toastify';
 import { ConfirmModal } from '../Modals/ConfirmModal';
-import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
+import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
 
 const addDenunciaFormType = z.object({
   categoryId: z.number().min(1, 'Selecione uma categoria'),
@@ -208,7 +208,9 @@ export function AddDenunciaForm({ onCreateDenuncia }: AddDenunciaFormProps) {
   return (
     <>
       <form onSubmit={handleSubmitForm} className="flex flex-col gap-4 px-1">
-        <div className="flex flex-col gap-4 flex-1 overflow-y-autoo">
+        <h2 className="text-2xl font-bold text-blue-500">Adicionar denúncia</h2>
+
+        <div className="flex flex-col gap-4 flex-1 overflow-y-auto">
           <div>
             <h2 className="text-lg font-semibold text-gray-800">Endereço</h2>
             <p className="mt-1 text-sm text-gray-600">

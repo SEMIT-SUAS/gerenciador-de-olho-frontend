@@ -10,13 +10,9 @@ import { getPolygonoCenter } from '../../../utils/geometry';
 
 interface AcaoDetailsProps {
   item: Acao;
-  onDenunciaClick: (denuncia: Denuncia) => void;
 }
 
-export const AcaoDetails: FC<AcaoDetailsProps> = ({
-  item,
-  onDenunciaClick,
-}) => {
+export const AcaoDetails: FC<AcaoDetailsProps> = ({ item }) => {
   const {
     setDenuncias,
     setAcoes,
@@ -163,7 +159,7 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({
                     key={d.id}
                     onClick={() => {
                       setPrevAction(item);
-                      onDenunciaClick(d);
+                      setActualDetailItem(d);
                     }}
                     aria-label={`Ver detalhes da denúncia ${d.tipo}`}
                     className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left shadow-sm transition-all hover:shadow-md focus:outline-none cursor-pointer"

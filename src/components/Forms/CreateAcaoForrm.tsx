@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { z } from 'zod';
 import { FormGroup } from './FormGroup';
 import { Label } from './Label';
 import { FormInput } from './FormInput';
@@ -10,13 +11,36 @@ import { useAddAcao } from '../../context/AddAcaoContext';
 import { useFilters } from '../../context/FiltersContext';
 import { DenunciaItem } from '../SidePanel/Denuncia/DenunciaItem';
 import { FaBatteryEmpty } from 'react-icons/fa';
+import { FormInputError } from './FormInputError';
+import { toast } from 'react-toastify';
+import type { Acao } from '../../types/Acao';
+import { getConvexHull, getPolygonoCenter } from '../../utils/geometry';
+
+const createAcaoFormSchema = z.object({
+  title: z
+    .string()
+    .min(3, { message: 'O título deve ter no mínimo 3 caracteres.' })
+    .max(100, { message: 'O título deve ter no máximo 100 caracteres.' }),
+  secretariaId: z
+    .number({ invalid_type_error: 'Selecione uma secretaria.' })
+    .gt(0, { message: 'Selecione uma secretaria.' }),
+  obs: z
+    .string()
+    .max(500, { message: 'A observação deve ter no máximo 500 caracteres.' })
+    .optional(),
+});
 
 export function CreateAcaoForm() {
-  const { secretarias } = useOcorrenciasContext();
-  const { denunciasVinculadas, setDenunciasVinculadas } = useAddAcao();
+  const { secretarias, setAcoes, setDenuncias, setActualDetailItem } =
+    useOcorrenciasContext();
+  const { denunciasVinculadas, setDenunciasVinculadas, setIsAddingAcao } =
+    useAddAcao();
   const { setIsVisibleAcoesInMap, setFiltroStatusDenuncia } = useFilters();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<z.ZodFormattedError<
+    z.infer<typeof createAcaoFormSchema>
+  > | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     secretariaId: -1,
@@ -30,6 +54,67 @@ export function CreateAcaoForm() {
 
   function handleCreateAcaoFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setErrors(null);
+
+    const validation = createAcaoFormSchema.safeParse(formData);
+
+    if (!validation.success) {
+      setErrors(validation.error.format());
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const denunciasVinculadasOrdernated = getConvexHull(
+        denunciasVinculadas.map((d) => ({
+          lat: d.endereco.latitude,
+          lon: d.endereco.longitude,
+        })),
+      );
+
+      const actionCoordinates = getPolygonoCenter(
+        denunciasVinculadasOrdernated,
+      );
+
+      const newActionData: Acao = {
+        id: Math.random(),
+        nome: formData.title,
+        lat: actionCoordinates[0],
+        lon: actionCoordinates[1],
+        polygonCoords: denunciasVinculadasOrdernated,
+        secretaria: {
+          ...secretarias.find((sec) => sec.id === formData.secretariaId)!,
+        },
+        status: 'aberto',
+      };
+
+      setDenuncias((denuncias) =>
+        denuncias.map((d) => {
+          if (denunciasVinculadas.find((dc) => dc.id == d.id)) {
+            return {
+              ...d,
+              acaoId: newActionData.id,
+            };
+          }
+
+          return d;
+        }),
+      );
+
+      setAcoes((acoes) => [...acoes, newActionData]);
+      setDenunciasVinculadas([]);
+      setActualDetailItem(newActionData);
+      setIsAddingAcao(false);
+      setIsVisibleAcoesInMap(true);
+
+      toast('Ação criada!', {
+        type: 'success',
+      });
+    } catch {
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -37,10 +122,7 @@ export function CreateAcaoForm() {
       onSubmit={handleCreateAcaoFormSubmit}
       className="flex flex-col gap-4 px-1"
     >
-      <Observacao
-        text="Você está adicionando uma nova ação ao sistema."
-        color="blue"
-      />
+      <h2 className="text-2xl font-bold text-green-500">Criar ação</h2>
 
       <div className="flex flex-col gap-4">
         <FormGroup>
@@ -56,6 +138,7 @@ export function CreateAcaoForm() {
             }
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
+          <FormInputError message={errors?.title?._errors[0]} />
         </FormGroup>
 
         <FormGroup>
@@ -74,7 +157,7 @@ export function CreateAcaoForm() {
                 value={String(formData.secretariaId)}
                 className="w-full cursor-pointer appearance-none rounded-md border border-gray-300 bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
               >
-                <option value="0" disabled>
+                <option value="-1" disabled>
                   Selecione uma secretaria
                 </option>
                 {secretarias.map((sec) => (
@@ -83,10 +166,10 @@ export function CreateAcaoForm() {
                   </option>
                 ))}
               </select>
-
               <SelectArrowDown />
             </div>
           )}
+          <FormInputError message={errors?.secretariaId?._errors[0]} />
         </FormGroup>
 
         <FormGroup>
@@ -99,15 +182,16 @@ export function CreateAcaoForm() {
             placeholder="Caso haja necessidade, informe aqui alguma observação"
             onChange={(e) => setFormData({ ...formData, obs: e.target.value })}
           />
+          <FormInputError message={errors?.obs?._errors[0]} />
         </FormGroup>
       </div>
 
       <Observacao
         color="red"
-        text="Faça a seleção de denúncias automaticamente ao clicar em uma denúnica no mapa"
+        text="Faça a seleção das denúncias automaticamente ao clicar em uma denúnica no mapa"
       />
 
-      <div className="flex flex-col gap-4 max-h-[50%] overflow-y-auto">
+      <div className="flex flex-col gap-4 max-h-[19rem] overflow-y-auto">
         {denunciasVinculadas.length === 0 ? (
           <span className="flex items-center gap-2 text-gray-500">
             <FaBatteryEmpty />

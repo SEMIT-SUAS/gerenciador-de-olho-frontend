@@ -11,8 +11,8 @@ import { VincularAcaoView } from '../Acao/VincularAcaoView';
 import { IndeferirDenunciaView } from '../IndeferidoStatusView';
 
 export function DenunciasTabContent() {
-  const { denunciaParaVincular } = useVincularDenunciaContext()
-  const { denunciaParaIndeferir } = useIndeferirDenunciaContext()
+  const { denunciaParaVincular } = useVincularDenunciaContext();
+  const { denunciaParaIndeferir } = useIndeferirDenunciaContext();
   const { isAddingDenuncia, setIsAddingDenuncia } = useAddDenuncia();
   const { setActualDetailItem } = useOcorrenciasContext();
   const {
@@ -23,15 +23,11 @@ export function DenunciasTabContent() {
   } = useFilters();
 
   if (denunciaParaVincular) {
-    return (
-      <VincularAcaoView/>
-    )
+    return <VincularAcaoView />;
   }
 
-  if (denunciaParaIndeferir){
-    return (
-      <IndeferirDenunciaView/>
-    )
+  if (denunciaParaIndeferir) {
+    return <IndeferirDenunciaView />;
   }
 
   if (isAddingDenuncia) {
@@ -43,7 +39,7 @@ export function DenunciasTabContent() {
   }
 
   return (
-    <div className="flex flex-col gap-4 flex-1 overflow-y-auto custom-scrollbar-blue">
+    <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-1">
         <FilterStatusSelect
           id="status-filter-select"
@@ -55,7 +51,7 @@ export function DenunciasTabContent() {
         <SelectCategoriaFilter
           onCategoriaChange={(categoria) => setFiltroCategoria(categoria)}
         />
-        </div>
+      </div>
 
       <DenunciasList
         denuncias={denunciasFiltradas}
