@@ -188,6 +188,7 @@ export function AddDenunciaForm({ onCreateDenuncia }: AddDenunciaFormProps) {
       const newDenunciaData = await denunciasService.createDenuncia(
         createDenunciaData,
       );
+
       setDenuncias((current) => [...current, newDenunciaData]);
 
       onCreateDenuncia();
