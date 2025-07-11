@@ -39,7 +39,9 @@ export const VincularAcaoView: FC = () => {
         <BackButton onClick={cancelLinking} />
         <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Vinculando denúncia:</p>
-          <p className="font-bold text-blue-900">{denunciaParaVincular.tipo}</p>
+          <p className="font-bold text-blue-900">
+            {denunciaParaVincular.tipo.name}
+          </p>
           <p className="flex text-xs text-blue-800 mt-1">
             <span className="mr-1">
               <FaMapPin />

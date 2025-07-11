@@ -65,7 +65,7 @@ export function MapComponent() {
               <Marker
                 key={`d-${d.id}`}
                 position={[d.endereco.latitude, d.endereco.longitude]}
-                icon={getDenunciaIconByTipo(d.tipo)}
+                icon={getDenunciaIconByTipo(d.tipo.name)}
                 eventHandlers={{
                   click: () => {
                     if (isAddingAcao) {
@@ -101,7 +101,7 @@ export function MapComponent() {
         {!isSelectingNewDenunciaInMap &&
           isVisibleAcoesInMap &&
           acoes.map((a) => (
-            <>
+            <div key={`acao-group-${a.id}`}>
               <Marker
                 key={`a-${a.id}`}
                 position={[a.lat, a.lon]}
@@ -122,7 +122,7 @@ export function MapComponent() {
               {a.polygonCoords.length > 0 && (
                 <AcaoPolygon coordinates={a.polygonCoords} />
               )}
-            </>
+            </div>
           ))}
 
         {newDenunciaCoordinates && (

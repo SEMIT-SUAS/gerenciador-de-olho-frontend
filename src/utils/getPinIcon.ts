@@ -1,42 +1,102 @@
-import L from 'leaflet'
+import L from 'leaflet';
 
 const icons = [
   {
-    name: 'Buraco na rua',
-    path: 'buraco-na-rua.png',
+    name: 'Acessibilidade irregular',
+    path: 'acessibilidade/acessibilidade-irregular.png',
+  },
+  {
+    name: 'Falta de acessibilidade',
+    path: 'acessibilidade/falta-de-acessibilidade.png',
   },
   {
     name: 'Bueiro aberto',
-    path: 'bueiro-aberto.png',
+    path: 'infraestrutura/bueiro-aberto.png',
   },
   {
-    name: 'Capinação',
-    path: 'capinacao.png',
+    name: 'Buraco na rua',
+    path: 'infraestrutura/buraco-na-rua.png',
+  },
+  {
+    name: 'Capinacao',
+    path: 'infraestrutura/capinacao.png',
   },
   {
     name: 'Coleta de lixo',
-    path: 'coleta-de-lixo.png',
+    path: 'infraestrutura/coleta-de-lixo.png',
   },
   {
     name: 'Enchente',
-    path: 'enchente.png',
+    path: 'infraestrutura/enchente.png',
   },
   {
     name: 'Lampada queimada',
-    path: 'lampada-queimada.png',
+    path: 'infraestrutura/lampada-queimada.png',
   },
   {
     name: 'Limpeza de vias',
-    path: 'limpeza-de-vias.png',
+    path: 'infraestrutura/limpeza-de-vias.png',
   },
-]
+  {
+    name: 'Manutencao praca publica',
+    path: 'infraestrutura/manutencao-praca-publica.png',
+  },
+  {
+    name: 'Manutencao predio publico',
+    path: 'infraestrutura/manutencao-predio-publico.png',
+  },
+  {
+    name: 'Manutencao quadra',
+    path: 'infraestrutura/manutencao-quadra.png',
+  },
+  {
+    name: 'Podar arvores',
+    path: 'infraestrutura/podar-arvores.png',
+  },
+  {
+    name: 'Sem asfalto',
+    path: 'infraestrutura/sem-asfalto.png',
+  },
+  {
+    name: 'Descarte ilegal',
+    path: 'meio-ambiente/descarte-ilegal.png',
+  },
+  {
+    name: 'Desmatamento ilegal',
+    path: 'meio-ambiente/desmatamento-ilegal.png',
+  },
+  {
+    name: 'Poluicao sonora',
+    path: 'meio-ambiente/poluicao-sonora.png',
+  },
+  {
+    name: 'Falta de medicamento',
+    path: 'saude-publica/falta-de-medicamento.png',
+  },
+  {
+    name: 'Foco de dengue',
+    path: 'saude-publica/foco-de-dengue.png',
+  },
+  {
+    name: 'Estacionamento irregular',
+    path: 'transito-e-transporte/estacionamento-irregular.png',
+  },
+  {
+    name: 'Ma sinalizacao',
+    path: 'transito-e-transporte/ma-sinalizacao.png',
+  },
+  {
+    name: 'Semaforo quebrado',
+    path: 'transito-e-transporte/semaforo-quebrado.png',
+  },
+];
 
 export function getDenunciaIconByTipo(tipo: string) {
-  const target = icons.find(i => i.name == tipo)
-  let path = 'sirene.png'
+  const target = icons.find((i) => i.name == tipo);
+  let path = '/icons/denuncia.png';
 
   if (target) {
-    path = target.path
+    path = target.path;
   }
 
   return new L.Icon({
@@ -46,5 +106,5 @@ export function getDenunciaIconByTipo(tipo: string) {
     popupAnchor: [0, -40],
     shadowSize: [41, 41],
     shadowAnchor: [19, 41],
-  })
+  });
 }
