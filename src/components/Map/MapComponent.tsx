@@ -64,7 +64,7 @@ export function MapComponent() {
               <Marker
                 key={`d-${d.id}`}
                 position={[d.endereco.latitude, d.endereco.longitude]}
-                icon={getDenunciaIconByTipo(d.tipo.name)}
+                icon={getDenunciaIconByTipo(d.tipo)}
                 eventHandlers={{
                   click: () => {
                     if (isAddingAcao) {

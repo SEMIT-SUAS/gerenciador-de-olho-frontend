@@ -59,10 +59,10 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
           <div className="flex-row">
             {/* ✅ Melhor de 'refactor/filter': Acessa o nome do objeto */}
             <p className="text-sm font-semibold text-yellow-700">
-              {item.categoria.name}
+              {item.categoria}
             </p>
             <h2 className="text-xl font-bold text-gray-800 flex-1">
-              {item.tipo.name}
+              {item.tipo}
             </h2>
             <p className="text-sm text-gray-500">
               Registrado em:{' '}

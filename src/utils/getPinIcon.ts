@@ -3,7 +3,7 @@ import L from 'leaflet'
 const icons = [
   {
     name: 'Buraco na rua',
-    path: 'bueiro-aberto.png',
+    path: 'buraco-na-rua.png',
   },
   {
     name: 'Bueiro aberto',
