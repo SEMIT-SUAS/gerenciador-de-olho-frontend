@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { z } from 'zod';
 import { FormGroup } from './FormGroup';
 import { Label } from './Label';
@@ -8,7 +8,6 @@ import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
 import { Observacao } from '../Observacao';
 import { SelectArrowDown } from './SelectArrowDown';
 import { useAddAcao } from '../../context/AddAcaoContext';
-import { useFilters } from '../../context/FiltersContext';
 import { DenunciaItem } from '../SidePanel/Denuncia/DenunciaItem';
 import { FaBatteryEmpty } from 'react-icons/fa';
 import { FormInputError } from './FormInputError';
@@ -35,7 +34,6 @@ export function CreateAcaoForm() {
     useOcorrenciasContext();
   const { denunciasVinculadas, setDenunciasVinculadas, setIsAddingAcao } =
     useAddAcao();
-  const { setIsVisibleAcoesInMap, setFiltroStatusDenuncia } = useFilters();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<z.ZodFormattedError<
@@ -46,11 +44,6 @@ export function CreateAcaoForm() {
     secretariaId: -1,
     obs: '',
   });
-
-  useEffect(() => {
-    setIsVisibleAcoesInMap(false);
-    setFiltroStatusDenuncia('aberto');
-  }, []);
 
   function handleCreateAcaoFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -103,10 +96,8 @@ export function CreateAcaoForm() {
       );
 
       setAcoes((acoes) => [...acoes, newActionData]);
-      setDenunciasVinculadas([]);
       setActualDetailItem(newActionData);
       setIsAddingAcao(false);
-      setIsVisibleAcoesInMap(true);
 
       toast('Ação criada!', {
         type: 'success',

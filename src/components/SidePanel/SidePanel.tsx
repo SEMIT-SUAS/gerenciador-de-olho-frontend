@@ -53,7 +53,7 @@ export function SidePanel() {
         </div>
 
         {actualDetailItem && (
-          <div className="p-4 overflow-y-auto custom-scrollbar-blue">
+          <div className="p-4 overflow-y-auto custom-scrollbar-blue h-full">
             <ItemDetailsView />
           </div>
         )}

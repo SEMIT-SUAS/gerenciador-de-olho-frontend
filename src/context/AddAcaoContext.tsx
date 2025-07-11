@@ -1,11 +1,13 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type Dispatch,
   type SetStateAction,
 } from 'react';
 import type { Denuncia } from '../types/Denuncia';
+import { useFilters } from './FiltersContext';
 
 type AddAcaoContextProps = {
   isAddingAcao: boolean;
@@ -21,6 +23,20 @@ export function AddAcaoProvider({ children }: { children: React.ReactNode }) {
   const [denunciasVinculadas, setDenunciasVinculadas] = useState<Denuncia[]>(
     [],
   );
+
+  const { setIsVisibleAcoesInMap, setFiltroDenunciasComAcao } = useFilters();
+
+  useEffect(() => {
+    if (isAddingAcao) {
+      setIsVisibleAcoesInMap(false);
+      setFiltroDenunciasComAcao('sem_acao');
+    } else {
+      setIsVisibleAcoesInMap(true);
+      setFiltroDenunciasComAcao('desabilitado');
+    }
+
+    setDenunciasVinculadas([]);
+  }, [isAddingAcao]);
 
   return (
     <AddAcaoContext.Provider

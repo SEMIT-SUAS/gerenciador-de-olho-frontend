@@ -10,7 +10,7 @@ import {
 import type { StatusModel } from '../types/StatusModel';
 import type { Categorias } from '../types/CategoriaDenuncia';
 import type { Secretarias } from '../types/Secretaria';
-import { useOcorrenciasContext } from './ocorrenciasContext';
+import { useOcorrenciasContext } from './OcorrenciasContext';
 import type { Denuncia } from '../types/Denuncia';
 import type { Acao } from '../types/Acao';
 
@@ -29,6 +29,10 @@ type FiltersContextProps = {
   setFiltroSecretaria: Dispatch<SetStateAction<'todas' | Secretarias | null>>;
   denunciasFiltradas: Denuncia[];
   acoesFiltradas: Acao[];
+  filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
+  setFiltroDenunciasComAcao: Dispatch<
+    SetStateAction<'desabilitado' | 'com_acao' | 'sem_acao'>
+  >;
 };
 
 const FiltersContext = createContext({} as FiltersContextProps);
@@ -48,20 +52,33 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   const [filtroSecretaria, setFiltroSecretaria] = useState<
     'todas' | Secretarias | null
   >('todas');
+  const [filtroDenunciasComAcao, setFiltroDenunciasComAcao] = useState<
+    'desabilitado' | 'com_acao' | 'sem_acao'
+  >('desabilitado');
 
   const { denuncias, acoes } = useOcorrenciasContext();
 
   const denunciasFiltradas = useMemo(() => {
-    return denuncias
-      .filter(
-        (d) =>
-          filtroStatusDenuncia === 'todos' || d.status === filtroStatusDenuncia,
-      )
-      .filter(
-        (d) =>
-          filtroCategoria === 'todas' || d.categoria.name === filtroCategoria,
-      );
-  }, [denuncias, filtroStatusDenuncia, filtroCategoria]);
+    return denuncias.filter((d) => {
+      const passaStatus =
+        filtroStatusDenuncia === 'todos' || d.status === filtroStatusDenuncia;
+
+      const passaCategoria =
+        filtroCategoria === 'todas' || d.categoria.name === filtroCategoria;
+
+      const passaFiltroAcao =
+        filtroDenunciasComAcao === 'desabilitado' ||
+        (filtroDenunciasComAcao === 'com_acao' && d.acaoId) ||
+        (filtroDenunciasComAcao === 'sem_acao' && !d.acaoId);
+
+      return passaStatus && passaCategoria && passaFiltroAcao;
+    });
+  }, [
+    denuncias,
+    filtroStatusDenuncia,
+    filtroCategoria,
+    filtroDenunciasComAcao,
+  ]);
 
   const acoesFiltradas = useMemo(() => {
     return acoes
@@ -92,6 +109,8 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         setFiltroSecretaria,
         denunciasFiltradas,
         acoesFiltradas,
+        filtroDenunciasComAcao,
+        setFiltroDenunciasComAcao,
       }}
     >
       {children}
