@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import { IndeferiItemForm } from '../../Forms/IndeferirItemForm';
 import { denunciasSuggestions } from '../../../constants/messagesRejectComplaint';
 import { API_BASE_URL } from '../../../config/api';
+import { FilesCarrrousel } from '../../FilesCarrousel';
 
 interface DenunciaDetailsViewProps {
   item: Denuncia;
@@ -180,26 +181,14 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
             {item.images.length > 0 && (
               <div>
                 <h3 className="font-semibold text-gray-800 mb-2">Imagens:</h3>
-                <div className="grid grid-flow-col auto-cols-auto gap-x-3 overflow-x-auto pb-2">
-                  {item.images.map((img) => {
-                    return (
-                      <button
-                        key={img.id}
-                        onClick={() =>
-                          setImagemEmDestaque(
-                            `${API_BASE_URL}/files/uploads/${img.name}`,
-                          )
-                        }
-                        className="relative h-40 w-40 flex-shrink-0"
-                      >
-                        <img
-                          src={`${API_BASE_URL}/files/uploads/${img.name}`}
-                          alt={img.name}
-                          className="h-full w-full object-cover rounded-lg hover:opacity-80 transition-opacity"
-                        />
-                      </button>
-                    );
-                  })}
+                <div>
+                  <FilesCarrrousel
+                    files={item.images.map((file) => ({
+                      id: file.id,
+                      name: file.name,
+                      type: file.name.includes('.mp4') ? 'video' : 'image',
+                    }))}
+                  />
                 </div>
               </div>
             )}
@@ -214,7 +203,6 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
             {item.status === 'aberto' && (
               <button
                 onClick={() => {
-                  setPrevAction(item);
                   setShowIndeferirDenuncia(true);
                 }}
                 className="w-full border-2 text-sm border-red-500 text-red-500 font-semibold py-2 rounded-lg transition-colors hover:bg-red-500 hover:text-white"
