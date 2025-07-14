@@ -2,7 +2,6 @@ import { SidePanel } from '../components/SidePanel/SidePanel';
 import { MapComponent } from '../components/Map/MapComponent';
 import { useOcorrenciasContext } from '../context/OcorrenciasContext';
 import { AddDenunciaProvider } from '../context/AddDenunciaContext';
-import { IndeferirDenunciaProvider } from '../context/IndeferirDenunciaContext';
 import { VincularDenunciaProvider } from '../context/vincularDenunciaContext';
 import { AddAcaoProvider } from '../context/AddAcaoContext';
 
@@ -25,17 +24,15 @@ export function OcorrenciasPage() {
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100">
       <VincularDenunciaProvider>
-        <IndeferirDenunciaProvider>
-          <AddDenunciaProvider>
-            <AddAcaoProvider>
-              <SidePanel />
+        <AddDenunciaProvider>
+          <AddAcaoProvider>
+            <SidePanel />
 
-              <main className="flex-1 z-10 relative">
-                <MapComponent />
-              </main>
-            </AddAcaoProvider>
-          </AddDenunciaProvider>
-        </IndeferirDenunciaProvider>
+            <main className="flex-1 z-10 relative">
+              <MapComponent />
+            </main>
+          </AddAcaoProvider>
+        </AddDenunciaProvider>
       </VincularDenunciaProvider>
     </div>
   );

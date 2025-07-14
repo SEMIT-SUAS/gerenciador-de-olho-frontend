@@ -6,13 +6,10 @@ import { DenunciasList } from './DenunciasList';
 import { FilterStatusSelect } from '../Filters/FilterStatusSelect';
 import { SelectCategoriaFilter } from '../Filters/SelectCategoriaFilter';
 import { useVincularDenunciaContext } from '../../../context/vincularDenunciaContext';
-import { useIndeferirDenunciaContext } from '../../../context/IndeferirDenunciaContext';
 import { VincularAcaoView } from '../Acao/VincularAcaoView';
-import { IndeferirDenunciaView } from '../IndeferidoStatusView';
 
 export function DenunciasTabContent() {
   const { denunciaParaVincular } = useVincularDenunciaContext();
-  const { denunciaParaIndeferir } = useIndeferirDenunciaContext();
   const { isAddingDenuncia, setIsAddingDenuncia } = useAddDenuncia();
   const { setActualDetailItem } = useOcorrenciasContext();
   const {
@@ -24,10 +21,6 @@ export function DenunciasTabContent() {
 
   if (denunciaParaVincular) {
     return <VincularAcaoView />;
-  }
-
-  if (denunciaParaIndeferir) {
-    return <IndeferirDenunciaView />;
   }
 
   if (isAddingDenuncia) {
