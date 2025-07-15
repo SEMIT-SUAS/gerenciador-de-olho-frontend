@@ -26,9 +26,7 @@ export function DenunciaItem({
       onClick={onClick}
     >
       <div className="flex justify-between items-center">
-        <h3 className="font-semibold text-md text-gray-700">
-          {denuncia.tipo.name}
-        </h3>
+        <h3 className="font-semibold text-md text-gray-700">{denuncia.tipo}</h3>
         {showTag && <Tag status={denuncia.status} />}
         {isDeletable && (
           <button

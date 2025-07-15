@@ -1,38 +1,35 @@
-type TabButtonsProps = {
+import { NavLink } from 'react-router-dom';
+
+interface TabButtonsProps {
   denunciasAmount: number;
   acoesAmount: number;
-  currentTab: 'denuncias' | 'acoes';
-  setCurrentTab: (currentTab: 'denuncias' | 'acoes') => void;
-};
+}
 
-export function TabButtons({
-  denunciasAmount,
-  acoesAmount,
-  currentTab,
-  setCurrentTab,
-}: TabButtonsProps) {
+export function TabButtons({ denunciasAmount, acoesAmount }: TabButtonsProps) {
+  const baseStyle =
+    'flex-1 py-3 px-2 text-center font-semibold border-b-4 transition-colors duration-200';
+  const activeStyle = 'border-blue-500 text-blue-600';
+  const inactiveStyle =
+    'border-transparent text-gray-500 hover:border-gray-300';
+
   return (
-    <nav className="flex">
-      <button
-        onClick={() => setCurrentTab('denuncias')}
-        className={`flex-1 p-4 text-center font-medium ${
-          currentTab === 'denuncias'
-            ? 'text-blue-600  border-b-2 border-blue-600'
-            : 'text-gray-500'
-        }`}
+    <div className="flex w-full border-b-2 border-gray-200">
+      <NavLink
+        to="/ocorrencias/denuncias"
+        className={({ isActive }) =>
+          `${baseStyle} ${isActive ? activeStyle : inactiveStyle}`
+        }
       >
         Denúncias ({denunciasAmount})
-      </button>
-      <button
-        onClick={() => setCurrentTab('acoes')}
-        className={`flex-1 p-4 text-center font-medium ${
-          currentTab === 'acoes'
-            ? 'text-green-600 border-b-2 border-green-600'
-            : 'text-gray-500'
-        }`}
+      </NavLink>
+      <NavLink
+        to="/ocorrencias/acoes"
+        className={({ isActive }) =>
+          `${baseStyle} ${isActive ? activeStyle : inactiveStyle}`
+        }
       >
         Ações ({acoesAmount})
-      </button>
-    </nav>
+      </NavLink>
+    </div>
   );
 }

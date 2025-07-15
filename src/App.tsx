@@ -1,19 +1,35 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
-import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { ToastContainer } from 'react-toastify';
-import { FiltersProvider } from './context/FiltersContext';
+import { OcorrenciasProvider } from './context/OcorrenciasContext';
+import { DenunciasList } from './components/SidePanel/Denuncia/DenunciasList';
+import { DenunciaDetails } from './components/SidePanel/Denuncia/DenunciaDetails';
 
 export function App() {
   return (
     <BrowserRouter>
-      <OcorrenciasProvider>
-        <FiltersProvider>
-          <Routes>
-            <Route index element={<OcorrenciasPage />} />
-          </Routes>
-        </FiltersProvider>
-      </OcorrenciasProvider>
+      <Routes>
+        <Route
+          path="/ocorrencias"
+          element={
+            <OcorrenciasProvider>
+              <OcorrenciasPage />
+            </OcorrenciasProvider>
+          }
+        >
+          <Route path="denuncias">
+            <Route index element={<DenunciasList />} />
+            <Route path=":denunciaId" element={<DenunciaDetails />} />
+          </Route>
+
+          <Route path="acoes">
+            <Route index element={<h1>Listando as acoes</h1>} />
+            <Route path=":acaoId" element={<h1>Detalhes da acao</h1>} />
+          </Route>
+        </Route>
+
+        <Route path="/" element={<Navigate to={'/ocorrencias/denuncias'} />} />
+      </Routes>
 
       <ToastContainer
         position="bottom-right"

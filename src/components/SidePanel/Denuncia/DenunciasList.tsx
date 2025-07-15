@@ -1,36 +1,56 @@
-import type { Denuncia } from '../../../types/Denuncia';
 import { DenunciaItem } from './DenunciaItem';
+import { useFilters } from '../../../context/FiltersContext';
+import { useNavigate } from 'react-router-dom';
+import { FilterStatusSelect } from '../Filters/FilterStatusSelect';
+import { SelectCategoriaFilter } from '../Filters/SelectCategoriaFilter';
 
-type DenunciasListProps = {
-  denuncias: Denuncia[];
-  onItemClick: (item: Denuncia) => void;
-};
+export function DenunciasList() {
+  const {
+    denunciasFiltradas: denuncias,
+    setFiltroStatusDenuncia,
+    filtroStatusDenuncia,
+    setFiltroCategoria,
+  } = useFilters();
 
-export function DenunciasList({ denuncias, onItemClick }: DenunciasListProps) {
-  const isEmpty = denuncias.length < 1;
-
-  if (isEmpty) {
-    return (
-      <p className="text-center text-gray-500 mt-4">
-        Nenhuma denúncia encontrada.
-      </p>
-    );
-  }
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-3">
-      {denuncias.map((denuncia) => {
-        return (
-          <DenunciaItem
-            key={denuncia.id}
-            denuncia={denuncia}
-            onClick={() => onItemClick(denuncia)}
-            showTag={true}
-            showDescription={true}
-            isDeletable={false}
-          />
-        );
-      })}
+      <div className="grid grid-cols-2 gap-1">
+        <FilterStatusSelect
+          id="status-filter-select"
+          label="Status"
+          onStatusChange={(status) => setFiltroStatusDenuncia(status)}
+          value={filtroStatusDenuncia}
+        />
+
+        <SelectCategoriaFilter
+          onCategoriaChange={(categoria) => setFiltroCategoria(categoria)}
+        />
+      </div>
+
+      {denuncias.length === 0 ? (
+        <p className="text-center text-gray-500 mt-4">
+          Nenhuma denúncia encontrada.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {denuncias.map((denuncia) => {
+            return (
+              <DenunciaItem
+                key={denuncia.id}
+                denuncia={denuncia}
+                onClick={() =>
+                  navigate(`/ocorrencias/denuncias/${denuncia.id}`)
+                }
+                showTag={true}
+                showDescription={true}
+                isDeletable={false}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

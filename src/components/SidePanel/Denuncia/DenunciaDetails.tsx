@@ -1,5 +1,3 @@
-import type { Denuncia } from '../../../types/Denuncia';
-import type { FC } from 'react';
 import { Tag } from './../Tag';
 import { ImageModal } from '../../Modals/ImageModal';
 import { useEffect, useMemo, useState } from 'react';
@@ -7,50 +5,42 @@ import { useVincularDenunciaContext } from '../../../context/vincularDenunciaCon
 import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { FaTrashAlt } from 'react-icons/fa';
-import { toast } from 'react-toastify';
 import { IndeferiItemForm } from '../../Forms/IndeferirItemForm';
 import { denunciasSuggestions } from '../../../constants/messagesRejectComplaint';
-import { API_BASE_URL } from '../../../config/api';
 import { FilesCarrrousel } from '../../FilesCarrousel';
+import { Navigate, useParams } from 'react-router-dom';
+import type { Denuncia } from '../../../types/Denuncia';
+import { toast } from 'react-toastify';
 
-interface DenunciaDetailsViewProps {
-  item: Denuncia;
-}
-
-export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
-  const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
-  const { startLinking } = useVincularDenunciaContext();
-  const {
-    setDenuncias,
-    setActualDetailItem,
-    acoes,
-    prevAction,
-    setPrevAction,
-    actualDetailItem,
-  } = useOcorrenciasContext();
+export function DenunciaDetails() {
   const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
   const [showIndeferirDenuncia, setShowIndeferirDenuncia] = useState(false);
+  const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
+  const { startLinking } = useVincularDenunciaContext();
+  const { denuncias, acoes, setDenuncias } = useOcorrenciasContext();
 
-  useEffect(() => {
-    if (!prevAction) {
-      setShowIndeferirDenuncia(false);
-    }
-  }, [prevAction]);
+  const params = useParams();
+  const denunciaId = params.denunciaId;
+  const denuncia = denuncias.find((d) => d.id == Number(denunciaId));
+
+  if (!denuncia) {
+    return Navigate({
+      to: '/404',
+      replace: true,
+    });
+  }
 
   const acaoVinculada = useMemo(() => {
-    return acoes.find((a) => a.id === item.acaoId);
+    return acoes.find((a) => a.id == denuncia.acaoId);
   }, acoes);
 
   async function handleConfirmDesvincularDenunciaAcao() {
     try {
-      setActualDetailItem((current) => ({
-        ...current!,
-        status: 'aberto',
-        acaoId: null,
-      }));
+      if (!denuncia) throw new Error('Denúncia não encontrada');
+
       setDenuncias((current) =>
         current.map((d) => {
-          if (d.id === item.id) {
+          if (d.id === denuncia.id) {
             return {
               ...d,
               status: 'aberto',
@@ -60,8 +50,9 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
           return d;
         }),
       );
+
       setIsDesvincularModalOpen(false);
-      toast('Denúncia desvinculada com sucesso!', { type: 'success' });
+      toast.success('Denúncia desvinculada com sucesso!');
     } catch (error) {
       toast.error('Erro ao desvincular denúncia.');
       console.error(error);
@@ -70,23 +61,22 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
 
   function handleIndeferirDenuncia(reason: string) {
     try {
+      if (!denuncia) throw new Error('Denúncia não encontrada');
+
       const updatedDenuncia: Denuncia = {
-        ...item,
+        ...denuncia,
         status: 'indeferido',
         motivoStatus: reason,
       };
 
       setDenuncias((current) =>
-        current.map((d) => (d.id === item.id ? updatedDenuncia : d)),
+        current.map((d) => (d.id === denuncia.id ? updatedDenuncia : d)),
       );
 
-      setPrevAction(null);
-      setActualDetailItem(updatedDenuncia);
       setShowIndeferirDenuncia(false);
       toast.success('Denúncia indeferida com sucesso!');
     } catch (error) {
       toast.error('Erro ao indeferir denúncia.');
-      console.error(error);
     }
   }
 
@@ -95,8 +85,8 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
       <div className="space-y-4">
         {showIndeferirDenuncia ? (
           <IndeferiItemForm
-            title={item.tipo.name}
-            description={`${item.endereco.rua}, ${item.endereco.bairro}`}
+            title={denuncia.tipo}
+            description={`${denuncia.endereco.rua}, ${denuncia.endereco.bairro}`}
             messages={denunciasSuggestions}
             onSubmit={handleIndeferirDenuncia}
           />
@@ -105,24 +95,24 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-semibold text-yellow-700">
-                  {item.categoria.name}
+                  {denuncia.categoria}
                 </p>
                 <h2 className="text-xl font-bold text-gray-800">
-                  {item.tipo.name}
+                  {denuncia.tipo}
                 </h2>
                 <p className="text-sm text-gray-500">
                   Registrado em:{' '}
-                  {new Date(item.created_at).toLocaleDateString('pt-BR')}
+                  {new Date(denuncia.created_at).toLocaleDateString('pt-BR')}
                 </p>
               </div>
-              <Tag status={item.status} />
+              <Tag status={denuncia.status} />
             </div>
 
             <div>
               <h3 className="font-semibold text-sm text-gray-800 mb-1">
                 Descrição:
               </h3>
-              <p className="text-sm text-gray-600">{item.descricao}</p>
+              <p className="text-sm text-gray-600">{denuncia.descricao}</p>
             </div>
 
             <div className="flex-col text-gray-700 border border-gray-200 p-4 rounded-2xl space-y-2">
@@ -131,11 +121,11 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
                   Endereço:
                 </h3>
                 <p className="text-sm text-gray-600">
-                  {item.endereco.rua}, {item.endereco.bairro} (CEP:{' '}
-                  {item.endereco.cep})
+                  {denuncia.endereco.rua}, {denuncia.endereco.bairro} (CEP:{' '}
+                  {denuncia.endereco.cep})
                 </p>
                 <p className="text-sm text-gray-600">
-                  {item.endereco.ponto_referencia}
+                  {denuncia.endereco.ponto_referencia}
                 </p>
               </div>
             </div>
@@ -164,13 +154,13 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
             )}
 
             {!acaoVinculada &&
-              !['indeferido', 'concluido'].includes(item.status) && (
+              !['indeferido', 'concluido'].includes(denuncia.status) && (
                 <div className="py-3 px-4 rounded-xl border border-gray-200 text-center space-y-2">
                   <p className="text-sm font-semibold text-gray-800">
                     Nenhuma ação vinculada
                   </p>
                   <button
-                    onClick={() => startLinking(item)}
+                    onClick={() => startLinking(denuncia)}
                     className="w-full bg-blue-600 text-white text-sm font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     Vincular a uma Ação
@@ -178,12 +168,12 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
                 </div>
               )}
 
-            {item.images.length > 0 && (
+            {denuncia.images.length > 0 && (
               <div>
                 <h3 className="font-semibold text-gray-800 mb-2">Imagens:</h3>
                 <div>
                   <FilesCarrrousel
-                    files={item.images.map((file) => ({
+                    files={denuncia.images.map((file) => ({
                       id: file.id,
                       name: file.name,
                       type: file.name.includes('.mp4') ? 'video' : 'image',
@@ -193,14 +183,14 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
               </div>
             )}
 
-            {item.status === 'indeferido' && item.motivoStatus && (
+            {denuncia.status === 'indeferido' && denuncia.motivoStatus && (
               <div className="p-3 bg-red-50 border-l-4 border-red-400 text-red-700">
                 <p className="font-bold">Motivo do Indeferimento:</p>
-                <p>{item.motivoStatus}</p>
+                <p>{denuncia.motivoStatus}</p>
               </div>
             )}
 
-            {item.status === 'aberto' && (
+            {denuncia.status === 'aberto' && (
               <button
                 onClick={() => {
                   setShowIndeferirDenuncia(true);
@@ -222,10 +212,10 @@ export const DenunciaDetails: FC<DenunciaDetailsViewProps> = ({ item }) => {
       <ConfirmModal
         isOpen={isDesvincularModalOpen}
         title={'Confirmar Desvinculo'}
-        message={`Deseja desvincular a denúncia "${item.tipo.name}" da ação "${acaoVinculada?.nome}"?`}
+        message={`Deseja desvincular a denúncia "${denuncia.tipo}" da ação "${acaoVinculada?.nome}"?`}
         onCancel={() => setIsDesvincularModalOpen(false)}
         onConfirm={handleConfirmDesvincularDenunciaAcao}
       />
     </>
   );
-};
+}

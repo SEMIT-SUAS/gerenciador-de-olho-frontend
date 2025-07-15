@@ -65,6 +65,7 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
           denunciasService.getAllDenuncias(),
           acoesService.getAllAcoes(),
         ]);
+
         setDenuncias(denunciasData);
         setAcoes(acoesData);
       } catch (err: any) {

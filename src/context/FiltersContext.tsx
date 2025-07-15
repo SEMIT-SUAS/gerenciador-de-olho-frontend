@@ -64,7 +64,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         filtroStatusDenuncia === 'todos' || d.status === filtroStatusDenuncia;
 
       const passaCategoria =
-        filtroCategoria === 'todas' || d.categoria.name === filtroCategoria;
+        filtroCategoria === 'todas' || d.categoria === filtroCategoria;
 
       const passaFiltroAcao =
         filtroDenunciasComAcao === 'desabilitado' ||
