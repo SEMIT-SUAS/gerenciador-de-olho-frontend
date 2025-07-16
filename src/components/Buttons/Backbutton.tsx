@@ -1,35 +1,46 @@
-import type { FC, ReactNode } from 'react';
-import { FaArrowLeft } from 'react-icons/fa'; // Supondo que você use react-icons
-import { useNavigate } from 'react-router-dom';
-import usePreviousLocation from '../../hooks/usePreviousLocation';
+import { type ReactNode } from 'react';
+import { FaArrowLeft } from 'react-icons/fa';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface BackButtonProps {
-  onClick?: () => void;
+  to?: string;
+  fallback?: string;
   children?: ReactNode;
   className?: string;
 }
 
-export const BackButton: FC<BackButtonProps> = ({
-  onClick,
+export function BackButton({
+  to,
+  fallback = '/',
   children,
   className,
-}) => {
+}: BackButtonProps) {
   const navigate = useNavigate();
-  const previousLocation = usePreviousLocation();
+  const location = useLocation();
 
-  const finalClassName = `self-start flex items-center mb-4 text-sm text-white px-3 py-2 rounded-full bg-blue-500 font-semibold hover:bg-blue-600 transition-colors ${
+  const finalClassName = `self-start flex items-center text-sm text-white px-3 py-2 rounded-full bg-blue-500 font-semibold hover:bg-blue-600 transition-colors ${
     className || ''
   }`;
 
+  function handleGoBack() {
+    if (to) {
+      navigate(to);
+      return;
+    }
+
+    const canGoBack = location.key !== 'default';
+
+    if (canGoBack) {
+      navigate(-1);
+    } else {
+      navigate(fallback);
+    }
+  }
+
   return (
-    <button
-      onClick={() => {
-        navigate(previousLocation?.pathname ?? '/');
-      }}
-      className={finalClassName}
-    >
+    <button onClick={handleGoBack} className={finalClassName}>
       <FaArrowLeft className="inline-block mr-2" />
       {children || 'Voltar'}
     </button>
   );
-};
+}

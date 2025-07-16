@@ -5,8 +5,13 @@ import { VincularDenunciaProvider } from '../context/vincularDenunciaContext';
 import { AddAcaoProvider } from '../context/AddAcaoContext';
 import { Outlet } from 'react-router-dom';
 import { FiltersProvider } from '../context/FiltersContext';
+import { useOcorrenciasContext } from '../context/OcorrenciasContext';
+import { SidePanelSkeleton } from '../components/Loading/SidePanelSkeleton';
+import { MapSkeleton } from '../components/Loading/MapSkeleton';
 
 export function OcorrenciasPage() {
+  const { loading } = useOcorrenciasContext();
+
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100">
       <FiltersProvider>
@@ -14,11 +19,11 @@ export function OcorrenciasPage() {
           <AddDenunciaProvider>
             <AddAcaoProvider>
               <SidePanel>
-                <Outlet />
+                {loading ? <SidePanelSkeleton /> : <Outlet />}
               </SidePanel>
 
               <main className="flex-1 z-10 relative">
-                <MapComponent />
+                {loading ? <MapSkeleton /> : <MapComponent />}
               </main>
             </AddAcaoProvider>
           </AddDenunciaProvider>

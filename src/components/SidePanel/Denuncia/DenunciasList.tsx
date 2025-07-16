@@ -20,8 +20,12 @@ export function DenunciasList() {
         <FilterStatusSelect
           id="status-filter-select"
           label="Status"
-          onStatusChange={(status) => setFiltroStatusDenuncia(status)}
-          value={filtroStatusDenuncia}
+          onStatusChange={(status) =>
+            setFiltroStatusDenuncia(status == 'todos' ? 'todos' : [status])
+          }
+          value={
+            filtroStatusDenuncia == 'todos' ? 'todos' : filtroStatusDenuncia[0]
+          }
         />
 
         <SelectCategoriaFilter

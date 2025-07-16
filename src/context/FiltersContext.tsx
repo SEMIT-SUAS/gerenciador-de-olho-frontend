@@ -6,6 +6,7 @@ import {
   type Dispatch,
   type ReactNode,
   type SetStateAction,
+  useCallback,
 } from 'react';
 import type { StatusModel } from '../types/StatusModel';
 import type { Categorias } from '../types/CategoriaDenuncia';
@@ -14,54 +15,112 @@ import { useOcorrenciasContext } from './OcorrenciasContext';
 import type { Denuncia } from '../types/Denuncia';
 import type { Acao } from '../types/Acao';
 
-type FiltersContextProps = {
+type FilterState = {
   isVisibleDenunciasInMap: boolean;
   isVisibleAcoesInMap: boolean;
+  filtroStatusDenuncia: 'todos' | StatusModel[];
+  filtroStatusAcao: 'todos' | StatusModel[];
+  filtroCategoria: 'todas' | Categorias | null;
+  filtroSecretaria: 'todas' | Secretarias | null;
+  filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
+};
+
+type FiltersContextProps = FilterState & {
   setIsVisibleDenunciasInMap: Dispatch<SetStateAction<boolean>>;
   setIsVisibleAcoesInMap: Dispatch<SetStateAction<boolean>>;
-  filtroStatusDenuncia: 'todos' | StatusModel;
-  setFiltroStatusDenuncia: Dispatch<SetStateAction<'todos' | StatusModel>>;
-  filtroStatusAcao: 'todos' | StatusModel;
-  setFiltroStatusAcao: Dispatch<SetStateAction<'todos' | StatusModel>>;
-  filtroCategoria: 'todas' | Categorias | null;
+  setFiltroStatusDenuncia: Dispatch<SetStateAction<'todos' | StatusModel[]>>;
+  setFiltroStatusAcao: Dispatch<SetStateAction<'todos' | StatusModel[]>>;
   setFiltroCategoria: Dispatch<SetStateAction<'todas' | Categorias | null>>;
-  filtroSecretaria: 'todas' | Secretarias | null;
   setFiltroSecretaria: Dispatch<SetStateAction<'todas' | Secretarias | null>>;
-  denunciasFiltradas: Denuncia[];
-  acoesFiltradas: Acao[];
-  filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
   setFiltroDenunciasComAcao: Dispatch<
     SetStateAction<'desabilitado' | 'com_acao' | 'sem_acao'>
   >;
+  denunciasFiltradas: Denuncia[];
+  acoesFiltradas: Acao[];
+  cacheCurrentFilters: () => void;
+  restoreCachedFilters: () => void;
+};
+
+const defaultFilters: FilterState = {
+  isVisibleDenunciasInMap: true,
+  isVisibleAcoesInMap: true,
+  filtroStatusDenuncia: ['aberto'],
+  filtroStatusAcao: 'todos',
+  filtroCategoria: 'todas',
+  filtroSecretaria: 'todas',
+  filtroDenunciasComAcao: 'desabilitado',
 };
 
 const FiltersContext = createContext({} as FiltersContextProps);
 
 export function FiltersProvider({ children }: { children: ReactNode }) {
-  const [isVisibleDenunciasInMap, setIsVisibleDenunciasInMap] = useState(true);
-  const [isVisibleAcoesInMap, setIsVisibleAcoesInMap] = useState(true);
-  const [filtroStatusDenuncia, setFiltroStatusDenuncia] = useState<
-    'todos' | StatusModel
-  >('aberto');
-  const [filtroStatusAcao, setFiltroStatusAcao] = useState<
-    'todos' | StatusModel
-  >('aberto');
-  const [filtroCategoria, setFiltroCategoria] = useState<
-    'todas' | Categorias | null
-  >('todas');
-  const [filtroSecretaria, setFiltroSecretaria] = useState<
-    'todas' | Secretarias | null
-  >('todas');
-  const [filtroDenunciasComAcao, setFiltroDenunciasComAcao] = useState<
-    'desabilitado' | 'com_acao' | 'sem_acao'
-  >('desabilitado');
+  const [cacheFilters, setCacheFilters] = useState<FilterState | null>(null);
+
+  const [isVisibleDenunciasInMap, setIsVisibleDenunciasInMap] = useState(
+    defaultFilters.isVisibleDenunciasInMap,
+  );
+  const [isVisibleAcoesInMap, setIsVisibleAcoesInMap] = useState(
+    defaultFilters.isVisibleAcoesInMap,
+  );
+  const [filtroStatusDenuncia, setFiltroStatusDenuncia] = useState(
+    defaultFilters.filtroStatusDenuncia,
+  );
+  const [filtroStatusAcao, setFiltroStatusAcao] = useState(
+    defaultFilters.filtroStatusAcao,
+  );
+  const [filtroCategoria, setFiltroCategoria] = useState(
+    defaultFilters.filtroCategoria,
+  );
+  const [filtroSecretaria, setFiltroSecretaria] = useState(
+    defaultFilters.filtroSecretaria,
+  );
+  const [filtroDenunciasComAcao, setFiltroDenunciasComAcao] = useState(
+    defaultFilters.filtroDenunciasComAcao,
+  );
 
   const { denuncias, acoes } = useOcorrenciasContext();
+
+  const cacheCurrentFilters = useCallback(() => {
+    setCacheFilters({
+      isVisibleDenunciasInMap,
+      isVisibleAcoesInMap,
+      filtroStatusDenuncia,
+      filtroStatusAcao,
+      filtroCategoria,
+      filtroSecretaria,
+      filtroDenunciasComAcao,
+    });
+  }, [
+    isVisibleDenunciasInMap,
+    isVisibleAcoesInMap,
+    filtroStatusDenuncia,
+    filtroStatusAcao,
+    filtroCategoria,
+    filtroSecretaria,
+    filtroDenunciasComAcao,
+  ]);
+
+  const restoreCachedFilters = useCallback(() => {
+    const filtersToRestore = cacheFilters || defaultFilters;
+
+    setIsVisibleDenunciasInMap(filtersToRestore.isVisibleDenunciasInMap);
+    setIsVisibleAcoesInMap(filtersToRestore.isVisibleAcoesInMap);
+    setFiltroStatusDenuncia(filtersToRestore.filtroStatusDenuncia);
+    setFiltroStatusAcao(filtersToRestore.filtroStatusAcao);
+    setFiltroCategoria(filtersToRestore.filtroCategoria);
+    setFiltroSecretaria(filtersToRestore.filtroSecretaria);
+    setFiltroDenunciasComAcao(filtersToRestore.filtroDenunciasComAcao);
+
+    if (cacheFilters) {
+      setCacheFilters(null);
+    }
+  }, [cacheFilters]);
 
   const denunciasFiltradas = useMemo(() => {
     return denuncias.filter((d) => {
       const passaStatus =
-        filtroStatusDenuncia === 'todos' || d.status === filtroStatusDenuncia;
+        filtroStatusDenuncia === 'todos' ||
+        filtroStatusDenuncia.includes(d.status);
 
       const passaCategoria =
         filtroCategoria === 'todas' || d.categoria === filtroCategoria;
@@ -81,15 +140,15 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   ]);
 
   const acoesFiltradas = useMemo(() => {
-    return acoes
-      .filter(
-        (a) => filtroStatusAcao === 'todos' || a.status === filtroStatusAcao,
-      )
-      .filter(
-        (a) =>
-          filtroSecretaria === 'todas' ||
-          a.secretaria.name === filtroSecretaria,
-      );
+    return acoes.filter((a) => {
+      const passaStatus =
+        filtroStatusAcao === 'todos' || filtroStatusAcao.includes(a.status);
+
+      const passaSecretaria =
+        filtroSecretaria === 'todas' || a.secretaria.name === filtroSecretaria;
+
+      return passaStatus && passaSecretaria;
+    });
   }, [acoes, filtroStatusAcao, filtroSecretaria]);
 
   return (
@@ -111,6 +170,8 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         acoesFiltradas,
         filtroDenunciasComAcao,
         setFiltroDenunciasComAcao,
+        cacheCurrentFilters,
+        restoreCachedFilters,
       }}
     >
       {children}

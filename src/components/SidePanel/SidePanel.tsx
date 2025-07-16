@@ -3,7 +3,6 @@ import { useAddDenuncia } from '../../context/AddDenunciaContext';
 import { useFilters } from '../../context/FiltersContext';
 import { useLocation } from 'react-router-dom';
 import { TabButtons } from './TabButtons';
-import { BackButton } from '../Buttons/Backbutton';
 import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
 
 interface SidePanelProps {
@@ -11,10 +10,11 @@ interface SidePanelProps {
 }
 
 export function SidePanel({ children }: SidePanelProps) {
-  const { loading } = useOcorrenciasContext();
   const { setNewDenunciaCoordinates, isAddingDenuncia, setIsAddingDenuncia } =
     useAddDenuncia();
   const { denunciasFiltradas, acoesFiltradas } = useFilters();
+
+  const { loading } = useOcorrenciasContext();
 
   useEffect(() => {
     if (!isAddingDenuncia) {
@@ -27,10 +27,6 @@ export function SidePanel({ children }: SidePanelProps) {
   const showTabs = ['/ocorrencias/denuncias', '/ocorrencias/acoes'].includes(
     location.pathname,
   );
-
-  if (loading) {
-    return <p>Carregando painel...</p>;
-  }
 
   return (
     <>
@@ -47,13 +43,11 @@ export function SidePanel({ children }: SidePanelProps) {
           </div>
         </div>
 
-        {showTabs ? (
+        {!loading && showTabs && (
           <TabButtons
             acoesAmount={acoesFiltradas.length}
             denunciasAmount={denunciasFiltradas.length}
           />
-        ) : (
-          <BackButton className="ml-3">Retornar à pagina anterior</BackButton>
         )}
 
         <div className="p-4 overflow-y-auto custom-scrollbar-blue">

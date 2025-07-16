@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { DenunciasList } from './components/SidePanel/Denuncia/DenunciasList';
 import { DenunciaDetails } from './components/SidePanel/Denuncia/DenunciaDetails';
+import { VincularDenunciaAAcao } from './components/SidePanel/Denuncia/VincularDenunciaAAcao';
 
 export function App() {
   return (
@@ -20,6 +21,10 @@ export function App() {
           <Route path="denuncias">
             <Route index element={<DenunciasList />} />
             <Route path=":denunciaId" element={<DenunciaDetails />} />
+            <Route
+              path=":denunciaId/vincular-acao"
+              element={<VincularDenunciaAAcao />}
+            />
           </Route>
 
           <Route path="acoes">

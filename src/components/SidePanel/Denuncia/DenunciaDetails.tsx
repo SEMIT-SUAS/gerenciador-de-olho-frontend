@@ -1,27 +1,29 @@
 import { Tag } from './../Tag';
 import { ImageModal } from '../../Modals/ImageModal';
-import { useEffect, useMemo, useState } from 'react';
-import { useVincularDenunciaContext } from '../../../context/vincularDenunciaContext';
+import { useMemo, useState } from 'react';
 import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { FaTrashAlt } from 'react-icons/fa';
 import { IndeferiItemForm } from '../../Forms/IndeferirItemForm';
 import { denunciasSuggestions } from '../../../constants/messagesRejectComplaint';
 import { FilesCarrrousel } from '../../FilesCarrousel';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import type { Denuncia } from '../../../types/Denuncia';
 import { toast } from 'react-toastify';
+import { BackButton } from '../../Buttons/Backbutton';
 
 export function DenunciaDetails() {
   const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
   const [showIndeferirDenuncia, setShowIndeferirDenuncia] = useState(false);
   const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
-  const { startLinking } = useVincularDenunciaContext();
   const { denuncias, acoes, setDenuncias } = useOcorrenciasContext();
+  const navigate = useNavigate();
 
   const params = useParams();
   const denunciaId = params.denunciaId;
-  const denuncia = denuncias.find((d) => d.id == Number(denunciaId));
+  const denuncia = useMemo(() => {
+    return denuncias.find((d) => d.id == Number(denunciaId));
+  }, [denuncias]);
 
   if (!denuncia) {
     return Navigate({
@@ -82,7 +84,9 @@ export function DenunciaDetails() {
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="flex flex-col gap-2 space-y-4">
+        <BackButton to="/ocorrencias/denuncias" />
+
         {showIndeferirDenuncia ? (
           <IndeferiItemForm
             title={denuncia.tipo}
@@ -160,7 +164,7 @@ export function DenunciaDetails() {
                     Nenhuma ação vinculada
                   </p>
                   <button
-                    onClick={() => startLinking(denuncia)}
+                    onClick={() => navigate('vincular-acao')}
                     className="w-full bg-blue-600 text-white text-sm font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     Vincular a uma Ação
