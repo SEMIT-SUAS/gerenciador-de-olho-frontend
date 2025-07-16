@@ -5,6 +5,7 @@ import { AddDenunciaProvider } from '../context/AddDenunciaContext';
 import { IndeferirDenunciaProvider } from '../context/IndeferirDenunciaContext';
 import { VincularDenunciaProvider } from '../context/vincularDenunciaContext';
 import { AddAcaoProvider } from '../context/AddAcaoContext';
+import { VincularItemProvider } from '../context/VincularItemContext';
 
 export function OcorrenciasPage() {
   const { loading, error } = useOcorrenciasContext();
@@ -24,6 +25,7 @@ export function OcorrenciasPage() {
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100">
+    <VincularItemProvider>
       <VincularDenunciaProvider>
         <IndeferirDenunciaProvider>
           <AddDenunciaProvider>
@@ -37,6 +39,7 @@ export function OcorrenciasPage() {
           </AddDenunciaProvider>
         </IndeferirDenunciaProvider>
       </VincularDenunciaProvider>
+      </VincularItemProvider>
     </div>
   );
 }

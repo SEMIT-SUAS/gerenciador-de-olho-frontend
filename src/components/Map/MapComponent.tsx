@@ -18,6 +18,7 @@ import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
 import { getConvexHull } from '../../utils/geometry';
 import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
 import { toast } from 'react-toastify';
+import { useVincularItemContext } from '../../context/VincularItemContext';
 
 export function MapComponent() {
   const { isSelectingNewDenunciaInMap, newDenunciaCoordinates } =
@@ -31,7 +32,7 @@ export function MapComponent() {
   } = useFilters();
   const { denunciasVinculadas, isAddingAcao, setDenunciasVinculadas } =
     useAddAcao();
-
+  const {isAddingDenunciaAcao} = useVincularItemContext();   
   const handleMarkerClick = (item: Denuncia | Acao) => {
     setActualDetailItem(item);
   };
@@ -68,7 +69,7 @@ export function MapComponent() {
                 icon={getDenunciaIconByTipo(d.tipo.name)}
                 eventHandlers={{
                   click: () => {
-                    if (isAddingAcao) {
+                    if (isAddingAcao || isAddingDenunciaAcao) {
                       if (denunciasVinculadas.find((dc) => dc.id == d.id)) {
                         toast('Você já vincolou essa denúncia a essa ação', {
                           type: 'error',
@@ -84,7 +85,7 @@ export function MapComponent() {
               >
                 {!isAddingAcao && <PinDetailsDenuncia denuncia={d} />}
 
-                {denunciasVinculadas.length > 0 && (
+                {isAddingAcao && denunciasVinculadas.length > 0 && (
                   <DenunciasSelecionadasPolygon
                     coordinates={getConvexHull(
                       denunciasVinculadas.map((d) => ({

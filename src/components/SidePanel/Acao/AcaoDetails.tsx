@@ -7,6 +7,7 @@ import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 import { toast } from 'react-toastify';
 import { getPolygonoCenter } from '../../../utils/geometry';
+import { useVincularItemContext } from '../../../context/VincularItemContext';
 
 interface AcaoDetailsProps {
   item: Acao;
@@ -29,6 +30,8 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item }) => {
     isOpenIndeferirAcaoConfirmationModal,
     setIsOpenIndeferirAcaoConfirmationModal,
   ] = useState(false);
+
+  const {startLinking} = useVincularItemContext()
 
   const denunciasVinculadas = denuncias.filter((d) => d.acaoId === item.id);
 
@@ -186,7 +189,7 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item }) => {
                             <FaTrashAlt />
                           </button>
                         )}
-                    </div>
+                      </div>
                   </div>
                 ))
               ) : (
@@ -196,7 +199,14 @@ export const AcaoDetails: FC<AcaoDetailsProps> = ({ item }) => {
                   </p>
                 </div>
               )}
+              
             </div>
+            
+            <button
+              onClick={() => startLinking(item)}
+              className="w-full bg-blue-600 text-white text-sm font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              Vincular denúncias
+            </button>
           </div>
         )}
 

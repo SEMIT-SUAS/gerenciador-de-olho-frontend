@@ -5,6 +5,8 @@ import { FilterStatusSelect } from '../Filters/FilterStatusSelect';
 import { SelectSecretariaFilter } from '../Filters/SelectSecretariaFilter';
 import { CreateAcaoForm } from '../../Forms/CreateAcaoForrm';
 import { useAddAcao } from '../../../context/AddAcaoContext';
+import { useVincularItemContext } from '../../../context/VincularItemContext';
+import { VincularDenunciaView } from '../Denuncia/VincularDenunciaView';
 
 export function AcoesTabContent() {
   const { setActualDetailItem } = useOcorrenciasContext();
@@ -15,6 +17,7 @@ export function AcoesTabContent() {
     setFiltroSecretaria,
   } = useFilters();
   const { isAddingAcao } = useAddAcao();
+  const {acaoParaVincular} = useVincularItemContext();
 
   if (isAddingAcao) {
     return (
@@ -22,6 +25,14 @@ export function AcoesTabContent() {
         <CreateAcaoForm />
       </div>
     );
+  }
+
+  if(acaoParaVincular) {
+    return (
+      <div className="flex-1 overflow-y-auto custom-scrollbar-blue">
+        <VincularDenunciaView/>
+      </div>
+    )
   }
 
   return (

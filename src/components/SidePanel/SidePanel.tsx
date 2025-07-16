@@ -10,6 +10,7 @@ import { useAddAcao } from '../../context/AddAcaoContext';
 import { TabButtons } from './TabButtons';
 import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
 import { useIndeferirDenunciaContext } from '../../context/IndeferirDenunciaContext';
+import { useVincularItemContext } from '../../context/VincularItemContext';
 
 export function SidePanel() {
   const [abaAtiva, setAbaAtiva] = useState<'denuncias' | 'acoes'>('denuncias');
@@ -20,6 +21,7 @@ export function SidePanel() {
   const { isAddingAcao, setIsAddingAcao } = useAddAcao();
   const { denunciaParaVincular } = useVincularDenunciaContext();
   const { denunciaParaIndeferir } = useIndeferirDenunciaContext();
+  const { acaoParaVincular } = useVincularItemContext();
 
   useEffect(() => {
     if (!isAddingDenuncia) {
@@ -58,7 +60,7 @@ export function SidePanel() {
 
         {actualDetailItem &&
           !denunciaParaVincular &&
-          !denunciaParaIndeferir && (
+          !denunciaParaIndeferir && !acaoParaVincular && (
             <div className="p-4 overflow-y-auto custom-scrollbar-blue h-full">
               <ItemDetailsView />
             </div>
@@ -75,7 +77,7 @@ export function SidePanel() {
 
         {(!actualDetailItem ||
           denunciaParaVincular ||
-          denunciaParaIndeferir) && (
+          denunciaParaIndeferir || acaoParaVincular) && (
           <div className="p-4 overflow-y-auto custom-scrollbar-blue">
             {abaAtiva === 'denuncias' ? (
               <DenunciasTabContent />
