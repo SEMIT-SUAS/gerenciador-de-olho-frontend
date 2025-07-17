@@ -1,39 +1,44 @@
-import type { Denuncia } from '../../types/Denuncia';
-import type { Acao } from '../../types/Acao';
+import type { FC } from 'react'
+import type { Denuncia } from '../../types/Denuncia'
+import type { Acao } from '../../types/Acao'
 
-import { DenunciaDetails } from './Denuncia/DenunciaDetails';
-import { AcaoDetails } from './Acao/AcaoDetails';
-import { BackButton } from '../Buttons/Backbutton';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { DenunciaDetails } from './DenunciaDetails'
+import { AcaoDetails } from './AcaoDetails'
+import { BackButton } from '../Buttons/Backbutton'
+import type { ZoomToProps } from '../../pages/OcorrenciasPage'
 
-function isAcao(item: Denuncia | Acao): item is Acao {
-  return 'secretaria' in item;
+interface ItemDetailsViewProps {
+  item: Denuncia | Acao;
+  denuncias: Denuncia[];
+  onBack: () => void;
+  onDenunciaClick: (denuncia: Denuncia, zoomToData: ZoomToProps) => void;
 }
 
-export const ItemDetailsView = () => {
-  const { setPrevAction, prevAction } = useOcorrenciasContext();
-  const { actualDetailItem, setActualDetailItem } = useOcorrenciasContext();
+function isAcao(item: Denuncia | Acao): item is Acao {
+  return 'secretaria' in item
+}
 
-  function handleOnBackClick() {
-    if (prevAction) {
-      setActualDetailItem(prevAction);
-      setPrevAction(null);
-    } else {
-      setActualDetailItem(null);
-    }
-  }
-
+export const ItemDetailsView: FC<ItemDetailsViewProps> = ({ item, denuncias, onBack, onDenunciaClick }) => {
   return (
-    <div className="flex flex-col h-full">
-      <BackButton onClick={handleOnBackClick} className="text-lg">
+    <div className="px-4 flex flex-col h-full">
+      <BackButton
+        onClick={onBack}
+        className="text-lg"
+      >
         Retornar à pagina anterior
       </BackButton>
-
-      {isAcao(actualDetailItem!) ? (
-        <AcaoDetails item={actualDetailItem} />
-      ) : (
-        <DenunciaDetails item={actualDetailItem!} />
-      )}
+      {isAcao(item)
+        ? (
+          <AcaoDetails
+            item={item} denuncias={denuncias} onDenunciaClick={() => onDenunciaClick(item, {
+              lat: item.lat,
+              lng: item.lon,
+            })}
+          />
+          )
+        : (
+          <DenunciaDetails item={item} />
+          )}
     </div>
-  );
-};
+  )
+}

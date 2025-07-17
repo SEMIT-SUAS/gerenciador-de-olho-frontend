@@ -1,69 +1,43 @@
-import { createContext, useContext, useState } from 'react';
-import type { FC, ReactNode, SetStateAction, Dispatch } from 'react';
-import { useOcorrenciasContext } from './OcorrenciasContext';
-import type { Denuncia } from '../types/Denuncia';
-import type { Acao } from '../types/Acao';
+import { createContext, useContext, useState } from 'react'
+import type { FC, ReactNode } from 'react'
+import { useOcorrenciasContext } from './ocorrenciasContext'
+import type { Denuncia } from '../types/Denuncia'
 
 interface VincularDenunciaContextType {
   denunciaParaVincular: Denuncia | null;
-  setDenunciaParaVincular: Dispatch<SetStateAction<Denuncia | null>>;
   startLinking: (denuncia: Denuncia) => void;
   cancelLinking: () => void;
   confirmLink: (acaoId: number) => void;
-  isSelectingAcaoInMap: boolean;
-  setIsSelectingAcaoInMap: Dispatch<SetStateAction<boolean>>;
-  acaoParaVincular: Acao | null,
-  setAcaoParaVincular: Dispatch<SetStateAction<Acao | null>>
 }
 
-const VincularDenunciaContext = createContext<VincularDenunciaContextType | undefined>(undefined);
+const VincularDenunciaContext = createContext<VincularDenunciaContextType | undefined>(undefined)
 
 export const VincularDenunciaProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const { vincularDenunciaAcao } = useOcorrenciasContext();
-  const [isSelectingAcaoInMap, setIsSelectingAcaoInMap] = useState<boolean>(false);
-  const [denunciaParaVincular, setDenunciaParaVincular] = useState<Denuncia | null>(null);
-  const [acaoParaVincular, setAcaoParaVincular] = useState<Acao | null>(null);
+  const { vincularDenunciaAcao } = useOcorrenciasContext()
+  const [denunciaParaVincular, setDenunciaParaVincular] = useState<Denuncia | null>(null)
 
   const startLinking = (denuncia: Denuncia) => {
-    setDenunciaParaVincular(denuncia);
-  };
+    setDenunciaParaVincular(denuncia)
+  }
 
   const cancelLinking = () => {
-    setDenunciaParaVincular(null);
-    setIsSelectingAcaoInMap(false); // Garante que o modo de seleção no mapa também seja resetado.
-  };
+    setDenunciaParaVincular(null)
+  }
 
   const confirmLink = (acaoId: number) => {
     if (denunciaParaVincular) {
-      vincularDenunciaAcao(denunciaParaVincular.id, acaoId);
-      setDenunciaParaVincular(null); // Limpa o estado após a confirmação.
-      setIsSelectingAcaoInMap(false);
+      vincularDenunciaAcao(denunciaParaVincular.id, acaoId)
+      setDenunciaParaVincular(null)
     }
-  };
-
-  const value = { 
-    denunciaParaVincular, 
-    setDenunciaParaVincular,
-    startLinking, 
-    cancelLinking, 
-    confirmLink, 
-    isSelectingAcaoInMap, 
-    setIsSelectingAcaoInMap,
-    acaoParaVincular,
-    setAcaoParaVincular 
-  };
-
-  return <VincularDenunciaContext.Provider value={value}>{children}</VincularDenunciaContext.Provider>;
-};
-
-/**
- * Hook customizado para consumir o VincularDenunciaContext de forma segura e limpa.
- */
-export const useVincularDenunciaContext = () => {
-  const context = useContext(VincularDenunciaContext);
-  // CORREÇÃO: A mensagem de erro agora corresponde aos nomes corretos do contexto e provedor.
-  if (context === undefined) {
-    throw new Error('useVincularDenunciaContext deve ser usado dentro de um VincularDenunciaProvider');
   }
-  return context;
-};
+
+  const value = { denunciaParaVincular, startLinking, cancelLinking, confirmLink }
+
+  return <VincularDenunciaContext.Provider value={value}>{children}</VincularDenunciaContext.Provider>
+}
+
+export const useVincularDenunciaContext = () => {
+  const context = useContext(VincularDenunciaContext)
+  if (context === undefined) throw new Error('useLinkActionContext deve ser usado dentro de um LinkActionProvider')
+  return context
+}

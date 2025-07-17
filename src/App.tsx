@@ -3,6 +3,10 @@ import { OcorrenciasPage } from './pages/OcorrenciasPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { ToastContainer } from 'react-toastify';
 import { FiltersProvider } from './context/FiltersContext';
+import {ServicesList} from './pages/services/ServicesList';
+import { ServicoDetalhes } from './pages/services/ServicoDetalhes';
+import {ServicoNovo} from './pages/services/ServicoNovo';
+import {ServicoEditar} from './pages/services/ServicoEditar';
 
 export function App() {
   return (
@@ -11,6 +15,10 @@ export function App() {
         <FiltersProvider>
           <Routes>
             <Route index element={<OcorrenciasPage />} />
+            <Route path='/servicos' element={<ServicesList/>}/>
+            <Route path="/servico/novo" element={<ServicoNovo />} />
+            <Route path="/servico/:id" element={<ServicoDetalhes />} />
+            <Route path="/servico/editar/:id" element={<ServicoEditar />} />
           </Routes>
         </FiltersProvider>
       </OcorrenciasProvider>

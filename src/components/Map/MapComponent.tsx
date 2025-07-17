@@ -1,43 +1,113 @@
-import { useContext } from 'react';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import React, {
+  useContext,
+  useEffect,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  Polygon,
+} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { iconAcao, selectedIcon } from '../../constants/mapIcons';
+import type { StatusModel } from '../../types/StatusModel';
 import type { Denuncia } from '../../types/Denuncia';
 import type { Acao } from '../../types/Acao';
 import { AddDenunciaContext } from '../../context/AddDenunciaContext';
 import { getDenunciaIconByTipo } from '../../utils/getPinIcon';
+import type { LeafletMouseEvent } from 'leaflet';
+import type { ZoomToProps } from '../../pages/OcorrenciasPage';
 import { MapFilters } from './MapFilters';
 import { useFilters } from '../../context/FiltersContext';
-import { MapViewUpdater } from './MapViewUpdater';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
-import { PinDetailsAcao } from './PinDetailsAcao';
-import { AcaoPolygon } from './AcaoPolygon';
-import { PinDetailsDenuncia } from './PinDetailsDenuncia';
-import { useAddAcao } from '../../context/AddAcaoContext';
-import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
-import { getConvexHull } from '../../utils/geometry';
-import { useVincularDenunciaContext } from '../../context/vincularDenunciaContext';
-import { toast } from 'react-toastify';
 
-export function MapComponent() {
-  const { isSelectingNewDenunciaInMap, newDenunciaCoordinates } =
-    useContext(AddDenunciaContext);
-  const { setActualDetailItem } = useOcorrenciasContext();
+interface MapComponentProps {
+  denuncias: Denuncia[];
+  acoes: Acao[];
+  modoSelecao: boolean;
+  denunciasSelecionadas: number[];
+  onMarkerClick: (item: Denuncia | Acao, zoomToData: ZoomToProps) => void;
+  onSelectionClick: (id: number, status: StatusModel) => void;
+  detailViewItem: Denuncia | Acao | null;
+
+  zoomTo: ZoomToProps;
+  setZoomTo: Dispatch<SetStateAction<ZoomToProps>>;
+}
+
+export function MapComponent({
+  denuncias,
+  acoes,
+  modoSelecao,
+  onMarkerClick,
+  detailViewItem,
+  zoomTo,
+  setZoomTo,
+}: MapComponentProps) {
   const {
-    isVisibleAcoesInMap,
-    isVisibleDenunciasInMap,
-    acoesFiltradas: acoes,
-    denunciasFiltradas: denuncias,
-  } = useFilters();
-  const { denunciasVinculadas, isAddingAcao, setDenunciasVinculadas } =
-    useAddAcao();
+    isSelectingNewDenunciaInMap,
+    setIsSelectingNewDenunciaInMap,
+    setNewDenunciaCoordinates,
+    newDenunciaCoordinates,
+  } = useContext(AddDenunciaContext);
 
-  const handleMarkerClick = (item: Denuncia | Acao) => {
-    setActualDetailItem(item);
+  const { isVisibleAcoesInMap, isVisibleDenunciasInMap } = useFilters();
+
+  type MapViewUpdaterProps = {
+    item: Denuncia | Acao | null;
   };
 
-  const { isSelectingAcaoInMap, setAcaoParaVincular } =
-    useVincularDenunciaContext();
+  function MapViewUpdater({ item }: MapViewUpdaterProps) {
+    const map = useMap();
+
+    useEffect(() => {
+      function handleClick(event: any) {
+        if (isSelectingNewDenunciaInMap) {
+          setNewDenunciaCoordinates({
+            latitude: event.latlng.lat,
+            longitude: event.latlng.lng,
+          });
+
+          setIsSelectingNewDenunciaInMap(false);
+          map.off('click');
+        }
+      }
+
+      map.on('click', handleClick);
+    }, [
+      isSelectingNewDenunciaInMap,
+      setNewDenunciaCoordinates,
+      setIsSelectingNewDenunciaInMap,
+    ]);
+
+    useEffect(() => {
+      if (zoomTo) {
+        map.flyTo(
+          {
+            lat: zoomTo.lat,
+            lng: zoomTo.lng,
+          },
+          16,
+        );
+
+        setZoomTo(null);
+      }
+    }, [zoomTo, setZoomTo]);
+
+    return null;
+  }
+
+  const handleMarkerClick = (
+    item: Denuncia | Acao,
+    event: LeafletMouseEvent,
+  ) => {
+    onMarkerClick(item, {
+      lat: event.latlng.lat,
+      lng: event.latlng.lng,
+    });
+  };
 
   return (
     <div className="relative h-full w-full">
@@ -48,18 +118,15 @@ export function MapComponent() {
         scrollWheelZoom
         className="h-full w-full z-10"
       >
-        <MapViewUpdater />
-
+        <MapViewUpdater item={detailViewItem} />
         <TileLayer
           attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
           url="https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=XLhcrfhE5GT4MmbYP817"
           tileSize={512}
           zoomOffset={-1}
         />
-
         {!isSelectingNewDenunciaInMap &&
           isVisibleDenunciasInMap &&
-          !isSelectingAcaoInMap &&
           denuncias.map((d) => {
             return (
               <Marker
@@ -67,64 +134,52 @@ export function MapComponent() {
                 position={[d.endereco.latitude, d.endereco.longitude]}
                 icon={getDenunciaIconByTipo(d.tipo.name)}
                 eventHandlers={{
-                  click: () => {
-                    if (isAddingAcao) {
-                      if (denunciasVinculadas.find((dc) => dc.id == d.id)) {
-                        toast('Você já vincolou essa denúncia a essa ação', {
-                          type: 'error',
-                        });
-                      } else {
-                        setDenunciasVinculadas([...denunciasVinculadas, d]);
-                      }
-                    } else {
-                      handleMarkerClick(d);
-                    }
+                  click: (event) => {
+                    handleMarkerClick(d, event);
                   },
                 }}
               >
-                {!isAddingAcao && <PinDetailsDenuncia denuncia={d} />}
-
-                {denunciasVinculadas.length > 0 && (
-                  <DenunciasSelecionadasPolygon
-                    coordinates={getConvexHull(
-                      denunciasVinculadas.map((d) => ({
-                        lat: d.endereco.latitude,
-                        lon: d.endereco.longitude,
-                      })),
-                    )}
-                  />
+                {!modoSelecao && (
+                  <Popup>
+                    <b>Denúncia:</b> {d.titulo}
+                    <br />
+                    <b>Status:</b>
+                    <span className="capitalize">
+                      {d?.status?.replace('_', ' ')}
+                    </span>
+                  </Popup>
                 )}
               </Marker>
             );
           })}
-
         {!isSelectingNewDenunciaInMap &&
           isVisibleAcoesInMap &&
           acoes.map((a) => (
-            <div key={`acao-group-${a.id}`}>
+            <React.Fragment key={`acao-group-${a.id}`}>
               <Marker
                 key={`a-${a.id}`}
                 position={[a.lat, a.lon]}
                 icon={iconAcao}
                 eventHandlers={{
-                  click: () => {
-                    if (isSelectingAcaoInMap) {
-                      setAcaoParaVincular(a);
-                    } else {
-                      handleMarkerClick(a);
-                    }
-                  },
+                  click: (event) => handleMarkerClick(a, event),
                 }}
               >
-                <PinDetailsAcao acao={a} />
+                {!modoSelecao && (
+                  <Popup>
+                    <b>Ação:</b> {a.nome}
+                    <br />
+                    <b>Secretaria:</b> {a.secretaria.name}
+                  </Popup>
+                )}
               </Marker>
-
               {a.polygonCoords.length > 0 && (
-                <AcaoPolygon coordinates={a.polygonCoords} />
+                <Polygon
+                  pathOptions={{ color: 'green', weight: 2, fillOpacity: 0.1 }}
+                  positions={a.polygonCoords}
+                />
               )}
-            </div>
+            </React.Fragment>
           ))}
-
         {newDenunciaCoordinates && (
           <Marker
             position={[
