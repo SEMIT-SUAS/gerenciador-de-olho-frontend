@@ -113,7 +113,7 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
     }
   };
 
-  const value = {
+  const value: OcorrenciasContextType = {
     denuncias,
     setDenuncias,
     acoes,

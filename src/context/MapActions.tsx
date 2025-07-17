@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type Dispatch,
   type ReactNode,
@@ -18,6 +19,8 @@ type SelectAcoesOuDenunciasProps = {
   setAcaoSelecionada: Dispatch<SetStateAction<Acao | null>>;
   denunciasSelecionas: Denuncia[];
   setDenunciasSelecionadas: Dispatch<SetStateAction<Denuncia[]>>;
+  disableMapFilters: boolean;
+  setDisableMapFilters: Dispatch<SetStateAction<boolean>>;
 };
 
 const MapActionsContext = createContext<
@@ -25,6 +28,7 @@ const MapActionsContext = createContext<
 >(undefined);
 
 export function MapActionsProvider({ children }: { children: ReactNode }) {
+  const [disableMapFilters, setDisableMapFilters] = useState(false);
   const [salvarDenunciasOnclick, setSalvarDenunciasOnClick] = useState(false);
   const [salvarAcaoOnclick, setSalvarAcaoOnclick] = useState(false);
 
@@ -42,7 +46,15 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     setAcaoSelecionada,
     denunciasSelecionas,
     setDenunciasSelecionadas,
+    disableMapFilters,
+    setDisableMapFilters,
   };
+
+  useEffect(() => {
+    setDisableMapFilters(
+      salvarAcaoOnclick || salvarDenunciasOnclick ? true : false,
+    );
+  }, [salvarAcaoOnclick, salvarDenunciasOnclick]);
 
   return (
     <MapActionsContext.Provider value={value}>
