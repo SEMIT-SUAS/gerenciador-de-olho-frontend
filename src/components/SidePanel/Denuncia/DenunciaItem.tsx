@@ -1,6 +1,8 @@
 import { FaMapPin, FaTrash } from 'react-icons/fa';
 import { Tag } from '../Tag';
 import type { Denuncia } from '../../../types/Denuncia';
+import { API_BASE_URL } from '@/config/api';
+
 
 type DenunciaItemProps = {
   denuncia: Denuncia;
@@ -19,12 +21,23 @@ export function DenunciaItem({
   isDeletable,
   onTrashClick,
 }: DenunciaItemProps) {
-  return (
-    <div
-      key={denuncia.id}
-      className="p-3 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
-      onClick={onClick}
-    >
+
+const imagemPath = denuncia?.images[0]?.name;
+const imageUrlCompleta = `${API_BASE_URL}/files/uploads/${imagemPath}`;
+
+return (
+  <div
+    key={denuncia.id}
+    className="flex items-start gap-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
+    onClick={onClick}
+  >
+    <img 
+      className='w-24 h-24 rounded-md object-cover flex-shrink-0' 
+      src={imageUrlCompleta} 
+      alt="Primeira imagem da denúncia" 
+    />
+
+    <div className="flex flex-col flex-grow p-3">
       <div className="flex justify-between items-center">
         <h3 className="font-semibold text-md text-gray-700">{denuncia.tipo}</h3>
         {showTag && <Tag status={denuncia.status} />}
@@ -42,12 +55,13 @@ export function DenunciaItem({
         <p className="text-sm text-gray-500 mt-1">{denuncia.descricao}</p>
       )}
 
-      <p className="flex text-xs text-gray-400 mt-1">
+      <p className="flex items-center text-xs text-gray-400 mt-1">
         <span className="mr-1">
           <FaMapPin />
         </span>
         {`${denuncia.endereco.rua}, ${denuncia.endereco.bairro}`}
       </p>
     </div>
+  </div>
   );
 }

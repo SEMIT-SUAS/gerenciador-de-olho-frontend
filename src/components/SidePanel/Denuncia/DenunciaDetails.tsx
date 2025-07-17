@@ -22,6 +22,8 @@ export function DenunciaDetails() {
     return denuncias.find((d) => d.id == Number(denunciaId));
   }, [denuncias]);
 
+
+
   if (!denuncia) {
     return Navigate({
       to: '/404',
@@ -32,6 +34,8 @@ export function DenunciaDetails() {
   const acaoVinculada = useMemo(() => {
     return acoes.find((a) => a.id == denuncia.acaoId);
   }, [denuncias]);
+
+
 
   async function handleConfirmDesvincularDenunciaAcao() {
     try {

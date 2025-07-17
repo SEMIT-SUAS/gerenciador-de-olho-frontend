@@ -1,8 +1,14 @@
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import type { Categoria, Categorias } from '../../../types/CategoriaDenuncia';
 import categoriaService from '../../../services/categoriaService';
 import { toast } from 'react-toastify';
-import { ArrowDown } from '../../ArrowDown';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"; // 1. Importar componentes do shadcn
 
 type SelectCategoriaFilterProps = {
   onCategoriaChange: (categoria: Categorias) => void;
@@ -13,23 +19,20 @@ export function SelectCategoriaFilter({
 }: SelectCategoriaFilterProps) {
   const [categorias, setCategorias] = useState<Categoria[] | null>(null);
 
-  async function fetchCategorias() {
-    try {
-      return await categoriaService.getAll();
-    } catch {
-      toast(
-        'Não foi possível carregar as categorias, tente novamente mais tarde',
-      );
-      return null;
-    }
-  }
-
-  function handleOnSelect(event: ChangeEvent<HTMLSelectElement>) {
-    onCategoriaChange(event.target.value as Categorias);
-  }
-
+  // A lógica de fetch e state permanece a mesma
   useEffect(() => {
-    fetchCategorias().then((categorias) => setCategorias(categorias));
+    async function fetchCategorias() {
+      try {
+        const data = await categoriaService.getAll();
+        setCategorias(data);
+      } catch {
+        toast.error( // Usar toast.error para mensagens de erro é mais semântico
+          'Não foi possível carregar as categorias, tente novamente mais tarde',
+        );
+      }
+    }
+
+    fetchCategorias();
   }, []);
 
   return (
@@ -41,25 +44,24 @@ export function SelectCategoriaFilter({
         Categoria
       </label>
 
-      <div className="relative">
-        <select
-          id="categoria-select"
-          onChange={handleOnSelect}
-          className="w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
-        >
-          <option value="todas">Todas</option>
+      <Select
+        onValueChange={onCategoriaChange}
+        defaultValue="todas" 
+        disabled={!categorias} 
+      >
+        <SelectTrigger id="categoria-select" className="w-full">
+          <SelectValue placeholder="Selecione uma categoria..." />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="todas">Todas</SelectItem>
 
-          {categorias?.map((categoria) => {
-            return (
-              <option key={categoria.id} value={categoria.name}>
-                {categoria.name}
-              </option>
-            );
-          })}
-        </select>
-
-        <ArrowDown />
-      </div>
+          {categorias?.map((categoria) => (
+            <SelectItem key={categoria.id} value={categoria.name}>
+              {categoria.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
