@@ -9,6 +9,7 @@ import {
 } from 'react';
 import type { Acao } from '../types/Acao';
 import { type Denuncia } from '../types/Denuncia';
+import { toast } from 'react-toastify';
 
 type SelectAcoesOuDenunciasProps = {
   salvarDenunciasOnclick: boolean;
@@ -21,6 +22,7 @@ type SelectAcoesOuDenunciasProps = {
   setDenunciasSelecionadas: Dispatch<SetStateAction<Denuncia[]>>;
   disableMapFilters: boolean;
   setDisableMapFilters: Dispatch<SetStateAction<boolean>>;
+  addDenunciaNaSelecao: (newDenuncia: Denuncia) => void;
 };
 
 const MapActionsContext = createContext<
@@ -48,6 +50,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     setDenunciasSelecionadas,
     disableMapFilters,
     setDisableMapFilters,
+    addDenunciaNaSelecao,
   };
 
   useEffect(() => {
@@ -55,6 +58,14 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
       salvarAcaoOnclick || salvarDenunciasOnclick ? true : false,
     );
   }, [salvarAcaoOnclick, salvarDenunciasOnclick]);
+
+  function addDenunciaNaSelecao(newDenuncia: Denuncia) {
+    if (denunciasSelecionas.find((d) => d.id == newDenuncia.id)) {
+      return toast.error('Essa denúncia já foi selecionada');
+    }
+
+    setDenunciasSelecionadas((denuncias) => [...denuncias, newDenuncia]);
+  }
 
   return (
     <MapActionsContext.Provider value={value}>

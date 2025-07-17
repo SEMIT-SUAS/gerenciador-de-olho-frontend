@@ -24,91 +24,6 @@ export function AcaoDetails() {
     return denuncias.filter((d) => d.acaoId == acao.id);
   }, [denuncias]);
 
-  // async function handleRemoveDenuncia() {
-  //   try {
-  //     setAcoes((acoes) => {
-  //       const current = acoes.find((acao) => acao.id === item.id);
-  //       if (!current) return acoes;
-
-  //       const newPolygonCoords = current.polygonCoords.filter(
-  //         (coord) =>
-  //           !(
-  //             coord[0] === currentDenuncia?.endereco.latitude &&
-  //             coord[1] === currentDenuncia?.endereco.longitude
-  //           ),
-  //       );
-
-  //       const newActionCoordinates = getPolygonoCenter(newPolygonCoords);
-
-  //       return acoes.map((a) => {
-  //         if (a.id === item.id) {
-  //           return {
-  //             ...a,
-  //             lat: newActionCoordinates[0],
-  //             lon: newActionCoordinates[1],
-  //             polygonCoords: newPolygonCoords,
-  //           };
-  //         }
-  //         return a;
-  //       });
-  //     });
-
-  //     setDenuncias((current) =>
-  //       current.map((d) => {
-  //         if (d.id === currentDenuncia?.id) {
-  //           return {
-  //             ...d,
-  //             status: 'aberto',
-  //             acaoId: null,
-  //           };
-  //         }
-  //         return d;
-  //       }),
-  //     );
-
-  //     setIsOpenRemoveDenunciaConfirmationModal(false);
-  //     toast('Denúncia removida com sucesso desta ação!', { type: 'success' });
-  //     setCurrentDenuncia(null);
-  //   } catch (error) {
-  //     console.error('Falha ao remover denúncia:', error);
-  //     toast('Erro ao remover denúncia.', { type: 'error' });
-  //   }
-  // }
-
-  // async function handleIndeferirAcao(reason: string) {
-  //   try {
-  //     setActualDetailItem((current) => ({
-  //       ...current!,
-  //       status: 'indeferido',
-  //     }));
-
-  //     setDenuncias((current) =>
-  //       current.map((d) => {
-  //         if (d.acaoId === item.id) {
-  //           return { ...d, acaoId: null, status: 'aberto' };
-  //         }
-  //         return d;
-  //       }),
-  //     );
-
-  //     setAcoes((current) =>
-  //       current.map((a) => {
-  //         if (a.id === item.id) {
-  //           return { ...a, status: 'indeferido', polygonCoords: [] };
-  //         }
-  //         return a;
-  //       }),
-  //     );
-
-  //     setPrevAction(null);
-  //     setShowIndeferirAcaoMotivo(false);
-  //     toast('Ação indeferida com sucesso!', { type: 'success' });
-  //   } catch (error) {
-  //     console.error('Falha ao indeferir ação:', error);
-  //     toast('Erro ao indeferir ação.', { type: 'error' });
-  //   }
-  // }
-
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -144,7 +59,10 @@ export function AcaoDetails() {
             ))}
         </div>
 
-        <button className="w-full cursor-pointer font-bold py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+        <button
+          onClick={() => navigate('vincular-denuncias')}
+          className="w-full cursor-pointer font-bold py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        >
           Vincular denúncia
         </button>
 

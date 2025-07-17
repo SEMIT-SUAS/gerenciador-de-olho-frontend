@@ -8,6 +8,7 @@ import { VincularDenunciaAAcao } from './components/SidePanel/Denuncia/VincularD
 import { IndeferirDenuncia } from './components/SidePanel/Denuncia/IndeferirDenuncia';
 import { AcoesList } from './components/SidePanel/Acao/AcoesList';
 import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
+import { VincularDenunciasAAcao } from './components/SidePanel/Acao/VincularDenunciasAAcao';
 
 export function App() {
   return (
@@ -25,18 +26,23 @@ export function App() {
             <Route index element={<DenunciasList />} />
             <Route path=":denunciaId" element={<DenunciaDetails />} />
             <Route
-              path=":denunciaId/vincular-acao"
-              element={<VincularDenunciaAAcao />}
-            />
-            <Route
               path=":denunciaId/indeferir"
               element={<IndeferirDenuncia />}
+            />
+            <Route
+              path=":denunciaId/vincular-acao"
+              element={<VincularDenunciaAAcao />}
             />
           </Route>
 
           <Route path="acoes">
             <Route index element={<AcoesList />} />
             <Route path=":acaoId" element={<AcaoDetails />} />
+            <Route path=":acaoId/indeferir" element={<h1>Indeferir acao</h1>} />
+            <Route
+              path=":acaoId/vincular-denuncias"
+              element={<VincularDenunciasAAcao />}
+            />
           </Route>
         </Route>
 

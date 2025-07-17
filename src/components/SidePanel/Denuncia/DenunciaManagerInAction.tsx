@@ -1,6 +1,5 @@
 import { FaTrashAlt } from 'react-icons/fa';
 import type { Denuncia } from '../../../types/Denuncia';
-import { Tag } from '../Tag';
 import { useNavigate } from 'react-router-dom';
 
 type DenunciaManageInActionProps = {
