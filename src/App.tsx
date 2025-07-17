@@ -6,6 +6,8 @@ import { DenunciasList } from './components/SidePanel/Denuncia/DenunciasList';
 import { DenunciaDetails } from './components/SidePanel/Denuncia/DenunciaDetails';
 import { VincularDenunciaAAcao } from './components/SidePanel/Denuncia/VincularDenunciaAAcao';
 import { IndeferirDenuncia } from './components/SidePanel/Denuncia/IndeferirDenuncia';
+import { AcoesList } from './components/SidePanel/Acao/AcoesList';
+import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
 
 export function App() {
   return (
@@ -33,8 +35,8 @@ export function App() {
           </Route>
 
           <Route path="acoes">
-            <Route index element={<h1>Listando as acoes</h1>} />
-            <Route path=":acaoId" element={<h1>Detalhes da acao</h1>} />
+            <Route index element={<AcoesList />} />
+            <Route path=":acaoId" element={<AcaoDetails />} />
           </Route>
         </Route>
 
