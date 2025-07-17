@@ -5,6 +5,7 @@ import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { DenunciasList } from './components/SidePanel/Denuncia/DenunciasList';
 import { DenunciaDetails } from './components/SidePanel/Denuncia/DenunciaDetails';
 import { VincularDenunciaAAcao } from './components/SidePanel/Denuncia/VincularDenunciaAAcao';
+import { IndeferirDenuncia } from './components/SidePanel/Denuncia/IndeferirDenuncia';
 
 export function App() {
   return (
@@ -24,6 +25,10 @@ export function App() {
             <Route
               path=":denunciaId/vincular-acao"
               element={<VincularDenunciaAAcao />}
+            />
+            <Route
+              path=":denunciaId/indeferir"
+              element={<IndeferirDenuncia />}
             />
           </Route>
 

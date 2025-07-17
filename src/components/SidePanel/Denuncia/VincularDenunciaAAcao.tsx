@@ -10,7 +10,7 @@ import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 
 export function VincularDenunciaAAcao() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const { setDenuncias } = useOcorrenciasContext();
+  const { setDenuncias, denuncias } = useOcorrenciasContext();
   const {
     setIsVisibleDenunciasInMap,
     setIsVisibleAcoesInMap,
@@ -18,7 +18,6 @@ export function VincularDenunciaAAcao() {
     setFiltroCategoria,
     cacheCurrentFilters,
     restoreCachedFilters,
-    denunciasFiltradas,
     acoesFiltradas,
   } = useFilters();
   const { setSalvarAcaoOnclick, acaoSelecionada, setAcaoSelecionada } =
@@ -29,14 +28,11 @@ export function VincularDenunciaAAcao() {
   const navigate = useNavigate();
 
   const denuncia = useMemo(() => {
-    return denunciasFiltradas.find((d) => d.id == Number(denunciaId));
-  }, [denunciasFiltradas]);
+    return denuncias.find((d) => d.id == Number(denunciaId));
+  }, [denuncias, denunciaId]);
 
-  if (!denuncia) {
-    return Navigate({
-      to: '/404',
-      replace: true,
-    });
+  if (!denuncia || denuncia.acaoId != null) {
+    return <Navigate to="404" replace />;
   }
 
   useEffect(() => {
@@ -62,14 +58,16 @@ export function VincularDenunciaAAcao() {
     };
 
     //TODO: CALL API
-    setDenuncias((denuncias) => [...denuncias, denunciaUpdatedData]);
-    navigate(`/ocorrencias/denuncias/${denunciaId}`);
+    setDenuncias((denuncias) =>
+      denuncias.map((d) => (d.id == denuncia?.id ? denunciaUpdatedData : d)),
+    );
+    navigate(`/ocorrencias/acoes/${acaoSelecionada?.id}`);
   }
 
   return (
     <>
       <div className="flex gap-4 flex-col h-full">
-        <BackButton />
+        <BackButton to={`/ocorrencias/denuncias/${denunciaId}`} />
 
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Vinculando denúncia:</p>

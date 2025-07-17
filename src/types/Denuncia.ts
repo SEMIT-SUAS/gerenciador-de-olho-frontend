@@ -1,4 +1,3 @@
-import type { StatusModel } from './StatusModel';
 import type { Endereco } from './Endereco';
 import type { Imagem } from './Imagem';
 
@@ -11,7 +10,7 @@ export interface Denuncia {
   endereco: Endereco;
   descricao: string;
   images: Imagem[];
-  status: StatusModel;
+  status: string;
   motivoStatus?: string;
   acaoId?: number;
 }
