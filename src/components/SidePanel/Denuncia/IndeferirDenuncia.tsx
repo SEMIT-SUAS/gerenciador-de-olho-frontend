@@ -131,7 +131,7 @@ export function IndeferirDenuncia() {
         isOpen={isOpenIndeferirDenunciaConfirmation}
         title="Indeferir denúncia"
         message="Você realmente quer indeferir essa denúncia? Ação irreversível"
-        onCancel={() => setIsOpenIndeferirDenunciaConfirmation(false)}
+        onClose={() => setIsOpenIndeferirDenunciaConfirmation(false)}
         onConfirm={() => handleOnConfirmIndeferirDenuncia()}
       />
     </>

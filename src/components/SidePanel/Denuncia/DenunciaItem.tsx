@@ -29,18 +29,18 @@ return (
   <div
     key={denuncia.id}
     className="flex items-start gap-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
-    onClick={onClick}
-  >
+    onClick={onClick}>
+      
     <img 
-      className='w-24 h-24 rounded-md object-cover flex-shrink-0' 
+      className='w-26 h-26 rounded-md object-cover flex-shrink-0' 
       src={imageUrlCompleta} 
-      alt="Primeira imagem da denúncia" 
+      alt="Primeira imagem da denúncia"
     />
 
     <div className="flex flex-col flex-grow py-3 pr-3">
       <div className="flex justify-between items-center">
         <h3 className="font-semibold text-md text-gray-700">{denuncia.tipo}</h3>
-        {showTag && <Tag status={denuncia.status} />}
+        {showTag && <Tag status={denuncia.status}/>}
         {isDeletable && (
           <button
             onClick={onTrashClick}
@@ -52,14 +52,16 @@ return (
       </div>
 
       {showDescription && (
-        <p className="text-xs text-gray-500 mt-1">{denuncia.descricao}</p>
+        <p className="text-xs text-gray-500 mt-1 line-clamp-2">{denuncia.descricao}</p>
       )}
 
       <p className="flex items-center text-xs text-gray-400 mt-1">
         <span className="mr-1">
           <FaMapPin />
         </span>
-        {`${denuncia.endereco.rua}, ${denuncia.endereco.bairro}`}
+        <span className="line-clamp-1">
+          {`${denuncia.endereco.rua}, ${denuncia.endereco.bairro}`}
+        </span>
       </p>
     </div>
   </div>

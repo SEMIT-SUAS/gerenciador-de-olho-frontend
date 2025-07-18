@@ -54,7 +54,6 @@ export function SelectCategoriaFilter({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="todas">Todas</SelectItem>
-
           {categorias?.map((categoria) => (
             <SelectItem key={categoria.id} value={categoria.name}>
               {categoria.name}
