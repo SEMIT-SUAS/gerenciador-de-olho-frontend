@@ -9,7 +9,6 @@ import {
 } from 'react';
 import type { Acao } from '../types/Acao';
 import { type Denuncia } from '../types/Denuncia';
-import { toast } from 'react-toastify';
 
 type SelectAcoesOuDenunciasProps = {
   salvarDenunciasOnclick: boolean;
@@ -25,6 +24,15 @@ type SelectAcoesOuDenunciasProps = {
   addDenunciaNaSelecao: (newDenuncia: Denuncia) => void;
   denunciasJaVinculadas: Denuncia[];
   setDenunciasJaVinculadas: Dispatch<SetStateAction<Denuncia[]>>;
+  isAddingDenuncia: boolean;
+  setIsAddingDenuncia: Dispatch<SetStateAction<boolean>>;
+  zoomTo: ZoomCoordinates | null;
+  setZoomTo: Dispatch<SetStateAction<ZoomCoordinates | null>>;
+};
+
+type ZoomCoordinates = {
+  lat: number;
+  lng: number;
 };
 
 const MapActionsContext = createContext<
@@ -41,9 +49,11 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const [isAddingDenuncia, setIsAddingDenuncia] = useState(false);
   const [denunciasJaVinculadas, setDenunciasJaVinculadas] = useState<
     Denuncia[]
   >([]);
+  const [zoomTo, setZoomTo] = useState<ZoomCoordinates | null>(null);
 
   const value: SelectAcoesOuDenunciasProps = {
     salvarDenunciasOnclick,
@@ -59,6 +69,10 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     addDenunciaNaSelecao,
     denunciasJaVinculadas,
     setDenunciasJaVinculadas,
+    isAddingDenuncia,
+    setIsAddingDenuncia,
+    zoomTo,
+    setZoomTo,
   };
 
   useEffect(() => {

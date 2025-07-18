@@ -1,4 +1,4 @@
-import { Marker } from 'react-leaflet';
+import { Marker, useMap } from 'react-leaflet';
 import { useFilters } from '../../context/FiltersContext';
 import { getDenunciaIconByTipo } from '../../utils/getPinIcon';
 import { useMapActions } from '../../context/MapActions';
@@ -7,6 +7,7 @@ import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
 import { getConvexHull } from '../../utils/geometry';
 import { PinDetailsDenuncia } from './PinDetailsDenuncia';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function DenunciaPins() {
   const { denunciasFiltradas, isVisibleDenunciasInMap } = useFilters();
@@ -17,15 +18,7 @@ export function DenunciaPins() {
     denunciasJaVinculadas,
   } = useMapActions();
 
-  function handleOnDenunciaClick(denunciaSelecionada: Denuncia) {
-    if (salvarDenunciasOnclick) {
-      addDenunciaNaSelecao(denunciaSelecionada);
-    }
-  }
-
-  if (!isVisibleDenunciasInMap) {
-    return null;
-  }
+  const navigate = useNavigate();
 
   const denunciaPolygonCoordinates = useMemo(() => {
     return getConvexHull(
@@ -35,6 +28,18 @@ export function DenunciaPins() {
       })),
     );
   }, [denunciasSelecionas, denunciasJaVinculadas]);
+
+  function handleOnDenunciaClick(currentDenuncia: Denuncia) {
+    if (salvarDenunciasOnclick) {
+      addDenunciaNaSelecao(currentDenuncia);
+    } else {
+      navigate(`/ocorrencias/denuncias/${currentDenuncia.id}`);
+    }
+  }
+
+  if (!isVisibleDenunciasInMap) {
+    return null;
+  }
 
   return (
     <>
@@ -48,7 +53,7 @@ export function DenunciaPins() {
               click: () => handleOnDenunciaClick(d),
             }}
           >
-            <PinDetailsDenuncia denuncia={d} />
+            {!salvarDenunciasOnclick && <PinDetailsDenuncia denuncia={d} />}
 
             {denunciaPolygonCoordinates.length > 0 && (
               <DenunciasSelecionadasPolygon

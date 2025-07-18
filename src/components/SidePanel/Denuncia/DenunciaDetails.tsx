@@ -1,6 +1,6 @@
 import { Tag } from './../Tag';
 import { ImageModal } from '../../Modals/ImageModal';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { FaTrashAlt } from 'react-icons/fa';
@@ -8,18 +8,20 @@ import { FilesCarrrousel } from '../../FilesCarrousel';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BackButton } from '../../Buttons/Backbutton';
+import { useMapActions } from '../../../context/MapActions';
 
 export function DenunciaDetails() {
   const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
   const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
   const { denuncias, acoes, setDenuncias } = useOcorrenciasContext();
+  const { setZoomTo } = useMapActions();
   const navigate = useNavigate();
 
   const params = useParams();
   const denunciaId = params.denunciaId;
   const denuncia = useMemo(() => {
     return denuncias.find((d) => d.id == Number(denunciaId));
-  }, [denuncias]);
+  }, [denuncias, denunciaId]);
 
   if (!denuncia) {
     return Navigate({
@@ -55,6 +57,15 @@ export function DenunciaDetails() {
       console.error(error);
     }
   }
+
+  useEffect(() => {
+    setZoomTo({
+      lat: denuncia.endereco.latitude,
+      lng: denuncia.endereco.longitude,
+    });
+
+    return () => setZoomTo(null);
+  }, [denuncia, denunciaId]);
 
   return (
     <>

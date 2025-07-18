@@ -1,9 +1,11 @@
 import { useEffect, type ReactNode } from 'react';
 import { useAddDenuncia } from '../../context/AddDenunciaContext';
 import { useFilters } from '../../context/FiltersContext';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { TabButtons } from './TabButtons';
 import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { FaAddressCard, FaMinusCircle } from 'react-icons/fa';
+import { AddButton } from '../Buttons/AddButton';
 
 interface SidePanelProps {
   children: ReactNode;
@@ -41,6 +43,8 @@ export function SidePanel({ children }: SidePanelProps) {
               De olho na cidade
             </span>
           </div>
+
+          <AddButton />
         </div>
 
         {!loading && showTabs && (

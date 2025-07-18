@@ -26,16 +26,6 @@ export function MapComponent() {
 
         <DenunciaPins />
         <AcaoPins />
-
-        {/* {newDenunciaCoordinates && (
-          <Marker
-            position={[
-              newDenunciaCoordinates.latitude,
-              newDenunciaCoordinates.longitude,
-            ]}
-            icon={selectedIcon}
-          />
-        )} */}
       </MapContainer>
     </div>
   );

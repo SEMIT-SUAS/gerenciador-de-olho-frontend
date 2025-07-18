@@ -1,18 +1,18 @@
 import { IoIosAdd, IoIosClose } from 'react-icons/io';
+import { useLocation } from 'react-router-dom';
 
-type AddButtonProps = {
-  label: string;
-  isAdding: boolean;
-  onClick: () => void;
-};
+export function AddButton() {
+  const location = useLocation();
+  const isAdding = location.pathname.endsWith('/add');
 
-export function AddButton({ isAdding, onClick, label }: AddButtonProps) {
   const bgColor = isAdding ? 'bg-red-600' : 'bg-blue-600';
+
+  function handleOnClickButton() {}
 
   return (
     <button
-      onClick={onClick}
-      aria-label={label}
+      onClick={handleOnClickButton}
+      aria-label={isAdding ? '' : ''}
       className={`p-1 rounded-full ${bgColor} cursor-pointer`}
     >
       {isAdding ? (

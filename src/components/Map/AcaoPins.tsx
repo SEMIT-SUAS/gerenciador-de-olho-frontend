@@ -7,15 +7,20 @@ import { AcaoPolygon } from './AcaoPolygon';
 import { useMapActions } from '../../context/MapActions';
 import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
 import { getConvexHull } from '../../utils/geometry';
+import { useNavigate } from 'react-router-dom';
 
 export function AcaoPins() {
   const { isVisibleAcoesInMap, acoesFiltradas } = useFilters();
   const { salvarAcaoOnclick, setAcaoSelecionada } = useMapActions();
   const { denuncias } = useOcorrenciasContext();
 
+  const navigate = useNavigate();
+
   function handleOnAcaoClick(acao: Acao) {
     if (salvarAcaoOnclick) {
       setAcaoSelecionada(acao);
+    } else {
+      navigate(`/ocorrencias/acoes/${acao.id}`);
     }
   }
 
@@ -44,7 +49,7 @@ export function AcaoPins() {
                 click: () => handleOnAcaoClick(a),
               }}
             >
-              <PinDetailsAcao acao={a} />
+              {!salvarAcaoOnclick && <PinDetailsAcao acao={a} />}
             </Marker>
 
             {denunciasVinculadas.length > 0 && (

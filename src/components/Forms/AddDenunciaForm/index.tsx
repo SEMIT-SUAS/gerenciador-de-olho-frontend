@@ -1,44 +1,21 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { z } from 'zod/v4';
-import type { Categoria } from '../../../types/CategoriaDenuncia';
-import categoriaService from '../../../services/categoriaService';
 import denunciasService from '../../../services/denunciasService';
 import { FormGroup } from '../FormGroup';
 import { Label } from '../Label';
 import { FormInput } from '../FormInput';
 import { FormInputError } from '../FormInputError';
 import { SelectArrowDown } from '../SelectArrowDown';
-import { useAddDenuncia } from '../../../context/AddDenunciaContext';
 import { toast } from 'react-toastify';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
-
-const addDenunciaFormType = z.object({
-  categoryId: z.number().min(1, 'Selecione uma categoria'),
-  categoryTipoId: z.number().min(1, 'Selecione o tipo da categoria'),
-  address: z.object({
-    bairro: z.string().min(3, 'No mínimo 3 caracteres'),
-    rua: z.string().min(3, 'No mínimo 3 caracteres'),
-    pontoDeReferencia: z.string().min(3, 'No mínimo 3 caracteres'),
-  }),
-  description: z.string().min(5, 'No mínimo 5 caracteres'),
-  files: z
-    .array(z.any())
-    .nonempty('Uma denúncia precisa ter no mínimo 1 arquivo')
-    .max(5, 'No máximo 5 arquivos'),
-});
+import { AddDenunciaFormType } from './types';
+import { useMapActions } from '../../../context/MapActions';
 
 export function AddDenunciaForm() {
-  const {
-    isSelectingNewDenunciaInMap,
-    setIsSelectingNewDenunciaInMap,
-    newDenunciaCoordinates,
-  } = useAddDenuncia();
-
   const { setDenuncias } = useOcorrenciasContext();
 
-  const [categories, setCategories] = useState<Categoria[] | null>(null);
-  const [formData, setFormData] = useState<z.infer<typeof addDenunciaFormType>>(
+  const [formData, setFormData] = useState<z.infer<typeof AddDenunciaFormType>>(
     {
       categoryId: -1,
       categoryTipoId: 0,
@@ -57,51 +34,8 @@ export function AddDenunciaForm() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
 
   useEffect(() => {
-    async function fetchCategorias() {
-      try {
-        const data = await categoriaService.getAll();
-        setCategories(data);
-      } catch (error) {
-        toast(error as string, {
-          position: 'bottom-right',
-          type: 'error',
-        });
-      }
-    }
-
-    fetchCategorias();
+    return () => {};
   }, []);
-
-  useEffect(() => {
-    if (!newDenunciaCoordinates) return;
-
-    async function fetchEndereco() {
-      try {
-        setIsLoadingAddressSearch(true);
-        const address = await denunciasService.getAddressByCoordinates(
-          newDenunciaCoordinates!.longitude,
-          newDenunciaCoordinates!.latitude,
-        );
-
-        setFormData((prev) => ({
-          ...prev,
-          address: {
-            rua: address.rua,
-            bairro: address.bairro,
-            pontoDeReferencia: '',
-          },
-        }));
-      } catch (error: any) {
-        toast(error.message, {
-          type: 'error',
-        });
-      } finally {
-        setIsLoadingAddressSearch(false);
-      }
-    }
-
-    fetchEndereco();
-  }, [newDenunciaCoordinates]);
 
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value, id } = e.target;
@@ -158,7 +92,7 @@ export function AddDenunciaForm() {
   async function handleSubmitForm(e: FormEvent) {
     e.preventDefault();
 
-    const result = addDenunciaFormType.safeParse(formData);
+    const result = AddDenunciaFormType.safeParse(formData);
 
     if (!result.success) {
       const errors = result.error.format();
@@ -172,6 +106,7 @@ export function AddDenunciaForm() {
   async function submitForm() {
     try {
       setIsSubmitingForm(true);
+
       const createDenunciaData = {
         ...formData,
         address: {

@@ -1,13 +1,15 @@
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 import { DenunciaManageInAction } from '../Denuncia/DenunciaManagerInAction';
 import { Tag } from '../Tag';
 import { BackButton } from '../../Buttons/Backbutton';
 import { FaInfoCircle } from 'react-icons/fa';
+import { useMapActions } from '../../../context/MapActions';
 
 export function AcaoDetails() {
   const { acoes, denuncias } = useOcorrenciasContext();
+  const { setZoomTo } = useMapActions();
 
   const params = useParams();
   const acaoId = params.acaoId;
@@ -24,6 +26,15 @@ export function AcaoDetails() {
   const denunciasVinculadas = useMemo(() => {
     return denuncias.filter((d) => d.acaoId == acao.id);
   }, [denuncias]);
+
+  useEffect(() => {
+    setZoomTo({
+      lat: acao.lat,
+      lng: acao.lon,
+    });
+
+    return () => setZoomTo(null);
+  }, [acao, acaoId]);
 
   return (
     <div className="flex flex-col h-full p-4">
