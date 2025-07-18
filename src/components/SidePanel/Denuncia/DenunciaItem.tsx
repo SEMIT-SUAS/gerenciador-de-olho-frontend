@@ -37,7 +37,7 @@ return (
       alt="Primeira imagem da denúncia" 
     />
 
-    <div className="flex flex-col flex-grow p-3">
+    <div className="flex flex-col flex-grow py-3 pr-3">
       <div className="flex justify-between items-center">
         <h3 className="font-semibold text-md text-gray-700">{denuncia.tipo}</h3>
         {showTag && <Tag status={denuncia.status} />}
@@ -52,7 +52,7 @@ return (
       </div>
 
       {showDescription && (
-        <p className="text-sm text-gray-500 mt-1">{denuncia.descricao}</p>
+        <p className="text-xs text-gray-500 mt-1">{denuncia.descricao}</p>
       )}
 
       <p className="flex items-center text-xs text-gray-400 mt-1">
