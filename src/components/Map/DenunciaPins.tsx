@@ -6,11 +6,16 @@ import type { Denuncia } from '../../types/Denuncia';
 import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
 import { getConvexHull } from '../../utils/geometry';
 import { PinDetailsDenuncia } from './PinDetailsDenuncia';
+import { useMemo } from 'react';
 
 export function DenunciaPins() {
   const { denunciasFiltradas, isVisibleDenunciasInMap } = useFilters();
-  const { salvarDenunciasOnclick, addDenunciaNaSelecao, denunciasSelecionas } =
-    useMapActions();
+  const {
+    salvarDenunciasOnclick,
+    addDenunciaNaSelecao,
+    denunciasSelecionas,
+    denunciasJaVinculadas,
+  } = useMapActions();
 
   function handleOnDenunciaClick(denunciaSelecionada: Denuncia) {
     if (salvarDenunciasOnclick) {
@@ -21,6 +26,15 @@ export function DenunciaPins() {
   if (!isVisibleDenunciasInMap) {
     return null;
   }
+
+  const denunciaPolygonCoordinates = useMemo(() => {
+    return getConvexHull(
+      [...denunciasSelecionas, ...denunciasJaVinculadas].map((d) => ({
+        lat: d.endereco.latitude,
+        lon: d.endereco.longitude,
+      })),
+    );
+  }, [denunciasSelecionas, denunciasJaVinculadas]);
 
   return (
     <>
@@ -36,14 +50,9 @@ export function DenunciaPins() {
           >
             <PinDetailsDenuncia denuncia={d} />
 
-            {denunciasSelecionas.length > 0 && (
+            {denunciaPolygonCoordinates.length > 0 && (
               <DenunciasSelecionadasPolygon
-                coordinates={getConvexHull(
-                  denunciasSelecionas.map((d) => ({
-                    lat: d.endereco.latitude,
-                    lon: d.endereco.longitude,
-                  })),
-                )}
+                coordinates={denunciaPolygonCoordinates}
               />
             )}
           </Marker>

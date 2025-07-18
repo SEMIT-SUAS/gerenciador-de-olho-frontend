@@ -39,6 +39,8 @@ type FiltersContextProps = FilterState & {
   acoesFiltradas: Acao[];
   cacheCurrentFilters: () => void;
   restoreCachedFilters: () => void;
+  filtrarAcoesPorId: number[] | 'desabilitado';
+  setFiltrarAcoesPorId: Dispatch<SetStateAction<number[] | 'desabilitado'>>;
 };
 
 const defaultFilters: FilterState = {
@@ -77,6 +79,10 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   const [filtroDenunciasComAcao, setFiltroDenunciasComAcao] = useState(
     defaultFilters.filtroDenunciasComAcao,
   );
+
+  const [filtrarAcoesPorId, setFiltrarAcoesPorId] = useState<
+    number[] | 'desabilitado'
+  >('desabilitado');
 
   const { denuncias, acoes } = useOcorrenciasContext();
 
@@ -140,6 +146,10 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   ]);
 
   const acoesFiltradas = useMemo(() => {
+    if (filtrarAcoesPorId != 'desabilitado') {
+      return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
+    }
+
     return acoes.filter((a) => {
       const passaStatus =
         filtroStatusAcao === 'todos' || filtroStatusAcao.includes(a.status);
@@ -149,7 +159,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 
       return passaStatus && passaSecretaria;
     });
-  }, [acoes, filtroStatusAcao, filtroSecretaria]);
+  }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
 
   return (
     <FiltersContext.Provider
@@ -172,6 +182,8 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         setFiltroDenunciasComAcao,
         cacheCurrentFilters,
         restoreCachedFilters,
+        filtrarAcoesPorId,
+        setFiltrarAcoesPorId,
       }}
     >
       {children}

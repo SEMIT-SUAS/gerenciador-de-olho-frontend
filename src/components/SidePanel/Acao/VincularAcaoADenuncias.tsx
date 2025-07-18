@@ -1,19 +1,35 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 import { BackButton } from '../../Buttons/Backbutton';
 import { useFilters } from '../../../context/FiltersContext';
 import { useMapActions } from '../../../context/MapActions';
 import { Tag } from '../Tag';
+import type { Acao } from '../../../types/Acao';
+import { getPolygonoCenter } from '../../../utils/geometry';
 
-export function VincularDenunciasAAcao() {
+export function VincularAcaoADenuncias() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const { denunciasSelecionas, addDenunciaNaSelecao } = useMapActions();
-  const { acoes } = useOcorrenciasContext();
-  const { denunciasFiltradas } = useFilters();
+  const {
+    denunciasSelecionas,
+    addDenunciaNaSelecao,
+    setDisableMapFilters,
+    setSalvarDenunciasOnClick,
+    setDenunciasJaVinculadas,
+  } = useMapActions();
+  const { acoes, denuncias, setDenuncias, setAcoes } = useOcorrenciasContext();
+  const {
+    denunciasFiltradas,
+    setFiltroDenunciasComAcao,
+    setFiltroStatusDenuncia,
+    cacheCurrentFilters,
+    restoreCachedFilters,
+    setIsVisibleAcoesInMap,
+  } = useFilters();
 
   const params = useParams();
+  const navigate = useNavigate();
   const acaoId = params.acaoId;
 
   const acao = useMemo(() => {
@@ -24,9 +40,65 @@ export function VincularDenunciasAAcao() {
     return <Navigate to="/404" replace />;
   }
 
-  function handleVincularDenuncias() {}
+  const denunciasDaAcao = useMemo(() => {
+    return denuncias.filter((d) => d.acaoId === acao.id);
+  }, [denuncias]);
 
-  useEffect(() => {}, []);
+  async function handleVincularDenuncias() {
+    if (!acao) return;
+
+    const denunciasSelecionadasIds = new Set(
+      denunciasSelecionas.map((d) => d.id),
+    );
+
+    const denunciasDataUpdated = denuncias.map((denuncia) => {
+      if (denunciasSelecionadasIds.has(denuncia.id)) {
+        return { ...denuncia, acaoId: acao.id, status: acao.status };
+      }
+      return denuncia;
+    });
+
+    const todasDenunciasDaAcao = denunciasDataUpdated.filter(
+      (d) => d.acaoId === acao.id,
+    );
+
+    const coordinates = todasDenunciasDaAcao.map((d) => ({
+      lat: d.endereco.latitude,
+      lng: d.endereco.longitude,
+    }));
+
+    const actionCenter = getPolygonoCenter(coordinates);
+
+    const acaoDataUpdated: Acao = {
+      ...acao,
+      lat: actionCenter[0],
+      lon: actionCenter[1],
+    };
+
+    setDenuncias(denunciasDataUpdated);
+    setAcoes((currentAcoes) =>
+      currentAcoes.map((a) => (a.id === acao.id ? acaoDataUpdated : a)),
+    );
+
+    navigate(`/ocorrencias/acoes/${acao.id}`);
+  }
+
+  function resetFiltersAndMapActions() {
+    restoreCachedFilters();
+    setSalvarDenunciasOnClick(false);
+    setDenunciasJaVinculadas([]);
+  }
+
+  useEffect(() => {
+    cacheCurrentFilters();
+    setSalvarDenunciasOnClick(true);
+    setIsVisibleAcoesInMap(false);
+    setFiltroDenunciasComAcao('sem_acao');
+    setFiltroStatusDenuncia(['aberto']);
+    setDenunciasJaVinculadas(denunciasDaAcao);
+
+    return () => resetFiltersAndMapActions();
+  }, []);
 
   return (
     <>
@@ -76,9 +148,9 @@ export function VincularDenunciasAAcao() {
       <ConfirmModal
         isOpen={isOpenConfirmationModal}
         title="Vínculo de denúncia à ação"
-        message={`Você deseja vincular essa ação as denúncias ${denunciasSelecionas.join(
-          ', ',
-        )}?`}
+        message={`Você deseja vincular essa ação as denúncias ${denunciasSelecionas
+          .map((d) => d.id)
+          .join(', ')}?`}
         onCancel={() => setIsOpenConfirmationModal(false)}
         onConfirm={handleVincularDenuncias}
       />

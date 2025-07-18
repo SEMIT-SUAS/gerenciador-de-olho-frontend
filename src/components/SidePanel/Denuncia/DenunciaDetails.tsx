@@ -6,7 +6,6 @@ import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { FaTrashAlt } from 'react-icons/fa';
 import { FilesCarrrousel } from '../../FilesCarrousel';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import type { Denuncia } from '../../../types/Denuncia';
 import { toast } from 'react-toastify';
 import { BackButton } from '../../Buttons/Backbutton';
 
@@ -57,31 +56,10 @@ export function DenunciaDetails() {
     }
   }
 
-  function handleIndeferirDenuncia(reason: string) {
-    try {
-      if (!denuncia) throw new Error('Denúncia não encontrada');
-
-      const updatedDenuncia: Denuncia = {
-        ...denuncia,
-        status: 'indeferido',
-        motivoStatus: reason,
-      };
-
-      setDenuncias((current) =>
-        current.map((d) => (d.id === denuncia.id ? updatedDenuncia : d)),
-      );
-
-      setShowIndeferirDenuncia(false);
-      toast.success('Denúncia indeferida com sucesso!');
-    } catch (error) {
-      toast.error('Erro ao indeferir denúncia.');
-    }
-  }
-
   return (
     <>
       <div className="flex flex-col gap-2 space-y-4">
-        <BackButton to="/ocorrencias/denuncias" />
+        <BackButton fallback="/ocorrencias/denuncias" />
 
         <>
           <div className="flex justify-between items-start">

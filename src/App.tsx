@@ -8,7 +8,8 @@ import { VincularDenunciaAAcao } from './components/SidePanel/Denuncia/VincularD
 import { IndeferirDenuncia } from './components/SidePanel/Denuncia/IndeferirDenuncia';
 import { AcoesList } from './components/SidePanel/Acao/AcoesList';
 import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
-import { VincularDenunciasAAcao } from './components/SidePanel/Acao/VincularDenunciasAAcao';
+import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
+import { AddDenuncia } from './components/SidePanel/Denuncia/AddDenuncia';
 
 export function App() {
   return (
@@ -25,6 +26,7 @@ export function App() {
           <Route path="denuncias">
             <Route index element={<DenunciasList />} />
             <Route path=":denunciaId" element={<DenunciaDetails />} />
+            <Route path="add" element={<AddDenuncia />} />
             <Route
               path=":denunciaId/indeferir"
               element={<IndeferirDenuncia />}
@@ -41,7 +43,7 @@ export function App() {
             <Route path=":acaoId/indeferir" element={<h1>Indeferir acao</h1>} />
             <Route
               path=":acaoId/vincular-denuncias"
-              element={<VincularDenunciasAAcao />}
+              element={<VincularAcaoADenuncias />}
             />
           </Route>
         </Route>

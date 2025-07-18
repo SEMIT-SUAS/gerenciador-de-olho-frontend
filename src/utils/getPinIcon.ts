@@ -92,19 +92,19 @@ const icons = [
 ];
 
 export function getDenunciaIconByTipo(tipo: string) {
-  const target = icons.find((i) => i.name == tipo);
-  let path = '/icons/denuncia.png';
+  // const target = icons.find((i) => i.name === tipo);
+  let iconPath = '/icons/denuncia.png';
 
-  if (target) {
-    path = target.path;
-  }
+  // if (target) {
+  //   iconPath = `/icons/${target.path}`;
+  // }
 
   return new L.Icon({
-    iconUrl: path,
+    iconUrl: iconPath,
     iconSize: [38, 38],
     iconAnchor: [19, 38],
     popupAnchor: [0, -40],
     shadowSize: [41, 41],
-    shadowAnchor: [19, 41],
+    shadowAnchor: [12, 41],
   });
 }

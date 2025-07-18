@@ -23,6 +23,8 @@ type SelectAcoesOuDenunciasProps = {
   disableMapFilters: boolean;
   setDisableMapFilters: Dispatch<SetStateAction<boolean>>;
   addDenunciaNaSelecao: (newDenuncia: Denuncia) => void;
+  denunciasJaVinculadas: Denuncia[];
+  setDenunciasJaVinculadas: Dispatch<SetStateAction<Denuncia[]>>;
 };
 
 const MapActionsContext = createContext<
@@ -39,6 +41,10 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const [denunciasJaVinculadas, setDenunciasJaVinculadas] = useState<
+    Denuncia[]
+  >([]);
+
   const value: SelectAcoesOuDenunciasProps = {
     salvarDenunciasOnclick,
     setSalvarDenunciasOnClick,
@@ -51,6 +57,8 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     disableMapFilters,
     setDisableMapFilters,
     addDenunciaNaSelecao,
+    denunciasJaVinculadas,
+    setDenunciasJaVinculadas,
   };
 
   useEffect(() => {
@@ -61,10 +69,12 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
 
   function addDenunciaNaSelecao(newDenuncia: Denuncia) {
     if (denunciasSelecionas.find((d) => d.id == newDenuncia.id)) {
-      return toast.error('Essa denúncia já foi selecionada');
+      setDenunciasSelecionadas((denuncias) =>
+        denuncias.filter((d) => d.id !== newDenuncia.id),
+      );
+    } else {
+      setDenunciasSelecionadas((denuncias) => [...denuncias, newDenuncia]);
     }
-
-    setDenunciasSelecionadas((denuncias) => [...denuncias, newDenuncia]);
   }
 
   return (

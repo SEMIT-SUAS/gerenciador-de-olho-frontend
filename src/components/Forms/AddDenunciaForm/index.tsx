@@ -1,17 +1,17 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { z } from 'zod/v4';
-import type { Categoria } from '../../types/CategoriaDenuncia';
-import categoriaService from '../../services/categoriaService';
-import denunciasService from '../../services/denunciasService';
-import { FormGroup } from './FormGroup';
-import { Label } from './Label';
-import { FormInput } from './FormInput';
-import { FormInputError } from './FormInputError';
-import { SelectArrowDown } from './SelectArrowDown';
-import { useAddDenuncia } from '../../context/AddDenunciaContext';
+import type { Categoria } from '../../../types/CategoriaDenuncia';
+import categoriaService from '../../../services/categoriaService';
+import denunciasService from '../../../services/denunciasService';
+import { FormGroup } from '../FormGroup';
+import { Label } from '../Label';
+import { FormInput } from '../FormInput';
+import { FormInputError } from '../FormInputError';
+import { SelectArrowDown } from '../SelectArrowDown';
+import { useAddDenuncia } from '../../../context/AddDenunciaContext';
 import { toast } from 'react-toastify';
-import { ConfirmModal } from '../Modals/ConfirmModal';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { ConfirmModal } from '../../Modals/ConfirmModal';
+import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 
 const addDenunciaFormType = z.object({
   categoryId: z.number().min(1, 'Selecione uma categoria'),
@@ -28,11 +28,7 @@ const addDenunciaFormType = z.object({
     .max(5, 'No máximo 5 arquivos'),
 });
 
-type AddDenunciaFormProps = {
-  onCreateDenuncia: () => void;
-};
-
-export function AddDenunciaForm({ onCreateDenuncia }: AddDenunciaFormProps) {
+export function AddDenunciaForm() {
   const {
     isSelectingNewDenunciaInMap,
     setIsSelectingNewDenunciaInMap,
