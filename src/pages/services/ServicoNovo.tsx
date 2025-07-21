@@ -9,6 +9,7 @@ export function ServicoNovo() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState<Services>({
+    orgao: "",
     secretaria: null,
     nome: "",
     descricao: "",
