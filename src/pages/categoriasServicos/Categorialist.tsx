@@ -44,7 +44,14 @@ export function ListaCategorias() {
 async function handleToggleVisivel(cat: ServicoCategoria & { id: number }) {
   try {
     await toggleVisivel(cat.id, !cat.visivel);
-    fetchCategorias();
+
+    // Atualiza localmente o estado para não remover da lista
+    setCategorias(current =>
+      current.map(c =>
+        c.id === cat.id ? { ...c, visivel: !c.visivel } : c
+      )
+    );
+
   } catch (error) {
     alert(`Erro ao alterar visível: ${(error as Error).message}`);
   }
