@@ -9,6 +9,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import type { Denuncia } from '../../../types/Denuncia';
 import { toast } from 'react-toastify';
 import { BackButton } from '../../Buttons/Backbutton';
+import { Button } from '../../Buttons/Button';
 
 export function DenunciaDetails() {
   const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
@@ -85,7 +86,7 @@ export function DenunciaDetails() {
   return (
     <>
       <div className="flex flex-col gap-2 space-y-4">
-        <BackButton to="/ocorrencias/denuncias" />
+        <BackButton to="/ocorrencias/denuncias" children='Detalhes da Denúncia' />
 
         <>
           <div className="flex justify-between items-start">
@@ -153,12 +154,11 @@ export function DenunciaDetails() {
                 <p className="text-sm font-semibold text-gray-800">
                   Nenhuma ação vinculada
                 </p>
-                <button
+                <Button variant="outline_primary" size="sm" className='w-full'
                   onClick={() => navigate('vincular-acao')}
-                  className="w-full bg-blue-600 text-white text-sm font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Vincular a uma Ação
-                </button>
+                </Button>
               </div>
             )}
 
@@ -185,12 +185,11 @@ export function DenunciaDetails() {
           )}
 
           {denuncia.status === 'aberto' && (
-            <button
+            <Button variant='outline_danger' size='sm'
               onClick={() => navigate('indeferir')}
-              className="w-full border-2 text-sm border-red-500 text-red-500 font-semibold py-2 rounded-lg transition-colors hover:bg-red-500 hover:text-white"
-            >
+              className="w-full">
               Indeferir Denúncia
-            </button>
+            </Button>
           )}
         </>
       </div>

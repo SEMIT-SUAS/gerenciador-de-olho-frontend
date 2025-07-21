@@ -6,6 +6,7 @@ import { FaExclamationTriangle, FaCheck } from 'react-icons/fa';
 import { BackButton } from '../../Buttons/Backbutton';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { toast } from 'react-toastify';
+import { Button } from '../../Buttons/Button';
 
 export function IndeferirDenuncia() {
   const [isUpdatingDenuncia, setIsUpdatingDenuncia] = useState(false);
@@ -40,8 +41,6 @@ export function IndeferirDenuncia() {
       motivoStatus: motivo,
     };
 
-    // //TODO: CALL API
-
     await navigate(`/ocorrencias/denuncias/${denunciaId}`, {
       replace: true,
     });
@@ -54,8 +53,8 @@ export function IndeferirDenuncia() {
 
   return (
     <>
-      <div className="flex flex-col gap-2 h-full p-4 bg-white">
-        <BackButton />
+      <div className="flex flex-col gap-2 h-full bg-white">
+        <BackButton children="Indeferir Denúncia"/>
         <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
           <div className="flex items-center">
             <FaExclamationTriangle className="text-red-500 text-xl mr-3" />
@@ -100,17 +99,27 @@ export function IndeferirDenuncia() {
               Ou selecione uma mensagem rápida
             </h4>
             <div className="flex flex-wrap gap-2">
-              {mensagensSugeridasParaIndeferirDenuncia.map((message) => (
-                <button
-                  key={message}
-                  onClick={() => setMotivo(message)}
-                  className="px-4 py-2 text-xs text-start border border-slate-300 rounded-full text-slate-700 
-                           font-medium hover:bg-red-50 hover:border-red-400 hover:text-red-700 
-                           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all"
-                >
-                  {message}
-                </button>
-              ))}
+              {mensagensSugeridasParaIndeferirDenuncia.map((message) => {
+                const isSelected = motivo === message; // Verifica se este botão está selecionado
+
+                return (
+                  <button
+                    key={message}
+                    onClick={() => setMotivo(message)}
+                    className={`
+                      px-4 py-2 text-sm text-start border rounded-full font-medium transition-all duration-200
+                      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
+                      ${
+                        isSelected
+                          ? 'bg-red-600 text-white border-red-600' // Estilo QUANDO SELECIONADO
+                          : 'text-slate-700 border-slate-300 hover:bg-red-50 hover:border-red-400 hover:text-red-700' // Estilo PADRÃO
+                      }
+                    `}
+                  >
+                    {message}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

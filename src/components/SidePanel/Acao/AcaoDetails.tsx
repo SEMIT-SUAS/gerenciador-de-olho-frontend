@@ -112,7 +112,7 @@ export function AcaoDetails() {
   return (
     <>
       <div className="flex flex-col gap-4">
-        <BackButton to="/ocorrencias/acoes" />
+        <BackButton to="/ocorrencias/acoes" children="Detalhes da Ação" />
 
         <div className="flex justify-between items-center pb-4">
           <h1>{acao.nome}</h1>

@@ -3,7 +3,6 @@ import { useFilters } from '../../../context/FiltersContext';
 import { useNavigate } from 'react-router-dom';
 import { FilterStatusSelect } from '../Filters/FilterStatusSelect';
 import { SelectCategoriaFilter } from '../Filters/SelectCategoriaFilter';
-import { Button } from '@/components/Buttons/Button';
 
 export function DenunciasList() {
   const {

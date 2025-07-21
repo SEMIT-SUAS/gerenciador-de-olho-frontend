@@ -67,7 +67,7 @@ export function VincularDenunciaAAcao() {
   return (
     <>
       <div className="flex gap-4 flex-col h-full">
-        <BackButton to={`/ocorrencias/denuncias/${denunciaId}`} />
+        <BackButton to={`/ocorrencias/denuncias/${denunciaId}`} children='Vincular Denúncia'/>
 
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Vinculando denúncia:</p>

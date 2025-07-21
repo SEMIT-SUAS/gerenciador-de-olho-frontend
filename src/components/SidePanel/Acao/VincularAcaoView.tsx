@@ -36,7 +36,7 @@ export const VincularAcaoView: FC = () => {
   return (
     <>
       <div className="flex flex-col h-full">
-        <BackButton onClick={cancelLinking} />
+        <BackButton onClick={cancelLinking} children="Vinculando ação"/>
         <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Vinculando denúncia:</p>
           <p className="font-bold text-blue-900">

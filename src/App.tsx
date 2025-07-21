@@ -8,6 +8,7 @@ import { VincularDenunciaAAcao } from './components/SidePanel/Denuncia/VincularD
 import { IndeferirDenuncia } from './components/SidePanel/Denuncia/IndeferirDenuncia';
 import { AcoesList } from './components/SidePanel/Acao/AcoesList';
 import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 export function App() {
   return (
@@ -41,6 +42,8 @@ export function App() {
         </Route>
 
         <Route path="/" element={<Navigate to={'/ocorrencias/denuncias'} />} />
+
+        <Route path='*' element={<NotFoundPage/>}/>
       </Routes>
 
       <ToastContainer

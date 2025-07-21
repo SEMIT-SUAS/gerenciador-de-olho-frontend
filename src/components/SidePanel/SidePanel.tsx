@@ -36,8 +36,7 @@ export function SidePanel({ children }: SidePanelProps) {
             <h1 className="text-2xl font-bold text-gray-800">
               Painel de Ocorrências
             </h1>
-
-            <span className="text-blue-500 text-sm font-semibold">
+            <span className="text-blue-500 text-md font-semibold">
               De olho na cidade
             </span>
           </div>
