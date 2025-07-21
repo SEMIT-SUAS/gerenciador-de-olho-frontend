@@ -4,13 +4,13 @@ import { AddDenunciaProvider } from '../context/AddDenunciaContext';
 import { AddAcaoProvider } from '../context/AddAcaoContext';
 import { Outlet } from 'react-router-dom';
 import { FiltersProvider } from '../context/FiltersContext';
-import { useOcorrenciasContext } from '../context/OcorrenciasContext';
+import { useOcorrencias } from '../context/OcorrenciasContext';
 import { SidePanelSkeleton } from '../components/Loading/SidePanelSkeleton';
 import { MapSkeleton } from '../components/Loading/MapSkeleton';
 import { MapActionsProvider } from '../context/MapActions';
 
 export function OcorrenciasPage() {
-  const { loading } = useOcorrenciasContext();
+  const { loading } = useOcorrencias();
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100">

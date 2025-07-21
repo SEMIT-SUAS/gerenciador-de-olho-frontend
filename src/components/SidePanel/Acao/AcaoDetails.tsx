@@ -1,6 +1,6 @@
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useMemo } from 'react';
-import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
+import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { DenunciaManageInAction } from '../Denuncia/DenunciaManagerInAction';
 import { Tag } from '../Tag';
 import { BackButton } from '../../Buttons/Backbutton';
@@ -8,7 +8,7 @@ import { FaInfoCircle } from 'react-icons/fa';
 import { useMapActions } from '../../../context/MapActions';
 
 export function AcaoDetails() {
-  const { acoes, denuncias } = useOcorrenciasContext();
+  const { acoes, denuncias } = useOcorrencias();
   const { setZoomTo } = useMapActions();
 
   const params = useParams();

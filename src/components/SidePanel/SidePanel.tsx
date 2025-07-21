@@ -1,10 +1,8 @@
-import { useEffect, type ReactNode } from 'react';
-import { useAddDenuncia } from '../../context/AddDenunciaContext';
+import { type ReactNode } from 'react';
 import { useFilters } from '../../context/FiltersContext';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { TabButtons } from './TabButtons';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
-import { FaAddressCard, FaMinusCircle } from 'react-icons/fa';
+import { useOcorrencias } from '../../context/OcorrenciasContext';
 import { AddButton } from '../Buttons/AddButton';
 
 interface SidePanelProps {
@@ -12,18 +10,8 @@ interface SidePanelProps {
 }
 
 export function SidePanel({ children }: SidePanelProps) {
-  const { setNewDenunciaCoordinates, isAddingDenuncia, setIsAddingDenuncia } =
-    useAddDenuncia();
   const { denunciasFiltradas, acoesFiltradas } = useFilters();
-
-  const { loading } = useOcorrenciasContext();
-
-  useEffect(() => {
-    if (!isAddingDenuncia) {
-      setNewDenunciaCoordinates(null);
-    }
-  }, [isAddingDenuncia, setIsAddingDenuncia, setNewDenunciaCoordinates]);
-
+  const { loading } = useOcorrencias();
   const location = useLocation();
 
   const showTabs = ['/ocorrencias/denuncias', '/ocorrencias/acoes'].includes(

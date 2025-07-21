@@ -1,15 +1,15 @@
-import type { StatusModel } from '../../types/StatusModel'
-import { StatusButton } from './StatusButton'
+import type { StatusModel } from '../../types/dadwa';
+import { StatusButton } from './StatusButton';
 
 type FilterButtonsProps = {
-  setFilterStatus: (filter: 'todos' | StatusModel) => void
-  currentFilter: 'todos' | StatusModel
-}
+  setFilterStatus: (filter: 'todos' | StatusModel) => void;
+  currentFilter: 'todos' | StatusModel;
+};
 
 type buttonsProps = {
-  text: string,
-  status: 'todos' | StatusModel
-}
+  text: string;
+  status: 'todos' | StatusModel;
+};
 
 const buttons: buttonsProps[] = [
   {
@@ -28,12 +28,15 @@ const buttons: buttonsProps[] = [
     text: 'Concluidas',
     status: 'concluido',
   },
-]
+];
 
-export function FilterButtons({ setFilterStatus, currentFilter }: FilterButtonsProps) {
+export function FilterButtons({
+  setFilterStatus,
+  currentFilter,
+}: FilterButtonsProps) {
   return (
     <>
-      {buttons.map(btn => {
+      {buttons.map((btn) => {
         return (
           <StatusButton
             key={btn.status}
@@ -41,8 +44,8 @@ export function FilterButtons({ setFilterStatus, currentFilter }: FilterButtonsP
             isSelected={currentFilter == btn.status}
             onClick={() => setFilterStatus(btn.status)}
           />
-        )
+        );
       })}
     </>
-  )
+  );
 }

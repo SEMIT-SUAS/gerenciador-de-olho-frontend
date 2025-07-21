@@ -7,30 +7,32 @@ import {
   type ReactNode,
   type SetStateAction,
 } from 'react';
-import type { Acao } from '../types/Acao';
-import { type Denuncia } from '../types/Denuncia';
+import type { AcaoModel } from '../types/Acao';
+import { type DenunciaModel } from '../types/Denuncia';
 
 type SelectAcoesOuDenunciasProps = {
   salvarDenunciasOnclick: boolean;
   setSalvarDenunciasOnClick: Dispatch<SetStateAction<boolean>>;
   salvarAcaoOnclick: boolean;
   setSalvarAcaoOnclick: Dispatch<SetStateAction<boolean>>;
-  acaoSelecionada: Acao | null;
-  setAcaoSelecionada: Dispatch<SetStateAction<Acao | null>>;
-  denunciasSelecionas: Denuncia[];
-  setDenunciasSelecionadas: Dispatch<SetStateAction<Denuncia[]>>;
+  acaoSelecionada: AcaoModel | null;
+  setAcaoSelecionada: Dispatch<SetStateAction<AcaoModel | null>>;
+  denunciasSelecionas: DenunciaModel[];
+  setDenunciasSelecionadas: Dispatch<SetStateAction<DenunciaModel[]>>;
   disableMapFilters: boolean;
   setDisableMapFilters: Dispatch<SetStateAction<boolean>>;
-  addDenunciaNaSelecao: (newDenuncia: Denuncia) => void;
-  denunciasJaVinculadas: Denuncia[];
-  setDenunciasJaVinculadas: Dispatch<SetStateAction<Denuncia[]>>;
-  isAddingDenuncia: boolean;
-  setIsAddingDenuncia: Dispatch<SetStateAction<boolean>>;
-  zoomTo: ZoomCoordinates | null;
-  setZoomTo: Dispatch<SetStateAction<ZoomCoordinates | null>>;
+  addDenunciaNaSelecao: (newDenuncia: DenunciaModel) => void;
+  denunciasJaVinculadas: DenunciaModel[];
+  setDenunciasJaVinculadas: Dispatch<SetStateAction<DenunciaModel[]>>;
+  isSelectingNewDenuncia: boolean;
+  setIsSelectingNewDenuncia: Dispatch<SetStateAction<boolean>>;
+  zoomTo: Coordinates | null;
+  setZoomTo: Dispatch<SetStateAction<Coordinates | null>>;
+  newDenunciaCoordinates: Coordinates | null;
+  setNewDenunciaCoordinates: Dispatch<SetStateAction<Coordinates | null>>;
 };
 
-type ZoomCoordinates = {
+type Coordinates = {
   lat: number;
   lng: number;
 };
@@ -44,16 +46,20 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   const [salvarDenunciasOnclick, setSalvarDenunciasOnClick] = useState(false);
   const [salvarAcaoOnclick, setSalvarAcaoOnclick] = useState(false);
 
-  const [acaoSelecionada, setAcaoSelecionada] = useState<Acao | null>(null);
-  const [denunciasSelecionas, setDenunciasSelecionadas] = useState<Denuncia[]>(
-    [],
+  const [acaoSelecionada, setAcaoSelecionada] = useState<AcaoModel | null>(
+    null,
   );
-
-  const [isAddingDenuncia, setIsAddingDenuncia] = useState(false);
-  const [denunciasJaVinculadas, setDenunciasJaVinculadas] = useState<
-    Denuncia[]
+  const [denunciasSelecionas, setDenunciasSelecionadas] = useState<
+    DenunciaModel[]
   >([]);
-  const [zoomTo, setZoomTo] = useState<ZoomCoordinates | null>(null);
+
+  const [isSelectingNewDenuncia, setIsSelectingNewDenuncia] = useState(false);
+  const [denunciasJaVinculadas, setDenunciasJaVinculadas] = useState<
+    DenunciaModel[]
+  >([]);
+  const [zoomTo, setZoomTo] = useState<Coordinates | null>(null);
+  const [newDenunciaCoordinates, setNewDenunciaCoordinates] =
+    useState<null | Coordinates>(null);
 
   const value: SelectAcoesOuDenunciasProps = {
     salvarDenunciasOnclick,
@@ -69,10 +75,12 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     addDenunciaNaSelecao,
     denunciasJaVinculadas,
     setDenunciasJaVinculadas,
-    isAddingDenuncia,
-    setIsAddingDenuncia,
+    isSelectingNewDenuncia,
+    setIsSelectingNewDenuncia,
     zoomTo,
     setZoomTo,
+    newDenunciaCoordinates,
+    setNewDenunciaCoordinates,
   };
 
   useEffect(() => {
@@ -81,7 +89,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     );
   }, [salvarAcaoOnclick, salvarDenunciasOnclick]);
 
-  function addDenunciaNaSelecao(newDenuncia: Denuncia) {
+  function addDenunciaNaSelecao(newDenuncia: DenunciaModel) {
     if (denunciasSelecionas.find((d) => d.id == newDenuncia.id)) {
       setDenunciasSelecionadas((denuncias) =>
         denuncias.filter((d) => d.id !== newDenuncia.id),

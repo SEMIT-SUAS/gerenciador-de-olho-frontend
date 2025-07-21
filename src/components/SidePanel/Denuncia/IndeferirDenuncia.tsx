@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
+import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { mensagensSugeridasParaIndeferirDenuncia } from '../../../constants/messagesRejectComplaint';
 import { FaExclamationTriangle, FaCheck } from 'react-icons/fa';
 import { BackButton } from '../../Buttons/Backbutton';
@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 
 export function IndeferirDenuncia() {
   const [isUpdatingDenuncia, setIsUpdatingDenuncia] = useState(false);
-  const { denuncias, setDenuncias } = useOcorrenciasContext();
+  const { denuncias, setDenuncias } = useOcorrencias();
   const [motivo, setMotivo] = useState('');
   const [
     isOpenIndeferirDenunciaConfirmation,

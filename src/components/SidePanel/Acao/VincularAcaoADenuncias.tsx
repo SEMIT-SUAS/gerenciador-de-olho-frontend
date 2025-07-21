@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
+import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { BackButton } from '../../Buttons/Backbutton';
 import { useFilters } from '../../../context/FiltersContext';
 import { useMapActions } from '../../../context/MapActions';
@@ -18,7 +18,7 @@ export function VincularAcaoADenuncias() {
     setSalvarDenunciasOnClick,
     setDenunciasJaVinculadas,
   } = useMapActions();
-  const { acoes, denuncias, setDenuncias, setAcoes } = useOcorrenciasContext();
+  const { acoes, denuncias, setDenuncias, setAcoes } = useOcorrencias();
   const {
     denunciasFiltradas,
     setFiltroDenunciasComAcao,

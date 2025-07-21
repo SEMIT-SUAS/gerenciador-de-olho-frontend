@@ -1,16 +1,34 @@
-import type { Endereco } from './Endereco';
-import type { Imagem } from './Imagem';
+import type { DenunciaFile } from './DenunciaFile';
+import type { DenunciaIndeferidaModel } from './DenunciaIndeferidaModel';
+import type { TipoDenunciaModel } from './TipoDenuncia';
+import type { UsuarioModel } from './Usuario';
 
-export interface Denuncia {
-  id: number;
-  titulo: string;
-  created_at: string;
-  categoria: string;
-  tipo: string;
-  endereco: Endereco;
+export interface CreateDenunciaModel {
   descricao: string;
-  images: Imagem[];
-  status: string;
-  motivoStatus?: string;
-  acaoId?: number;
+  tipoId: number;
+  files: File[];
+  bairro: string;
+  rua: string;
+  pontoDeReferencia: string;
+  longitude: number;
+  latitude: number;
+}
+
+export interface DenunciaModel {
+  id: number;
+  descricao: string;
+  tipo: TipoDenunciaModel;
+  files: DenunciaFile[];
+  acaoId: number | null;
+
+  bairro: string;
+  rua: string;
+  pontoDeReferencia: string;
+  longitude: number;
+  latitude: number;
+
+  criadaEm: string;
+
+  usuario: UsuarioModel | null;
+  denunciaIndeferida: DenunciaIndeferidaModel | null;
 }

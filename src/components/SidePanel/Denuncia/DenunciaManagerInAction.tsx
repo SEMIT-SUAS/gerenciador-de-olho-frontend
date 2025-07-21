@@ -3,7 +3,7 @@ import type { Denuncia } from '../../../types/Denuncia';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { useState } from 'react';
-import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
+import { useOcorrencias } from '../../../context/OcorrenciasContext';
 
 type DenunciaManageInActionProps = {
   denuncia: Denuncia;
@@ -15,7 +15,7 @@ export function DenunciaManageInAction({
   allowDisvincularItem,
 }: DenunciaManageInActionProps) {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const { setDenuncias } = useOcorrenciasContext();
+  const { setDenuncias } = useOcorrencias();
   const navigate = useNavigate();
 
   function handleShowDenunciaDetails() {

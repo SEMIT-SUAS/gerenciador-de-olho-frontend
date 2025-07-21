@@ -10,7 +10,9 @@ export function AddDenuncia() {
   useEffect(() => {
     setDisableMapFilters(true);
 
-    return () => setDisableMapFilters(false);
+    return () => {
+      setDisableMapFilters(false);
+    };
   }, []);
 
   return (

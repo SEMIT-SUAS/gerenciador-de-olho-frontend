@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import type { FC, ReactNode, SetStateAction, Dispatch } from 'react';
-import { useOcorrenciasContext } from './OcorrenciasContext';
+import { useOcorrencias } from './OcorrenciasContext';
 import type { Denuncia } from '../types/Denuncia';
 import type { Acao } from '../types/Acao';
 
@@ -12,16 +12,22 @@ interface VincularDenunciaContextType {
   confirmLink: (acaoId: number) => void;
   isSelectingAcaoInMap: boolean;
   setIsSelectingAcaoInMap: Dispatch<SetStateAction<boolean>>;
-  acaoParaVincular: Acao | null,
-  setAcaoParaVincular: Dispatch<SetStateAction<Acao | null>>
+  acaoParaVincular: Acao | null;
+  setAcaoParaVincular: Dispatch<SetStateAction<Acao | null>>;
 }
 
-const VincularDenunciaContext = createContext<VincularDenunciaContextType | undefined>(undefined);
+const VincularDenunciaContext = createContext<
+  VincularDenunciaContextType | undefined
+>(undefined);
 
-export const VincularDenunciaProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const { vincularDenunciaAcao } = useOcorrenciasContext();
-  const [isSelectingAcaoInMap, setIsSelectingAcaoInMap] = useState<boolean>(false);
-  const [denunciaParaVincular, setDenunciaParaVincular] = useState<Denuncia | null>(null);
+export const VincularDenunciaProvider: FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const { vincularDenunciaAcao } = useOcorrencias();
+  const [isSelectingAcaoInMap, setIsSelectingAcaoInMap] =
+    useState<boolean>(false);
+  const [denunciaParaVincular, setDenunciaParaVincular] =
+    useState<Denuncia | null>(null);
   const [acaoParaVincular, setAcaoParaVincular] = useState<Acao | null>(null);
 
   const startLinking = (denuncia: Denuncia) => {
@@ -41,19 +47,23 @@ export const VincularDenunciaProvider: FC<{ children: ReactNode }> = ({ children
     }
   };
 
-  const value = { 
-    denunciaParaVincular, 
+  const value = {
+    denunciaParaVincular,
     setDenunciaParaVincular,
-    startLinking, 
-    cancelLinking, 
-    confirmLink, 
-    isSelectingAcaoInMap, 
+    startLinking,
+    cancelLinking,
+    confirmLink,
+    isSelectingAcaoInMap,
     setIsSelectingAcaoInMap,
     acaoParaVincular,
-    setAcaoParaVincular 
+    setAcaoParaVincular,
   };
 
-  return <VincularDenunciaContext.Provider value={value}>{children}</VincularDenunciaContext.Provider>;
+  return (
+    <VincularDenunciaContext.Provider value={value}>
+      {children}
+    </VincularDenunciaContext.Provider>
+  );
 };
 
 /**
@@ -63,7 +73,9 @@ export const useVincularDenunciaContext = () => {
   const context = useContext(VincularDenunciaContext);
   // CORREÇÃO: A mensagem de erro agora corresponde aos nomes corretos do contexto e provedor.
   if (context === undefined) {
-    throw new Error('useVincularDenunciaContext deve ser usado dentro de um VincularDenunciaProvider');
+    throw new Error(
+      'useVincularDenunciaContext deve ser usado dentro de um VincularDenunciaProvider',
+    );
   }
   return context;
 };

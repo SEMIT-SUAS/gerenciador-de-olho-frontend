@@ -1,7 +1,7 @@
 import { Tag } from './../Tag';
 import { ImageModal } from '../../Modals/ImageModal';
 import { useEffect, useMemo, useState } from 'react';
-import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
+import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { FaTrashAlt } from 'react-icons/fa';
 import { FilesCarrrousel } from '../../FilesCarrousel';
@@ -13,7 +13,7 @@ import { useMapActions } from '../../../context/MapActions';
 export function DenunciaDetails() {
   const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
   const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
-  const { denuncias, acoes, setDenuncias } = useOcorrenciasContext();
+  const { denuncias, acoes, setDenuncias } = useOcorrencias();
   const { setZoomTo } = useMapActions();
   const navigate = useNavigate();
 

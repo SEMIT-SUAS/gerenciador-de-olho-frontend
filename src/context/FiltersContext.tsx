@@ -8,10 +8,9 @@ import {
   type SetStateAction,
   useCallback,
 } from 'react';
-import type { StatusModel } from '../types/StatusModel';
+import type { StatusModel } from '../types/dadwa';
 import type { Categorias } from '../types/CategoriaDenuncia';
-import type { Secretarias } from '../types/Secretaria';
-import { useOcorrenciasContext } from './OcorrenciasContext';
+import { useOcorrencias } from './OcorrenciasContext';
 import type { Denuncia } from '../types/Denuncia';
 import type { Acao } from '../types/Acao';
 
@@ -21,7 +20,7 @@ type FilterState = {
   filtroStatusDenuncia: 'todos' | StatusModel[];
   filtroStatusAcao: 'todos' | StatusModel[];
   filtroCategoria: 'todas' | Categorias | null;
-  filtroSecretaria: 'todas' | Secretarias | null;
+  filtroSecretaria: 'todas' | string | null;
   filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
 };
 
@@ -31,7 +30,7 @@ type FiltersContextProps = FilterState & {
   setFiltroStatusDenuncia: Dispatch<SetStateAction<'todos' | StatusModel[]>>;
   setFiltroStatusAcao: Dispatch<SetStateAction<'todos' | StatusModel[]>>;
   setFiltroCategoria: Dispatch<SetStateAction<'todas' | Categorias | null>>;
-  setFiltroSecretaria: Dispatch<SetStateAction<'todas' | Secretarias | null>>;
+  setFiltroSecretaria: Dispatch<SetStateAction<'todas' | string | null>>;
   setFiltroDenunciasComAcao: Dispatch<
     SetStateAction<'desabilitado' | 'com_acao' | 'sem_acao'>
   >;
@@ -84,7 +83,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     number[] | 'desabilitado'
   >('desabilitado');
 
-  const { denuncias, acoes } = useOcorrenciasContext();
+  const { denuncias, acoes } = useOcorrencias();
 
   const cacheCurrentFilters = useCallback(() => {
     setCacheFilters({
@@ -155,7 +154,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         filtroStatusAcao === 'todos' || filtroStatusAcao.includes(a.status);
 
       const passaSecretaria =
-        filtroSecretaria === 'todas' || a.secretaria.name === filtroSecretaria;
+        filtroSecretaria === 'todas' || a.secretaria.nome === filtroSecretaria;
 
       return passaStatus && passaSecretaria;
     });

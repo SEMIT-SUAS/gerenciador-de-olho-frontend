@@ -1,4 +1,8 @@
-export type TipoDenuncia = {
-  id: number
-  name: string
-}
+import type { CategoriaDenunciaModel } from './CategoriaDenuncia';
+
+export type TipoDenunciaModel = {
+  id: number;
+  cor: string;
+  nome: string;
+  categoria: CategoriaDenunciaModel;
+};

@@ -4,7 +4,7 @@ import { FormGroup } from './FormGroup';
 import { Label } from './Label';
 import { FormInput } from './FormInput';
 import { FormTextarea } from './FormTextarea';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { useOcorrencias } from '../../context/OcorrenciasContext';
 import { Observacao } from '../Observacao';
 import { SelectArrowDown } from './SelectArrowDown';
 import { useAddAcao } from '../../context/AddAcaoContext';
@@ -31,7 +31,7 @@ const createAcaoFormSchema = z.object({
 
 export function CreateAcaoForm() {
   const { secretarias, setAcoes, setDenuncias, setActualDetailItem } =
-    useOcorrenciasContext();
+    useOcorrencias();
   const { denunciasVinculadas, setDenunciasVinculadas, setIsAddingAcao } =
     useAddAcao();
 

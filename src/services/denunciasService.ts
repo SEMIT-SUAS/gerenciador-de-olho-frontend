@@ -1,4 +1,4 @@
-import type { Denuncia } from '../types/Denuncia.ts';
+import type { CreateDenunciaModel, DenunciaModel } from '../types/Denuncia.ts';
 import { API_BASE_URL } from '../config/api.ts';
 import convert from 'xml-js';
 
@@ -7,26 +7,13 @@ type addressResponseData = {
   bairro: string;
 };
 
-type CreateDenunciaProps = {
-  description: string;
-  categoryId: number;
-  categoryTipoId: number;
-  address: {
-    lon: number;
-    lat: number;
-    rua: string;
-    bairro: string;
-    pontoDeReferencia: string;
-  };
-};
-
 async function getAllDenuncias() {
   try {
     const response = await fetch(`${API_BASE_URL}/denuncias`, {
       method: 'GET',
     });
 
-    const data: Denuncia[] = await response.json();
+    const data: DenunciaModel[] = await response.json();
 
     if (response.status != 200) {
       throw new Error('Não foi possível listar as denúncias.');
@@ -40,7 +27,7 @@ async function getAllDenuncias() {
   }
 }
 
-async function getDenunciaById(id: number): Promise<Denuncia> {
+async function getDenunciaById(id: number): Promise<DenunciaModel> {
   try {
     const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
       method: 'GET',
@@ -59,58 +46,56 @@ async function getDenunciaById(id: number): Promise<Denuncia> {
 }
 
 async function createDenuncia(
-  denuncia: CreateDenunciaProps,
-): Promise<Denuncia> {
+  newDenuncia: CreateDenunciaModel,
+): Promise<DenunciaModel> {
   return {
     id: Math.floor(Math.random() * 100000),
-    titulo: '',
-    created_at: new Date().toISOString(),
-    categoria: {
-      id: denuncia.categoryId,
-      name: 'Trânsito e Mobilidade',
-      description: 'Teste',
-      tipos: [],
-    },
+    descricao: newDenuncia.descricao,
+    bairro: newDenuncia.bairro,
+    rua: newDenuncia.rua,
+    pontoDeReferencia: newDenuncia.pontoDeReferencia,
+    latitude: newDenuncia.latitude,
+    longitude: newDenuncia.longitude,
     tipo: {
-      id: denuncia.categoryTipoId,
-      name: 'Buraco na rua',
-    },
-    endereco: {
-      bairro: denuncia.address.bairro,
-      rua: denuncia.address.rua,
-      latitude: denuncia.address.lat,
-      longitude: denuncia.address.lon,
-      ponto_referencia: denuncia.address.pontoDeReferencia,
-    },
-    descricao: denuncia.description,
-    images: [],
-    status: 'aberto',
-    motivoStatus: 'Denúncia registrada no sistema e aguardando atribuição.',
-    acaoId: null,
-  };
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/denuncias`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+      id: newDenuncia.tipoId,
+      nome: 'Tipo mockado',
+      cor: '#32333',
+      categoria: {
+        id: 1,
+        nome: 'Categoria mockada',
       },
-      body: JSON.stringify(denuncia),
-    });
-
-    if (response.status !== 201) {
-      throw new Error('Não foi possível criar a denúncia.');
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
-  }
+    },
+    files: newDenuncia.files.map((f, idx) => ({
+      id: idx,
+      tipo: 'imagem',
+      nome: f.name,
+    })),
+    acaoId: null,
+    criadaEm: new Date().toISOString(),
+    usuario: {
+      id: 1,
+      nome: 'Usuário Mock',
+      cpf: '000.000.000-00',
+      telefone: '000000000',
+      email: 'mock@mock.com',
+      senha: '',
+      secretaria: {
+        id: 1,
+        nome: 'Secretaria Mock',
+        sigla: 'SM',
+      },
+      perfil: {
+        id: 1,
+        nome: 'Cidadão',
+      },
+      criadoEm: new Date().toISOString(),
+      criadoPor: null,
+    },
+    denunciaIndeferida: null,
+  };
 }
 
-async function updateDenuncia(denuncia: Denuncia): Promise<Denuncia> {
+async function updateDenuncia(denuncia: DenunciaModel): Promise<DenunciaModel> {
   try {
     const response = await fetch(`${API_BASE_URL}/denuncias/${denuncia.id}`, {
       method: 'PUT',
@@ -135,7 +120,7 @@ async function updateDenuncia(denuncia: Denuncia): Promise<Denuncia> {
 async function indeferirDenuncia(
   id: number,
   motivoStatus: string,
-): Promise<Denuncia> {
+): Promise<DenunciaModel> {
   try {
     const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
       method: 'PATCH',
@@ -165,7 +150,7 @@ async function indeferirDenuncia(
 async function desvincularDenunciaAcao(
   id: number,
   motivoStatus: string,
-): Promise<Denuncia> {
+): Promise<DenunciaModel> {
   try {
     const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
       method: 'PATCH',
@@ -198,7 +183,7 @@ async function desvincularDenunciaAcao(
 async function vincularDenunciaToAcao(
   id: number,
   acaoId: number,
-): Promise<Denuncia> {
+): Promise<DenunciaModel> {
   try {
     const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
       method: 'PATCH',
@@ -228,12 +213,12 @@ async function vincularDenunciaToAcao(
 }
 
 async function getAddressByCoordinates(
-  lon: number,
+  lng: number,
   lat: number,
 ): Promise<addressResponseData> {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lon=${lon}&lat=${lat}`,
+      `https://nominatim.openstreetmap.org/reverse?lon=${lng}&lat=${lat}`,
     );
 
     if (response.status != 200) {

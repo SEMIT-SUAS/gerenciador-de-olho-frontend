@@ -5,14 +5,14 @@ import { iconAcao } from '../../constants/mapIcons';
 import { PinDetailsAcao } from './PinDetailsAcao';
 import { AcaoPolygon } from './AcaoPolygon';
 import { useMapActions } from '../../context/MapActions';
-import { useOcorrenciasContext } from '../../context/OcorrenciasContext';
+import { useOcorrencias } from '../../context/OcorrenciasContext';
 import { getConvexHull } from '../../utils/geometry';
 import { useNavigate } from 'react-router-dom';
 
 export function AcaoPins() {
   const { isVisibleAcoesInMap, acoesFiltradas } = useFilters();
   const { salvarAcaoOnclick, setAcaoSelecionada } = useMapActions();
-  const { denuncias } = useOcorrenciasContext();
+  const { denuncias } = useOcorrencias();
 
   const navigate = useNavigate();
 

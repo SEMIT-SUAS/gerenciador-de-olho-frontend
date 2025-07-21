@@ -6,13 +6,13 @@ import { FaMapPin } from 'react-icons/fa';
 import { useFilters } from '../../../context/FiltersContext';
 import { useMapActions } from '../../../context/MapActions';
 import type { Denuncia } from '../../../types/Denuncia';
-import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
+import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { toast } from 'react-toastify';
 
 export function VincularDenunciaAAcao() {
   const [isVinculandoDenuncia, setIsVinculandoDenuncia] = useState(false);
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const { setDenuncias, denuncias } = useOcorrenciasContext();
+  const { setDenuncias, denuncias } = useOcorrencias();
   const {
     setIsVisibleDenunciasInMap,
     setIsVisibleAcoesInMap,

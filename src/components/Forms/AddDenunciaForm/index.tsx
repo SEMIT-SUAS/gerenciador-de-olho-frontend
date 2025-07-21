@@ -1,6 +1,5 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { z } from 'zod/v4';
-import denunciasService from '../../../services/denunciasService';
 import { FormGroup } from '../FormGroup';
 import { Label } from '../Label';
 import { FormInput } from '../FormInput';
@@ -8,58 +7,100 @@ import { FormInputError } from '../FormInputError';
 import { SelectArrowDown } from '../SelectArrowDown';
 import { toast } from 'react-toastify';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
-import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
+import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { AddDenunciaFormType } from './types';
 import { useMapActions } from '../../../context/MapActions';
+import { useFilters } from '../../../context/FiltersContext';
+import type { CreateDenunciaModel } from '../../../types/Denuncia';
+import denunciaService from '../../../services/denunciasService';
 
 export function AddDenunciaForm() {
-  const { setDenuncias } = useOcorrenciasContext();
+  const { setDenuncias, categorias } = useOcorrencias();
+  const {
+    setNewDenunciaCoordinates,
+    newDenunciaCoordinates,
+    isSelectingNewDenuncia,
+    setIsSelectingNewDenuncia,
+  } = useMapActions();
+
+  const {
+    setIsVisibleAcoesInMap,
+    setIsVisibleDenunciasInMap,
+    cacheCurrentFilters,
+    restoreCachedFilters,
+  } = useFilters();
 
   const [formData, setFormData] = useState<z.infer<typeof AddDenunciaFormType>>(
     {
-      categoryId: -1,
+      bairro: '',
+      rua: '',
+      categoryId: 0,
       categoryTipoId: 0,
-      description: '',
+      descricao: '',
+      pontoDeReferencia: '',
       files: [],
-      address: {
-        bairro: '',
-        rua: '',
-        pontoDeReferencia: '',
-      },
     },
   );
+
   const [formErrors, setFormErrors] = useState<Record<string, any>>({});
   const [isLoadingAddressSearch, setIsLoadingAddressSearch] = useState(false);
   const [isSubmitingForm, setIsSubmitingForm] = useState(false);
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
 
   useEffect(() => {
-    return () => {};
-  }, []);
+    if (isSelectingNewDenuncia) {
+      cacheCurrentFilters();
+      setIsVisibleDenunciasInMap(false);
+      setIsVisibleAcoesInMap(false);
+    }
 
-  function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
-    const { name, value, id } = e.target;
+    return () => {
+      restoreCachedFilters();
+    };
+  }, [isSelectingNewDenuncia, setIsSelectingNewDenuncia]);
 
-    if (id.startsWith('address')) {
-      setFormData((prev) => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [name]: value,
-        },
+  useEffect(() => {
+    if (newDenunciaCoordinates) {
+      loadAddressData();
+    }
+  }, [newDenunciaCoordinates]);
+
+  async function loadAddressData() {
+    try {
+      setIsLoadingAddressSearch(true);
+
+      const coordinatesAddressInfos =
+        await denunciaService.getAddressByCoordinates(
+          newDenunciaCoordinates!.lng,
+          newDenunciaCoordinates!.lat,
+        );
+
+      setFormData((currentData) => ({
+        ...currentData,
+        ...coordinatesAddressInfos,
       }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
+    } catch (error: any) {
+      setFormData((currentData) => ({
+        ...currentData,
+        bairro: '',
+        rua: '',
       }));
+      toast.error(
+        'Não foi possível carregar as informações para essa localização. Escreva manualmente',
+      );
+    } finally {
+      setIsLoadingAddressSearch(false);
     }
   }
 
-  function handleTextareaChange(e: ChangeEvent<HTMLTextAreaElement>) {
+  function handleOnChangeInput(
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   }
 
@@ -107,22 +148,22 @@ export function AddDenunciaForm() {
     try {
       setIsSubmitingForm(true);
 
-      const createDenunciaData = {
-        ...formData,
-        address: {
-          ...formData.address,
-          lon: newDenunciaCoordinates!.longitude,
-          lat: newDenunciaCoordinates!.latitude,
-        },
+      const createDenunciaData: CreateDenunciaModel = {
+        latitude: newDenunciaCoordinates!.lat,
+        longitude: newDenunciaCoordinates!.lng,
+        bairro: formData.bairro,
+        rua: formData.rua,
+        pontoDeReferencia: formData.pontoDeReferencia,
+        descricao: formData.descricao,
+        tipoId: formData.categoryTipoId,
+        files: formData.files,
       };
 
-      const newDenunciaData = await denunciasService.createDenuncia(
+      const newDenunciaData = await denunciaService.createDenuncia(
         createDenunciaData,
       );
 
       setDenuncias((current) => [...current, newDenunciaData]);
-
-      onCreateDenuncia();
       toast('Denuncia criada com sucesso!');
     } catch (error: any) {
       toast(error.message, {
@@ -133,9 +174,7 @@ export function AddDenunciaForm() {
     }
   }
 
-  const selectedCategory = categories?.find(
-    (c) => c.id === formData.categoryId,
-  );
+  const selectedCategory = categorias.find((c) => c.id === formData.categoryId);
 
   return (
     <>
@@ -151,6 +190,23 @@ export function AddDenunciaForm() {
               posteriormente.
             </p>
 
+            <button
+              type="button"
+              className={`w-full my-4 ${
+                isSelectingNewDenuncia
+                  ? 'bg-red-600 hover:bg-red-700'
+                  : 'bg-blue-600 hover:bg-blue-700'
+              } text-white font-bold py-3 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed`}
+              onClick={() => setIsSelectingNewDenuncia((current) => !current)}
+              disabled={isLoadingAddressSearch}
+            >
+              {isLoadingAddressSearch
+                ? 'Buscando...'
+                : isSelectingNewDenuncia
+                ? 'Cancelar seleção'
+                : 'Selecionar no mapa'}
+            </button>
+
             <div className="grid grid-cols-1 gap-4 mt-4">
               {['rua', 'bairro', 'pontoDeReferencia'].map((field) => (
                 <FormGroup key={field}>
@@ -159,14 +215,13 @@ export function AddDenunciaForm() {
                       ? 'Ponto de referência'
                       : field.charAt(0).toUpperCase() + field.slice(1)}
                   </Label>
+
                   <FormInput
                     id={`address-${field}`}
                     name={field}
-                    value={
-                      formData.address[field as keyof typeof formData.address]
-                    }
-                    disabled={!newDenunciaCoordinates}
-                    onChange={handleInputChange}
+                    value={formData[field as keyof typeof formData]}
+                    disabled={!newDenunciaCoordinates || isLoadingAddressSearch}
+                    onChange={handleOnChangeInput}
                     placeholder={`Informe o ${
                       field === 'pontoDeReferencia'
                         ? 'ponto de referência'
@@ -190,16 +245,16 @@ export function AddDenunciaForm() {
                 name="categoryId"
                 value={formData.categoryId < 1 ? '' : formData.categoryId}
                 onChange={handleSelectChange}
-                disabled={!newDenunciaCoordinates}
+                disabled={!newDenunciaCoordinates || isLoadingAddressSearch}
                 className="w-full cursor-pointer rounded-lg border bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <option value="" disabled>
                   Selecione uma categoria
                 </option>
 
-                {categories?.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
+                {categorias.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nome}
                   </option>
                 ))}
               </select>
@@ -225,9 +280,9 @@ export function AddDenunciaForm() {
                   <option value="" disabled>
                     Selecione um tipo
                   </option>
-                  {selectedCategory?.tipos.map((tipo) => (
+                  {selectedCategory?.tipos?.map((tipo) => (
                     <option key={tipo.id} value={tipo.id}>
-                      {tipo.name}
+                      {tipo.nome}
                     </option>
                   ))}
                 </select>
@@ -241,21 +296,20 @@ export function AddDenunciaForm() {
 
           {/* Descrição */}
           <FormGroup>
-            <Label htmlFor="description">Descrição da ocorrência</Label>
+            <Label htmlFor="descricao">Descrição da ocorrência</Label>
             <textarea
-              id="description"
-              name="description"
+              id="descricao"
+              name="descricao"
               rows={5}
-              value={formData.description}
-              onChange={handleTextareaChange}
-              disabled={!newDenunciaCoordinates}
+              value={formData.descricao}
+              onChange={handleOnChangeInput}
+              disabled={!newDenunciaCoordinates || isLoadingAddressSearch}
               placeholder="Descreva com detalhes o que está acontecendo..."
               className="block w-full rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm p-3 border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
             />
-            <FormInputError message={formErrors.description?._errors?.[0]} />
+            <FormInputError message={formErrors.descricao?._errors?.[0]} />
           </FormGroup>
 
-          {/* Upload de imagens */}
           <FormGroup>
             <Label htmlFor="files">Fotos ou Vídeos (até 5)</Label>
             <input
@@ -265,32 +319,15 @@ export function AddDenunciaForm() {
               multiple
               accept=".png, .jpg, .jpeg, .mp4"
               onChange={handleFileChange}
+              disabled={!newDenunciaCoordinates || isLoadingAddressSearch}
               className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 }"
             />
+
             <FormInputError message={formErrors.files?._errors?.[0]} />
           </FormGroup>
         </div>
 
         <div className="flex flex-col gap-4 py-4">
-          <button
-            type="button"
-            className={`w-full ${
-              isSelectingNewDenunciaInMap
-                ? 'bg-red-600 hover:bg-red-700'
-                : 'bg-blue-600 hover:bg-blue-700'
-            } text-white font-bold py-3 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed`}
-            onClick={() =>
-              setIsSelectingNewDenunciaInMap((current) => !current)
-            }
-            disabled={isLoadingAddressSearch}
-          >
-            {isLoadingAddressSearch
-              ? 'Buscando...'
-              : isSelectingNewDenunciaInMap
-              ? 'Cancelar seleção'
-              : 'Selecionar no mapa'}
-          </button>
-
           <button
             type="submit"
             className="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
