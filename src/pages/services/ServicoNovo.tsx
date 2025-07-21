@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Services } from "../../types/Services";
-import { API_BASE_URL } from "../../config/api";
 import { createService } from "../../services/servicosServices";
+import { getAllSecretarias } from '../../services/secretariaService'; // ajuste o caminho se necessário
+import type { Secretaria } from "../../types/Secretaria";
 
 export function ServicoNovo() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState<Services>({
+    secretaria: null,
     nome: "",
     descricao: "",
     publicoDestinado: "",
@@ -21,7 +23,6 @@ export function ServicoNovo() {
     prioridades: "",
     horarioAtendimento: "",
     legislacao: "",
-    orgao: { nome: "" },
     categoria: { nome: "" },
     setorLotacao: "",
     modeloRequerimento: "",
@@ -30,52 +31,62 @@ export function ServicoNovo() {
     ativo: true,
   });
 
-  const [orgaos, setOrgaos] = useState<{ nome: string }[]>([]);
   const [categorias, setCategorias] = useState<{ nome: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
 
   useEffect(() => {
-    // Buscar órgãos e categorias do servidor
-    Promise.all([
-      fetch(`${API_BASE_URL}/orgaos`).then(res => res.json()),
-      fetch(`${API_BASE_URL}/categoriasServicos`).then(res => res.json())
-    ])
-      .then(([orgaosData, categoriasData]) => {
-        setOrgaos(orgaosData);
-        setCategorias(categoriasData);
-      })
-      .catch(() => setError("Erro ao carregar órgãos ou categorias."));
-  }, []);
+  async function fetchSecretarias() {
+    try {
+      const secretariasData = await getAllSecretarias();
+      setSecretarias(secretariasData);
+    } catch (error) {
+      console.error("Erro ao buscar secretarias:", error);
+    }
+  }
+
+  fetchSecretarias();
+}, []);
 
   function handleChange(
-    e: React.ChangeEvent<
-        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-    ) {
-    const { name, value } = e.target;
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >
+) {
+  const { name, value } = e.target;
 
-    if (
-        (name === "visivel" || name === "ativo") &&
-        e.target instanceof HTMLInputElement &&
-        (e.target.type === "checkbox" || e.target.type === "radio")
-    ) {
-        setForm({ ...form, [name]: e.target.checked });
-        return;
-    }
+  // Checkbox ou radio para campos booleanos
+  if (
+    (name === "visivel" || name === "ativo") &&
+    e.target instanceof HTMLInputElement &&
+    (e.target.type === "checkbox" || e.target.type === "radio")
+  ) {
+    setForm({ ...form, [name]: e.target.checked });
+    return;
+  }
 
-    if (name === "orgao.nome") {
-        setForm({ ...form, orgao: { nome: value } });
-        return;
-    }
+  // Campos objeto: categoria.nome
+  if (name === "categoria.nome") {
+    setForm({ ...form, categoria: { nome: value } });
+    return;
+  }
 
-    if (name === "categoria.nome") {
-        setForm({ ...form, categoria: { nome: value } });
-        return;
+  // Campo objeto: secretaria (espera um objeto completo, mas o select retorna só o id)
+  if (name === "secretaria") {
+    // Busca o objeto completo da secretaria no array de secretarias pelo id selecionado
+    const selectedSecretaria = secretarias.find(
+      (sec) => sec.id === Number(value)
+    );
+    if (selectedSecretaria) {
+      setForm({ ...form, secretaria: selectedSecretaria });
     }
+    return;
+  }
 
-    setForm({ ...form, [name]: value });
-    }
+  // Caso padrão para os outros inputs (texto, textarea, select simples)
+  setForm({ ...form, [name]: value });
+}
 
   async function handleSubmit(e: React.FormEvent) {
   e.preventDefault();
@@ -83,8 +94,16 @@ export function ServicoNovo() {
   setError(null);
 
   try {
-    await createService(form);
- // envia os dados para a nova rota correta
+    // Cria um novo objeto com os dados do formulário
+    const payload = {
+      ...form,
+      orgao: form.secretaria?.id, // backend espera só o id da secretaria
+    };
+
+    // Remove o campo secretaria do payload, se existir
+    delete (payload as any).secretaria;
+
+    await createService(payload);
     navigate("/"); // redireciona após sucesso
   } catch (err: any) {
     setError(err.message || "Erro inesperado");
@@ -208,12 +227,16 @@ export function ServicoNovo() {
         </label>
 
         <label>
-          Órgão (Nome):
-          <select name="orgao.nome" value={form.orgao.nome} onChange={handleChange}>
-            <option value="">Selecione uma categoria</option>
-            {orgaos.map((cat, index) => (
-              <option key={index} value={cat.nome}>
-                {cat.nome}
+          Secretaria:
+          <select
+            name="secretaria"
+            value={form.secretaria ? form.secretaria.id : ""}
+            onChange={handleChange}
+          >
+            <option value="">Selecione uma secretaria</option>
+            {secretarias.map((sec) => (
+              <option key={sec.id} value={sec.id}>
+                {sec.nome}
               </option>
             ))}
           </select>

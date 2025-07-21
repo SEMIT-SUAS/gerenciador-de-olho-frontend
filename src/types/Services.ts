@@ -1,4 +1,7 @@
+import type { Secretaria } from '../types/Secretaria';
+
 export interface Services {
+  secretaria: Secretaria | null
   id: number
   nome: string
   descricao: string
@@ -13,7 +16,6 @@ export interface Services {
   prioridades: string
   horarioAtendimento: string
   legislacao: string
-  orgao: { nome: string }
   categoria: { nome: string }
   setorLotacao: string
   modeloRequerimento: string

@@ -1,6 +1,5 @@
-export type Secretarias = 'SEMOSP' | 'SEMURH' | 'SEMMAM';
-
-export type Secretaria = {
+export interface Secretaria  {
     id: number;
-    name: Secretarias;
+    nome: string;
+    sigla: string;
 };

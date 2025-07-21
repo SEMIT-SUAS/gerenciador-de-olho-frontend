@@ -3,7 +3,7 @@ import { API_BASE_URL } from '../config/api';
 
 export async function getAllServices(): Promise<Services[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/servicos/listar`, {
+    const response = await fetch(`${API_BASE_URL}/servico/todos`, {
       method: 'GET',
     })
 
