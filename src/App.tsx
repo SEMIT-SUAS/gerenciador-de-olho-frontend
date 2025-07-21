@@ -7,6 +7,7 @@ import {ServicesList} from './pages/services/ServicesList';
 import { ServicoDetalhes } from './pages/services/ServicoDetalhes';
 import {ServicoNovo} from './pages/services/ServicoNovo';
 import {ServicoEditar} from './pages/services/ServicoEditar';
+import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 
 export function App() {
   return (
@@ -15,6 +16,7 @@ export function App() {
         <FiltersProvider>
           <Routes>
             <Route index element={<OcorrenciasPage />} />
+            <Route path='/categorias' element={<ListaCategorias/>}/>
             <Route path='/servicos' element={<ServicesList/>}/>
             <Route path="/servico/novo" element={<ServicoNovo />} />
             <Route path="/servico/:id" element={<ServicoDetalhes />} />
