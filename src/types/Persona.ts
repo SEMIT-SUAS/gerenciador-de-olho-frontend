@@ -1,5 +1,5 @@
 export interface Persona  {
-    id: number | null;
+    id: number;
     nome: string;
     icone: string;
     visivel: boolean;

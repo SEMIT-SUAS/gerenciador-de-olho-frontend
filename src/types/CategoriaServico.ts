@@ -1,5 +1,5 @@
 export interface ServicoCategoria {
-  id: number | null;
+  id: number;
   nome: string;
   visivel: boolean;
   ativo: boolean;

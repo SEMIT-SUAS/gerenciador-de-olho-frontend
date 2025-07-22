@@ -332,22 +332,25 @@ useEffect(() => {
           <select
             name="persona"
             multiple
-            value={form.persona.map(p => String(p.id))} // array de strings com os ids selecionados
+            value={form.persona.map(p => String(p.id))}
             onChange={(e) => {
               const selectedIds = Array.from(e.target.selectedOptions, option => Number(option.value));
-            const selectedPersonas = persona.filter(p => selectedIds.includes(p.id));
-            console.log("IDs selecionados:", selectedIds);
-            console.log("Personas selecionadas:", selectedPersonas);
+              const selectedPersonas = persona.filter(p => p.id !== null && selectedIds.includes(p.id));
+              console.log("IDs selecionados:", selectedIds);
+              console.log("Personas selecionadas:", selectedPersonas);
 
               setForm({ ...form, persona: selectedPersonas });
             }}
           >
             {persona.length === 0 && <option disabled>Carregando...</option>}
-            {persona.map(p => (
-              <option key={p.id} value={p.id}>
-                {p.nome}
-              </option>
-            ))}
+            {persona
+              .filter(p => p.id !== null)
+              .map(p => (
+                <option key={p.id} value={p.id}>
+                  {p.nome}
+                </option>
+              ))
+            }
           </select>
         </label>
 
