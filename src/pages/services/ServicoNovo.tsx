@@ -50,29 +50,29 @@ export function ServicoNovo() {
   const[persona, setPersona] = useState<Persona[]>([]);
 
   useEffect(() => {
-  async function fetchDados() {
-    try {
-      const [secretariasData, categoriasData, personaData] = await Promise.all([
-        getAllSecretarias(),
-        getAllCategorias(),
-        getAllPerosona()
-      ]);
-      setSecretarias(secretariasData);
-      setCategorias(categoriasData);
-      setPersona(personaData);
+    async function fetchDados() {
+      try {
+        const [secretariasData, categoriasData, personaData] = await Promise.all([
+          getAllSecretarias(),
+          getAllCategorias(),
+          getAllPerosona()
+        ]);
+        setSecretarias(secretariasData);
+        setCategorias(categoriasData);
+        setPersona(personaData);
 
-      console.log(personaData);
-    } catch (error) {
-      console.error("Erro ao buscar dados:", error);
+        console.log(personaData);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
     }
-  }
 
-  fetchDados();
-}, []);
+    fetchDados();
+  }, []);
 
-useEffect(() => {
-  console.log("form.persona:", form.persona);
-}, [form.persona]);
+  useEffect(() => {
+    console.log("form.persona:", form.persona);
+  }, [form.persona]);
 
   function handleChange(
   e: React.ChangeEvent<
@@ -93,15 +93,15 @@ useEffect(() => {
 
   // Campos objeto: categoria.nome
   if (name === "categoria") {
-  const selectedCategoria = categorias.find(cat => cat.id === Number(value));
-  if (selectedCategoria) {
-    setForm({ ...form, categoria: selectedCategoria });
-  } else {
-    // Se quiser permitir limpar seleção
-    setForm({ ...form, categoria: null });
+    const selectedCategoria = categorias.find(cat => cat.id === Number(value));
+    if (selectedCategoria) {
+      setForm({ ...form, categoria: selectedCategoria });
+    } else {
+      // Se quiser permitir limpar seleção
+      setForm({ ...form, categoria: null });
+    }
+    return;
   }
-  return;
-}
     if (
     name === "publicoDestinado" ||
     name === "formasSolicitacao" ||
@@ -124,15 +124,25 @@ useEffect(() => {
     return;
   }
 
-  if(name==="persona"){
-  const selectedPersona = persona.find(
-    (sec) => sec.id === Number(value)
-  );
-  if(selectedPersona){
-    setForm({ ...form, persona: selectedPersona});
+      if (name === "persona") {
+    const selectedId = Number(value);
+
+    // Verifica se o ID já está no array
+    const exists = form.persona.some(p => p.id === selectedId);
+
+    if (exists) {
+      // Remove se já existe
+      const updated = form.persona.filter(p => p.id !== selectedId);
+      setForm({ ...form, persona: updated });
+    } else {
+      // Adiciona se ainda não existe
+      const selected = persona.find(p => p.id === selectedId);
+      if (selected) {
+        setForm({ ...form, persona: [...form.persona, selected] });
+      }
+    }
+    return;
   }
-  return
-}
 
   // Caso padrão para os outros inputs (texto, textarea, select simples)
   setForm({ ...form, [name]: value });

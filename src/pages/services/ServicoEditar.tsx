@@ -12,78 +12,78 @@ export function ServicoEditar() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-  async function fetchServico() {
-    try {
-      if (!id) return;
-      const servico = await getServicoById(Number(id));
-      setForm(servico);
-    } catch (err: any) {
-      setError(err.message || "Erro desconhecido");
-    } finally {
-      setLoading(false);
+  useEffect(() => 
+  {
+    async function fetchServico() {
+      try {
+        if (!id) return;
+        const servico = await getServicoById(Number(id));
+        setForm(servico);
+      } catch (err: any) {
+        setError(err.message || "Erro desconhecido");
+      } finally {
+        setLoading(false);
+      }
     }
+
+    fetchServico();
+  }, [id]);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) 
+  {
+    const { name, value, type } = e.target;
+
+    let checked: boolean | undefined = undefined;
+    if (e.target instanceof HTMLInputElement && (type === "checkbox" || type === "radio")) {
+      checked = e.target.checked;
+    }
+
+    if (!form) return;
+
+    if (name === "visivel" || name === "ativo") {
+      // checked está garantido porque só entra aqui se for checkbox ou radio
+      setForm({ ...form, [name]: checked ?? false });
+      return;
+    }
+
+    if (name.startsWith("orgao.")) {
+      setForm({
+        ...form,
+        orgao: { ...form.orgao, nome: value },
+      });
+      return;
+    }
+
+    if (name.startsWith("categoria.")) {
+      setForm({
+        ...form,
+        categoria: { ...form.categoria, nome: value },
+      });
+      return;
+    }
+
+    setForm({ ...form, [name]: value });
   }
-
-  fetchServico();
-}, [id]);
-
-  function handleChange(
-  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-) {
-  const { name, value, type } = e.target;
-
-  let checked: boolean | undefined = undefined;
-  if (e.target instanceof HTMLInputElement && (type === "checkbox" || type === "radio")) {
-    checked = e.target.checked;
-  }
-
-  if (!form) return;
-
-  if (name === "visivel" || name === "ativo") {
-    // checked está garantido porque só entra aqui se for checkbox ou radio
-    setForm({ ...form, [name]: checked ?? false });
-    return;
-  }
-
-  if (name.startsWith("orgao.")) {
-    setForm({
-      ...form,
-      orgao: { ...form.orgao, nome: value },
-    });
-    return;
-  }
-
-  if (name.startsWith("categoria.")) {
-    setForm({
-      ...form,
-      categoria: { ...form.categoria, nome: value },
-    });
-    return;
-  }
-
-  setForm({ ...form, [name]: value });
-}
 
   async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  if (!form) return;
+    e.preventDefault();
+    if (!form) return;
 
-  setSaving(true);
-  setError(null);
+    setSaving(true);
+    setError(null);
 
-  try {
-    // Usa diretamente a função updateServico que retorna erro se falhar
-    await updateServico(form);
-    
-    // Se chegou aqui, o serviço foi atualizado com sucesso
-    navigate("/"); // redireciona após o sucesso
-  } catch (err: any) {
-    setError(err.message || "Erro inesperado");
-  } finally {
-    setSaving(false);
+    try {
+      // Usa diretamente a função updateServico que retorna erro se falhar
+      await updateServico(form);
+      
+      // Se chegou aqui, o serviço foi atualizado com sucesso
+      navigate("/"); // redireciona após o sucesso
+    } catch (err: any) {
+      setError(err.message || "Erro inesperado");
+    } finally {
+      setSaving(false);
+    }
   }
-}
 
   if (loading) return <p>Carregando dados do serviço...</p>;
   if (error) return <p style={{ color: "red" }}>Erro: {error}</p>;
