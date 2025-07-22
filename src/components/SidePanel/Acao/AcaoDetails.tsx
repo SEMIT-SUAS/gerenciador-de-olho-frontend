@@ -24,13 +24,13 @@ export function AcaoDetails() {
   }
 
   const denunciasVinculadas = useMemo(() => {
-    return denuncias.filter((d) => d.acaoId == acao.id);
+    return denuncias.filter((d) => d.acao?.id == acao.id);
   }, [denuncias]);
 
   useEffect(() => {
     setZoomTo({
-      lat: acao.lat,
-      lng: acao.lon,
+      lat: acao.latitude,
+      lng: acao.longitude,
     });
 
     return () => setZoomTo(null);
@@ -57,7 +57,7 @@ export function AcaoDetails() {
         )}
 
         <div className="flex flex-col gap-2">
-          {acao.status !== 'indeferido' &&
+          {acao.status[0].status !== 'indeferido' &&
             (denunciasVinculadas.length === 0 ? (
               <div className="text-center py-10">
                 <p className="text-gray-500">Nenhuma denúncia vinculada.</p>
@@ -69,7 +69,7 @@ export function AcaoDetails() {
                   denuncia={denuncia}
                   allowDisvincularItem={
                     denunciasVinculadas.length > 1 &&
-                    ['aberto', 'em_andamento'].includes(acao.status)
+                    ['aberto', 'em_andamento'].includes(acao.status[0].status)
                   }
                 />
               ))

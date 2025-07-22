@@ -60,8 +60,8 @@ export function DenunciaDetails() {
 
   useEffect(() => {
     setZoomTo({
-      lat: denuncia.endereco.latitude,
-      lng: denuncia.endereco.longitude,
+      lat: denuncia.latitude,
+      lng: denuncia.longitude,
     });
 
     return () => setZoomTo(null);
@@ -76,17 +76,17 @@ export function DenunciaDetails() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-semibold text-yellow-700">
-                {denuncia.categoria}
+                {denuncia.tipo.categoria?.nome}
               </p>
               <h2 className="text-xl font-bold text-gray-800">
-                {denuncia.tipo}
+                {denuncia.tipo.nome}
               </h2>
               <p className="text-sm text-gray-500">
                 Registrado em:{' '}
-                {new Date(denuncia.created_at).toLocaleDateString('pt-BR')}
+                {new Date(denuncia.criadaEm).toLocaleDateString('pt-BR')}
               </p>
             </div>
-            <Tag status={denuncia.status} />
+            <Tag status={'indeferido'} />
           </div>
 
           <div>
@@ -100,11 +100,10 @@ export function DenunciaDetails() {
             <div>
               <h3 className="font-semibold text-gray-800 text-sm">Endereço:</h3>
               <p className="text-sm text-gray-600">
-                {denuncia.endereco.rua}, {denuncia.endereco.bairro} (CEP:{' '}
-                {denuncia.endereco.cep})
+                {denuncia.rua}, {denuncia.bairro}
               </p>
               <p className="text-sm text-gray-600">
-                {denuncia.endereco.ponto_referencia}
+                {denuncia.pontoDeReferencia}
               </p>
             </div>
           </div>
@@ -119,7 +118,7 @@ export function DenunciaDetails() {
                   {acaoVinculada.nome}
                 </p>
                 <p className="text-xs font-semibold text-yellow-800">
-                  {acaoVinculada.secretaria.name}
+                  {acaoVinculada.secretaria.nome}
                 </p>
               </div>
               <button
@@ -133,7 +132,7 @@ export function DenunciaDetails() {
           )}
 
           {!acaoVinculada &&
-            !['indeferido', 'concluido'].includes(denuncia.status) && (
+            !['indeferido', 'concluido'].includes('indeferido') && (
               <div className="py-3 px-4 rounded-xl border border-gray-200 text-center space-y-2">
                 <p className="text-sm font-semibold text-gray-800">
                   Nenhuma ação vinculada
@@ -147,36 +146,30 @@ export function DenunciaDetails() {
               </div>
             )}
 
-          {denuncia.images.length > 0 && (
+          {denuncia.files.length > 0 && (
             <div>
               <h3 className="font-semibold text-gray-800 mb-2">Imagens:</h3>
               <div>
-                <FilesCarrrousel
-                  files={denuncia.images.map((file) => ({
-                    id: file.id,
-                    name: file.name,
-                    type: file.name.includes('.mp4') ? 'video' : 'image',
-                  }))}
-                />
+                <FilesCarrrousel files={denuncia.files} />
               </div>
             </div>
           )}
 
-          {denuncia.status === 'indeferido' && denuncia.motivoStatus && (
+          {/* {denuncia.status === 'indeferido' && denuncia.motivoStatus && (
             <div className="p-3 bg-red-50 border-l-4 border-red-400 text-red-700">
               <p className="font-bold">Motivo do Indeferimento:</p>
               <p>{denuncia.motivoStatus}</p>
             </div>
-          )}
+          )} */}
 
-          {denuncia.status === 'aberto' && (
+          {/* {denuncia.status === 'aberto' && (
             <button
               onClick={() => navigate('indeferir')}
               className="w-full border-2 text-sm border-red-500 text-red-500 font-semibold py-2 rounded-lg transition-colors hover:bg-red-500 hover:text-white"
             >
               Indeferir Denúncia
             </button>
-          )}
+          )} */}
         </>
       </div>
 

@@ -1,20 +1,28 @@
-import { API_BASE_URL } from '../config/api'
+import type { CategoriaDenunciaModel } from '../types/CategoriaDenuncia';
 
-async function getAll() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/categories`)
-    const body = await response.json()
+const infraestruturaTipos = [
+  {
+    id: 1,
+    nome: 'Buraco na rua',
+    cor: '#333',
+  },
+];
 
-    if (response.status != 200) {
-      throw new Error(body.error)
-    }
+async function getAll(): Promise<CategoriaDenunciaModel[]> {
+  return [
+    {
+      id: 1,
+      nome: 'Infraestrutura',
+      tipos: infraestruturaTipos,
+    },
+  ];
+}
 
-    return body
-  } catch {
-    throw new Error('Serviço de listagem de categorias indisponível, tente novamente mais tarde')
-  }
+async function getTipoById(tipoId: number) {
+  return infraestruturaTipos.find((tipo) => tipo.id === tipoId);
 }
 
 export default {
   getAll,
-}
+  getTipoById,
+};

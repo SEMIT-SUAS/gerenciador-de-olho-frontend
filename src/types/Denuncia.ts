@@ -1,3 +1,5 @@
+import type { AcaoModel } from './Acao';
+import type { AcaoStatusModelTypes } from './AcaoStatus';
 import type { DenunciaFile } from './DenunciaFile';
 import type { DenunciaIndeferidaModel } from './DenunciaIndeferidaModel';
 import type { TipoDenunciaModel } from './TipoDenuncia';
@@ -9,21 +11,23 @@ export interface CreateDenunciaModel {
   files: File[];
   bairro: string;
   rua: string;
-  pontoDeReferencia: string;
+  pontoDeReferencia?: string | null;
   longitude: number;
   latitude: number;
 }
+
+export type DenunciaStatusModelTypes = 'aberto' | AcaoStatusModelTypes;
 
 export interface DenunciaModel {
   id: number;
   descricao: string;
   tipo: TipoDenunciaModel;
   files: DenunciaFile[];
-  acaoId: number | null;
+  acao: AcaoModel | null;
 
   bairro: string;
   rua: string;
-  pontoDeReferencia: string;
+  pontoDeReferencia?: string | null;
   longitude: number;
   latitude: number;
 

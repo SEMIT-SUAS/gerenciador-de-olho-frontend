@@ -1,9 +1,10 @@
 import { FaMapPin, FaTrash } from 'react-icons/fa';
 import { Tag } from '../Tag';
-import type { Denuncia } from '../../../types/Denuncia';
+import type { DenunciaModel } from '../../../types/Denuncia';
+import { getDenunciaStatus } from '../../../utils/getDenunciaStatus';
 
 type DenunciaItemProps = {
-  denuncia: Denuncia;
+  denuncia: DenunciaModel;
   onClick: () => void;
   onTrashClick?: () => void;
   showDescription: boolean;
@@ -26,8 +27,10 @@ export function DenunciaItem({
       onClick={onClick}
     >
       <div className="flex justify-between items-center">
-        <h3 className="font-semibold text-md text-gray-700">{denuncia.tipo}</h3>
-        {showTag && <Tag status={denuncia.status} />}
+        <h3 className="font-semibold text-md text-gray-700">
+          {denuncia.tipo.nome}
+        </h3>
+        {showTag && <Tag status={getDenunciaStatus(denuncia)} />}
         {isDeletable && (
           <button
             onClick={onTrashClick}
@@ -46,7 +49,7 @@ export function DenunciaItem({
         <span className="mr-1">
           <FaMapPin />
         </span>
-        {`${denuncia.endereco.rua}, ${denuncia.endereco.bairro}`}
+        {`${denuncia.rua}, ${denuncia.bairro}`}
       </p>
     </div>
   );

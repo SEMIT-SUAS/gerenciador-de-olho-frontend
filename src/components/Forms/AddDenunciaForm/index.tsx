@@ -1,5 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
-import { z } from 'zod/v4';
+import { useEffect, useState, type FormEvent } from 'react';
 import { FormGroup } from '../FormGroup';
 import { Label } from '../Label';
 import { FormInput } from '../FormInput';
@@ -8,14 +7,15 @@ import { SelectArrowDown } from '../SelectArrowDown';
 import { toast } from 'react-toastify';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
-import { AddDenunciaFormType } from './types';
 import { useMapActions } from '../../../context/MapActions';
 import { useFilters } from '../../../context/FiltersContext';
 import type { CreateDenunciaModel } from '../../../types/Denuncia';
+import { useNavigate } from 'react-router-dom';
+import { useAddDenunciaFormHook } from './addDenunciaFormHook';
 import denunciaService from '../../../services/denunciasService';
 
 export function AddDenunciaForm() {
-  const { setDenuncias, categorias } = useOcorrencias();
+  const { categorias } = useOcorrencias();
   const {
     setNewDenunciaCoordinates,
     newDenunciaCoordinates,
@@ -24,127 +24,84 @@ export function AddDenunciaForm() {
   } = useMapActions();
 
   const {
-    setIsVisibleAcoesInMap,
-    setIsVisibleDenunciasInMap,
     cacheCurrentFilters,
     restoreCachedFilters,
+    setIsVisibleAcoesInMap,
+    setIsVisibleDenunciasInMap,
   } = useFilters();
 
-  const [formData, setFormData] = useState<z.infer<typeof AddDenunciaFormType>>(
-    {
-      bairro: '',
-      rua: '',
-      categoryId: 0,
-      categoryTipoId: 0,
-      descricao: '',
-      pontoDeReferencia: '',
-      files: [],
-    },
-  );
+  const {
+    formData,
+    setFormData,
+    isLoadingAddressSearch,
+    setIsLoadingAddressSearch,
+    formErrors,
+    isSubmitingForm,
+    setIsSubmitingForm,
+    onChangeInput,
+    onChangeFileInput,
+    validateForm,
+    resetForm,
+  } = useAddDenunciaFormHook();
 
-  const [formErrors, setFormErrors] = useState<Record<string, any>>({});
-  const [isLoadingAddressSearch, setIsLoadingAddressSearch] = useState(false);
-  const [isSubmitingForm, setIsSubmitingForm] = useState(false);
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isSelectingNewDenuncia) {
-      cacheCurrentFilters();
-      setIsVisibleDenunciasInMap(false);
-      setIsVisibleAcoesInMap(false);
-    }
-
-    return () => {
-      restoreCachedFilters();
-    };
-  }, [isSelectingNewDenuncia, setIsSelectingNewDenuncia]);
-
-  useEffect(() => {
-    if (newDenunciaCoordinates) {
-      loadAddressData();
-    }
-  }, [newDenunciaCoordinates]);
-
-  async function loadAddressData() {
+  async function loadAddress() {
     try {
       setIsLoadingAddressSearch(true);
-
-      const coordinatesAddressInfos =
-        await denunciaService.getAddressByCoordinates(
-          newDenunciaCoordinates!.lng,
-          newDenunciaCoordinates!.lat,
-        );
-
-      setFormData((currentData) => ({
-        ...currentData,
-        ...coordinatesAddressInfos,
-      }));
-    } catch (error: any) {
-      setFormData((currentData) => ({
-        ...currentData,
-        bairro: '',
-        rua: '',
-      }));
-      toast.error(
-        'Não foi possível carregar as informações para essa localização. Escreva manualmente',
+      const address = await denunciaService.getAddressByCoordinates(
+        newDenunciaCoordinates!.lat,
+        newDenunciaCoordinates!.lng,
       );
+
+      setFormData((formData) => ({
+        ...formData,
+        bairro: address.bairro,
+        rua: address.rua,
+      }));
+    } catch (err: any) {
+      toast.error(err.message);
     } finally {
       setIsLoadingAddressSearch(false);
     }
   }
 
-  function handleOnChangeInput(
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
-    const { name, value } = e.target;
+  useEffect(() => {
+    cacheCurrentFilters();
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
+    return () => {
+      restoreCachedFilters();
+      resetForm();
+      setNewDenunciaCoordinates(null);
+    };
+  }, []);
 
-  function handleSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-    const { name, value } = e.target;
-
-    if (name === 'categoryId') {
-      setFormData((prev) => ({
-        ...prev,
-        categoryId: Number(value),
-        categoryTipoId: -1,
-      }));
+  useEffect(() => {
+    if (isSelectingNewDenuncia) {
+      setIsVisibleAcoesInMap(false);
+      setIsVisibleDenunciasInMap(false);
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: Number(value),
-      }));
+      setIsVisibleAcoesInMap(true);
+      setIsVisibleDenunciasInMap(true);
+    }
+
+    if (newDenunciaCoordinates) {
+      loadAddress();
+    }
+  }, [isSelectingNewDenuncia, newDenunciaCoordinates]);
+
+  async function handleFormSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (isSubmitingForm) return;
+
+    const isValid = validateForm();
+    if (isValid) {
+      setIsOpenConfirmationModal(true);
     }
   }
 
-  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files || []);
-
-    setFormData((prev) => ({
-      ...prev,
-      files,
-    }));
-  }
-
-  async function handleSubmitForm(e: FormEvent) {
-    e.preventDefault();
-
-    const result = AddDenunciaFormType.safeParse(formData);
-
-    if (!result.success) {
-      const errors = result.error.format();
-      setFormErrors(errors);
-      return;
-    }
-
-    setIsOpenConfirmationModal(true);
-  }
-
-  async function submitForm() {
+  async function handleConfirmSubmit() {
     try {
       setIsSubmitingForm(true);
 
@@ -163,14 +120,16 @@ export function AddDenunciaForm() {
         createDenunciaData,
       );
 
-      setDenuncias((current) => [...current, newDenunciaData]);
-      toast('Denuncia criada com sucesso!');
+      toast.success('Denuncia criada com sucesso!');
+      resetForm();
+      navigate(`/ocorrencias/denuncias/${newDenunciaData.id}`);
     } catch (error: any) {
       toast(error.message, {
         type: 'error',
       });
     } finally {
       setIsSubmitingForm(false);
+      setIsOpenConfirmationModal(false);
     }
   }
 
@@ -178,7 +137,7 @@ export function AddDenunciaForm() {
 
   return (
     <>
-      <form onSubmit={handleSubmitForm} className="flex flex-col gap-4 px-1">
+      <form onSubmit={handleFormSubmit} className="flex flex-col gap-4 px-1">
         <h2 className="text-2xl font-bold text-blue-500">Adicionar denúncia</h2>
 
         <div className="flex flex-col gap-4 flex-1 overflow-y-auto">
@@ -217,26 +176,23 @@ export function AddDenunciaForm() {
                   </Label>
 
                   <FormInput
-                    id={`address-${field}`}
+                    id={field}
                     name={field}
                     value={formData[field as keyof typeof formData]}
                     disabled={!newDenunciaCoordinates || isLoadingAddressSearch}
-                    onChange={handleOnChangeInput}
+                    onChange={onChangeInput}
                     placeholder={`Informe o ${
                       field === 'pontoDeReferencia'
                         ? 'ponto de referência'
                         : field
                     }`}
                   />
-                  <FormInputError
-                    message={formErrors.address?.[field]?._errors?.[0]}
-                  />
+                  <FormInputError message={formErrors[field]?._errors?.[0]} />
                 </FormGroup>
               ))}
             </div>
           </div>
 
-          {/* Categoria */}
           <FormGroup>
             <Label htmlFor="categoryId">Categoria da denúncia</Label>
             <div className="relative">
@@ -244,7 +200,7 @@ export function AddDenunciaForm() {
                 id="categoryId"
                 name="categoryId"
                 value={formData.categoryId < 1 ? '' : formData.categoryId}
-                onChange={handleSelectChange}
+                onChange={onChangeInput}
                 disabled={!newDenunciaCoordinates || isLoadingAddressSearch}
                 className="w-full cursor-pointer rounded-lg border bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
               >
@@ -263,7 +219,6 @@ export function AddDenunciaForm() {
             <FormInputError message={formErrors.categoryId?._errors?.[0]} />
           </FormGroup>
 
-          {/* Tipo da denúncia */}
           {formData.categoryId > 0 && (
             <FormGroup>
               <Label htmlFor="categoryTipoId">Tipo da denúncia</Label>
@@ -274,7 +229,7 @@ export function AddDenunciaForm() {
                   value={
                     formData.categoryTipoId < 1 ? '' : formData.categoryTipoId
                   }
-                  onChange={handleSelectChange}
+                  onChange={onChangeInput}
                   className="w-full cursor-pointer rounded-lg border bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none border-gray-300"
                 >
                   <option value="" disabled>
@@ -294,7 +249,6 @@ export function AddDenunciaForm() {
             </FormGroup>
           )}
 
-          {/* Descrição */}
           <FormGroup>
             <Label htmlFor="descricao">Descrição da ocorrência</Label>
             <textarea
@@ -302,7 +256,7 @@ export function AddDenunciaForm() {
               name="descricao"
               rows={5}
               value={formData.descricao}
-              onChange={handleOnChangeInput}
+              onChange={onChangeInput}
               disabled={!newDenunciaCoordinates || isLoadingAddressSearch}
               placeholder="Descreva com detalhes o que está acontecendo..."
               className="block w-full rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm p-3 border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
@@ -318,7 +272,7 @@ export function AddDenunciaForm() {
               name="files"
               multiple
               accept=".png, .jpg, .jpeg, .mp4"
-              onChange={handleFileChange}
+              onChange={onChangeFileInput}
               disabled={!newDenunciaCoordinates || isLoadingAddressSearch}
               className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 }"
             />
@@ -343,7 +297,7 @@ export function AddDenunciaForm() {
         title="Confirmação de envio"
         message="Você tem certeza que deseja enviar essa denúncia?"
         onCancel={() => setIsOpenConfirmationModal(false)}
-        onConfirm={submitForm}
+        onConfirm={handleConfirmSubmit}
       />
     </>
   );

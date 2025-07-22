@@ -1,5 +1,13 @@
 import type { AcaoStatusModel } from './AcaoStatus';
+import type { DenunciaModel } from './Denuncia';
 import type { SecretariaModel } from './Secretaria';
+
+export interface CreateAcaoModel {
+  nome: string;
+  obs: string | null;
+  secretariaId: number;
+  denuncias: DenunciaModel[];
+}
 
 export interface AcaoModel {
   id: number;

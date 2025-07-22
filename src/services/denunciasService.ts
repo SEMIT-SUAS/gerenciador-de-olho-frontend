@@ -1,30 +1,22 @@
 import type { CreateDenunciaModel, DenunciaModel } from '../types/Denuncia.ts';
 import { API_BASE_URL } from '../config/api.ts';
 import convert from 'xml-js';
+import categoriaService from './categoriaService.ts';
+import { userMock } from '../constants/mocks.ts';
 
 type addressResponseData = {
   rua: string;
   bairro: string;
 };
 
-async function getAllDenuncias() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/denuncias`, {
-      method: 'GET',
-    });
+export let denunciasData: DenunciaModel[] = [];
 
-    const data: DenunciaModel[] = await response.json();
+export function updateDenunciasData(newArray: DenunciaModel[]) {
+  denunciasData = newArray;
+}
 
-    if (response.status != 200) {
-      throw new Error('Não foi possível listar as denúncias.');
-    }
-
-    return data;
-  } catch {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
-  }
+async function getAllDenuncias(): Promise<DenunciaModel[]> {
+  return denunciasData;
 }
 
 async function getDenunciaById(id: number): Promise<DenunciaModel> {
@@ -48,7 +40,9 @@ async function getDenunciaById(id: number): Promise<DenunciaModel> {
 async function createDenuncia(
   newDenuncia: CreateDenunciaModel,
 ): Promise<DenunciaModel> {
-  return {
+  const tipo = await categoriaService.getTipoById(newDenuncia.tipoId);
+
+  const denunciaCreatedData: DenunciaModel = {
     id: Math.floor(Math.random() * 100000),
     descricao: newDenuncia.descricao,
     bairro: newDenuncia.bairro,
@@ -56,43 +50,21 @@ async function createDenuncia(
     pontoDeReferencia: newDenuncia.pontoDeReferencia,
     latitude: newDenuncia.latitude,
     longitude: newDenuncia.longitude,
-    tipo: {
-      id: newDenuncia.tipoId,
-      nome: 'Tipo mockado',
-      cor: '#32333',
-      categoria: {
-        id: 1,
-        nome: 'Categoria mockada',
-      },
-    },
+    tipo: tipo!,
     files: newDenuncia.files.map((f, idx) => ({
       id: idx,
       tipo: 'imagem',
       nome: f.name,
     })),
-    acaoId: null,
+    acao: null,
     criadaEm: new Date().toISOString(),
-    usuario: {
-      id: 1,
-      nome: 'Usuário Mock',
-      cpf: '000.000.000-00',
-      telefone: '000000000',
-      email: 'mock@mock.com',
-      senha: '',
-      secretaria: {
-        id: 1,
-        nome: 'Secretaria Mock',
-        sigla: 'SM',
-      },
-      perfil: {
-        id: 1,
-        nome: 'Cidadão',
-      },
-      criadoEm: new Date().toISOString(),
-      criadoPor: null,
-    },
+    usuario: userMock,
     denunciaIndeferida: null,
   };
+
+  denunciasData.push(denunciaCreatedData);
+
+  return denunciaCreatedData;
 }
 
 async function updateDenuncia(denuncia: DenunciaModel): Promise<DenunciaModel> {
@@ -213,8 +185,8 @@ async function vincularDenunciaToAcao(
 }
 
 async function getAddressByCoordinates(
-  lng: number,
   lat: number,
+  lng: number,
 ): Promise<addressResponseData> {
   try {
     const response = await fetch(

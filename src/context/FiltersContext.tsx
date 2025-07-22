@@ -8,18 +8,21 @@ import {
   type SetStateAction,
   useCallback,
 } from 'react';
-import type { StatusModel } from '../types/dadwa';
-import type { Categorias } from '../types/CategoriaDenuncia';
+import type { CategoriaDenunciaModel } from '../types/CategoriaDenuncia';
 import { useOcorrencias } from './OcorrenciasContext';
-import type { Denuncia } from '../types/Denuncia';
-import type { Acao } from '../types/Acao';
+import type {
+  DenunciaModel,
+  DenunciaStatusModelTypes,
+} from '../types/Denuncia';
+import type { AcaoModel } from '../types/Acao';
+import type { AcaoStatusModelTypes } from '../types/AcaoStatus';
 
 type FilterState = {
   isVisibleDenunciasInMap: boolean;
   isVisibleAcoesInMap: boolean;
-  filtroStatusDenuncia: 'todos' | StatusModel[];
-  filtroStatusAcao: 'todos' | StatusModel[];
-  filtroCategoria: 'todas' | Categorias | null;
+  filtroStatusDenuncia: 'todos' | DenunciaStatusModelTypes[];
+  filtroStatusAcao: 'todos' | AcaoStatusModelTypes[];
+  filtroCategoria: 'todas' | CategoriaDenunciaModel | null;
   filtroSecretaria: 'todas' | string | null;
   filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
 };
@@ -27,15 +30,21 @@ type FilterState = {
 type FiltersContextProps = FilterState & {
   setIsVisibleDenunciasInMap: Dispatch<SetStateAction<boolean>>;
   setIsVisibleAcoesInMap: Dispatch<SetStateAction<boolean>>;
-  setFiltroStatusDenuncia: Dispatch<SetStateAction<'todos' | StatusModel[]>>;
-  setFiltroStatusAcao: Dispatch<SetStateAction<'todos' | StatusModel[]>>;
-  setFiltroCategoria: Dispatch<SetStateAction<'todas' | Categorias | null>>;
+  setFiltroStatusDenuncia: Dispatch<
+    SetStateAction<'todos' | DenunciaStatusModelTypes[]>
+  >;
+  setFiltroStatusAcao: Dispatch<
+    SetStateAction<'todos' | AcaoStatusModelTypes[]>
+  >;
+  setFiltroCategoria: Dispatch<
+    SetStateAction<'todas' | CategoriaDenunciaModel | null>
+  >;
   setFiltroSecretaria: Dispatch<SetStateAction<'todas' | string | null>>;
   setFiltroDenunciasComAcao: Dispatch<
     SetStateAction<'desabilitado' | 'com_acao' | 'sem_acao'>
   >;
-  denunciasFiltradas: Denuncia[];
-  acoesFiltradas: Acao[];
+  denunciasFiltradas: DenunciaModel[];
+  acoesFiltradas: AcaoModel[];
   cacheCurrentFilters: () => void;
   restoreCachedFilters: () => void;
   filtrarAcoesPorId: number[] | 'desabilitado';
@@ -122,21 +131,24 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   }, [cacheFilters]);
 
   const denunciasFiltradas = useMemo(() => {
-    return denuncias.filter((d) => {
-      const passaStatus =
-        filtroStatusDenuncia === 'todos' ||
-        filtroStatusDenuncia.includes(d.status);
+    // return denuncias.filter((d) => {
+    //   const passaStatus =
+    //     filtroStatusDenuncia === 'todos' ||
+    //     filtroStatusDenuncia.includes(d.status);
 
-      const passaCategoria =
-        filtroCategoria === 'todas' || d.categoria === filtroCategoria;
+    //   const passaCategoria =
+    //     filtroCategoria === 'todas' ||
+    //     d.tipo.categoria?.nome === filtroCategoria;
 
-      const passaFiltroAcao =
-        filtroDenunciasComAcao === 'desabilitado' ||
-        (filtroDenunciasComAcao === 'com_acao' && d.acaoId) ||
-        (filtroDenunciasComAcao === 'sem_acao' && !d.acaoId);
+    //   const passaFiltroAcao =
+    //     filtroDenunciasComAcao === 'desabilitado' ||
+    //     (filtroDenunciasComAcao === 'com_acao' && d.acao) ||
+    //     (filtroDenunciasComAcao === 'sem_acao' && !d.acao);
 
-      return passaStatus && passaCategoria && passaFiltroAcao;
-    });
+    //   return passaStatus && passaCategoria && passaFiltroAcao;
+    // });
+
+    return denuncias;
   }, [
     denuncias,
     filtroStatusDenuncia,
@@ -151,7 +163,8 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 
     return acoes.filter((a) => {
       const passaStatus =
-        filtroStatusAcao === 'todos' || filtroStatusAcao.includes(a.status);
+        filtroStatusAcao === 'todos' ||
+        filtroStatusAcao.includes(a.status[0].status);
 
       const passaSecretaria =
         filtroSecretaria === 'todas' || a.secretaria.nome === filtroSecretaria;

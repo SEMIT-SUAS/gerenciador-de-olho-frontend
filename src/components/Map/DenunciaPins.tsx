@@ -13,6 +13,7 @@ import { selectedIcon } from '../../constants/mapIcons';
 
 export function DenunciaPins() {
   const { denunciasFiltradas, isVisibleDenunciasInMap } = useFilters();
+
   const {
     salvarDenunciasOnclick,
     addDenunciaNaSelecao,
@@ -74,8 +75,8 @@ export function DenunciaPins() {
         return (
           <Marker
             key={`d-${d.id}`}
-            position={[d.endereco.latitude, d.endereco.longitude]}
-            icon={getDenunciaIconByTipo(d.tipo)}
+            position={[d.latitude, d.longitude]}
+            icon={getDenunciaIconByTipo(d.tipo.nome)}
             eventHandlers={{
               click: () => handleOnDenunciaClick(d),
             }}
