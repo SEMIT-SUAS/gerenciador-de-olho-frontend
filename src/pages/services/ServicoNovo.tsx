@@ -4,18 +4,29 @@ import type { Services } from "../../types/Services";
 import { createService } from "../../services/servicosServices";
 import { getAllSecretarias } from '../../services/secretariaService'; // ajuste o caminho se necessário
 import type { Secretaria } from "../../types/Secretaria";
+import { getAllCategorias } from "../../services/servicocategoriaService";
+import type { ServicoCategoria } from "../../types/CategoriaServico";
+import { getAllPerosona } from "../../services/servicoPersona";
+import type { Persona } from "../../types/Persona";
+
+function parseMultilineInput(text: string): string[] {
+  return text
+    .split(/\r?\n|,/)
+    .map((line) => line.trim())
+    .filter((line) => line !== "");
+}
 
 export function ServicoNovo() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState<Services>({
-    orgao: "",
+    orgao: null,
     secretaria: null,
     nome: "",
     descricao: "",
-    publicoDestinado: "",
-    formasSolicitacao: "",
-    documentacaoNecessaria: "",
+    publicoDestinado: [],
+    formasSolicitacao: [],
+    documentacaoNecessaria: [],
     custos: "",
     etapas: "",
     requisitos: "",
@@ -24,31 +35,44 @@ export function ServicoNovo() {
     prioridades: "",
     horarioAtendimento: "",
     legislacao: "",
-    categoria: { nome: "" },
+    categoria: null,
     setorLotacao: "",
     modeloRequerimento: "",
-    persona: "",
+    persona: [],
     visivel: true,
     ativo: true,
   });
 
-  const [categorias, setCategorias] = useState<{ nome: string }[]>([]);
+  const [categorias, setCategorias] = useState<ServicoCategoria[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
+  const[persona, setPersona] = useState<Persona[]>([]);
 
   useEffect(() => {
-  async function fetchSecretarias() {
+  async function fetchDados() {
     try {
-      const secretariasData = await getAllSecretarias();
+      const [secretariasData, categoriasData, personaData] = await Promise.all([
+        getAllSecretarias(),
+        getAllCategorias(),
+        getAllPerosona()
+      ]);
       setSecretarias(secretariasData);
+      setCategorias(categoriasData);
+      setPersona(personaData);
+
+      console.log(personaData);
     } catch (error) {
-      console.error("Erro ao buscar secretarias:", error);
+      console.error("Erro ao buscar dados:", error);
     }
   }
 
-  fetchSecretarias();
+  fetchDados();
 }, []);
+
+useEffect(() => {
+  console.log("form.persona:", form.persona);
+}, [form.persona]);
 
   function handleChange(
   e: React.ChangeEvent<
@@ -68,8 +92,23 @@ export function ServicoNovo() {
   }
 
   // Campos objeto: categoria.nome
-  if (name === "categoria.nome") {
-    setForm({ ...form, categoria: { nome: value } });
+  if (name === "categoria") {
+  const selectedCategoria = categorias.find(cat => cat.id === Number(value));
+  if (selectedCategoria) {
+    setForm({ ...form, categoria: selectedCategoria });
+  } else {
+    // Se quiser permitir limpar seleção
+    setForm({ ...form, categoria: null });
+  }
+  return;
+}
+    if (
+    name === "publicoDestinado" ||
+    name === "formasSolicitacao" ||
+    name === "documentacaoNecessaria"||
+    name === "persona"
+  ) {
+    setForm({ ...form, [name]: parseMultilineInput(value) });
     return;
   }
 
@@ -85,6 +124,16 @@ export function ServicoNovo() {
     return;
   }
 
+  if(name==="persona"){
+  const selectedPersona = persona.find(
+    (sec) => sec.id === Number(value)
+  );
+  if(selectedPersona){
+    setForm({ ...form, persona: selectedPersona});
+  }
+  return
+}
+
   // Caso padrão para os outros inputs (texto, textarea, select simples)
   setForm({ ...form, [name]: value });
 }
@@ -95,11 +144,14 @@ export function ServicoNovo() {
   setError(null);
 
   try {
-    // Cria um novo objeto com os dados do formulário
     const payload = {
-      ...form,
-      orgao: form.secretaria?.id, // backend espera só o id da secretaria
-    };
+  ...form,
+    orgao: form.secretaria?.id ?? null,
+    categoria: form.categoria?.id ?? null,
+    personas: form.persona.map(p => p.id) // [1, 3, 5]  // array de ids para o backend
+  };
+
+    console.log("Dados enviados para o backend:", payload);
 
     // Remove o campo secretaria do payload, se existir
     delete (payload as any).secretaria;
@@ -146,9 +198,9 @@ export function ServicoNovo() {
           Público Destinado:
           <textarea
             name="publicoDestinado"
-            value={form.publicoDestinado}
+            value={form.publicoDestinado.join('\n')}
             onChange={handleChange}
-            rows={2}
+            rows={3}
           />
         </label>
 
@@ -156,9 +208,9 @@ export function ServicoNovo() {
           Formas de Solicitação:
           <textarea
             name="formasSolicitacao"
-            value={form.formasSolicitacao}
+            value={form.formasSolicitacao.join('\n')}
             onChange={handleChange}
-            rows={2}
+            rows={3}
           />
         </label>
 
@@ -166,9 +218,9 @@ export function ServicoNovo() {
           Documentação Necessária:
           <textarea
             name="documentacaoNecessaria"
-            value={form.documentacaoNecessaria}
+            value={form.documentacaoNecessaria.join('\n')}
             onChange={handleChange}
-            rows={2}
+            rows={4}
           />
         </label>
 
@@ -245,10 +297,10 @@ export function ServicoNovo() {
 
         <label>
           Categoria:
-          <select name="categoria.nome" value={form.categoria.nome} onChange={handleChange}>
+          <select name="categoria" value={form.categoria?.id || ""} onChange={handleChange}>
             <option value="">Selecione uma categoria</option>
-            {categorias.map((cat, index) => (
-              <option key={index} value={cat.nome}>
+            {categorias.map((cat) => (
+              <option key={cat.id} value={cat.id}>
                 {cat.nome}
               </option>
             ))}
@@ -277,12 +329,26 @@ export function ServicoNovo() {
 
         <label>
           Persona:
-          <input
-            type="text"
+          <select
             name="persona"
-            value={form.persona}
-            onChange={handleChange}
-          />
+            multiple
+            value={form.persona.map(p => String(p.id))} // array de strings com os ids selecionados
+            onChange={(e) => {
+              const selectedIds = Array.from(e.target.selectedOptions, option => Number(option.value));
+            const selectedPersonas = persona.filter(p => selectedIds.includes(p.id));
+            console.log("IDs selecionados:", selectedIds);
+            console.log("Personas selecionadas:", selectedPersonas);
+
+              setForm({ ...form, persona: selectedPersonas });
+            }}
+          >
+            {persona.length === 0 && <option disabled>Carregando...</option>}
+            {persona.map(p => (
+              <option key={p.id} value={p.id}>
+                {p.nome}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
