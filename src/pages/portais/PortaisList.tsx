@@ -46,35 +46,35 @@ export function PortaisList() {
   }
 
   async function handleSubmitNewPortal(e: React.FormEvent) {
-  e.preventDefault();
-  try {
-    const portalCriado = await createPortal(newPortal); // <-- chama o serviço que envia para o backend
-    setPortais((prev) => [...prev, portalCriado]); // usa o que veio do backend (com ID real, etc)
-    setIsModalOpen(false);
-    setNewPortal({
-      nome: "",
-      destaque: false,
-      link: "",
-      visivel: true,
-      ativo: true,
-    });
-  } catch (error) {
-    alert("Erro ao criar portal");
-  }
-}
-
-async function handleToggleAtivo(id: number, ativo: boolean) {
+    e.preventDefault();
     try {
-      await toggleAtivo(id, !ativo);
-      setPortais((prev) =>
-        prev.map((p) =>
-          p.id === id ? { ...p, ativo: !ativo } : p
-        )
-      );
+        const portalCriado = await createPortal(newPortal); // <-- chama o serviço que envia para o backend
+        setPortais((prev) => [...prev, portalCriado]); // usa o que veio do backend (com ID real, etc)
+        setIsModalOpen(false);
+        setNewPortal({
+        nome: "",
+        destaque: false,
+        link: "",
+        visivel: true,
+        ativo: true,
+        });
     } catch (error) {
-      alert("Erro ao atualizar status de atividade");
+        alert("Erro ao criar portal");
     }
-  }
+    }
+
+    async function handleToggleAtivo(id: number, ativo: boolean) {
+        try {
+        await toggleAtivo(id, !ativo);
+        setPortais((prev) =>
+            prev.map((p) =>
+            p.id === id ? { ...p, ativo: !ativo } : p
+            )
+        );
+        } catch (error) {
+        alert("Erro ao atualizar status de atividade");
+        }
+    }
 
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>Erro: {error}</p>;

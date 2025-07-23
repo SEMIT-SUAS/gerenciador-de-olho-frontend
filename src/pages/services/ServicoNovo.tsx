@@ -157,12 +157,12 @@ export function ServicoNovo() {
     setError(null);
 
     try {
-      const payload = {
-    ...form,
-      orgao: form.secretaria?.id ?? null,
-      categoria: form.categoria?.id ?? null,
-      personas: form.persona.map(p => p.id) // [1, 3, 5]  // array de ids para o backend
-    };
+        const payload = {
+      ...form,
+        orgao: form.secretaria?.id ?? null,
+        categoria: form.categoria?.id ?? null,
+        personas: form.persona.map(p => p.id) // [1, 3, 5]  // array de ids para o backend
+      };
 
       console.log("Dados enviados para o backend:", payload);
 
