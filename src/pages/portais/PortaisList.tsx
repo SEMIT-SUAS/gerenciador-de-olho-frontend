@@ -125,7 +125,6 @@ async function handleToggleAtivo(id: number, ativo: boolean) {
             ))}
         </ul>
 
-
       {/* Modal simples */}
       {isModalOpen && (
         <div
