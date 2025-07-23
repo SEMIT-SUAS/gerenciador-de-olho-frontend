@@ -1,31 +1,23 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { Dispatch, FC, ReactNode, SetStateAction } from 'react';
-import type { Denuncia } from '../types/Denuncia';
-import type { Acao } from '../types/Acao';
+import type { DenunciaModel } from '../types/Denuncia';
+import type { AcaoModel } from '../types/Acao';
 import denunciasService from '../services/denunciasService';
 import acoesService from '../services/acoesService';
-import type { StatusModel } from '../types/StatusModel';
-import type { Secretaria } from '../types/Secretaria';
+import type { SecretariaModel } from '../types/Secretaria';
+import categoriaService from '../services/categoriaService';
+import type { CategoriaDenunciaModel } from '../types/CategoriaDenuncia';
+import secretariaService from '../services/secretariaService';
 
 interface OcorrenciasContextType {
-  denuncias: Denuncia[];
-  setDenuncias: Dispatch<SetStateAction<Denuncia[]>>;
-  actualDetailItem: Denuncia | Acao | null;
-  prevAction: Acao | null;
-  setPrevAction: Dispatch<SetStateAction<Acao | null>>;
-  setActualDetailItem: Dispatch<SetStateAction<Denuncia | Acao | null>>;
-  acoes: Acao[];
-  setAcoes: Dispatch<SetStateAction<Acao[]>>;
+  denuncias: DenunciaModel[];
+  setDenuncias: Dispatch<SetStateAction<DenunciaModel[]>>;
+  acoes: AcaoModel[];
+  setAcoes: Dispatch<SetStateAction<AcaoModel[]>>;
+  categorias: CategoriaDenunciaModel[];
+  secretarias: SecretariaModel[];
   loading: boolean;
   error: string | null;
-  vincularDenunciaAcao: (denunciaId: number, acaoId: number) => Promise<void>;
-  indeferirDenuncia: (
-    denunciaId: number,
-    status: StatusModel,
-    motivoStatus: string,
-  ) => Promise<void>;
-  secretarias: Secretaria[];
-  setSecretarias: Dispatch<SetStateAction<Secretaria[]>>;
 }
 
 const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(
@@ -35,98 +27,49 @@ const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(
 export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [denuncias, setDenuncias] = useState<Denuncia[]>([]);
-  const [acoes, setAcoes] = useState<Acao[]>([]);
-  const [secretarias, setSecretarias] = useState<Secretaria[] | null>(null);
+  const [denuncias, setDenuncias] = useState<DenunciaModel[]>([]);
+  const [acoes, setAcoes] = useState<AcaoModel[]>([]);
+  const [categorias, setCategorias] = useState<CategoriaDenunciaModel[]>([]);
+  const [secretarias, setSecretarias] = useState<SecretariaModel[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [actualDetailItem, setActualDetailItem] = useState<
-    Denuncia | Acao | null
-  >(null);
-  const [prevAction, setPrevAction] = useState<Acao | null>(null);
-
-  async function fetchSecretarias(): Promise<Secretaria[] | null> {
-    try {
-      return [
-        { id: 1, name: 'SEMMAM' },
-        { id: 2, name: 'SEMOSP' },
-        { id: 3, name: 'SEMURH' },
-      ];
-    } catch (error) {
-      return [];
-    }
-  }
 
   useEffect(() => {
-    const loadData = async () => {
+    async function loadData() {
       try {
         setLoading(true);
-        const [denunciasData, acoesData] = await Promise.all([
-          denunciasService.getAllDenuncias(),
-          acoesService.getAllAcoes(),
-        ]);
+        const [denunciasData, acoesData, categoriasData, secretariasData] =
+          await Promise.all([
+            denunciasService.getAllDenuncias(),
+            acoesService.getAllAcoes(),
+            categoriaService.getAll(),
+            secretariaService.getAll(),
+          ]);
+
         setDenuncias(denunciasData);
         setAcoes(acoesData);
+        setCategorias(categoriasData);
+        setSecretarias(secretariasData);
       } catch (err: any) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
-    };
-    loadData();
+    }
 
-    fetchSecretarias().then((data) => setSecretarias(data));
+    loadData();
   }, []);
 
-  const vincularDenunciaAcao = async (denunciaId: number, acaoId: number) => {
-    try {
-      const denunciaAtualizada = await denunciasService.vincularDenunciaToAcao(
-        denunciaId,
-        acaoId,
-      );
-      setDenuncias((prev) =>
-        prev.map((d) => (d.id === denunciaId ? denunciaAtualizada : d)),
-      );
-      console.log('Denúncia vinculada com sucesso:', denunciaAtualizada);
-    } catch (error) {
-      console.error('Falha ao vincular denúncia:', error);
-      alert('Não foi possível vincular a denúncia.');
-    }
-  };
-
-  const indeferirDenuncia = async (
-    denunciaId: number,
-    motivoStatus: string,
-  ) => {
-    try {
-      const denunciaAtualizada = await denunciasService.indeferirDenuncia(
-        denunciaId,
-        motivoStatus,
-      );
-      setDenuncias((prev) =>
-        prev.map((d) => (d.id === denunciaId ? denunciaAtualizada : d)),
-      );
-    } catch (error) {
-      console.error('Falha ao indeferir denúncia:', error);
-      alert('Não foi possível indeferir a denúncia.');
-    }
-  };
-
-  const value = {
+  const value: OcorrenciasContextType = {
     denuncias,
     setDenuncias,
     acoes,
     setAcoes,
-    actualDetailItem,
-    prevAction,
-    setPrevAction,
-    setActualDetailItem,
     loading,
     error,
-    vincularDenunciaAcao,
-    indeferirDenuncia,
     secretarias,
-    setSecretarias,
+    categorias,
   };
 
   return (
@@ -136,11 +79,12 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
   );
 };
 
-export const useOcorrenciasContext = () => {
+export const useOcorrencias = () => {
   const context = useContext(OcorrenciasContext);
   if (context === undefined)
     throw new Error(
       'useOcorrenciasContext deve ser usado dentro de um OcorrenciasProvider',
     );
+
   return context;
 };

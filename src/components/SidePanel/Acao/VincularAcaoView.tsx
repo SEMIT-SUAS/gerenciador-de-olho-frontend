@@ -1,13 +1,13 @@
 import { useState, type FC } from 'react';
 import { useVincularDenunciaContext } from '../../../context/vincularDenunciaContext';
-import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
+import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import type { Acao } from '../../../types/Acao';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { BackButton } from '../../Buttons/Backbutton';
 import { FaMapPin } from 'react-icons/fa';
 
 export const VincularAcaoView: FC = () => {
-  const { acoes, setActualDetailItem } = useOcorrenciasContext();
+  const { acoes, setActualDetailItem } = useOcorrencias();
   const [isOpen, setIsOpen] = useState(false);
   const [currentAcao, setCurrentAcao] = useState<Acao | null>(null);
   const {

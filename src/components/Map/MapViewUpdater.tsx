@@ -1,58 +1,25 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
-import { useOcorrenciasContext } from '../../context/ocorrenciasContext';
-import { AddDenunciaContext } from '../../context/AddDenunciaContext';
+import { useMapActions } from '../../context/MapActions';
 
 export function MapViewUpdater() {
   const map = useMap();
-  const { actualDetailItem } = useOcorrenciasContext();
-  const {
-    isSelectingNewDenunciaInMap,
-    setIsSelectingNewDenunciaInMap,
-    setNewDenunciaCoordinates,
-  } = useContext(AddDenunciaContext);
+
+  const { zoomTo } = useMapActions();
 
   useEffect(() => {
-    function handleClick(event: any) {
-      if (isSelectingNewDenunciaInMap) {
-        setNewDenunciaCoordinates({
-          latitude: event.latlng.lat,
-          longitude: event.latlng.lng,
-        });
+    if (zoomTo) {
+      const { lat, lng } = zoomTo;
 
-        setIsSelectingNewDenunciaInMap(false);
-        map.off('click');
-      }
+      map.flyTo(
+        {
+          lat,
+          lng,
+        },
+        16,
+      );
     }
-
-    map.on('click', handleClick);
-  }, [
-    isSelectingNewDenunciaInMap,
-    setNewDenunciaCoordinates,
-    setIsSelectingNewDenunciaInMap,
-  ]);
-
-  useEffect(() => {
-    if (actualDetailItem) {
-      if ('endereco' in actualDetailItem) {
-        map.flyTo(
-          {
-            lat: actualDetailItem.endereco.latitude,
-            lng: actualDetailItem.endereco.longitude,
-          },
-          16,
-        );
-      } else {
-        map.flyTo(
-          {
-            lat: actualDetailItem.lat,
-            lng: actualDetailItem.lon,
-          },
-          16,
-        );
-      }
-    }
-  }, [actualDetailItem]);
+  }, [zoomTo]);
 
   return null;
 }

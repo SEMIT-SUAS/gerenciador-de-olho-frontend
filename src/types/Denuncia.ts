@@ -1,19 +1,38 @@
-import type { StatusModel } from './StatusModel'
-import type { Endereco } from './Endereco'
-import type { Categoria } from './CategoriaDenuncia'
-import type { TipoDenuncia } from './TipoDenuncia'
-import type { Imagem } from './Imagem'
+import type { AcaoModel } from './Acao';
+import type { AcaoStatusModelTypes } from './AcaoStatus';
+import type { DenunciaFile } from './DenunciaFile';
+import type { DenunciaIndeferidaModel } from './DenunciaIndeferidaModel';
+import type { TipoDenunciaModel } from './TipoDenuncia';
+import type { UsuarioModel } from './Usuario';
 
-export interface Denuncia {
-  id: number;
-  titulo: string;
-  created_at: string;
-  categoria: Categoria;
-  tipo: TipoDenuncia;
-  endereco: Endereco;
+export interface CreateDenunciaModel {
   descricao: string;
-  images: Imagem[];
-  status: StatusModel;
-  motivoStatus?: string; // NOVO CAMPO OPCIONAL
-  acaoId: number | null;
+  tipoId: number;
+  files: File[];
+  bairro: string;
+  rua: string;
+  pontoDeReferencia?: string | null;
+  longitude: number;
+  latitude: number;
+}
+
+export type DenunciaStatusModelTypes = 'aberto' | AcaoStatusModelTypes;
+
+export interface DenunciaModel {
+  id: number;
+  descricao: string;
+  tipo: TipoDenunciaModel;
+  files: DenunciaFile[];
+  acao: AcaoModel | null;
+
+  bairro: string;
+  rua: string;
+  pontoDeReferencia?: string | null;
+  longitude: number;
+  latitude: number;
+
+  criadaEm: string;
+
+  usuario: UsuarioModel | null;
+  denunciaIndeferida: DenunciaIndeferidaModel | null;
 }

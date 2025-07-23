@@ -41,7 +41,7 @@ const iconAcao = new L.Icon({
 });
 
 const selectedIcon = new L.Icon({
-  iconUrl: 'selected-pin.png',
+  iconUrl: '/selected-pin.png',
   iconSize: [38, 38],
   iconAnchor: [19, 38],
   popupAnchor: [0, -40],

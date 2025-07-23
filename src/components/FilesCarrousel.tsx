@@ -3,19 +3,14 @@ import { API_BASE_URL } from '../config/api';
 import { FaImage, FaPlay } from 'react-icons/fa';
 import { useState } from 'react';
 import { FileViewerModal } from './FileViewerModal';
+import type { DenunciaFile } from '../types/DenunciaFile';
 
 interface FilesCarrouselProps {
-  files: File[];
+  files: DenunciaFile[];
 }
 
-export type File = {
-  id: number;
-  name: string;
-  type: 'image' | 'video';
-};
-
 export function FilesCarrrousel({ files }: FilesCarrouselProps) {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<DenunciaFile | null>(null);
 
   return (
     <>
@@ -31,10 +26,10 @@ export function FilesCarrrousel({ files }: FilesCarrouselProps) {
                 onClick={() => setFile(file)}
                 className="relative w-full h-full group bg-gray-200 rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
-                {file.type === 'image' ? (
+                {file.tipo === 'imagem' ? (
                   <img
-                    src={`${API_BASE_URL}/files/uploads/${file.name}`}
-                    alt={file.name}
+                    src={`${API_BASE_URL}/files/uploads/${file.nome}`}
+                    alt={file.nome}
                     className="w-full h-full object-cover transition-transform group-hover:scale-110"
                     loading="lazy"
                   />
@@ -45,7 +40,7 @@ export function FilesCarrrousel({ files }: FilesCarrouselProps) {
                 )}
 
                 <div className="absolute bottom-1 right-1 bg-black bg-opacity-50 text-white p-1.5 rounded-full">
-                  {file.type === 'image' ? (
+                  {file.tipo === 'imagem' ? (
                     <FaImage size={12} />
                   ) : (
                     <FaPlay size={12} />

@@ -1,6 +1,5 @@
-export type Secretarias = 'SEMOSP' | 'SEMURH' | 'SEMMAM';
-
-export type Secretaria = {
-    id: number;
-    name: Secretarias;
+export type SecretariaModel = {
+  id: number;
+  nome: string;
+  sigla: string;
 };

@@ -1,12 +1,21 @@
-import type { Secretaria } from './Secretaria'
-import type { StatusModel } from './StatusModel'
+import type { AcaoStatusModel } from './AcaoStatus';
+import type { DenunciaModel } from './Denuncia';
+import type { SecretariaModel } from './Secretaria';
 
-export interface Acao {
+export interface CreateAcaoModel {
+  nome: string;
+  obs: string | null;
+  secretariaId: number;
+  denuncias: DenunciaModel[];
+}
+
+export interface AcaoModel {
   id: number;
   nome: string;
-  secretaria: Secretaria;
-  lat: number;
-  lon: number;
-  polygonCoords: any[];
-  status: StatusModel;
+  latitude: number;
+  longitude: number;
+  obs: string | null;
+  criadoEm: string;
+  secretaria: SecretariaModel;
+  status: AcaoStatusModel[];
 }

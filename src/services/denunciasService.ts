@@ -1,46 +1,28 @@
-import type { Denuncia } from '../types/Denuncia.ts';
+import type { CreateDenunciaModel, DenunciaModel } from '../types/Denuncia.ts';
 import { API_BASE_URL } from '../config/api.ts';
 import convert from 'xml-js';
+import categoriaService from './categoriaService.ts';
+import { denunciasMock, userMock } from '../constants/mocks.ts';
 
 type addressResponseData = {
   rua: string;
   bairro: string;
 };
 
-type CreateDenunciaProps = {
-  description: string;
-  categoryId: number;
-  categoryTipoId: number;
-  address: {
-    lon: number;
-    lat: number;
-    rua: string;
-    bairro: string;
-    pontoDeReferencia: string;
-  };
-};
+export let denunciasData: DenunciaModel[] = denunciasMock;
 
-async function getAllDenuncias() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/denuncias`, {
-      method: 'GET',
-    });
-
-    const data: Denuncia[] = await response.json();
-
-    if (response.status != 200) {
-      throw new Error('Não foi possível listar as denúncias.');
-    }
-
-    return data;
-  } catch {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
-  }
+export function updateDenunciasData(
+  newArray: DenunciaModel[],
+): DenunciaModel[] {
+  denunciasData = newArray;
+  return denunciasData;
 }
 
-async function getDenunciaById(id: number): Promise<Denuncia> {
+async function getAllDenuncias(): Promise<DenunciaModel[]> {
+  return denunciasData;
+}
+
+async function getDenunciaById(id: number): Promise<DenunciaModel> {
   try {
     const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
       method: 'GET',
@@ -59,58 +41,36 @@ async function getDenunciaById(id: number): Promise<Denuncia> {
 }
 
 async function createDenuncia(
-  denuncia: CreateDenunciaProps,
-): Promise<Denuncia> {
-  return {
+  newDenuncia: CreateDenunciaModel,
+): Promise<DenunciaModel> {
+  const tipo = await categoriaService.getTipoById(newDenuncia.tipoId);
+
+  const denunciaCreatedData: DenunciaModel = {
     id: Math.floor(Math.random() * 100000),
-    titulo: '',
-    created_at: new Date().toISOString(),
-    categoria: {
-      id: denuncia.categoryId,
-      name: 'Trânsito e Mobilidade',
-      description: 'Teste',
-      tipos: [],
-    },
-    tipo: {
-      id: denuncia.categoryTipoId,
-      name: 'Buraco na rua',
-    },
-    endereco: {
-      bairro: denuncia.address.bairro,
-      rua: denuncia.address.rua,
-      latitude: denuncia.address.lat,
-      longitude: denuncia.address.lon,
-      ponto_referencia: denuncia.address.pontoDeReferencia,
-    },
-    descricao: denuncia.description,
-    images: [],
-    status: 'aberto',
-    motivoStatus: 'Denúncia registrada no sistema e aguardando atribuição.',
-    acaoId: null,
+    descricao: newDenuncia.descricao,
+    bairro: newDenuncia.bairro,
+    rua: newDenuncia.rua,
+    pontoDeReferencia: newDenuncia.pontoDeReferencia,
+    latitude: newDenuncia.latitude,
+    longitude: newDenuncia.longitude,
+    tipo: tipo!,
+    files: newDenuncia.files.map((f, idx) => ({
+      id: idx,
+      tipo: 'imagem',
+      nome: f.name,
+    })),
+    acao: null,
+    criadaEm: new Date().toISOString(),
+    usuario: userMock,
+    denunciaIndeferida: null,
   };
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/denuncias`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(denuncia),
-    });
+  denunciasData.push(denunciaCreatedData);
 
-    if (response.status !== 201) {
-      throw new Error('Não foi possível criar a denúncia.');
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
-  }
+  return denunciaCreatedData;
 }
 
-async function updateDenuncia(denuncia: Denuncia): Promise<Denuncia> {
+async function updateDenuncia(denuncia: DenunciaModel): Promise<DenunciaModel> {
   try {
     const response = await fetch(`${API_BASE_URL}/denuncias/${denuncia.id}`, {
       method: 'PUT',
@@ -135,7 +95,7 @@ async function updateDenuncia(denuncia: Denuncia): Promise<Denuncia> {
 async function indeferirDenuncia(
   id: number,
   motivoStatus: string,
-): Promise<Denuncia> {
+): Promise<DenunciaModel> {
   try {
     const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
       method: 'PATCH',
@@ -157,83 +117,36 @@ async function indeferirDenuncia(
 
     return await response.json();
   } catch (error) {
-    console.error('Erro no serviço ao indeferir denúncia:', error);
     throw error;
   }
 }
 
-async function desvincularDenunciaAcao(
-  id: number,
-  motivoStatus: string,
-): Promise<Denuncia> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        acaoId: null,
-        status: 'aberto',
-        motivoStatus: motivoStatus,
-      }),
-    });
-    await new Promise((r) => setTimeout(r, 300));
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.message || 'Não foi possível desvincular da ação',
-      );
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.log('Error no serviço de desvinculação:', error);
-
-    throw error;
-  }
+async function vincularDenunciaToAcao(): Promise<DenunciaModel> {
+  return null;
 }
 
-async function vincularDenunciaToAcao(
-  id: number,
-  acaoId: number,
-): Promise<Denuncia> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        acaoId,
-        status: 'em_andamento',
-      }),
-    });
-    await new Promise((r) => setTimeout(r, 300));
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.message || 'Não foi possível vincular a denúncia à ação.',
-      );
+async function desvincularDenunciaAcao(denunciaId: number): Promise<void> {
+  const updatedDenunciaData = denunciasData.map((d) => {
+    if (d.id === denunciaId) {
+      return {
+        ...d,
+        acao: null,
+      };
     }
 
-    return await response.json();
-  } catch (error) {
-    console.error('Erro no serviço de vinculação:', error);
+    return d;
+  });
 
-    throw error;
-  }
+  denunciasData = updatedDenunciaData;
 }
 
 async function getAddressByCoordinates(
-  lon: number,
   lat: number,
+  lng: number,
 ): Promise<addressResponseData> {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lon=${lon}&lat=${lat}`,
+      `https://nominatim.openstreetmap.org/reverse?lon=${lng}&lat=${lat}`,
     );
 
     if (response.status != 200) {
@@ -270,4 +183,5 @@ export default {
   vincularDenunciaToAcao,
   desvincularDenunciaAcao,
   getAddressByCoordinates,
+  updateDenunciasData,
 };

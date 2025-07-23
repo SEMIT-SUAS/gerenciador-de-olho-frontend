@@ -1,38 +1,40 @@
-import type { Acao } from '../../../types/Acao';
-import { Tag } from './../Tag';
+import { useFilters } from '../../../context/FiltersContext';
+import { FilterStatusSelect } from '../Filters/FilterStatusSelect';
+import { SelectSecretariaFilter } from '../Filters/SelectSecretariaFilter';
+import { AcaoItem } from './AcaoItem';
 
-type AcoesListProps = {
-  acoes: Acao[];
-  onItemClick: (item: Acao) => void;
-};
-
-export function AcoesList({ acoes, onItemClick }: AcoesListProps) {
-  const isEmpty = acoes.length < 1;
-
-  if (isEmpty) {
-    return (
-      <p className="text-center text-gray-500 mt-4">Nenhuma ação encontrada.</p>
-    );
-  }
+export function AcoesList() {
+  const {
+    acoesFiltradas,
+    setFiltroStatusAcao,
+    filtroStatusAcao,
+    setFiltroSecretaria,
+  } = useFilters();
 
   return (
     <div className="flex flex-col gap-3">
-      {acoes.map((acao) => (
-        <div
-          key={acao.id}
-          className="flex flex-col gap-1 p-3 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
-          onClick={() => onItemClick(acao)}
-        >
-          <h3 className="font-semibold text-gray-700">{acao.nome}</h3>
+      <div className="grid grid-cols-2 gap-1">
+        <FilterStatusSelect
+          id="status-filter-select"
+          label="Status"
+          onStatusChange={(status) =>
+            setFiltroStatusAcao(status == 'todos' ? 'todos' : [status])
+          }
+          value={filtroStatusAcao == 'todos' ? 'todos' : filtroStatusAcao[0]}
+        />
 
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-sm text-gray-500">
-              Responsável: {acao.secretaria.name}
-            </p>
-            <Tag status={acao.status} />
-          </div>
-        </div>
-      ))}
+        <SelectSecretariaFilter
+          onSecretariaChange={(secretaria) => setFiltroSecretaria(secretaria)}
+        />
+      </div>
+
+      {acoesFiltradas.length === 0 ? (
+        <p className="text-center text-gray-500 mt-4">
+          Nenhuma ação encontrada.
+        </p>
+      ) : (
+        acoesFiltradas.map((acao) => <AcaoItem key={acao.id} acao={acao} />)
+      )}
     </div>
   );
 }
