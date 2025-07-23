@@ -1,4 +1,4 @@
-import { Marker } from 'react-leaflet';
+import { Marker, useMap } from 'react-leaflet';
 import { useFilters } from '../../context/FiltersContext';
 import type { AcaoModel } from '../../types/Acao';
 import { iconAcao } from '../../constants/mapIcons';
@@ -15,6 +15,7 @@ export function AcaoPins() {
   const { denuncias } = useOcorrencias();
 
   const navigate = useNavigate();
+  const map = useMap();
 
   function handleOnAcaoClick(acao: AcaoModel) {
     if (salvarAcaoOnclick) {

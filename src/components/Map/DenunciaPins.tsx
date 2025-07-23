@@ -79,6 +79,18 @@ export function DenunciaPins() {
             icon={getDenunciaIconByTipo(d.tipo.nome)}
             eventHandlers={{
               click: () => handleOnDenunciaClick(d),
+              mouseover: (e: LeafletMouseEvent) => {
+                const popup = e.target.getPopup();
+                if (popup && !salvarDenunciasOnclick) {
+                  popup.openOn(map);
+                }
+              },
+              mouseout: (e) => {
+                const popup = e.target.getPopup();
+                if (popup && !salvarDenunciasOnclick) {
+                  popup.remove();
+                }
+              },
             }}
           >
             {!salvarDenunciasOnclick && <PinDetailsDenuncia denuncia={d} />}

@@ -1,13 +1,10 @@
 import { Popup } from 'react-leaflet';
-import type { Denuncia } from '../../types/Denuncia';
+import type { DenunciaModel } from '../../types/Denuncia';
 
-export function PinDetailsDenuncia({ denuncia }: { denuncia: Denuncia }) {
+export function PinDetailsDenuncia({ denuncia }: { denuncia: DenunciaModel }) {
   return (
     <Popup>
-      <b>Denúncia:</b> {denuncia.titulo}
-      <br />
-      <b>Status:</b>
-      <span className="capitalize">{denuncia?.status?.replace('_', ' ')}</span>
+      <span>{denuncia.tipo.nome}</span>
     </Popup>
   );
 }
