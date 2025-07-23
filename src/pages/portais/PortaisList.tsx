@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import type { Portais } from "../../types/Portais";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getAllPortais, createPortal } from "../../services/servicoPortais";
 
 export function PortaisList() {
-  const navigate = useNavigate();
   const [portais, setPortais] = useState<Portais[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
