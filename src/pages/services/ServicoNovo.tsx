@@ -20,6 +20,7 @@ export function ServicoNovo() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState<Services>({
+    id: null,
     orgao: null,
     secretaria: null,
     nome: "",
@@ -77,76 +78,76 @@ export function ServicoNovo() {
   function handleChange(
   e: React.ChangeEvent<
     HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-  >
-) {
-  const { name, value } = e.target;
+  >) 
+  {
+    const { name, value } = e.target;
 
-  // Checkbox ou radio para campos booleanos
-  if (
-    (name === "visivel" || name === "ativo") &&
-    e.target instanceof HTMLInputElement &&
-    (e.target.type === "checkbox" || e.target.type === "radio")
-  ) {
-    setForm({ ...form, [name]: e.target.checked });
-    return;
-  }
-
-  // Campos objeto: categoria.nome
-  if (name === "categoria") {
-    const selectedCategoria = categorias.find(cat => cat.id === Number(value));
-    if (selectedCategoria) {
-      setForm({ ...form, categoria: selectedCategoria });
-    } else {
-      // Se quiser permitir limpar seleção
-      setForm({ ...form, categoria: null });
-    }
-    return;
-  }
+    // Checkbox ou radio para campos booleanos
     if (
-    name === "publicoDestinado" ||
-    name === "formasSolicitacao" ||
-    name === "documentacaoNecessaria"||
-    name === "persona"
-  ) {
-    setForm({ ...form, [name]: parseMultilineInput(value) });
-    return;
-  }
-
-  // Campo objeto: secretaria (espera um objeto completo, mas o select retorna só o id)
-  if (name === "secretaria") {
-    // Busca o objeto completo da secretaria no array de secretarias pelo id selecionado
-    const selectedSecretaria = secretarias.find(
-      (sec) => sec.id === Number(value)
-    );
-    if (selectedSecretaria) {
-      setForm({ ...form, secretaria: selectedSecretaria });
+      (name === "visivel" || name === "ativo") &&
+      e.target instanceof HTMLInputElement &&
+      (e.target.type === "checkbox" || e.target.type === "radio")
+    ) {
+      setForm({ ...form, [name]: e.target.checked });
+      return;
     }
-    return;
-  }
 
-      if (name === "persona") {
-    const selectedId = Number(value);
-
-    // Verifica se o ID já está no array
-    const exists = form.persona.some(p => p.id === selectedId);
-
-    if (exists) {
-      // Remove se já existe
-      const updated = form.persona.filter(p => p.id !== selectedId);
-      setForm({ ...form, persona: updated });
-    } else {
-      // Adiciona se ainda não existe
-      const selected = persona.find(p => p.id === selectedId);
-      if (selected) {
-        setForm({ ...form, persona: [...form.persona, selected] });
+    // Campos objeto: categoria.nome
+    if (name === "categoria") {
+      const selectedCategoria = categorias.find(cat => cat.id === Number(value));
+      if (selectedCategoria) {
+        setForm({ ...form, categoria: selectedCategoria });
+      } else {
+        // Se quiser permitir limpar seleção
+        setForm({ ...form, categoria: null });
       }
+      return;
     }
-    return;
-  }
+      if (
+      name === "publicoDestinado" ||
+      name === "formasSolicitacao" ||
+      name === "documentacaoNecessaria"||
+      name === "persona"
+    ) {
+      setForm({ ...form, [name]: parseMultilineInput(value) });
+      return;
+    }
 
-  // Caso padrão para os outros inputs (texto, textarea, select simples)
-  setForm({ ...form, [name]: value });
-}
+    // Campo objeto: secretaria (espera um objeto completo, mas o select retorna só o id)
+    if (name === "secretaria") {
+      // Busca o objeto completo da secretaria no array de secretarias pelo id selecionado
+      const selectedSecretaria = secretarias.find(
+        (sec) => sec.id === Number(value)
+      );
+      if (selectedSecretaria) {
+        setForm({ ...form, secretaria: selectedSecretaria });
+      }
+      return;
+    }
+
+        if (name === "persona") {
+      const selectedId = Number(value);
+
+      // Verifica se o ID já está no array
+      const exists = form.persona.some(p => p.id === selectedId);
+
+      if (exists) {
+        // Remove se já existe
+        const updated = form.persona.filter(p => p.id !== selectedId);
+        setForm({ ...form, persona: updated });
+      } else {
+        // Adiciona se ainda não existe
+        const selected = persona.find(p => p.id === selectedId);
+        if (selected) {
+          setForm({ ...form, persona: [...form.persona, selected] });
+        }
+      }
+      return;
+    }
+
+    // Caso padrão para os outros inputs (texto, textarea, select simples)
+    setForm({ ...form, [name]: value });
+  }
 
   async function handleSubmit(e: React.FormEvent) {
   e.preventDefault();

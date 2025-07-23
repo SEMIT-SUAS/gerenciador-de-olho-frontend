@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Services } from "../../types/Services";
 import { Link, useNavigate } from "react-router-dom";
-import { getAllServices } from "../../services/servicosServices";
+import { changeServiceAtivo, changeServiceVisibility, getAllServices } from "../../services/servicosServices";
 
 export function ServicesList() {
   const navigate = useNavigate();
@@ -30,15 +30,31 @@ export function ServicesList() {
     navigate(`/servico/editar/${id}`);
     }
 
-    function handleToggleVisibility(id: number) {
-    // Chame API para alternar visibilidade e atualizar estado
-    console.log("Alternar visibilidade de", id);
-    }
+  function handleToggleVisibility(id: number, visivel: boolean) {
+    const newVisibility = !visivel;
 
-    function handleToggleActive(id: number) {
-    // Chame API para alternar ativo/inativo e atualizar estado
-    console.log("Alternar ativo de", id);
-    }
+    changeServiceVisibility(id, newVisibility)
+      .then(() => {
+        console.log(`Visibilidade alterada para ${newVisibility}`);
+        // Atualize o estado local se necessário
+      })
+      .catch((error) => {
+        console.error(error.message);
+    });
+  }
+
+  function handleToggleActive(id: number, ativo: boolean) {
+    const newAtivo = !ativo;
+
+    changeServiceAtivo(id, newAtivo)
+      .then(() => {
+        console.log(`Ativo alterado para ${newAtivo}`);
+        // Atualize o estado local se necessário
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  }
 
   const filteredServices = services.filter((service) =>
     service.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -91,14 +107,14 @@ export function ServicesList() {
               <Link to={`/servico/${service.id}`} style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}>
                 <h3>{service.nome}</h3>
                 <p><strong>Descrição:</strong> {service.descricao}</p>
-                <p><strong>Categoria:</strong> {service.categoria.nome}</p>
+                <p><strong>Categoria:</strong> {service.categoria?.nome}</p>
               </Link>
               <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
                 <button onClick={() => handleEdit(service.id!)}>Editar</button>
-                <button onClick={() => handleToggleVisibility(service.id!)}>
+                <button onClick={() => handleToggleVisibility(service.id!, service.visivel)}>
                 {service.visivel ? 'Ocultar' : 'Mostrar'}
                 </button>
-                <button onClick={() => handleToggleActive(service.id!)}>
+                <button onClick={() => handleToggleActive(service.id!, service.ativo)}>
                 {service.ativo ? 'Inativar' : 'Ativar'}
                 </button>
               </div>

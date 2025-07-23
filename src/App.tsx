@@ -8,6 +8,7 @@ import { ServicoDetalhes } from './pages/services/ServicoDetalhes';
 import {ServicoNovo} from './pages/services/ServicoNovo';
 import {ServicoEditar} from './pages/services/ServicoEditar';
 import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
+import { PortaisList } from './pages/portais/PortaisList';
 
 export function App() {
   return (
@@ -17,6 +18,7 @@ export function App() {
           <Routes>
             <Route index element={<OcorrenciasPage />} />
             <Route path='/categorias' element={<ListaCategorias/>}/>
+            <Route path='/portais' element={<PortaisList/>}/>
             <Route path='/servicos' element={<ServicesList/>}/>
             <Route path="/servico/novo" element={<ServicoNovo />} />
             <Route path="/servico/:id" element={<ServicoDetalhes />} />

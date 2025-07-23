@@ -3,7 +3,7 @@ import { API_BASE_URL } from '../config/api';
 
 export async function getAllServices(): Promise<Services[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/servico/todos`, {
+    const response = await fetch(`${API_BASE_URL}/servico/listar-ativos`, {
       method: 'GET',
     })
 
@@ -81,10 +81,14 @@ export async function getServicoById(id: number): Promise<Services> {
     }    
 }
 
-export async function changeServiceVisibility(id: number, isVisible: boolean): Promise<Services>{
+export async function changeServiceVisibility(id: number, visivel: boolean): Promise<Services>{
     try {
-        const response = await fetch(`${API_BASE_URL}/servico/visibilidade/${id}?isVisible=${isVisible}`, {
+        const response = await fetch(`${API_BASE_URL}/atualizar/visibilidade`, {
         method: 'PUT',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, visivel }),
     });
 
     if (!response.ok){
@@ -98,8 +102,10 @@ export async function changeServiceVisibility(id: number, isVisible: boolean): P
 
 export async function changeServiceAtivo(id: number, ativo: boolean): Promise<Services> {
     try{
-        const response = await fetch(`${API_BASE_URL}/servico/ativo/${id}?isAtivo=${ativo}`, {
+        const response = await fetch(`${API_BASE_URL}/atualizar/atividade`, {
             method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, ativo }),
         });
 
         if (!response.ok){

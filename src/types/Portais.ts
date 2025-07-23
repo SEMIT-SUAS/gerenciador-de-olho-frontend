@@ -1,7 +1,8 @@
 export interface Portais {
   id?: number;
   nome: string;
+  destaque: boolean;
   link: string;
-  is_visible: boolean;
+  visivel: boolean;
   ativo: boolean;
 }
