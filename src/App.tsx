@@ -1,21 +1,26 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { OcorrenciasPage } from './pages/OcorrenciasPage';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { DashboardPage } from './pages/DashboardPage';
+import { LoginPage } from './pages/LoginPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
+import { OcorrenciasPage } from './pages/OcorrenciasPage';
 import { DenunciasList } from './components/SidePanel/Denuncia/DenunciasList';
 import { DenunciaDetails } from './components/SidePanel/Denuncia/DenunciaDetails';
-import { VincularDenunciaAAcao } from './components/SidePanel/Denuncia/VincularDenunciaAAcao';
+import { AddDenuncia } from './components/SidePanel/Denuncia/AddDenuncia';
 import { IndeferirDenuncia } from './components/SidePanel/Denuncia/IndeferirDenuncia';
+import { VincularDenunciaAAcao } from './components/SidePanel/Denuncia/VincularDenunciaAAcao';
 import { AcoesList } from './components/SidePanel/Acao/AcoesList';
 import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
-import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
-import { AddDenuncia } from './components/SidePanel/Denuncia/AddDenuncia';
 import { AddAcao } from './components/SidePanel/Acao/AddAcao';
+import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route index element={<DashboardPage />} />
+        <Route path="/login" element={<LoginPage />} />
+
         <Route
           path="/ocorrencias"
           element={
@@ -24,6 +29,8 @@ export function App() {
             </OcorrenciasProvider>
           }
         >
+          <Route index element={<Navigate to="denuncias" replace />} />
+
           <Route path="denuncias">
             <Route index element={<DenunciasList />} />
             <Route path=":denunciaId" element={<DenunciaDetails />} />
@@ -49,8 +56,6 @@ export function App() {
             />
           </Route>
         </Route>
-
-        <Route path="/" element={<Navigate to={'/ocorrencias/denuncias'} />} />
       </Routes>
 
       <ToastContainer
