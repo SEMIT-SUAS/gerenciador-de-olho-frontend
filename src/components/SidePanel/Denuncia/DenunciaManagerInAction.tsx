@@ -1,12 +1,13 @@
 import { FaExternalLinkAlt, FaTrashAlt } from 'react-icons/fa';
-import type { Denuncia } from '../../../types/Denuncia';
-import { useLocation, useNavigate } from 'react-router-dom';
+import type { DenunciaModel } from '../../../types/Denuncia';
+import { useNavigate } from 'react-router-dom';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { useState } from 'react';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
+import denunciasService from '../../../services/denunciasService';
 
 type DenunciaManageInActionProps = {
-  denuncia: Denuncia;
+  denuncia: DenunciaModel;
   allowDisvincularItem: boolean;
 };
 
@@ -22,19 +23,20 @@ export function DenunciaManageInAction({
     navigate(`/ocorrencias/denuncias/${denuncia.id}`);
   }
 
-  function handleDeleteDenunciaFromAction() {
-    setDenuncias((denuncias) => denuncias.filter((d) => d.id != denuncia.id));
+  async function handleDeleteDenunciaFromAction() {
+    await denunciasService.desvincularDenunciaAcao(denuncia.id);
+    // setDenuncias((denuncias) => denuncias.filter((d) => d.id != denuncia.id));
   }
 
   return (
     <>
       <div
-        aria-label={`Ver detalhes da denúncia ${denuncia.tipo}`}
+        aria-label={`Ver detalhes da denúncia ${denuncia.tipo.nome}`}
         className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left shadow-sm transition-all hover:shadow-md focus:outline-none"
       >
         <div className="flex flex-col">
-          <p className="font-semibold text-gray-800">{denuncia.tipo}</p>
-          <p className="text-sm text-gray-500">{denuncia.endereco.rua}</p>
+          <p className="font-semibold text-gray-800">{denuncia.tipo.nome}</p>
+          <p className="text-sm text-gray-500">{denuncia.rua}</p>
         </div>
 
         <div className="flex items-center gap-1">
@@ -45,6 +47,7 @@ export function DenunciaManageInAction({
           >
             <FaExternalLinkAlt />
           </button>
+
           {allowDisvincularItem && (
             <button
               onClick={() => setIsOpenConfirmationModal(true)}

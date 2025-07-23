@@ -12,5 +12,5 @@ export function getDenunciaStatus(
     return 'indeferido';
   }
 
-  return denuncia.acao.status[0].status;
+  return denuncia.acao.status[denuncia.acao.status.length - 1]?.status;
 }

@@ -1,6 +1,6 @@
 import { Marker } from 'react-leaflet';
 import { useFilters } from '../../context/FiltersContext';
-import type { Acao } from '../../types/Acao';
+import type { AcaoModel } from '../../types/Acao';
 import { iconAcao } from '../../constants/mapIcons';
 import { PinDetailsAcao } from './PinDetailsAcao';
 import { AcaoPolygon } from './AcaoPolygon';
@@ -16,7 +16,7 @@ export function AcaoPins() {
 
   const navigate = useNavigate();
 
-  function handleOnAcaoClick(acao: Acao) {
+  function handleOnAcaoClick(acao: AcaoModel) {
     if (salvarAcaoOnclick) {
       setAcaoSelecionada(acao);
     } else {
@@ -31,11 +31,13 @@ export function AcaoPins() {
   return (
     <>
       {acoesFiltradas.map((a) => {
-        const denunciasVinculadas = denuncias.filter((d) => d.acaoId === a.id);
+        const denunciasVinculadas = denuncias.filter(
+          (d) => d.acao?.id === a.id,
+        );
         const acaoPolygonCoords = getConvexHull(
           denunciasVinculadas.map((d) => ({
-            lat: d.endereco.latitude,
-            lon: d.endereco.longitude,
+            lat: d.latitude,
+            lon: d.longitude,
           })),
         );
 
@@ -43,7 +45,7 @@ export function AcaoPins() {
           <div key={`acao-group-${a.id}`}>
             <Marker
               key={`a-${a.id}`}
-              position={[a.lat, a.lon]}
+              position={[a.latitude, a.longitude]}
               icon={iconAcao}
               eventHandlers={{
                 click: () => handleOnAcaoClick(a),

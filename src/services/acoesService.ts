@@ -3,7 +3,6 @@ import { API_BASE_URL } from '../config/api';
 import { getPolygonoCenter } from '../utils/geometry';
 import type { SecretariaModel } from '../types/Secretaria';
 import { secretariasMock, userMock } from '../constants/mocks';
-import { denunciasData, updateDenunciasData } from './denunciasService';
 
 const acoes: AcaoModel[] = [];
 
@@ -39,19 +38,7 @@ async function createAcao(createAcaoData: CreateAcaoModel): Promise<AcaoModel> {
     ],
   };
 
-  const denunciasToUpdate = new Set(createAcaoData.denuncias.map((d) => d.id));
-  const updatedDenunciasData = denunciasData.map((d) =>
-    denunciasToUpdate.has(d.id)
-      ? {
-          ...d,
-          acao: acaoCreatedData,
-        }
-      : d,
-  );
-
-  acoes.push(acaoCreatedData);
-  updateDenunciasData(updatedDenunciasData);
-
+  // acoes.push(acaoCreatedData);
   return acaoCreatedData;
 }
 

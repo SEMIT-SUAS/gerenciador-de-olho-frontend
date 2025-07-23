@@ -21,7 +21,7 @@ import acoesService from '../../../services/acoesService';
 
 export function AddAcaoForm() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const { secretarias } = useOcorrencias();
+  const { secretarias, setDenuncias, setAcoes } = useOcorrencias();
   const {
     cacheCurrentFilters,
     restoreCachedFilters,
@@ -67,11 +67,29 @@ export function AddAcaoForm() {
         secretariaId: formData.secretariaId,
       };
 
-      const newAcaoData = await acoesService.createAcao(createAcaoData);
+      const newAcao = await acoesService.createAcao(createAcaoData);
+      const denunciasToUpdate = new Set(denunciasSelecionas.map((d) => d.id));
 
-      toast.success('Denuncia criada com sucesso!');
+      setDenuncias((currentDenuncias) =>
+        currentDenuncias.map((denuncia) => {
+          if (denunciasToUpdate.has(denuncia.id)) {
+            return {
+              ...denuncia,
+              acao: newAcao,
+            };
+          }
+
+          return denuncia;
+        }),
+      );
+
+      setAcoes((currentAcoes) => [...currentAcoes, newAcao]);
+
+      toast.success('Ação criada com sucesso!');
       resetForm();
-      navigate(`/ocorrencias/acoes/${newAcaoData.id}`);
+      navigate(`/ocorrencias/acoes/${newAcao.id}`);
+
+      denunciasToUpdate.clear();
     } catch (error: any) {
       toast(error.message, {
         type: 'error',

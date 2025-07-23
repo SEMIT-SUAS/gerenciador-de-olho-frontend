@@ -6,15 +6,15 @@ import { BackButton } from '../../Buttons/Backbutton';
 import { useFilters } from '../../../context/FiltersContext';
 import { useMapActions } from '../../../context/MapActions';
 import { Tag } from '../Tag';
-import type { Acao } from '../../../types/Acao';
 import { getPolygonoCenter } from '../../../utils/geometry';
+import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
+import type { AcaoModel } from '../../../types/Acao';
 
 export function VincularAcaoADenuncias() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
   const {
     denunciasSelecionas,
     addDenunciaNaSelecao,
-    setDisableMapFilters,
     setSalvarDenunciasOnClick,
     setDenunciasJaVinculadas,
   } = useMapActions();
@@ -36,12 +36,20 @@ export function VincularAcaoADenuncias() {
     return acoes.find((a) => a.id == Number(acaoId));
   }, [acoes]);
 
-  if (!acao || !['aberto', 'em_andamento'].includes(acao.status)) {
+  const currentAcaoStatus = useMemo((): AcaoStatusModelTypes | '' => {
+    if (!acao) {
+      return '';
+    }
+
+    return acao.status[acao.status.length - 1]?.status;
+  }, [acao]);
+
+  if (!acao || !['em_analise', 'em_andamento'].includes(currentAcaoStatus)) {
     return <Navigate to="/404" replace />;
   }
 
   const denunciasDaAcao = useMemo(() => {
-    return denuncias.filter((d) => d.acaoId === acao.id);
+    return denuncias.filter((d) => d.acao?.id === acao.id);
   }, [denuncias]);
 
   async function handleVincularDenuncias() {
@@ -59,20 +67,20 @@ export function VincularAcaoADenuncias() {
     });
 
     const todasDenunciasDaAcao = denunciasDataUpdated.filter(
-      (d) => d.acaoId === acao.id,
+      (d) => d.acao?.id === acao.id,
     );
 
     const coordinates = todasDenunciasDaAcao.map((d) => ({
-      lat: d.endereco.latitude,
-      lng: d.endereco.longitude,
+      lat: d.latitude,
+      lng: d.longitude,
     }));
 
     const actionCenter = getPolygonoCenter(coordinates);
 
-    const acaoDataUpdated: Acao = {
+    const acaoDataUpdated: AcaoModel = {
       ...acao,
-      lat: actionCenter[0],
-      lon: actionCenter[1],
+      latitude: actionCenter[0],
+      longitude: actionCenter[1],
     };
 
     setDenuncias(denunciasDataUpdated);
@@ -109,7 +117,7 @@ export function VincularAcaoADenuncias() {
           <p className="text-sm text-blue-800">Vinculando denúncias á ação:</p>
           <p className="font-bold text-blue-900">{acao.nome}</p>
 
-          <Tag status={acao.status} />
+          <Tag status={currentAcaoStatus} />
         </div>
 
         <div className="flex flex-col gap-1">
@@ -128,7 +136,7 @@ export function VincularAcaoADenuncias() {
                     : 'bg-white hover:bg-gray-100'
                 } rounded-lg shadow-sm transition-colors cursor-pointer`}
               >
-                {denuncia.tipo}
+                {denuncia.tipo.nome}
               </button>
             ))}
           </div>

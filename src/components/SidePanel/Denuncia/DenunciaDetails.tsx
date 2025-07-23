@@ -31,7 +31,7 @@ export function DenunciaDetails() {
   }
 
   const acaoVinculada = useMemo(() => {
-    return acoes.find((a) => a.id == denuncia.acaoId);
+    return acoes.find((a) => a.id == denuncia.acao?.id);
   }, [denuncias]);
 
   async function handleConfirmDesvincularDenunciaAcao() {
@@ -54,7 +54,6 @@ export function DenunciaDetails() {
       toast.success('Denúncia desvinculada com sucesso!');
     } catch (error) {
       toast.error('Erro ao desvincular denúncia.');
-      console.error(error);
     }
   }
 

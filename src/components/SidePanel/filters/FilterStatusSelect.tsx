@@ -1,9 +1,11 @@
-import type { StatusModel } from '../../../types/dadwa';
+import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
+import type { DenunciaStatusModelTypes } from '../../../types/Denuncia';
 import { ArrowDown } from '../../ArrowDown';
 
 const statusOptions = [
   { text: 'Todos', value: 'todos' },
   { text: 'Aberto', value: 'aberto' },
+  { text: 'Em análise', value: 'em_analise' },
   { text: 'Em andamento', value: 'em_andamento' },
   { text: 'Indeferidas', value: 'indeferido' },
   { text: 'Concluídas', value: 'concluido' },
@@ -13,7 +15,9 @@ type FilterStatusSelectProps = {
   id: string;
   label: string;
   value: string;
-  onStatusChange: (status: 'todos' | StatusModel) => void;
+  onStatusChange: (
+    status: 'todos' | AcaoStatusModelTypes | DenunciaStatusModelTypes,
+  ) => void;
 };
 
 export function FilterStatusSelect({
@@ -23,7 +27,12 @@ export function FilterStatusSelect({
   onStatusChange,
 }: FilterStatusSelectProps) {
   const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onStatusChange(event.target.value as 'todos' | StatusModel);
+    onStatusChange(
+      event.target.value as
+        | 'todos'
+        | AcaoStatusModelTypes
+        | DenunciaStatusModelTypes,
+    );
   };
 
   return (

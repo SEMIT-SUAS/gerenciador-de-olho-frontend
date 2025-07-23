@@ -2,17 +2,20 @@ import type { CreateDenunciaModel, DenunciaModel } from '../types/Denuncia.ts';
 import { API_BASE_URL } from '../config/api.ts';
 import convert from 'xml-js';
 import categoriaService from './categoriaService.ts';
-import { userMock } from '../constants/mocks.ts';
+import { denunciasMock, userMock } from '../constants/mocks.ts';
 
 type addressResponseData = {
   rua: string;
   bairro: string;
 };
 
-export let denunciasData: DenunciaModel[] = [];
+export let denunciasData: DenunciaModel[] = denunciasMock;
 
-export function updateDenunciasData(newArray: DenunciaModel[]) {
+export function updateDenunciasData(
+  newArray: DenunciaModel[],
+): DenunciaModel[] {
   denunciasData = newArray;
+  return denunciasData;
 }
 
 async function getAllDenuncias(): Promise<DenunciaModel[]> {
@@ -114,74 +117,27 @@ async function indeferirDenuncia(
 
     return await response.json();
   } catch (error) {
-    console.error('Erro no serviço ao indeferir denúncia:', error);
     throw error;
   }
 }
 
-async function desvincularDenunciaAcao(
-  id: number,
-  motivoStatus: string,
-): Promise<DenunciaModel> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        acaoId: null,
-        status: 'aberto',
-        motivoStatus: motivoStatus,
-      }),
-    });
-    await new Promise((r) => setTimeout(r, 300));
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.message || 'Não foi possível desvincular da ação',
-      );
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.log('Error no serviço de desvinculação:', error);
-
-    throw error;
-  }
+async function vincularDenunciaToAcao(): Promise<DenunciaModel> {
+  return null;
 }
 
-async function vincularDenunciaToAcao(
-  id: number,
-  acaoId: number,
-): Promise<DenunciaModel> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        acaoId,
-        status: 'em_andamento',
-      }),
-    });
-    await new Promise((r) => setTimeout(r, 300));
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.message || 'Não foi possível vincular a denúncia à ação.',
-      );
+async function desvincularDenunciaAcao(denunciaId: number): Promise<void> {
+  const updatedDenunciaData = denunciasData.map((d) => {
+    if (d.id === denunciaId) {
+      return {
+        ...d,
+        acao: null,
+      };
     }
 
-    return await response.json();
-  } catch (error) {
-    console.error('Erro no serviço de vinculação:', error);
+    return d;
+  });
 
-    throw error;
-  }
+  denunciasData = updatedDenunciaData;
 }
 
 async function getAddressByCoordinates(
@@ -227,4 +183,5 @@ export default {
   vincularDenunciaToAcao,
   desvincularDenunciaAcao,
   getAddressByCoordinates,
+  updateDenunciasData,
 };

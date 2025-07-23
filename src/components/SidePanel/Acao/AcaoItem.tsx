@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import type { Acao } from '../../../types/Acao';
+import type { AcaoModel } from '../../../types/Acao';
 import { Tag } from '../Tag';
 
 type AcaoItemProps = {
-  acao: Acao;
+  acao: AcaoModel;
 };
 
 export function AcaoItem({ acao }: AcaoItemProps) {
@@ -19,10 +19,10 @@ export function AcaoItem({ acao }: AcaoItemProps) {
 
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm text-gray-500">
-          Responsável: {acao.secretaria.name}
+          Responsável: {acao.secretaria.sigla}
         </p>
 
-        <Tag status={acao.status} />
+        <Tag status={acao.status[0].status} />
       </div>
     </div>
   );

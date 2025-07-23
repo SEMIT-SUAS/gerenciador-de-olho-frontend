@@ -1,36 +1,25 @@
-import { useEffect, useState, type ChangeEvent } from 'react';
-import type { Categoria, Categorias } from '../../../types/CategoriaDenuncia';
-import categoriaService from '../../../services/categoriaService';
-import { toast } from 'react-toastify';
+import { type ChangeEvent } from 'react';
 import { ArrowDown } from '../../ArrowDown';
+import { useOcorrencias } from '../../../context/OcorrenciasContext';
+import type { DenunciaStatusModelTypes } from '../../../types/Denuncia';
+import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
 
 type SelectCategoriaFilterProps = {
-  onCategoriaChange: (categoria: Categorias) => void;
+  onCategoriaChange: (
+    categoria: 'todas' | DenunciaStatusModelTypes | AcaoStatusModelTypes,
+  ) => void;
 };
 
 export function SelectCategoriaFilter({
   onCategoriaChange,
 }: SelectCategoriaFilterProps) {
-  const [categorias, setCategorias] = useState<Categoria[] | null>(null);
-
-  async function fetchCategorias() {
-    try {
-      return await categoriaService.getAll();
-    } catch {
-      toast(
-        'Não foi possível carregar as categorias, tente novamente mais tarde',
-      );
-      return null;
-    }
-  }
+  const { categorias } = useOcorrencias();
 
   function handleOnSelect(event: ChangeEvent<HTMLSelectElement>) {
-    onCategoriaChange(event.target.value as Categorias);
+    onCategoriaChange(
+      event.target.value as DenunciaStatusModelTypes | AcaoStatusModelTypes,
+    );
   }
-
-  useEffect(() => {
-    fetchCategorias().then((categorias) => setCategorias(categorias));
-  }, []);
 
   return (
     <div>
@@ -51,8 +40,8 @@ export function SelectCategoriaFilter({
 
           {categorias?.map((categoria) => {
             return (
-              <option key={categoria.id} value={categoria.name}>
-                {categoria.name}
+              <option key={categoria.id} value={categoria.nome}>
+                {categoria.nome}
               </option>
             );
           })}
