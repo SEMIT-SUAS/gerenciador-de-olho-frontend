@@ -33,3 +33,13 @@ export async function createPortal(portal: Portais): Promise<Portais> {
         throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente')
     }    
 }
+
+export async function toggleAtivo(id: number, ativo: boolean): Promise<void> {
+    console.log(id, ativo);
+    const response = await fetch(`${API_BASE_URL}/portal/atualizar/atividade`,{
+        method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, ativo }),
+  });
+  if (!response.ok) throw new Error('Erro ao alterar status ativo:');
+}

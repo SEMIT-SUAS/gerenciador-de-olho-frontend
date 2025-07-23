@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Portais } from "../../types/Portais";
 import { Link } from "react-router-dom";
-import { getAllPortais, createPortal } from "../../services/servicoPortais";
+import { getAllPortais, createPortal, toggleAtivo } from "../../services/PortaisService";
 
 export function PortaisList() {
   const [portais, setPortais] = useState<Portais[]>([]);
@@ -63,6 +63,19 @@ export function PortaisList() {
   }
 }
 
+async function handleToggleAtivo(id: number, ativo: boolean) {
+    try {
+      await toggleAtivo(id, !ativo);
+      setPortais((prev) =>
+        prev.map((p) =>
+          p.id === id ? { ...p, ativo: !ativo } : p
+        )
+      );
+    } catch (error) {
+      alert("Erro ao atualizar status de atividade");
+    }
+  }
+
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>Erro: {error}</p>;
 
@@ -73,36 +86,45 @@ export function PortaisList() {
       <button onClick={() => setIsModalOpen(true)} style={{ marginBottom: "1rem" }}>
         + Adicionar Portal
       </button>
+        <ul style={{ listStyle: "none", padding: 0 }}>
+            {portais.map((portal) => (
+                <li
+                key={portal.id}
+                style={{
+                    border: "1px solid #ccc",
+                    padding: "1rem",
+                    marginBottom: "1rem",
+                    borderRadius: "4px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                }}
+                >
+                <div style={{ flex: 1 }}>
+                    <Link
+                    to={`/portal/${portal.id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                    <h3>{portal.nome}</h3>
+                    </Link>
+                    <p>
+                    <strong>Link:</strong>{" "}
+                    <a
+                        href={portal.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {portal.link}
+                    </a>
+                    </p>
+                </div>
+                <button onClick={() => handleToggleAtivo(portal.id!, portal.ativo)}>
+                    {portal.ativo ? "Inativar" : "Ativar"}
+                </button>
+                </li>
+            ))}
+        </ul>
 
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {portais.map((portal) => (
-          <li
-            key={portal.id}
-            style={{
-              border: "1px solid #ccc",
-              padding: "1rem",
-              marginBottom: "1rem",
-              borderRadius: "4px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Link
-              to={`/portal/${portal.id}`}
-              style={{ textDecoration: "none", color: "inherit", flex: 1 }}
-            >
-              <h3>{portal.nome}</h3>
-              <p>
-                <strong>Link:</strong>{" "}
-                <a href={portal.link} target="_blank" rel="noopener noreferrer">
-                  {portal.link}
-                </a>
-              </p>
-            </Link>
-          </li>
-        ))}
-      </ul>
 
       {/* Modal simples */}
       {isModalOpen && (

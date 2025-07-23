@@ -124,8 +124,9 @@ export function ServicoNovo() {
       }
       return;
     }
-
-        if (name === "persona") {
+    
+    if (name === "persona") 
+    {
       const selectedId = Number(value);
 
       // Verifica se o ID já está no array
@@ -149,32 +150,33 @@ export function ServicoNovo() {
     setForm({ ...form, [name]: value });
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
+  async function handleSubmit(e: React.FormEvent) 
+  {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-  try {
-    const payload = {
-  ...form,
-    orgao: form.secretaria?.id ?? null,
-    categoria: form.categoria?.id ?? null,
-    personas: form.persona.map(p => p.id) // [1, 3, 5]  // array de ids para o backend
-  };
+    try {
+      const payload = {
+    ...form,
+      orgao: form.secretaria?.id ?? null,
+      categoria: form.categoria?.id ?? null,
+      personas: form.persona.map(p => p.id) // [1, 3, 5]  // array de ids para o backend
+    };
 
-    console.log("Dados enviados para o backend:", payload);
+      console.log("Dados enviados para o backend:", payload);
 
-    // Remove o campo secretaria do payload, se existir
-    delete (payload as any).secretaria;
+      // Remove o campo secretaria do payload, se existir
+      delete (payload as any).secretaria;
 
-    await createService(payload);
-    navigate("/"); // redireciona após sucesso
-  } catch (err: any) {
-    setError(err.message || "Erro inesperado");
-  } finally {
-    setLoading(false);
+      await createService(payload);
+      navigate("/"); // redireciona após sucesso
+    } catch (err: any) {
+      setError(err.message || "Erro inesperado");
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
   return (
     <div style={{ maxWidth: 800, margin: "auto" }}>
