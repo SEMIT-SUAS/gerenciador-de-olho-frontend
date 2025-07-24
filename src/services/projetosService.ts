@@ -95,21 +95,6 @@ export async function changeProjetoVisibility(id: number, isVisible: boolean): P
     }
 }
 
-export async function deleteProjeto(id: number): Promise<void> {
-    try{
-        const response = await fetch(`${API_BASE_URL}/projetos/deletar/${id}`, { 
-        method: 'DELETE', 
-
-    });
-    if (!response.ok){
-        throw new Error('Não foi possível apagar projeto')
-    }
-    return await response.json()
-    } catch (error){
-        throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente')
-    }
-}
-
 export default {
   getAllProjetos,
   getProjetosVisiveis,
@@ -117,5 +102,4 @@ export default {
   uploadProjeto,
   updateProjeto,
   changeProjetoVisibility,
-  deleteProjeto,
 };
