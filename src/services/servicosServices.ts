@@ -117,26 +117,10 @@ export async function changeServiceAtivo(id: number, ativo: boolean): Promise<Se
     }
 }
 
-export async function deleteService(id: number): Promise<void> {
-    try{
-        const response = await fetch(`${API_BASE_URL}/servico/deletar/${id}`, { 
-        method: 'DELETE', 
-    });
-
-    if (!response.ok){
-        throw new Error('Não foi possível apagar serviço')
-    }
-    return await response.json()
-    } catch (error){
-        throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente')
-    }
-}
-
 export default {
   getAllServices,
   getVisibleServicos,
   getServicoById,
-  deleteService,
   changeServiceVisibility,
   createService,
   updateServico,
