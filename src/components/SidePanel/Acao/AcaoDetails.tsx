@@ -4,6 +4,10 @@ import { useOcorrenciasContext } from '../../../context/OcorrenciasContext';
 import { DenunciaManageInAction } from '../Denuncia/DenunciaManagerInAction';
 import { Tag } from '../Tag';
 import { BackButton } from '../../Buttons/Backbutton';
+import { Button } from '../../Buttons/Button';
+import { AddButton } from '@/components/Buttons/AddButton';
+import { IoIosAdd } from 'react-icons/io';
+import { FilesCarrrousel } from '@/components/FilesCarrousel';
 
 export function AcaoDetails() {
   const { acoes, denuncias } = useOcorrenciasContext();
@@ -114,26 +118,52 @@ export function AcaoDetails() {
       <div className="flex flex-col gap-4">
         <BackButton to="/ocorrencias/acoes" children="Detalhes da Ação" />
 
-        <div className="flex justify-between items-center pb-4">
-          <h1>{acao.nome}</h1>
+        <div className="flex justify-between items-center">
+          <div>
+            <p className="text-sm text-gray-500">
+                Responsável: {acao.secretaria}
+            </p>
+            <h1 className='text-xl font-bold text-gray-800 mr-2'>{acao.nome}</h1>
+          </div>
           <Tag status={acao.status} />
         </div>
 
+        
         {denunciasVinculadas.length > 0 && (
           <div className="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200">
             <p className="text-sm font-semibold text-blue-800">
               Esta ação possui uma área de cobertura (polígono) no mapa.
             </p>
           </div>
-        )}
+          )}
 
         {acao.status == 'indeferido' && (
           <div>
             <p>Essa ação foi indeferida</p>
           </div>
         )}
+        <div>
+          <h3 className="font-semibold text-gray-800 mb-2">Imagens:</h3>
+          <FilesCarrrousel
+            files={denunciasVinculadas.flatMap((denuncia) =>
+              denuncia.images.map((file) => ({
+                id: file.id,
+                name: file.name,
+                type: file.name.includes('.mp4') ? 'video' : 'image',
+              }))
+            )}
+          />
+        </div>
 
-        <div className="rounded-lg max-h-80 space-y-3 p-2">
+        <div className="rounded-xl max-h-80 space-y-3 border p-4">
+          <div className='flex justify-between items-center'>
+            <h1 className='font-semibold text-md text-gray-800'>
+              Denúncias Vinculadas
+            </h1>
+            <button className=' bg-blue-500 rounded-full p-1'>
+              <IoIosAdd size={24} color='white'/>
+            </button>
+          </div>
           {acao.status != 'indeferido' &&
             (denunciasVinculadas.length === 0 ? (
               <p>Essa ação não possui nenhuma denúncia vinculada</p>
@@ -144,18 +174,18 @@ export function AcaoDetails() {
             ))}
         </div>
 
-        <button className="w-full cursor-pointer font-bold py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-          Vincular denúncia
-        </button>
+        <div className='gap-2 flex flex-col'>
+            {['aberto', 'em_andamento'].includes(acao.status) && (
+              <Button
+              variant='outline_danger' size='sm'
+                onClick={() => navigate('indeferir')}
+                className="w-full"
+              >
+                Indeferir ação
+              </Button>
+            )}
+        </div>
 
-        {['aberto', 'em_andamento'].includes(acao.status) && (
-          <button
-            onClick={() => navigate('indeferir')}
-            className="w-full cursor-pointer font-bold py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Indeferir ação
-          </button>
-        )}
       </div>
     </>
   );

@@ -2,6 +2,7 @@ import { FaMapPin, FaTrash } from 'react-icons/fa';
 import { Tag } from '../Tag';
 import type { Denuncia } from '../../../types/Denuncia';
 import { API_BASE_URL } from '@/config/api';
+import { calcularDiasAtras } from '@/utils/datePicker';
 
 
 type DenunciaItemProps = {
@@ -24,6 +25,7 @@ export function DenunciaItem({
 
 const imagemPath = denuncia?.images[0]?.name;
 const imageUrlCompleta = `${API_BASE_URL}/files/uploads/${imagemPath}`;
+const diasAtras = calcularDiasAtras(denuncia.created_at);
 
 return (
   <div
@@ -32,15 +34,25 @@ return (
     onClick={onClick}>
       
     <img 
-      className='w-26 h-26 rounded-md object-cover flex-shrink-0' 
+      className='w-21 h-21 rounded-md object-cover flex-shrink-0' 
       src={imageUrlCompleta} 
       alt="Primeira imagem da denúncia"
     />
 
     <div className="flex flex-col flex-grow py-3 pr-3">
-      <div className="flex justify-between items-center">
-        <h3 className="font-semibold text-md text-gray-700">{denuncia.tipo}</h3>
+      <div className='flex justify-between items-center'>
+        <div>
+          <p className="text-xs text-gray-500">
+            {diasAtras}
+          </p>
+          <h3 className="font-semibold text-md text-gray-700 line-clamp-1">
+            {denuncia.tipo}
+          </h3>
+        </div>
+
         {showTag && <Tag status={denuncia.status}/>}
+      </div>
+      <div className="flex justify-between items-center">
         {isDeletable && (
           <button
             onClick={onTrashClick}
@@ -51,9 +63,6 @@ return (
         )}
       </div>
 
-      {showDescription && (
-        <p className="text-xs text-gray-500 mt-1 line-clamp-2">{denuncia.descricao}</p>
-      )}
 
       <p className="flex items-center text-xs text-gray-400 mt-1">
         <span className="mr-1">

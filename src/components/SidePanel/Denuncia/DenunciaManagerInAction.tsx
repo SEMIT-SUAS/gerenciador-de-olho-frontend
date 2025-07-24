@@ -24,7 +24,9 @@ export function DenunciaManageInAction({
     >
       <div className="flex flex-col">
         <p className="font-semibold text-gray-800">{denuncia.tipo}</p>
-        <p className="text-sm text-gray-500">{denuncia.endereco.rua}</p>
+        <p className="text-xs text-gray-500">
+          {denuncia.endereco.rua}, {denuncia.endereco.bairro}
+          </p>
       </div>
 
       <div className="flex items-center gap-3">
