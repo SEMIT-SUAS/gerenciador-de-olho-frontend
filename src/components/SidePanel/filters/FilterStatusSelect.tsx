@@ -1,11 +1,17 @@
-import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
-import type { DenunciaStatusModelTypes } from '../../../types/Denuncia';
-import { ArrowDown } from '../../ArrowDown';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import type { AcaoStatusModelTypes } from '@/types/AcaoStatus';
+import type { DenunciaStatusModelTypes } from '@/types/Denuncia';
 
 const statusOptions = [
   { text: 'Todos', value: 'todos' },
   { text: 'Aberto', value: 'aberto' },
-  { text: 'Em análise', value: 'em_analise' },
+  { text: 'Em analise', value: 'em_analise' },
   { text: 'Em andamento', value: 'em_andamento' },
   { text: 'Indeferidas', value: 'indeferido' },
   { text: 'Concluídas', value: 'concluido' },
@@ -26,15 +32,6 @@ export function FilterStatusSelect({
   value,
   onStatusChange,
 }: FilterStatusSelectProps) {
-  const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onStatusChange(
-      event.target.value as
-        | 'todos'
-        | AcaoStatusModelTypes
-        | DenunciaStatusModelTypes,
-    );
-  };
-
   return (
     <div className="w-full">
       <label
@@ -43,22 +40,19 @@ export function FilterStatusSelect({
       >
         {label}
       </label>
-      <div className="relative">
-        <select
-          id={id}
-          value={value}
-          onChange={handleOnChange}
-          className="w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
-        >
-          {statusOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.text}
-            </option>
-          ))}
-        </select>
+      <Select value={value} onValueChange={onStatusChange}>
+        <SelectTrigger id={id} className="w-full">
+          <SelectValue placeholder="Selecione um status..." />
+        </SelectTrigger>
 
-        <ArrowDown />
-      </div>
+        <SelectContent>
+          {statusOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.text}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }

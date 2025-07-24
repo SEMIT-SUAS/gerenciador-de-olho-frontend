@@ -9,6 +9,11 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BackButton } from '../../Buttons/Backbutton';
 import { useMapActions } from '../../../context/MapActions';
+import {
+  getDenunciaStatus,
+  getIndeferimentoData,
+} from '@/utils/getDenunciaStatus';
+import { Button } from '@/components/Buttons/BaseButton';
 
 export function DenunciaDetails() {
   const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
@@ -29,6 +34,11 @@ export function DenunciaDetails() {
       replace: true,
     });
   }
+
+  const denunciaStatus = getDenunciaStatus(denuncia);
+  const indeferimentoData = getIndeferimentoData(denuncia);
+
+  console.log(denunciaStatus, indeferimentoData);
 
   const acaoVinculada = useMemo(() => {
     return acoes.find((a) => a.id == denuncia.acao?.id);
@@ -69,7 +79,10 @@ export function DenunciaDetails() {
   return (
     <>
       <div className="flex flex-col gap-2 space-y-4">
-        <BackButton fallback="/ocorrencias/denuncias" />
+        <BackButton
+          to="/ocorrencias/denuncias"
+          children="Detalhes da Denúncia"
+        />
 
         <>
           <div className="flex justify-between items-start">
@@ -85,7 +98,7 @@ export function DenunciaDetails() {
                 {new Date(denuncia.criadaEm).toLocaleDateString('pt-BR')}
               </p>
             </div>
-            <Tag status={'indeferido'} />
+            <Tag status={denunciaStatus} />
           </div>
 
           <div>
@@ -131,17 +144,19 @@ export function DenunciaDetails() {
           )}
 
           {!acaoVinculada &&
-            !['indeferido', 'concluido'].includes('indeferido') && (
+            !['indeferido', 'concluido'].includes(denunciaStatus) && (
               <div className="py-3 px-4 rounded-xl border border-gray-200 text-center space-y-2">
                 <p className="text-sm font-semibold text-gray-800">
                   Nenhuma ação vinculada
                 </p>
-                <button
+                <Button
+                  variant="outline_primary"
+                  size="sm"
+                  className="w-full"
                   onClick={() => navigate('vincular-acao')}
-                  className="w-full bg-blue-600 text-white text-sm font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Vincular a uma Ação
-                </button>
+                </Button>
               </div>
             )}
 
@@ -154,21 +169,23 @@ export function DenunciaDetails() {
             </div>
           )}
 
-          {/* {denuncia.status === 'indeferido' && denuncia.motivoStatus && (
+          {denunciaStatus === 'indeferido' && indeferimentoData && (
             <div className="p-3 bg-red-50 border-l-4 border-red-400 text-red-700">
               <p className="font-bold">Motivo do Indeferimento:</p>
-              <p>{denuncia.motivoStatus}</p>
+              <p>{indeferimentoData.motivo}</p>
             </div>
-          )} */}
+          )}
 
-          {/* {denuncia.status === 'aberto' && (
-            <button
+          {denunciaStatus === 'aberto' && (
+            <Button
+              variant="outline_danger"
+              size="sm"
               onClick={() => navigate('indeferir')}
-              className="w-full border-2 text-sm border-red-500 text-red-500 font-semibold py-2 rounded-lg transition-colors hover:bg-red-500 hover:text-white"
+              className="w-full"
             >
               Indeferir Denúncia
-            </button>
-          )} */}
+            </Button>
+          )}
         </>
       </div>
 

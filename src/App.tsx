@@ -13,6 +13,7 @@ import { AcoesList } from './components/SidePanel/Acao/AcoesList';
 import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
 import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
+import { NotFoundPage } from './pages/404';
 
 export function App() {
   return (
@@ -56,6 +57,8 @@ export function App() {
             />
           </Route>
         </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
       <ToastContainer

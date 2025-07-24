@@ -93,29 +93,21 @@ async function updateDenuncia(denuncia: DenunciaModel): Promise<DenunciaModel> {
 }
 
 async function indeferirDenuncia(
-  id: number,
-  motivoStatus: string,
+  denunciaId: number,
+  motivo: string,
 ): Promise<DenunciaModel> {
   try {
-    const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        status: 'indeferido',
-        motivo: motivoStatus,
-      }),
-    });
+    const denuncia = denunciasData.find((d) => d.id == denunciaId)!;
 
-    if (!response.ok) {
-      const errorData = await response
-        .json()
-        .catch(() => ({ message: 'Erro desconhecido na API.' }));
-      throw new Error(
-        errorData.message || 'Não foi possível atualizar o status na API.',
-      );
-    }
-
-    return await response.json();
+    return {
+      ...denuncia,
+      denunciaIndeferida: {
+        id: 1,
+        motivo,
+        indeferidaEm: new Date().toUTCString(),
+        indeferidaPor: userMock,
+      },
+    };
   } catch (error) {
     throw error;
   }

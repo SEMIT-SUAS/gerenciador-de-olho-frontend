@@ -1,25 +1,20 @@
-import { type ChangeEvent } from 'react';
-import { ArrowDown } from '../../ArrowDown';
-import { useOcorrencias } from '../../../context/OcorrenciasContext';
-import type { DenunciaStatusModelTypes } from '../../../types/Denuncia';
-import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useOcorrencias } from '@/context/OcorrenciasContext';
 
 type SelectCategoriaFilterProps = {
-  onCategoriaChange: (
-    categoria: 'todas' | DenunciaStatusModelTypes | AcaoStatusModelTypes,
-  ) => void;
+  onCategoriaChange: (categoria: string) => void;
 };
 
 export function SelectCategoriaFilter({
   onCategoriaChange,
 }: SelectCategoriaFilterProps) {
   const { categorias } = useOcorrencias();
-
-  function handleOnSelect(event: ChangeEvent<HTMLSelectElement>) {
-    onCategoriaChange(
-      event.target.value as DenunciaStatusModelTypes | AcaoStatusModelTypes,
-    );
-  }
 
   return (
     <div>
@@ -30,25 +25,23 @@ export function SelectCategoriaFilter({
         Categoria
       </label>
 
-      <div className="relative">
-        <select
-          id="categoria-select"
-          onChange={handleOnSelect}
-          className="w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
-        >
-          <option value="todas">Todas</option>
-
-          {categorias?.map((categoria) => {
-            return (
-              <option key={categoria.id} value={categoria.nome}>
-                {categoria.nome}
-              </option>
-            );
-          })}
-        </select>
-
-        <ArrowDown />
-      </div>
+      <Select
+        onValueChange={onCategoriaChange}
+        defaultValue="todas"
+        disabled={!categorias}
+      >
+        <SelectTrigger id="categoria-select" className="w-full">
+          <SelectValue placeholder="Selecione uma categoria..." />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="todas">Todas</SelectItem>
+          {categorias?.map((categoria) => (
+            <SelectItem key={categoria.id} value={categoria.nome}>
+              {categoria.nome}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }

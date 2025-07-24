@@ -1,13 +1,16 @@
 import { FaMapPin, FaTrash } from 'react-icons/fa';
 import { Tag } from '../Tag';
-import type { DenunciaModel } from '../../../types/Denuncia';
-import { getDenunciaStatus } from '../../../utils/getDenunciaStatus';
+import type { DenunciaModel } from '@/types/Denuncia';
+import { calcularDiasAtras } from '@/utils/data';
+import { getDenunciaStatus } from '@/utils/getDenunciaStatus';
+import arquivoService from '@/services/arquivoService';
+import { useEffect, useState } from 'react';
+import { Loading } from '@/components/Loading/Loading';
 
 type DenunciaItemProps = {
   denuncia: DenunciaModel;
   onClick: () => void;
   onTrashClick?: () => void;
-  showDescription: boolean;
   isDeletable: boolean;
   showTag: boolean;
 };
@@ -16,41 +19,80 @@ export function DenunciaItem({
   denuncia,
   onClick,
   showTag,
-  showDescription,
   isDeletable,
   onTrashClick,
 }: DenunciaItemProps) {
+  const diasAtras = calcularDiasAtras(denuncia.criadaEm);
+  const denunciaStatus = getDenunciaStatus(denuncia);
+  const [thumbImageURL, setThumbImageURL] = useState<string | null>(null);
+
+  async function fetchThumbImage() {
+    try {
+      const file = await arquivoService.getByName('teste');
+      return URL.createObjectURL(file);
+    } catch {
+      return '/image_fail_to_fetch.png';
+    }
+  }
+
+  useEffect(() => {
+    if (!thumbImageURL) {
+      fetchThumbImage().then((thumbImageURL) => {
+        setThumbImageURL(thumbImageURL);
+      });
+    }
+  }, [thumbImageURL]);
+
   return (
     <div
       key={denuncia.id}
-      className="p-3 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
+      className="flex items-start gap-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
       onClick={onClick}
     >
-      <div className="flex justify-between items-center">
-        <h3 className="font-semibold text-md text-gray-700">
-          {denuncia.tipo.nome}
-        </h3>
-        {showTag && <Tag status={getDenunciaStatus(denuncia)} />}
-        {isDeletable && (
-          <button
-            onClick={onTrashClick}
-            className="cursor-pointer rounded-full p-2 text-gray-400 transition-colors hover:bg-red-100 hover:text-red-600"
-          >
-            <FaTrash />
-          </button>
+      <div className="flex w-21 h-21 items-center justify-center">
+        {thumbImageURL ? (
+          <img
+            className="w-full h-full rounded-l-md object-cover flex-shrink-0"
+            src={thumbImageURL}
+            loading="lazy"
+            alt="Primeira imagem da denúncia"
+          />
+        ) : (
+          <Loading />
         )}
       </div>
 
-      {showDescription && (
-        <p className="text-sm text-gray-500 mt-1">{denuncia.descricao}</p>
-      )}
+      <div className="flex flex-col flex-grow py-3 pr-3">
+        <div className="flex justify-between items-center">
+          <div>
+            <p className="text-xs text-gray-500">{diasAtras}</p>
+            <h3 className="font-semibold text-md text-gray-700 line-clamp-1">
+              {denuncia.tipo.nome}
+            </h3>
+          </div>
 
-      <p className="flex text-xs text-gray-400 mt-1">
-        <span className="mr-1">
-          <FaMapPin />
-        </span>
-        {`${denuncia.rua}, ${denuncia.bairro}`}
-      </p>
+          {showTag && <Tag status={denunciaStatus} />}
+        </div>
+        <div className="flex justify-between items-center">
+          {isDeletable && (
+            <button
+              onClick={onTrashClick}
+              className="cursor-pointer rounded-full p-2 text-gray-400 transition-colors hover:bg-red-100 hover:text-red-600"
+            >
+              <FaTrash />
+            </button>
+          )}
+        </div>
+
+        <p className="flex items-center text-xs text-gray-400 mt-1">
+          <span className="mr-1">
+            <FaMapPin />
+          </span>
+          <span className="line-clamp-1">
+            {`${denuncia.rua}, ${denuncia.bairro}`}
+          </span>
+        </p>
+      </div>
     </div>
   );
 }
