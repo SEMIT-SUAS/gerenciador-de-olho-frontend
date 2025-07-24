@@ -61,20 +61,20 @@ export function PortaisList() {
     } catch (error) {
         alert("Erro ao criar portal");
     }
-    }
+  }
 
-    async function handleToggleAtivo(id: number, ativo: boolean) {
-        try {
-        await toggleAtivo(id, !ativo);
-        setPortais((prev) =>
-            prev.map((p) =>
-            p.id === id ? { ...p, ativo: !ativo } : p
-            )
-        );
-        } catch (error) {
-        alert("Erro ao atualizar status de atividade");
-        }
+  async function handleToggleAtivo(id: number, ativo: boolean) {
+    try {
+      await toggleAtivo(id, !ativo);
+      setPortais((prev) =>
+        prev.map((p) =>
+        p.id === id ? { ...p, ativo: !ativo } : p
+        )
+      );
+    } catch (error) {
+      alert("Erro ao atualizar status de atividade");
     }
+  }
 
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>Erro: {error}</p>;

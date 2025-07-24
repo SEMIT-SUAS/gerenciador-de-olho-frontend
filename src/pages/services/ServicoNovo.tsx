@@ -94,7 +94,9 @@ export function ServicoNovo() {
 
     // Campos objeto: categoria.nome
     if (name === "categoria") {
-      const selectedCategoria = categorias.find(cat => cat.id === Number(value));
+      const selectedCategoria = categorias.find(
+        (cat) => cat.id === Number(value)
+      );
       if (selectedCategoria) {
         setForm({ ...form, categoria: selectedCategoria });
       } else {
@@ -310,7 +312,10 @@ export function ServicoNovo() {
 
         <label>
           Categoria:
-          <select name="categoria" value={form.categoria?.id || ""} onChange={handleChange}>
+          <select name="categoria" 
+          value={form.categoria ? form.categoria.id : ""} 
+          onChange={handleChange}
+          >
             <option value="">Selecione uma categoria</option>
             {categorias.map((cat) => (
               <option key={cat.id} value={cat.id}>

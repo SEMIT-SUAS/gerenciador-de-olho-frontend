@@ -43,3 +43,14 @@ export async function toggleAtivo(id: number, ativo: boolean): Promise<void> {
   });
   if (!response.ok) throw new Error('Erro ao alterar status ativo:');
 }
+
+export async function changeServiceVisibility(id: number, visivel: boolean): Promise<void>{
+    const response = await fetch(`${API_BASE_URL}/atualizar/visibilidade`, {
+        method: 'PUT',
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify({ id, visivel }),
+    });
+    
+    if(!response.ok) throw new Error('Erro ao alterar status de visibilidade');
+    
+}
