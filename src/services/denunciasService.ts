@@ -1,8 +1,8 @@
 import type { CreateDenunciaModel, DenunciaModel } from '../types/Denuncia.ts';
 import { API_BASE_URL } from '../config/api.ts';
+import { denunciasMock, userMock } from '../constants/mocks.ts';
 import convert from 'xml-js';
 import categoriaService from './categoriaService.ts';
-import { denunciasMock, userMock } from '../constants/mocks.ts';
 
 type addressResponseData = {
   rua: string;

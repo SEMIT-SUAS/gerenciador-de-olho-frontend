@@ -87,7 +87,7 @@ export const denunciasMock: DenunciaModel[] = [
     pontoDeReferencia: 'Próximo ao quiosque Parada Obrigatória',
     longitude: -44.2929,
     latitude: -2.4921,
-    criadaEm: new Date('2025-07-20T10:00:00Z').toISOString(),
+    criadaEm: new Date('2025-07-24T10:00:00Z').toISOString(),
     usuario: userMock,
     denunciaIndeferida: null,
   },

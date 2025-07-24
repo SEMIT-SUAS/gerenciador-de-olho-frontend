@@ -26,12 +26,12 @@ async function createAcao(createAcaoData: CreateAcaoModel): Promise<AcaoModel> {
     secretaria,
     latitude: centerCoordinates[0],
     longitude: centerCoordinates[1],
-    criadoEm: Date.now().toLocaleString(),
+    criadoEm: new Date().toUTCString(),
     status: [
       {
         id: 1,
         motivo: 'Criada',
-        AlteradoEm: Date.now().toLocaleString(),
+        AlteradoEm: new Date().toUTCString(),
         alteradoPor: userMock,
         status: 'em_analise',
       },

@@ -1,6 +1,5 @@
 import { Switch } from '../Switch';
 import { useFilters } from '../../context/FiltersContext';
-// import { useAddAcao } from '../../context/AddAcaoContext';
 import { useMapActions } from '../../context/MapActions';
 
 export function MapFilters() {
@@ -11,7 +10,6 @@ export function MapFilters() {
     setIsVisibleAcoesInMap,
   } = useFilters();
 
-  // const { isAddingAcao } = useAddAcao();
   const { disableMapFilters } = useMapActions();
 
   return (

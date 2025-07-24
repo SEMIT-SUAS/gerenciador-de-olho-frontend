@@ -1,17 +1,17 @@
 import { Marker, useMap } from 'react-leaflet';
-import { useFilters } from '../../context/FiltersContext';
-import { getDenunciaIconByTipo } from '../../utils/getPinIcon';
-import { useMapActions } from '../../context/MapActions';
-import type { DenunciaModel } from '../../types/Denuncia';
+import { useFilters } from '../../../context/FiltersContext';
+import { getDenunciaIconByTipo } from '../../../utils/getPinIcon';
+import { useMapActions } from '../../../context/MapActions';
+import type { DenunciaModel } from '../../../types/Denuncia';
 import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
-import { getConvexHull } from '../../utils/geometry';
-import { PinDetailsDenuncia } from './PinDetailsDenuncia';
+import { getConvexHull } from '../../../utils/geometry';
+import { DenunciaTooltip } from './DenunciaTooltip';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { LeafletMouseEvent } from 'leaflet';
-import { selectedIcon } from '../../constants/mapIcons';
+import { selectedIcon } from '../../../constants/mapIcons';
 
-export function DenunciaPins() {
+export function DenunciaMapPins() {
   const { denunciasFiltradas, isVisibleDenunciasInMap } = useFilters();
 
   const {
@@ -79,21 +79,9 @@ export function DenunciaPins() {
             icon={getDenunciaIconByTipo(d.tipo.nome)}
             eventHandlers={{
               click: () => handleOnDenunciaClick(d),
-              mouseover: (e: LeafletMouseEvent) => {
-                const popup = e.target.getPopup();
-                if (popup && !salvarDenunciasOnclick) {
-                  popup.openOn(map);
-                }
-              },
-              mouseout: (e) => {
-                const popup = e.target.getPopup();
-                if (popup && !salvarDenunciasOnclick) {
-                  popup.remove();
-                }
-              },
             }}
           >
-            {!salvarDenunciasOnclick && <PinDetailsDenuncia denuncia={d} />}
+            {!salvarDenunciasOnclick && <DenunciaTooltip denuncia={d} />}
 
             {denunciaPolygonCoordinates.length > 0 && (
               <DenunciasSelecionadasPolygon

@@ -1,21 +1,20 @@
-import { Marker, useMap } from 'react-leaflet';
-import { useFilters } from '../../context/FiltersContext';
-import type { AcaoModel } from '../../types/Acao';
-import { iconAcao } from '../../constants/mapIcons';
-import { PinDetailsAcao } from './PinDetailsAcao';
+import { Marker } from 'react-leaflet';
+import { useFilters } from '../../../context/FiltersContext';
+import type { AcaoModel } from '../../../types/Acao';
+import { iconAcao } from '../../../constants/mapIcons';
 import { AcaoPolygon } from './AcaoPolygon';
-import { useMapActions } from '../../context/MapActions';
-import { useOcorrencias } from '../../context/OcorrenciasContext';
-import { getConvexHull } from '../../utils/geometry';
+import { useMapActions } from '../../../context/MapActions';
+import { useOcorrencias } from '../../../context/OcorrenciasContext';
+import { getConvexHull } from '../../../utils/geometry';
 import { useNavigate } from 'react-router-dom';
+import { AcaoTooltip } from './AcaoTooltip';
 
-export function AcaoPins() {
+export function AcaoMapPins() {
   const { isVisibleAcoesInMap, acoesFiltradas } = useFilters();
   const { salvarAcaoOnclick, setAcaoSelecionada } = useMapActions();
   const { denuncias } = useOcorrencias();
 
   const navigate = useNavigate();
-  const map = useMap();
 
   function handleOnAcaoClick(acao: AcaoModel) {
     if (salvarAcaoOnclick) {
@@ -52,7 +51,7 @@ export function AcaoPins() {
                 click: () => handleOnAcaoClick(a),
               }}
             >
-              {!salvarAcaoOnclick && <PinDetailsAcao acao={a} />}
+              {!salvarAcaoOnclick && <AcaoTooltip acao={a} />}
             </Marker>
 
             {denunciasVinculadas.length > 0 && (

@@ -1,9 +1,9 @@
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapFilters } from './MapFilters';
 import { MapViewUpdater } from './MapViewUpdater';
-import { DenunciaPins } from './DenunciaPins';
-import { AcaoPins } from './AcaoPins';
+import { AcaoMapPins } from './Acao/AcaoMapPins';
+import { DenunciaMapPins } from './Denuncia/DenunciaMapPins';
 
 export function MapComponent() {
   return (
@@ -24,8 +24,9 @@ export function MapComponent() {
           zoomOffset={-1}
         />
 
-        <DenunciaPins />
-        <AcaoPins />
+        <AcaoMapPins />
+        <DenunciaMapPins />
+
       </MapContainer>
     </div>
   );
