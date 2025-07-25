@@ -6,6 +6,7 @@ import { getDenunciaStatus } from '@/utils/getDenunciaStatus';
 import arquivoService from '@/services/arquivoService';
 import { useEffect, useState } from 'react';
 import { Loading } from '@/components/Loading/Loading';
+import { generateThumbnailUrl } from '@/utils/video';
 
 type DenunciaItemProps = {
   denuncia: DenunciaModel;
@@ -27,12 +28,10 @@ export function DenunciaItem({
   const [thumbImageURL, setThumbImageURL] = useState<string | null>(null);
 
   async function fetchThumbImage() {
-    try {
-      const file = await arquivoService.getByName('teste');
-      return URL.createObjectURL(file);
-    } catch {
-      return '/image_fail_to_fetch.png';
-    }
+    const firstFile = denuncia.files[0];
+    const file = await arquivoService.getByName(firstFile.nome);
+
+    return await generateThumbnailUrl(file);
   }
 
   useEffect(() => {

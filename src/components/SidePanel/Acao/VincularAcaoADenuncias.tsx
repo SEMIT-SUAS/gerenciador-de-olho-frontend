@@ -8,7 +8,7 @@ import { useMapActions } from '../../../context/MapActions';
 import { Tag } from '../Tag';
 import { getPolygonoCenter } from '../../../utils/geometry';
 import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
-import type { AcaoModel } from '../../../types/Acao';
+import { toast } from 'react-toastify';
 
 export function VincularAcaoADenuncias() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
@@ -17,6 +17,7 @@ export function VincularAcaoADenuncias() {
     addDenunciaNaSelecao,
     setSalvarDenunciasOnClick,
     setDenunciasJaVinculadas,
+    setDenunciasSelecionadas,
   } = useMapActions();
   const { acoes, denuncias, setDenuncias, setAcoes } = useOcorrencias();
   const {
@@ -53,48 +54,58 @@ export function VincularAcaoADenuncias() {
   }, [denuncias]);
 
   async function handleVincularDenuncias() {
-    if (!acao) return;
+    try {
+      if (!acao) return;
 
-    const denunciasSelecionadasIds = new Set(
-      denunciasSelecionas.map((d) => d.id),
-    );
+      setDenuncias((prevDenuncias) => {
+        const denunciasSelecionadasIds = new Set(
+          denunciasSelecionas.map((d) => d.id),
+        );
 
-    const denunciasDataUpdated = denuncias.map((denuncia) => {
-      if (denunciasSelecionadasIds.has(denuncia.id)) {
-        return { ...denuncia, acaoId: acao.id, status: acao.status };
-      }
-      return denuncia;
-    });
+        const updatedDenuncias = prevDenuncias.map((d) =>
+          denunciasSelecionadasIds.has(d.id)
+            ? {
+                ...d,
+                acao,
+              }
+            : d,
+        );
 
-    const todasDenunciasDaAcao = denunciasDataUpdated.filter(
-      (d) => d.acao?.id === acao.id,
-    );
+        const newCenterCoordinates = getPolygonoCenter(
+          updatedDenuncias
+            .filter((d) => d.acao?.id === acao.id)
+            .map((d) => [d.latitude, d.longitude]),
+        );
 
-    const coordinates = todasDenunciasDaAcao.map((d) => ({
-      lat: d.latitude,
-      lng: d.longitude,
-    }));
+        setAcoes((prevAcoes) =>
+          prevAcoes.map((a) => {
+            if (a.id === acao.id) {
+              return {
+                ...a,
+                latitude: newCenterCoordinates[0],
+                longitude: newCenterCoordinates[1],
+              };
+            }
 
-    const actionCenter = getPolygonoCenter(coordinates);
+            return a;
+          }),
+        );
 
-    const acaoDataUpdated: AcaoModel = {
-      ...acao,
-      latitude: actionCenter[0],
-      longitude: actionCenter[1],
-    };
+        return updatedDenuncias;
+      });
 
-    setDenuncias(denunciasDataUpdated);
-    setAcoes((currentAcoes) =>
-      currentAcoes.map((a) => (a.id === acao.id ? acaoDataUpdated : a)),
-    );
-
-    navigate(`/ocorrencias/acoes/${acao.id}`);
+      toast.success('Denúncias vinculadas com sucesso!');
+      navigate(`/ocorrencias/acoes/${acao.id}`);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   }
 
   function resetFiltersAndMapActions() {
     restoreCachedFilters();
     setSalvarDenunciasOnClick(false);
     setDenunciasJaVinculadas([]);
+    setDenunciasSelecionadas([]);
   }
 
   useEffect(() => {
@@ -111,7 +122,10 @@ export function VincularAcaoADenuncias() {
   return (
     <>
       <div className="flex gap-4 flex-col h-full">
-        <BackButton to={`/ocorrencias/acoes/${acaoId}`} />
+        <BackButton
+          to={`/ocorrencias/acoes/${acaoId}`}
+          children="Vincular Denúncias"
+        />
 
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Vinculando denúncias á ação:</p>

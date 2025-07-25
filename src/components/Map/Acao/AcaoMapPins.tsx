@@ -10,7 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { AcaoTooltip } from './AcaoTooltip';
 
 export function AcaoMapPins() {
-  const { isVisibleAcoesInMap, acoesFiltradas } = useFilters();
+  const { isVisibleAcoesInMap, acoesFiltradas, denunciasFiltradas } =
+    useFilters();
   const { salvarAcaoOnclick, setAcaoSelecionada } = useMapActions();
   const { denuncias } = useOcorrencias();
 
@@ -32,8 +33,11 @@ export function AcaoMapPins() {
     <>
       {acoesFiltradas.map((a) => {
         const denunciasVinculadas = denuncias.filter(
-          (d) => d.acao?.id === a.id,
+          (d) =>
+            d.acao?.id === a.id &&
+            denunciasFiltradas.find((df) => d.id === df.id),
         );
+
         const acaoPolygonCoords = getConvexHull(
           denunciasVinculadas.map((d) => ({
             lat: d.latitude,

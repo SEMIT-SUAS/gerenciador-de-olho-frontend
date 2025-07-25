@@ -1,5 +1,4 @@
 import { Tag } from './../Tag';
-import { ImageModal } from '../../Modals/ImageModal';
 import { useEffect, useMemo, useState } from 'react';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
@@ -16,7 +15,6 @@ import {
 import { Button } from '@/components/Buttons/BaseButton';
 
 export function DenunciaDetails() {
-  const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
   const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
   const { denuncias, acoes, setDenuncias } = useOcorrencias();
   const { setZoomTo } = useMapActions();
@@ -37,8 +35,6 @@ export function DenunciaDetails() {
 
   const denunciaStatus = getDenunciaStatus(denuncia);
   const indeferimentoData = getIndeferimentoData(denuncia);
-
-  console.log(denunciaStatus, indeferimentoData);
 
   const acaoVinculada = useMemo(() => {
     return acoes.find((a) => a.id == denuncia.acao?.id);
@@ -150,7 +146,7 @@ export function DenunciaDetails() {
                   Nenhuma ação vinculada
                 </p>
                 <Button
-                  variant="outline_primary"
+                  variant="primary"
                   size="sm"
                   className="w-full"
                   onClick={() => navigate('vincular-acao')}
@@ -162,7 +158,7 @@ export function DenunciaDetails() {
 
           {denuncia.files.length > 0 && (
             <div>
-              <h3 className="font-semibold text-gray-800 mb-2">Imagens:</h3>
+              <h3 className="font-semibold text-gray-800 mb-2">Mídia:</h3>
               <div>
                 <FilesCarrrousel files={denuncia.files} />
               </div>
@@ -188,11 +184,6 @@ export function DenunciaDetails() {
           )}
         </>
       </div>
-
-      <ImageModal
-        imageUrl={imagemEmDestaque}
-        onClose={() => setImagemEmDestaque(null)}
-      />
 
       <ConfirmModal
         isOpen={isDesvincularModalOpen}

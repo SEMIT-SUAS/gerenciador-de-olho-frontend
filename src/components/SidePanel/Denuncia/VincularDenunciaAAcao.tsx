@@ -5,12 +5,14 @@ import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { FaMapPin } from 'react-icons/fa';
 import { useFilters } from '../../../context/FiltersContext';
 import { useMapActions } from '../../../context/MapActions';
-import type { DenunciaModel } from '@/types/Denuncia';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
+import { toast } from 'react-toastify';
+import denunciasService from '@/services/denunciasService';
+import { getPolygonoCenter } from '@/utils/geometry';
 
 export function VincularDenunciaAAcao() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const { setDenuncias, denuncias } = useOcorrencias();
+  const { setDenuncias, denuncias, setAcoes } = useOcorrencias();
   const {
     setIsVisibleDenunciasInMap,
     setIsVisibleAcoesInMap,
@@ -51,17 +53,49 @@ export function VincularDenunciaAAcao() {
     };
   }, []);
 
-  function handleVincularDenuncia() {
-    const denunciaUpdatedData: DenunciaModel = {
-      ...denuncia!,
-      acao: acaoSelecionada,
-    };
+  async function handleVincularDenuncia() {
+    try {
+      const denunciaUpdatedData = await denunciasService.vincularDenunciaToAcao(
+        denuncia?.id!,
+        acaoSelecionada?.id!,
+      );
 
-    //TODO: CALL API
-    setDenuncias((denuncias) =>
-      denuncias.map((d) => (d.id == denuncia?.id ? denunciaUpdatedData : d)),
-    );
-    navigate(`/ocorrencias/acoes/${acaoSelecionada?.id}`);
+      console.log(denunciaUpdatedData);
+
+      setDenuncias((prevDenuncias) => {
+        const updatedDenuncias = prevDenuncias.map((d) =>
+          d.id === denuncia?.id ? denunciaUpdatedData : d,
+        );
+
+        const denunciasVinculadas = updatedDenuncias.filter(
+          (d) => d.acao?.id === acaoSelecionada?.id,
+        );
+
+        const centerAcao = getPolygonoCenter(
+          denunciasVinculadas.map((d) => [d.latitude, d.longitude]),
+        );
+
+        setAcoes((prevAcoes) =>
+          prevAcoes.map((acao) =>
+            acao.id === acaoSelecionada?.id
+              ? {
+                  ...acao,
+                  latitude: centerAcao[0],
+                  longitude: centerAcao[1],
+                }
+              : acao,
+          ),
+        );
+
+        return updatedDenuncias;
+      });
+
+      navigate(`/ocorrencias/acoes/${acaoSelecionada?.id}`);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao vincular denúncia',
+      );
+    }
   }
 
   return (

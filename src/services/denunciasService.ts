@@ -3,6 +3,7 @@ import { API_BASE_URL } from '../config/api.ts';
 import { denunciasMock, userMock } from '../constants/mocks.ts';
 import convert from 'xml-js';
 import categoriaService from './categoriaService.ts';
+import { acoes } from './acoesService.ts';
 
 type addressResponseData = {
   rua: string;
@@ -113,23 +114,49 @@ async function indeferirDenuncia(
   }
 }
 
-async function vincularDenunciaToAcao(): Promise<DenunciaModel> {
-  return null;
+async function vincularDenunciaToAcao(
+  denunciaId: number,
+  acaoId: number,
+): Promise<DenunciaModel> {
+  let denunciaUpdatedData;
+  const denunciasDataUpdated = denunciasData.map((d) => {
+    if (d.id === denunciaId) {
+      denunciaUpdatedData = {
+        ...d,
+        acao: acoes.find((a) => a.id === acaoId)!,
+      };
+
+      return denunciaUpdatedData;
+    }
+
+    return d;
+  });
+
+  console.log(denunciaUpdatedData);
+  updateDenunciasData(denunciasDataUpdated);
+  return denunciaUpdatedData!;
 }
 
-async function desvincularDenunciaAcao(denunciaId: number): Promise<void> {
+async function desvincularDenunciaAcao(
+  denunciaId: number,
+): Promise<DenunciaModel> {
+  let denunciaDataUpdated;
+
   const updatedDenunciaData = denunciasData.map((d) => {
     if (d.id === denunciaId) {
-      return {
+      denunciaDataUpdated = {
         ...d,
         acao: null,
       };
+
+      return denunciaDataUpdated;
     }
 
     return d;
   });
 
   denunciasData = updatedDenunciaData;
+  return denunciaDataUpdated!;
 }
 
 async function getAddressByCoordinates(

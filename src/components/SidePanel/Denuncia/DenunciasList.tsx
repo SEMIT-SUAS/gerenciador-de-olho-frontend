@@ -1,5 +1,5 @@
 import { DenunciaItem } from './DenunciaItem';
-import { useFilters } from '../../../context/FiltersContext';
+import { useFilters } from '@/context/FiltersContext';
 import { useNavigate } from 'react-router-dom';
 import { FilterStatusSelect } from '../Filters/FilterStatusSelect';
 import { SelectCategoriaFilter } from '../Filters/SelectCategoriaFilter';
@@ -48,7 +48,6 @@ export function DenunciasList() {
                   navigate(`/ocorrencias/denuncias/${denuncia.id}`)
                 }
                 showTag={true}
-                showDescription={true}
                 isDeletable={false}
               />
             );

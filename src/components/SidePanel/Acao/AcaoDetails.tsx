@@ -70,7 +70,7 @@ export function AcaoDetails() {
   return (
     <div className="flex flex-col h-full p-4">
       <div className="flex-shrink-0">
-        <BackButton to="/ocorrencias/acoes" />
+        <BackButton to="/ocorrencias/acoes" children="Detalhes da Ação" />
         <div className="flex justify-between items-center mt-4">
           <h1 className="text-2xl font-bold text-gray-800">{acao.nome}</h1>
           <Tag status={currentAcaoStatus} />
