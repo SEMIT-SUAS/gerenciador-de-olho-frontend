@@ -10,17 +10,21 @@ import { useFiles } from '@/context/FilesContext';
 type DenunciaItemProps = {
   denuncia: DenunciaModel;
   onClick: () => void;
+  showDate: boolean;
   onTrashClick?: () => void;
   isDeletable: boolean;
   showTag: boolean;
+  isSelected?: boolean;
 };
 
 export function DenunciaItem({
   denuncia,
   onClick,
+  showDate,
   showTag,
   isDeletable,
   onTrashClick,
+  isSelected,
 }: DenunciaItemProps) {
   const diasAtras = calcularDiasAtras(denuncia.criadaEm);
   const denunciaStatus = getDenunciaStatus(denuncia);
@@ -33,7 +37,9 @@ export function DenunciaItem({
   return (
     <div
       key={denuncia.id}
-      className="flex items-start gap-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
+      className={`flex items-start gap-4 rounded-lg shadow-sm cursor-pointer ${
+        isSelected ? 'bg-gray-100' : 'bg-white hover:bg-gray-50' //
+      }`}
       onClick={onClick}
     >
       <div className="flex w-21 h-21 items-center justify-center">
@@ -52,7 +58,7 @@ export function DenunciaItem({
       <div className="flex flex-col flex-grow py-3 pr-3">
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-xs text-gray-500">{diasAtras}</p>
+            {showDate && <p className="text-xs text-gray-500">{diasAtras}</p>}
             <h3 className="font-semibold text-md text-gray-700 line-clamp-1">
               {denuncia.tipo.nome}
             </h3>

@@ -3,7 +3,6 @@ import { FormGroup } from '../FormGroup';
 import { Label } from '../Label';
 import { FormInput } from '../FormInput';
 import { FormInputError } from '../FormInputError';
-import { SelectArrowDown } from '../SelectArrowDown';
 import { toast } from 'react-toastify';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
@@ -210,7 +209,6 @@ export function AddDenunciaForm() {
                 }
                 onValueChange={(value) => {
                   const numericValue = Number(value);
-                  console.log(`Atualizando categoryId para: ${numericValue}`);
                   setFormData((prev) => ({
                     ...prev,
                     categoryId: numericValue,

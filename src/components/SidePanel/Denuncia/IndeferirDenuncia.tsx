@@ -57,7 +57,7 @@ export function IndeferirDenuncia() {
 
   return (
     <>
-      <div className="flex flex-col gap-2 h-full p-4 bg-white">
+      <div className="flex flex-col gap-2 h-full">
         <BackButton children="Indeferir Denúncia" />
         <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
           <div className="flex items-center">

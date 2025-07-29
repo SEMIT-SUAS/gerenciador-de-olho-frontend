@@ -92,7 +92,7 @@ export function DenunciaDetails() {
               </h2>
               <p className="text-sm text-gray-500">
                 Registrado em:{' '}
-                {new Date(denuncia.criadaEm).toLocaleDateString('pt-BR')}
+                {new Date(denuncia.criadaEm).toLocaleString('pt-BR')}
               </p>
             </div>
             <Tag status={denunciaStatus} />

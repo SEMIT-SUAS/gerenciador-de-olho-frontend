@@ -12,6 +12,7 @@ import { Button } from '@/components/Buttons/BaseButton';
 import { IconProgressX } from '@tabler/icons-react';
 import { FilesCarrrousel } from '@/components/FilesCarrousel';
 import { IoIosAdd } from 'react-icons/io';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export function AcaoDetails() {
   const { acoes, denuncias } = useOcorrencias();
@@ -75,12 +76,15 @@ export function AcaoDetails() {
               Responsável: {acao.secretaria.sigla}
             </p>
             <h1 className="text-2xl font-bold text-gray-800">{acao.nome}</h1>
+            <p className="text-sm text-gray-500">
+              Criada em: {new Date(acao.criadoEm).toLocaleString('pt-BR')}
+            </p>
           </div>
           <Tag status={currentAcaoStatus} />
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col gap-4 mt-6 overflow-y-auto pr-2">
+      <div className="flex-1 flex flex-col gap-4 mt-6 pr-2 ">
         {denunciasVinculadas.length > 0 && (
           <div className="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200">
             <FaInfoCircle className="text-blue-500 mr-3 flex-shrink-0" />
@@ -111,19 +115,22 @@ export function AcaoDetails() {
                 <p className="text-gray-500">Nenhuma denúncia vinculada.</p>
               </div>
             ) : (
-              denunciasVinculadas.map((denuncia) => {
-                const canDisvincular =
-                  denunciasVinculadas.length > 1 &&
-                  ['em_analise', 'em_andamento'].includes(currentAcaoStatus);
+              <ScrollArea className="h-96 w-full p-2">
+                {denunciasVinculadas.map((denuncia) => {
+                  const canDisvincular =
+                    denunciasVinculadas.length > 1 &&
+                    ['em_analise', 'em_andamento'].includes(currentAcaoStatus);
 
-                return (
-                  <DenunciaManageInAction
-                    key={denuncia.id}
-                    denuncia={denuncia}
-                    allowDisvincularItem={canDisvincular}
-                  />
-                );
-              })
+                  return (
+                    <DenunciaManageInAction
+                      key={denuncia.id}
+                      denuncia={denuncia}
+                      allowDisvincularItem={canDisvincular}
+                    />
+                  );
+                })}
+                "
+              </ScrollArea>
             )
           ) : (
             <div className="text-center py-10">
@@ -159,7 +166,7 @@ export function AcaoDetails() {
               className=""
             >
               <IconProgressX className="inline h-4" />
-              Indeferir Denúncia
+              Indeferir Ação
             </Button>
           </div>
         )}

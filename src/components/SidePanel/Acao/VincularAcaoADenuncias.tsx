@@ -9,6 +9,8 @@ import { Tag } from '../Tag';
 import { getPolygonoCenter } from '../../../utils/geometry';
 import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
 import { toast } from 'react-toastify';
+import { DenunciaItem } from '../Denuncia/DenunciaItem';
+import { Button } from '@/components/Buttons/BaseButton';
 
 export function VincularAcaoADenuncias() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
@@ -144,32 +146,30 @@ export function VincularAcaoADenuncias() {
             Selecione denuncias existentes:
           </h3>
 
-          <div className="flex flex-col gap-2 p-2 rounded-lg overflow-y-auto">
+          <div className="flex flex-col gap-2 p-2 rounded-lg overflow-y-auto max-h-120">
             {denunciasFiltradas.map((denuncia) => (
-              <button
+              <DenunciaItem
+                showTag={false}
+                showDate={true}
+                isSelected={denunciasSelecionas.some(
+                  (d) => d.id === denuncia.id,
+                )}
                 key={denuncia.id}
+                denuncia={denuncia}
                 onClick={() => addDenunciaNaSelecao(denuncia)}
-                className={`w-full text-left p-3 ${
-                  denunciasSelecionas.find((d) => d.id == denuncia.id)
-                    ? 'bg-gray-300'
-                    : 'bg-white hover:bg-gray-100'
-                } rounded-lg shadow-sm transition-colors cursor-pointer`}
-              >
-                {denuncia.tipo.nome}
-              </button>
+                isDeletable={false}
+              />
             ))}
           </div>
         </div>
 
-        <button
-          className="w-full bg-bg-blue-600 bg-green-700 text-white font-semibold 
-          py-2.5 rounded-lg transition-colors cursor-pointer 
-          disabled:cursor-not-allowed disabled:opacity-60 text-sm"
+        <Button
+          size="md"
           onClick={() => setIsOpenConfirmationModal(true)}
           disabled={denunciasSelecionas.length < 1}
         >
           Víncular á ação
-        </button>
+        </Button>
       </div>
 
       <ConfirmModal

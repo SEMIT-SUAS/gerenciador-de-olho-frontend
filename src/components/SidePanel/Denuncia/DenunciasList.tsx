@@ -42,6 +42,7 @@ export function DenunciasList() {
           {denuncias.map((denuncia) => {
             return (
               <DenunciaItem
+                showDate={true}
                 key={denuncia.id}
                 denuncia={denuncia}
                 onClick={() =>
