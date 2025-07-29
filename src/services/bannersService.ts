@@ -99,22 +99,6 @@ async function changeBannerVisibility(id: number, isVisible: boolean): Promise<B
     }    
 }
 
-async function deleteBanner(id: number): Promise<void> {
-    try{
-        const response = await fetch(`${API_BASE_URL}/banners/deletar/${id}`, {
-            method: 'DELETE'
-        })
-        
-        if (!response.ok){
-            throw new Error('Não foi foi possível excluir Banner')
-        }
-        
-        return await response.json()
-    } catch(error){
-        throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde')
-    }    
-}
-
 export default {
   getAllBanners,
   getVisibleBanners,
@@ -122,5 +106,4 @@ export default {
   uploadBanner,
   updateBanner,
   changeBannerVisibility,
-  deleteBanner,
 }

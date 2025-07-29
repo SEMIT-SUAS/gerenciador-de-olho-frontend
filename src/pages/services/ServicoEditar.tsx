@@ -49,7 +49,7 @@ export function ServicoEditar() {
     if (name.startsWith("orgao.")) {
       setForm({
         ...form,
-        orgao: { ...form.orgao, nome: value },
+        secretaria: { ...form.secretaria, nome: value },
       });
       return;
     }
@@ -229,8 +229,8 @@ export function ServicoEditar() {
           Órgão:
           <input
             type="text"
-            name="orgao.nome"
-            value={form.orgao.nome}
+            name="orgao"
+            value={form.secretaria?.nome}
             onChange={handleChange}
           />
         </label>
@@ -239,8 +239,8 @@ export function ServicoEditar() {
           Categoria:
           <input
             type="text"
-            name="categoria.nome"
-            value={form.categoria.nome}
+            name="categoria"
+            value={form.categoria?.nome}
             onChange={handleChange}
           />
         </label>

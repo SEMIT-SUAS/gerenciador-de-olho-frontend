@@ -48,7 +48,7 @@ export function ServicoNovo() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
-  const[persona, setPersona] = useState<Persona[]>([]);
+  const [persona, setPersona] = useState<Persona[]>([]);
 
   useEffect(() => {
     async function fetchDados() {
@@ -75,10 +75,7 @@ export function ServicoNovo() {
     console.log("form.persona:", form.persona);
   }, [form.persona]);
 
-  function handleChange(
-  e: React.ChangeEvent<
-    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-  >) 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) 
   {
     const { name, value } = e.target;
 

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Portais } from "../../types/Portais";
 import { Link } from "react-router-dom";
-import { getAllPortais, createPortal, toggleAtivo } from "../../services/PortaisService";
+import { getAllPortais, createPortal, toggleAtivo, changeServiceVisibility } from "../../services/PortaisService";
+import { vi } from "zod/v4/locales";
 
 export function PortaisList() {
   const [portais, setPortais] = useState<Portais[]>([]);
@@ -76,6 +77,19 @@ export function PortaisList() {
     }
   }
 
+  async function handleServiceVisibility(id: number, visivel: boolean) {
+    try{
+      await changeServiceVisibility(id, !visivel);
+      setPortais((prev) => 
+        prev.map((p) =>
+          p.id === id ? { ...p, visivel: !visivel} : p
+      )
+     );
+    } catch (error) {
+      alert("Erro ao atualizar status de atividade")
+    }    
+  }
+
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>Erro: {error}</p>;
 
@@ -118,9 +132,14 @@ export function PortaisList() {
                     </a>
                     </p>
                 </div>
+                <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
                 <button onClick={() => handleToggleAtivo(portal.id!, portal.ativo)}>
                     {portal.ativo ? "Inativar" : "Ativar"}
                 </button>
+                <button onClick={() => handleServiceVisibility(portal.id!, portal.visivel)}>
+                  {portal.visivel ? "Ocultar" : "Mostrar"}
+                </button>
+                </div>
                 </li>
             ))}
         </ul>
