@@ -3,7 +3,7 @@ import type { Categoria } from '../types/CategoriaDenuncia'
 
 async function getAll() {
   try {
-    const response = await fetch(`${API_BASE_URL}/categories`)
+    const response = await fetch(`${API_BASE_URL}/categoria-servico`)
     const body = await response.json()
 
     if (response.status != 200) {
