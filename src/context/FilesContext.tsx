@@ -57,6 +57,13 @@ export function FilesProvider({ children }: { children: ReactNode }) {
         cacheFiles(d.files);
       });
     }
+
+    return () => {
+      files.forEach((file) => {
+        URL.revokeObjectURL(file.thumbnailURL);
+        URL.revokeObjectURL(file.fileURL);
+      });
+    };
   }, [denuncias, cacheFiles]);
 
   const getFileById = useCallback(
