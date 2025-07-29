@@ -14,6 +14,7 @@ import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
 import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
 import { NotFoundPage } from './pages/404';
+import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
 
 export function App() {
   return (
@@ -50,7 +51,7 @@ export function App() {
             <Route index element={<AcoesList />} />
             <Route path=":acaoId" element={<AcaoDetails />} />
             <Route path="add" element={<AddAcao />} />
-            <Route path=":acaoId/indeferir" element={<h1>Indeferir acao</h1>} />
+            <Route path=":acaoId/indeferir" element={<IndeferirAcao />} />
             <Route
               path=":acaoId/vincular-denuncias"
               element={<VincularAcaoADenuncias />}
