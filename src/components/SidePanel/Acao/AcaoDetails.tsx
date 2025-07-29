@@ -8,6 +8,10 @@ import { useMapActions } from '../../../context/MapActions';
 import { Tag } from '../Tag';
 import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
 import { useFilters } from '../../../context/FiltersContext';
+import { Button } from '@/components/Buttons/BaseButton';
+import { IconProgressX } from '@tabler/icons-react';
+import { FilesCarrrousel } from '@/components/FilesCarrousel';
+import { IoIosAdd } from 'react-icons/io';
 
 export function AcaoDetails() {
   const { acoes, denuncias } = useOcorrencias();
@@ -62,11 +66,16 @@ export function AcaoDetails() {
   }
 
   return (
-    <div className="flex flex-col h-full p-4">
+    <div className="flex flex-col h-full">
       <div className="flex-shrink-0">
         <BackButton to="/ocorrencias/acoes" children="Detalhes da Ação" />
         <div className="flex justify-between items-center mt-4">
-          <h1 className="text-2xl font-bold text-gray-800">{acao.nome}</h1>
+          <div>
+            <p className="text-sm text-gray-500">
+              Responsável: {acao.secretaria.sigla}
+            </p>
+            <h1 className="text-2xl font-bold text-gray-800">{acao.nome}</h1>
+          </div>
           <Tag status={currentAcaoStatus} />
         </div>
       </div>
@@ -81,7 +90,21 @@ export function AcaoDetails() {
           </div>
         )}
 
-        <div className="flex flex-col gap-2">
+        <div className="rounded-xl max-h-80 space-y-3 border p-3 mb-5">
+          <div className="flex justify-between items-center">
+            <h1 className="font-semibold text-md text-gray-800">
+              Denúncias Vinculadas
+            </h1>
+            <button
+              onClick={() => navigate('vincular-denuncias')}
+              className=" bg-blue-500 rounded-full p-1"
+            >
+              {currentAcaoStatus !== 'indeferido' && (
+                <IoIosAdd size={24} color="white" />
+              )}
+            </button>
+          </div>
+
           {currentAcaoStatus !== 'indeferido' ? (
             denunciasVinculadas.length === 0 ? (
               <div className="text-center py-10">
@@ -112,23 +135,33 @@ export function AcaoDetails() {
         </div>
       </div>
 
-      <footer className="flex flex-col gap-2 pt-4 border-t border-gray-200 flex-shrink-0">
-        {currentAcaoStatus !== 'indeferido' && (
-          <button
-            onClick={() => navigate('vincular-denuncias')}
-            className="w-full cursor-pointer font-bold py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Vincular denúncia
-          </button>
-        )}
+      <div>
+        <h3 className="font-semibold text-gray-800 mb-2">Mídias:</h3>
+        <FilesCarrrousel
+          files={denunciasVinculadas.flatMap((denuncia) =>
+            denuncia.files.map((file) => ({
+              ...file,
+              nome: file.nome,
+              tipo:
+                file.tipo ?? (file.nome.includes('.mp4') ? 'video' : 'imagem'),
+            })),
+          )}
+        />
+      </div>
 
+      <footer className="flex flex-col gap-2 pt-4 border-t border-gray-200 flex-shrink-0">
         {['em_analise', 'em_andamento'].includes(currentAcaoStatus) && (
-          <button
-            onClick={() => navigate('indeferir')}
-            className="w-full cursor-pointer font-bold py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Indeferir ação
-          </button>
+          <div className="flex justify-end">
+            <Button
+              variant="outline_danger"
+              size="sm"
+              onClick={() => navigate('indeferir')}
+              className=""
+            >
+              <IconProgressX className="inline h-4" />
+              Indeferir Denúncia
+            </Button>
+          </div>
         )}
       </footer>
     </div>

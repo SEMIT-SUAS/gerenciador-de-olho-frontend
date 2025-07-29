@@ -61,11 +61,15 @@ export function DenunciaManageInAction({
     <>
       <div
         aria-label={`Ver detalhes da denúncia ${denuncia.tipo.nome}`}
-        className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left shadow-sm transition-all hover:shadow-md focus:outline-none"
+        className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left transition-all  hover:shadow-md focus:outline-none"
       >
         <div className="flex flex-col">
-          <p className="font-semibold text-gray-800">{denuncia.tipo.nome}</p>
-          <p className="text-sm text-gray-500">{denuncia.rua}</p>
+          <p className="font-semibold text-md text-gray-800">
+            {denuncia.tipo.nome}
+          </p>
+          <p className="text-xs text-gray-500">
+            {denuncia.rua}, {denuncia.bairro}
+          </p>
         </div>
 
         <div className="flex items-center gap-1">

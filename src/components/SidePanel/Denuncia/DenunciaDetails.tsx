@@ -13,6 +13,7 @@ import {
   getIndeferimentoData,
 } from '@/utils/getDenunciaStatus';
 import { Button } from '@/components/Buttons/BaseButton';
+import { IconProgressX } from '@tabler/icons-react';
 
 export function DenunciaDetails() {
   const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
@@ -172,16 +173,19 @@ export function DenunciaDetails() {
             </div>
           )}
 
-          {denunciaStatus === 'aberto' && (
-            <Button
-              variant="outline_danger"
-              size="sm"
-              onClick={() => navigate('indeferir')}
-              className="w-full"
-            >
-              Indeferir Denúncia
-            </Button>
-          )}
+          <div className="flex justify-end">
+            {denunciaStatus === 'aberto' && (
+              <Button
+                variant="outline_danger"
+                size="sm"
+                onClick={() => navigate('indeferir')}
+                className=""
+              >
+                <IconProgressX className="inline h-4" />
+                Indeferir Denúncia
+              </Button>
+            )}
+          </div>
         </>
       </div>
 

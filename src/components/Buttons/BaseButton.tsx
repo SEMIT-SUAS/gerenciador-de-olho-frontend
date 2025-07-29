@@ -1,6 +1,13 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { clsx, type ClassValue } from 'clsx';
+import {
+  IconCircleCheckFilled,
+  IconLoader,
+  IconProgressX,
+  IconProgress,
+  IconTrendingUp,
+} from '@tabler/icons-react';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -30,14 +37,11 @@ const variantStyles = {
   danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
   outline_danger:
     'border-2 border-red-700 text-red-700 hover:bg-red-700 hover:text-white focus:ring-red-500',
-  ghost: 'bg-transparent text-gray-800 hover:bg-gray-100 focus:ring-gray-400',
-  outline_ghost:
-    'border-2 border-gray-300 text-gray-800 hover:bg-gray-300 hover:text-white focus:ring-gray-500',
 };
 
 const sizeStyles = {
   sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-base',
+  md: 'px-4 py-2 text-sm',
   lg: 'px-6 py-3 text-lg',
 };
 
