@@ -28,42 +28,42 @@ export function FilesProvider({ children }: { children: ReactNode }) {
   const { denuncias } = useOcorrencias();
   const [files, setFiles] = useState<FileProps[]>([]);
 
+  async function loadFileWithFallback(file: DenunciaFile) {
+    try {
+      const blob = await arquivoService.getByName(file.nome);
+      const thumbnailURL = await generateThumbnailUrl(blob);
+
+      return {
+        identifier: file.id,
+        thumbnailURL,
+        fileURL: URL.createObjectURL(blob),
+      };
+    } catch (error) {
+      console.error(`Failed to load file ${file.nome}:`, error);
+      return {
+        identifier: file.id,
+        thumbnailURL: '/image_fail_to_fetch.png',
+        fileURL: '/image_fail_to_fetch.png',
+      };
+    }
+  }
+
   const cacheFiles = useCallback(async (filesToCache: DenunciaFile[]) => {
     try {
       const cachedFiles = await Promise.all(
-        filesToCache.map(async (file) => {
-          const blob = await arquivoService.getByName(file.nome);
-          const thumbnailURL = await generateThumbnailUrl(blob);
-
-          return {
-            identifier: file.id,
-            thumbnailURL,
-            fileURL: URL.createObjectURL(blob),
-          };
-        }),
+        filesToCache.map(loadFileWithFallback),
       );
 
-      setFiles((prevFiles) => {
-        return [...prevFiles, ...cachedFiles];
-      });
-    } catch {
-      return null;
+      setFiles((prevFiles) => [...prevFiles, ...cachedFiles]);
+    } catch (error) {
+      console.error('Error caching files:', error);
     }
   }, []);
 
   useEffect(() => {
-    if (denuncias.length > 0) {
-      denuncias.forEach((d) => {
-        cacheFiles(d.files);
-      });
-    }
-
-    return () => {
-      files.forEach((file) => {
-        URL.revokeObjectURL(file.thumbnailURL);
-        URL.revokeObjectURL(file.fileURL);
-      });
-    };
+    denuncias.forEach((d) => {
+      cacheFiles(d.files);
+    });
   }, [denuncias, cacheFiles]);
 
   const getFileById = useCallback(
