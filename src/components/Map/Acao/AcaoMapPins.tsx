@@ -1,25 +1,26 @@
 import { Marker } from 'react-leaflet';
 import { useFilters } from '../../../context/FiltersContext';
 import type { AcaoModel } from '../../../types/Acao';
-import { iconAcao } from '../../../constants/mapIcons';
 import { AcaoPolygon } from './AcaoPolygon';
 import { useMapActions } from '../../../context/MapActions';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { getConvexHull } from '../../../utils/geometry';
 import { useNavigate } from 'react-router-dom';
 import { AcaoTooltip } from './AcaoTooltip';
+import { Icon } from 'leaflet';
 
 export function AcaoMapPins() {
   const { isVisibleAcoesInMap, acoesFiltradas, denunciasFiltradas } =
     useFilters();
-  const { salvarAcaoOnclick, setAcaoSelecionada } = useMapActions();
+  const { salvarAcaoOnclick, toggleAcaoSelecionada, acaoSelecionada } =
+    useMapActions();
   const { denuncias } = useOcorrencias();
 
   const navigate = useNavigate();
 
   function handleOnAcaoClick(acao: AcaoModel) {
     if (salvarAcaoOnclick) {
-      setAcaoSelecionada(acao);
+      toggleAcaoSelecionada(acao);
     } else {
       navigate(`/ocorrencias/acoes/${acao.id}`);
     }
@@ -27,6 +28,20 @@ export function AcaoMapPins() {
 
   if (!isVisibleAcoesInMap) {
     return null;
+  }
+
+  function handleGetActionIcon(acao: AcaoModel) {
+    const isSelected = acao.id === acaoSelecionada?.id;
+    const iconSize = isSelected ? 36 : 32;
+
+    return new Icon({
+      iconUrl: '/icons/acao.png',
+      iconSize: [iconSize, iconSize],
+      iconAnchor: [iconSize / 2, iconSize],
+      popupAnchor: [0, -iconSize],
+      shadowSize: [41, 41],
+      shadowAnchor: [19, 41],
+    });
   }
 
   return (
@@ -50,7 +65,7 @@ export function AcaoMapPins() {
             <Marker
               key={`a-${a.id}`}
               position={[a.latitude, a.longitude]}
-              icon={iconAcao}
+              icon={handleGetActionIcon(a)}
               eventHandlers={{
                 click: () => handleOnAcaoClick(a),
               }}

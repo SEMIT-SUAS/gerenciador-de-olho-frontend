@@ -30,6 +30,7 @@ type SelectAcoesOuDenunciasProps = {
   setZoomTo: Dispatch<SetStateAction<Coordinates | null>>;
   newDenunciaCoordinates: Coordinates | null;
   setNewDenunciaCoordinates: Dispatch<SetStateAction<Coordinates | null>>;
+  toggleAcaoSelecionada: (acao: AcaoModel) => void;
 };
 
 type Coordinates = {
@@ -81,6 +82,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     setZoomTo,
     newDenunciaCoordinates,
     setNewDenunciaCoordinates,
+    toggleAcaoSelecionada,
   };
 
   useEffect(() => {
@@ -96,6 +98,14 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
       );
     } else {
       setDenunciasSelecionadas((denuncias) => [...denuncias, newDenuncia]);
+    }
+  }
+
+  function toggleAcaoSelecionada(acao: AcaoModel) {
+    if (acaoSelecionada?.id === acao.id) {
+      setAcaoSelecionada(null);
+    } else {
+      setAcaoSelecionada(acao);
     }
   }
 

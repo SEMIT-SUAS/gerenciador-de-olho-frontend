@@ -24,8 +24,12 @@ export function VincularDenunciaAAcao() {
     restoreCachedFilters,
     acoesFiltradas,
   } = useFilters();
-  const { setSalvarAcaoOnclick, acaoSelecionada, setAcaoSelecionada } =
-    useMapActions();
+  const {
+    setSalvarAcaoOnclick,
+    acaoSelecionada,
+    setAcaoSelecionada,
+    toggleAcaoSelecionada,
+  } = useMapActions();
 
   const params = useParams();
   const denunciaId = params.denunciaId;
@@ -130,7 +134,7 @@ export function VincularDenunciaAAcao() {
             {acoesFiltradas.map((acao) => (
               <button
                 key={acao.id}
-                onClick={() => setAcaoSelecionada(acao)}
+                onClick={() => toggleAcaoSelecionada(acao)}
                 className={`w-full text-left p-3 ${
                   acao.id == acaoSelecionada?.id
                     ? 'bg-gray-300'
