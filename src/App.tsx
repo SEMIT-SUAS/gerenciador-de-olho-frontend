@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { DashboardPage } from './pages/DashboardPage';
-import { LoginPage } from './pages/LoginPage';
+import LoginPage from './pages/LoginPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
 import { DenunciasList } from './components/SidePanel/Denuncia/DenunciasList';
