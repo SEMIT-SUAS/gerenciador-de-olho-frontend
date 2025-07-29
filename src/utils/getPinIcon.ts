@@ -1,4 +1,4 @@
-import L from 'leaflet';
+import L, { type PointExpression } from 'leaflet';
 
 const icons = [
   {
@@ -91,7 +91,7 @@ const icons = [
   },
 ];
 
-export function getDenunciaIconByTipo(tipo: string) {
+export function getDenunciaIconByTipo(tipo: string, isSelected: boolean) {
   const target = icons.find((i) => i.name === tipo);
   let iconPath = '/icons/denuncia.png';
 
@@ -99,11 +99,15 @@ export function getDenunciaIconByTipo(tipo: string) {
     iconPath = target.path;
   }
 
+  const iconSize = isSelected ? 38 : 32;
+  const iconAnchor: PointExpression = [iconSize / 2, iconSize];
+  const popupAnchor: PointExpression = [0, -iconSize];
+
   return new L.Icon({
     iconUrl: iconPath,
-    iconSize: [38, 38],
-    iconAnchor: [19, 38],
-    popupAnchor: [0, -40],
+    iconSize: [iconSize, iconSize],
+    iconAnchor,
+    popupAnchor,
     shadowSize: [41, 41],
     shadowAnchor: [12, 41],
   });

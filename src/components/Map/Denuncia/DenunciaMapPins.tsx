@@ -8,8 +8,7 @@ import { getConvexHull } from '../../../utils/geometry';
 import { DenunciaTooltip } from './DenunciaTooltip';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { LeafletMouseEvent } from 'leaflet';
-import { selectedIcon } from '../../../constants/mapIcons';
+import { Icon, type LeafletMouseEvent } from 'leaflet';
 
 export function DenunciaMapPins() {
   const { denunciasFiltradas, isVisibleDenunciasInMap } = useFilters();
@@ -69,6 +68,16 @@ export function DenunciaMapPins() {
     return null;
   }
 
+  function handleGetIcon(denuncia: DenunciaModel) {
+    let isSelected = false;
+
+    if (denunciasSelecionas.find((d) => d.id == denuncia.id)) {
+      isSelected = true;
+    }
+
+    return getDenunciaIconByTipo(denuncia.tipo.nome, isSelected);
+  }
+
   return (
     <>
       {denunciasFiltradas.map((d) => {
@@ -76,7 +85,7 @@ export function DenunciaMapPins() {
           <Marker
             key={`d-${d.id}`}
             position={[d.latitude, d.longitude]}
-            icon={getDenunciaIconByTipo(d.tipo.nome)}
+            icon={handleGetIcon(d)}
             eventHandlers={{
               click: () => handleOnDenunciaClick(d),
             }}
@@ -95,7 +104,16 @@ export function DenunciaMapPins() {
       {!isSelectingNewDenuncia && newDenunciaCoordinates && (
         <Marker
           position={[newDenunciaCoordinates.lat, newDenunciaCoordinates.lng]}
-          icon={selectedIcon}
+          icon={
+            new Icon({
+              iconUrl: '/icons/sirene.png',
+              iconSize: [32, 32],
+              iconAnchor: [32 / 2, 32],
+              popupAnchor: [0, -32],
+              shadowSize: [41, 41],
+              shadowAnchor: [19, 41],
+            })
+          }
         />
       )}
     </>

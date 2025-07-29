@@ -59,8 +59,7 @@ export function DenunciaItem({
           </div>
 
           {showTag && <Tag status={denunciaStatus} />}
-        </div>
-        <div className="flex justify-between items-center">
+
           {isDeletable && (
             <button
               onClick={onTrashClick}
