@@ -1,10 +1,9 @@
 import type { DenunciaFile } from '@/types/DenunciaFile';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 import { Loading } from './Loading/Loading';
-import arquivoService from '@/services/arquivoService';
-import { generateThumbnailUrl } from '@/utils/video';
 import type { CarrouselFileProps } from './Modals/FileViewerModal';
+import { useFiles } from '@/context/FilesContext';
 
 type FileCarrouselItemProps = {
   file: DenunciaFile;
@@ -15,24 +14,11 @@ export function FileCarrouselItem({
   file: denunciaFile,
   onClickInItem,
 }: FileCarrouselItemProps) {
-  const [videoURL, setVideoURL] = useState<string | null>(null);
-  const [thumbnailURL, setThumbnailURL] = useState<string | null>(null);
+  const { files, getFileById } = useFiles();
 
-  async function fetchArquivo() {
-    return await arquivoService.getByName(denunciaFile.nome);
-  }
-
-  useEffect(() => {
-    fetchArquivo().then((file) => {
-      if (denunciaFile.tipo === 'video') {
-        setVideoURL(URL.createObjectURL(file));
-      }
-
-      generateThumbnailUrl(file).then((url) => {
-        setThumbnailURL(url);
-      });
-    });
-  }, []);
+  const cachedFile = useMemo(() => {
+    return getFileById(denunciaFile.id);
+  }, [files]);
 
   return (
     <button
@@ -40,21 +26,21 @@ export function FileCarrouselItem({
         onClickInItem({
           name: denunciaFile.nome,
           type: denunciaFile.tipo,
-          url: videoURL ?? thumbnailURL!,
+          url: cachedFile?.fileURL!,
         })
       }
       className="relative h-full w-full focus:outline-none"
     >
-      {!thumbnailURL && (
+      {!cachedFile?.thumbnailURL && (
         <div className="flex items-center justify-center h-full border-2 border-blue-50 rounded-md">
           <Loading />
         </div>
       )}
 
-      {thumbnailURL && (
+      {cachedFile?.thumbnailURL && (
         <div className="relative w-full h-full">
           <img
-            src={thumbnailURL}
+            src={cachedFile.thumbnailURL}
             alt={denunciaFile.nome}
             className="w-full h-full object-cover rounded-md"
             loading="lazy"

@@ -12,12 +12,8 @@ import { useFilters } from '../../../context/FiltersContext';
 export function AcaoDetails() {
   const { acoes, denuncias } = useOcorrencias();
   const { setZoomTo } = useMapActions();
-  const {
-    cacheCurrentFilters,
-    restoreCachedFilters,
-    setFiltroDenunciasComAcao,
-    setFiltroStatusDenuncia,
-  } = useFilters();
+  const { cacheCurrentFilters, restoreCachedFilters, setFiltroStatusDenuncia } =
+    useFilters();
 
   const params = useParams();
   const navigate = useNavigate();
@@ -45,8 +41,6 @@ export function AcaoDetails() {
     cacheCurrentFilters();
 
     setFiltroStatusDenuncia('todos');
-    setFiltroDenunciasComAcao('com_acao');
-
     return () => {
       restoreCachedFilters();
     };

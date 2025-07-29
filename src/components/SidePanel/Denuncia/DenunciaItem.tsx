@@ -3,10 +3,9 @@ import { Tag } from '../Tag';
 import type { DenunciaModel } from '@/types/Denuncia';
 import { calcularDiasAtras } from '@/utils/data';
 import { getDenunciaStatus } from '@/utils/getDenunciaStatus';
-import arquivoService from '@/services/arquivoService';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { Loading } from '@/components/Loading/Loading';
-import { generateThumbnailUrl } from '@/utils/video';
+import { useFiles } from '@/context/FilesContext';
 
 type DenunciaItemProps = {
   denuncia: DenunciaModel;
@@ -25,22 +24,11 @@ export function DenunciaItem({
 }: DenunciaItemProps) {
   const diasAtras = calcularDiasAtras(denuncia.criadaEm);
   const denunciaStatus = getDenunciaStatus(denuncia);
-  const [thumbImageURL, setThumbImageURL] = useState<string | null>(null);
+  const { getFileById, files } = useFiles();
 
-  async function fetchThumbImage() {
-    const firstFile = denuncia.files[0];
-    const file = await arquivoService.getByName(firstFile.nome);
-
-    return await generateThumbnailUrl(file);
-  }
-
-  useEffect(() => {
-    if (!thumbImageURL) {
-      fetchThumbImage().then((thumbImageURL) => {
-        setThumbImageURL(thumbImageURL);
-      });
-    }
-  }, [thumbImageURL]);
+  const thumbImageURL = useMemo(() => {
+    return getFileById(denuncia.files[0].id)?.thumbnailURL;
+  }, [files]);
 
   return (
     <div

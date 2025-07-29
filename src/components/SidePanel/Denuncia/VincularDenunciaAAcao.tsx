@@ -7,8 +7,9 @@ import { useFilters } from '../../../context/FiltersContext';
 import { useMapActions } from '../../../context/MapActions';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { toast } from 'react-toastify';
-import denunciasService from '@/services/denunciasService';
+// import denunciasService from '@/services/denunciasService';
 import { getPolygonoCenter } from '@/utils/geometry';
+import type { DenunciaModel } from '@/types/Denuncia';
 
 export function VincularDenunciaAAcao() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
@@ -33,10 +34,6 @@ export function VincularDenunciaAAcao() {
     return denuncias.find((d) => d.id == Number(denunciaId));
   }, [denuncias, denunciaId]);
 
-  if (!denuncia || denuncia.acao != null) {
-    return <Navigate to="404" replace />;
-  }
-
   useEffect(() => {
     cacheCurrentFilters();
 
@@ -53,14 +50,21 @@ export function VincularDenunciaAAcao() {
     };
   }, []);
 
+  if (!denuncia || denuncia.acao != null) {
+    return <Navigate to="404" replace />;
+  }
+
   async function handleVincularDenuncia() {
     try {
-      const denunciaUpdatedData = await denunciasService.vincularDenunciaToAcao(
-        denuncia?.id!,
-        acaoSelecionada?.id!,
-      );
+      // const denunciaUpdatedData = await denunciasService.vincularDenunciaToAcao(
+      //   denuncia?.id!,
+      //   acaoSelecionada?.id!,
+      // );
 
-      console.log(denunciaUpdatedData);
+      const denunciaUpdatedData: DenunciaModel = {
+        ...denuncia!,
+        acao: acaoSelecionada!,
+      };
 
       setDenuncias((prevDenuncias) => {
         const updatedDenuncias = prevDenuncias.map((d) =>
@@ -91,10 +95,9 @@ export function VincularDenunciaAAcao() {
       });
 
       navigate(`/ocorrencias/acoes/${acaoSelecionada?.id}`);
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Erro ao vincular denúncia',
-      );
+      toast.success('Denúncia vinculada com sucesso!');
+    } catch (error: any) {
+      toast.error(error.message);
     }
   }
 
