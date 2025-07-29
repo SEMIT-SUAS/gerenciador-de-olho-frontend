@@ -53,7 +53,7 @@ export function ServicesList() {
       })
       .catch((error) => {
         console.error(error.message);
-      });
+    });
   }
 
   const filteredServices = services.filter((service) =>

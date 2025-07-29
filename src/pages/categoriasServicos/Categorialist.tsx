@@ -33,29 +33,29 @@ export function ListaCategorias() {
   }
 
   async function handleToggleAtivo(cat: ServicoCategoria & { id: number }) {
-  try {
-    await toggleAtivo(cat.id, !cat.ativo);
-    fetchCategorias();
-  } catch (error) {
-    alert(`Erro ao alterar ativo: ${(error as Error).message}`);
+    try {
+      await toggleAtivo(cat.id, !cat.ativo);
+      fetchCategorias();
+    } catch (error) {
+      alert(`Erro ao alterar ativo: ${(error as Error).message}`);
+    }
   }
-}
 
-async function handleToggleVisivel(cat: ServicoCategoria & { id: number }) {
-  try {
-    await toggleVisivel(cat.id, !cat.visivel);
+  async function handleToggleVisivel(cat: ServicoCategoria & { id: number }) {
+    try {
+      await toggleVisivel(cat.id, !cat.visivel);
 
-    // Atualiza localmente o estado para não remover da lista
-    setCategorias(current =>
-      current.map(c =>
-        c.id === cat.id ? { ...c, visivel: !c.visivel } : c
-      )
-    );
+      // Atualiza localmente o estado para não remover da lista
+      setCategorias(current =>
+        current.map(c =>
+          c.id === cat.id ? { ...c, visivel: !c.visivel } : c
+        )
+      );
 
-  } catch (error) {
-    alert(`Erro ao alterar visível: ${(error as Error).message}`);
+    } catch (error) {
+      alert(`Erro ao alterar visível: ${(error as Error).message}`);
+    }
   }
-}
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>, isEdit = false) {
     if (e.target.files && e.target.files.length > 0) {
