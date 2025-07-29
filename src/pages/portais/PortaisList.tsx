@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import type { Portais } from "../../types/Portais";
 import { Link } from "react-router-dom";
 import { getAllPortais, createPortal, toggleAtivo, changeServiceVisibility } from "../../services/PortaisService";
-import { vi } from "zod/v4/locales";
 
 export function PortaisList() {
   const [portais, setPortais] = useState<Portais[]>([]);
