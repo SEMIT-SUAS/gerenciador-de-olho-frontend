@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Services } from '../../types/Services';
 import { createService } from '../../services/servicosServices';
 import secretariaService from '../../services/secretariaService'; // ajuste o caminho se necessário
-import type { Secretaria } from '../../types/Secretaria';
+import type { SecretariaModel } from '../../types/Secretaria';
 import { getAllCategorias } from '../../services/servicocategoriaService';
 import type { ServicoCategoria } from '../../types/CategoriaServico';
 import { getAllPerosona } from '../../services/servicoPersona';
@@ -47,7 +47,7 @@ export function ServicoNovo() {
   const [categorias, setCategorias] = useState<ServicoCategoria[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
+  const [secretarias, setSecretarias] = useState<SecretariaModel[]>([]);
   const [persona, setPersona] = useState<Persona[]>([]);
 
   useEffect(() => {

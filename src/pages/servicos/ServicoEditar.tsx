@@ -1,152 +1,115 @@
-import React, { useState, useEffect } from 'react';
+import  { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import type { Services } from '../../types/Services';
 import { getServicoById, updateServico } from '../../services/servicosServices';
 
 export function ServicoEditar() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
-  const [form, setForm] = useState<Services | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting }
+  } = useForm<Services>();
+  
+  const publicoDestinado = watch('publicoDestinado') as string[] | undefined;
+  const formasSolicitacao = watch('formasSolicitacao') as string[] | undefined;
+  const documentacaoNecessaria = watch('documentacaoNecessaria') as string[] | undefined;
 
   useEffect(() => {
     async function fetchServico() {
       try {
         if (!id) return;
+        
         const servico = await getServicoById(Number(id));
-        setForm(servico);
+        
+        // popula o formulário com reset
+        reset(servico);
       } catch (err: any) {
-        setError(err.message || 'Erro desconhecido');
+        setError(err.message || 'Erro ao carregar serviço');
       } finally {
         setLoading(false);
       }
     }
 
     fetchServico();
-  }, [id]);
+  }, [id, reset]);
 
-  function handleChange(
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) {
-    const { name, value, type } = e.target;
-
-    let checked: boolean | undefined = undefined;
-    if (
-      e.target instanceof HTMLInputElement &&
-      (type === 'checkbox' || type === 'radio')
-    ) {
-      checked = e.target.checked;
-    }
-
-    if (!form) return;
-
-    if (name === 'visivel' || name === 'ativo') {
-      // checked está garantido porque só entra aqui se for checkbox ou radio
-      setForm({ ...form, [name]: checked ?? false });
-      return;
-    }
-
-    if (name.startsWith('orgao.')) {
-      setForm({
-        ...form,
-        orgao: { ...form.orgao, nome: value },
-      });
-      return;
-    }
-
-    if (name.startsWith('categoria.')) {
-      setForm({
-        ...form,
-        categoria: { ...form.categoria, nome: value },
-      });
-      return;
-    }
-
-    setForm({ ...form, [name]: value });
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!form) return;
-
-    setSaving(true);
-    setError(null);
-
+  const onSubmit = async (data: Services) => {
     try {
-      // Usa diretamente a função updateServico que retorna erro se falhar
-      await updateServico(form);
-
-      // Se chegou aqui, o serviço foi atualizado com sucesso
-      navigate('/'); // redireciona após o sucesso
+      await updateServico(data);
+      navigate('/');
     } catch (err: any) {
-      setError(err.message || 'Erro inesperado');
-    } finally {
-      setSaving(false);
+      setError(err.message || 'Erro ao salvar');
     }
-  }
+  };
+
+  // Helper para campos de array
+  const handleArrayField = (
+    fieldName: 'publicoDestinado' | 'formasSolicitacao' | 'documentacaoNecessaria',
+    value: string
+  ) => {
+    const arrayValue = value.split('\n').filter(item => item.trim());
+    setValue(fieldName, arrayValue);
+  };
 
   if (loading) return <p>Carregando dados do serviço...</p>;
   if (error) return <p style={{ color: 'red' }}>Erro: {error}</p>;
-  if (!form) return <p>Serviço não encontrado</p>;
 
   return (
     <div style={{ maxWidth: 800, margin: 'auto' }}>
       <h2>Editar Serviço</h2>
-      <form onSubmit={handleSubmit}>
+      
+      <form onSubmit={handleSubmit(onSubmit)}>
         <label>
           Nome:
           <input
             type="text"
-            name="nome"
-            value={form.nome}
-            onChange={handleChange}
-            required
+            {...register('nome', { required: 'Nome é obrigatório' })}
           />
+          {errors.nome && <span style={{ color: 'red' }}>{errors.nome.message}</span>}
         </label>
 
         <label>
           Descrição:
           <textarea
-            name="descricao"
-            value={form.descricao}
-            onChange={handleChange}
-            required
+            {...register('descricao', { required: 'Descrição é obrigatória' })}
+            rows={3}
+          />
+          {errors.descricao && <span style={{ color: 'red' }}>{errors.descricao.message}</span>}
+        </label>
+
+        <label>
+          Público Destinado (um por linha):
+          <textarea
+            value={publicoDestinado?.join('\n') || ''}
+            onChange={(e) => handleArrayField('publicoDestinado', e.target.value)}
             rows={3}
           />
         </label>
 
         <label>
-          Público Destinado:
+          Formas de Solicitação (uma por linha):
           <textarea
-            name="publicoDestinado"
-            value={form.publicoDestinado}
-            onChange={handleChange}
-            rows={2}
+            value={formasSolicitacao?.join('\n') || ''}
+            onChange={(e) => handleArrayField('formasSolicitacao', e.target.value)}
+            rows={3}
           />
         </label>
 
         <label>
-          Formas de Solicitação:
+          Documentação Necessária (uma por linha):
           <textarea
-            name="formasSolicitacao"
-            value={form.formasSolicitacao}
-            onChange={handleChange}
-            rows={2}
-          />
-        </label>
-
-        <label>
-          Documentação Necessária:
-          <textarea
-            name="documentacaoNecessaria"
-            value={form.documentacaoNecessaria}
-            onChange={handleChange}
-            rows={2}
+            value={documentacaoNecessaria?.join('\n') || ''}
+            onChange={(e) => handleArrayField('documentacaoNecessaria', e.target.value)}
+            rows={3}
           />
         </label>
 
@@ -154,18 +117,14 @@ export function ServicoEditar() {
           Custos:
           <input
             type="text"
-            name="custos"
-            value={form.custos}
-            onChange={handleChange}
+            {...register('custos')}
           />
         </label>
 
         <label>
           Etapas:
           <textarea
-            name="etapas"
-            value={form.etapas}
-            onChange={handleChange}
+            {...register('etapas')}
             rows={2}
           />
         </label>
@@ -173,9 +132,7 @@ export function ServicoEditar() {
         <label>
           Requisitos:
           <textarea
-            name="requisitos"
-            value={form.requisitos}
-            onChange={handleChange}
+            {...register('requisitos')}
             rows={2}
           />
         </label>
@@ -183,9 +140,7 @@ export function ServicoEditar() {
         <label>
           Formas de Acompanhamento:
           <textarea
-            name="formasAcompanhamento"
-            value={form.formasAcompanhamento}
-            onChange={handleChange}
+            {...register('formasAcompanhamento')}
             rows={2}
           />
         </label>
@@ -194,18 +149,14 @@ export function ServicoEditar() {
           Prazo de Atendimento:
           <input
             type="text"
-            name="prazoAtendimento"
-            value={form.prazoAtendimento}
-            onChange={handleChange}
+            {...register('prazoAtendimento')}
           />
         </label>
 
         <label>
           Prioridades:
           <textarea
-            name="prioridades"
-            value={form.prioridades}
-            onChange={handleChange}
+            {...register('prioridades')}
             rows={2}
           />
         </label>
@@ -214,18 +165,14 @@ export function ServicoEditar() {
           Horário de Atendimento:
           <input
             type="text"
-            name="horarioAtendimento"
-            value={form.horarioAtendimento}
-            onChange={handleChange}
+            {...register('horarioAtendimento')}
           />
         </label>
 
         <label>
           Legislação:
           <textarea
-            name="legislacao"
-            value={form.legislacao}
-            onChange={handleChange}
+            {...register('legislacao')}
             rows={2}
           />
         </label>
@@ -234,9 +181,7 @@ export function ServicoEditar() {
           Órgão:
           <input
             type="text"
-            name="orgao.nome"
-            value={form.orgao.nome}
-            onChange={handleChange}
+            {...register('orgao')}
           />
         </label>
 
@@ -244,9 +189,7 @@ export function ServicoEditar() {
           Categoria:
           <input
             type="text"
-            name="categoria.nome"
-            value={form.categoria.nome}
-            onChange={handleChange}
+            {...register('categoria.nome')}
           />
         </label>
 
@@ -254,9 +197,7 @@ export function ServicoEditar() {
           Setor de Lotação:
           <input
             type="text"
-            name="setorLotacao"
-            value={form.setorLotacao}
-            onChange={handleChange}
+            {...register('setorLotacao')}
           />
         </label>
 
@@ -264,19 +205,7 @@ export function ServicoEditar() {
           Modelo de Requerimento:
           <input
             type="text"
-            name="modeloRequerimento"
-            value={form.modeloRequerimento}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label>
-          Persona:
-          <input
-            type="text"
-            name="persona"
-            value={form.persona}
-            onChange={handleChange}
+            {...register('modeloRequerimento')}
           />
         </label>
 
@@ -284,9 +213,7 @@ export function ServicoEditar() {
           Visível:
           <input
             type="checkbox"
-            name="visivel"
-            checked={form.visivel}
-            onChange={handleChange}
+            {...register('visivel')}
           />
         </label>
 
@@ -294,14 +221,12 @@ export function ServicoEditar() {
           Ativo:
           <input
             type="checkbox"
-            name="ativo"
-            checked={form.ativo}
-            onChange={handleChange}
+            {...register('ativo')}
           />
         </label>
 
-        <button type="submit" disabled={saving}>
-          {saving ? 'Salvando...' : 'Salvar'}
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Salvando...' : 'Salvar'}
         </button>
       </form>
     </div>

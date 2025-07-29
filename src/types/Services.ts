@@ -1,10 +1,10 @@
-import type { Secretaria } from '../types/Secretaria';
+import type { SecretariaModel } from '../types/Secretaria';
 import type { Persona } from './Persona';
 import type { ServicoCategoria } from './CategoriaServico';
 
 export interface Services {
   orgao: number | null;
-  secretaria: Secretaria | null
+  secretaria: SecretariaModel | null
   id: number | null;
   nome: string
   descricao: string
