@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 // import denunciasService from '@/services/denunciasService';
 import { getPolygonoCenter } from '@/utils/geometry';
 import type { DenunciaModel } from '@/types/Denuncia';
+import { Button } from '@/components/Buttons/BaseButton';
 
 export function VincularDenunciaAAcao() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
@@ -145,15 +146,12 @@ export function VincularDenunciaAAcao() {
           </div>
         </div>
 
-        <button
-          className="w-full bg-bg-blue-600 bg-green-700 text-white font-semibold 
-          py-2.5 rounded-lg transition-colors cursor-pointer 
-          disabled:cursor-not-allowed disabled:opacity-60 text-sm"
+        <Button
           onClick={() => setIsOpenConfirmationModal(true)}
           disabled={!acaoSelecionada}
         >
           Víncular á ação
-        </button>
+        </Button>
       </div>
 
       <ConfirmModal

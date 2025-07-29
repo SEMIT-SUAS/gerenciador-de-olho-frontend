@@ -134,8 +134,9 @@ export function VincularAcaoADenuncias() {
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Vinculando denúncias á ação:</p>
           <p className="font-bold text-blue-900">{acao.nome}</p>
-
-          <Tag status={currentAcaoStatus} />
+          <p className="text-sm text-blue-900 font-semibold">
+            Responsável: {acao.secretaria.sigla}
+          </p>
         </div>
 
         <div className="flex flex-col gap-1">
