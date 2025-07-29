@@ -154,8 +154,6 @@ export function AddAcaoForm() {
                     </option>
                   ))}
                 </select>
-
-                <SelectArrowDown />
               </div>
             )}
             <FormInputError message={formErrors?.secretariaId?._errors[0]} />
