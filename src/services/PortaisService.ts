@@ -20,18 +20,35 @@ export async function getAllPortais(): Promise<Portais[]> {
 export async function createPortal(portal: Portais): Promise<Portais> {
   try {
     const response = await fetch(`${API_BASE_URL}/portal/cadastrar`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(portal),
-      })
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(portal),
+    });
 
-    if (!response.ok){
-      throw new Error('Não foi possível salvar serviço')
+    const contentType = response.headers.get("content-type");
+
+    if (!response.ok) {
+      const errorMessage = contentType?.includes("application/json")
+        ? (await response.json()).message
+        : await response.text();
+      throw new Error(errorMessage || "Erro ao cadastrar portal.");
     }
-      return await response.json()
-  } catch (error){
-      throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente')
-  }    
+
+    // ✅ Se for texto (como no seu caso), simula o retorno
+    if (contentType?.includes("text/plain")) {
+      const message = await response.text();
+      console.log("Mensagem do servidor:", message);
+
+      // Simula um "portal criado" sem ID
+      return { ...portal };
+    }
+
+    // ✅ Se for JSON
+    return await response.json();
+
+  } catch (error: any) {
+    throw new Error(error.message || "Erro inesperado ao cadastrar portal.");
+  }
 }
 
 export async function toggleAtivo(id: number, ativo: boolean): Promise<void> {

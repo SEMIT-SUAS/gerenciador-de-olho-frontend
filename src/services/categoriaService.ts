@@ -18,7 +18,7 @@ async function getAll() {
 
 async function getCategoriaById(id: number): Promise<Categoria> {
   try {
-    const response = await fetch(`${API_BASE_URL}/categories/${id}`)
+    const response = await fetch(`${API_BASE_URL}/categoria/${id}`)
     const body = await response.json()
 
     if (response.status != 200) {

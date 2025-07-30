@@ -1,8 +1,8 @@
-export interface Banners {
-  id?: number;
+export interface Banner {
+  id: number;
   nome: string;
-  created_at: string;
-  link: string;
-  to: string;
-  is_visible: boolean;
+  imagem: string;
+  link: string | null;
+  visivel: boolean;
+  ativo: boolean;
 }

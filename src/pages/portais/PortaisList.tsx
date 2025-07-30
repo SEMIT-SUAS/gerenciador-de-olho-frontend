@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Portais } from "../../types/Portais";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { getAllPortais, createPortal, toggleAtivo, changeServiceVisibility } from "../../services/PortaisService";
 
 export function PortaisList() {
@@ -57,9 +58,10 @@ export function PortaisList() {
         link: "",
         visivel: true,
         ativo: true,
-        });
+        });        
+      toast.success("Portal cadastrado com sucesso!");
     } catch (error) {
-        alert("Erro ao criar portal");
+      toast.error("Erro ao criar portal");
     }
   }
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Services } from "../../types/Services";
 import { Link, useNavigate } from "react-router-dom";
 import { changeServiceAtivo, changeServiceVisibility, getAllServices } from "../../services/servicosServices";
+import { toast } from "react-toastify";
 
 export function ServicesList() {
   const navigate = useNavigate();
@@ -35,11 +36,11 @@ export function ServicesList() {
 
     changeServiceVisibility(id, newVisibility)
       .then(() => {
-        console.log(`Visibilidade alterada para ${newVisibility}`);
+        toast.success(`Visibilidade alterada para ${newVisibility}`);
         // Atualize o estado local se necessário
       })
       .catch((error) => {
-        console.error(error.message);
+        toast.error(error.message);
     });
   }
 
@@ -48,11 +49,11 @@ export function ServicesList() {
 
     changeServiceAtivo(id, newAtivo)
       .then(() => {
-        console.log(`Ativo alterado para ${newAtivo}`);
+        toast.success(`Ativo alterado para ${newAtivo}`);
         // Atualize o estado local se necessário
       })
       .catch((error) => {
-        console.error(error.message);
+        toast.error(error.message);
     });
   }
 
