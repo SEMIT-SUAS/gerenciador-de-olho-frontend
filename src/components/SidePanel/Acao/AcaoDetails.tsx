@@ -13,13 +13,15 @@ import { IconProgressX } from '@tabler/icons-react';
 import { FilesCarrrousel } from '@/components/FilesCarrousel';
 import { IoIosAdd } from 'react-icons/io';
 import { IconCircleCheckFilled } from '@tabler/icons-react';
+import { handleIniciarAcao } from './IniciarAcao';
+import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 export function AcaoDetails() {
-  const { acoes, denuncias } = useOcorrencias();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { acoes, denuncias, setAcoes, setDenuncias } = useOcorrencias();
   const { setZoomTo } = useMapActions();
   const { cacheCurrentFilters, restoreCachedFilters, setFiltroStatusDenuncia } =
     useFilters();
-
 
   const params = useParams();
   const navigate = useNavigate();
@@ -42,6 +44,15 @@ export function AcaoDetails() {
 
     return denuncias.filter((d) => d.acao?.id === acao.id);
   }, [denuncias, acao]);
+
+  const onConfirmarInicio = () => {
+    handleIniciarAcao({
+      acao,
+      setAcoes,
+      setDenuncias,
+    });
+    setIsModalOpen(false); // Fecha o modal
+  };
 
   useEffect(() => {
     cacheCurrentFilters();
@@ -105,11 +116,9 @@ export function AcaoDetails() {
           <Button
             variant="primary"
             size="md"
-            onClick={() => null}
+            onClick={() => setIsModalOpen(true)} // Abre o modal
             className="w-full"
-          >
-            Iniciar Ação
-          </Button>
+          ></Button>
         )}
 
         <div
@@ -207,6 +216,13 @@ export function AcaoDetails() {
           </div>
         )}
       </footer>
+      <ConfirmModal
+        isOpen={isModalOpen}
+        title="Iniciar Ação"
+        message="Tem certeza de que deseja mover esta ação para 'Em Andamento'?"
+        onConfirm={onConfirmarInicio}
+        onCancel={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
