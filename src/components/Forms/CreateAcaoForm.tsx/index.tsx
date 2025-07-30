@@ -55,6 +55,19 @@ export function AddAcaoForm() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    cacheCurrentFilters();
+
+    setFiltroDenunciasComAcao('sem_acao');
+    setSalvarDenunciasOnClick(true);
+
+    return () => {
+      restoreCachedFilters();
+      setDenunciasSelecionadas([]);
+      setSalvarDenunciasOnClick(false);
+    };
+  }, []);
+
   function handleSubmitForm(event: FormEvent) {
     event.preventDefault();
     if (isSubmitingForm) return;
@@ -108,19 +121,6 @@ export function AddAcaoForm() {
       setIsOpenConfirmationModal(false);
     }
   }
-
-  useEffect(() => {
-    cacheCurrentFilters();
-
-    setFiltroDenunciasComAcao('sem_acao');
-    setSalvarDenunciasOnClick(true);
-
-    return () => {
-      setDenunciasSelecionadas([]);
-      setSalvarDenunciasOnClick(false);
-      restoreCachedFilters();
-    };
-  }, []);
 
   return (
     <>

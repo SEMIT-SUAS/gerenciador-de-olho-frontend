@@ -5,7 +5,7 @@
 
 /* Para navegadores Webkit (Chrome, Safari, Edge, etc.) */
 .custom-scrollbar-blue::-webkit-scrollbar {
-  height: 8px; /* Altura da barra de rolagem */
+  height: 8px;
 }
 
 .custom-scrollbar-blue::-webkit-scrollbar-button {
@@ -13,7 +13,7 @@
 }
 
 .custom-scrollbar-blue::-webkit-scrollbar-track {
-  background-color: #fff; /* Cor de fundo da trilha (cinza claro) */
+  background-color: none;
   border-radius: 10px;
 }
 
@@ -23,7 +23,7 @@
 }
 
 .custom-scrollbar-blue::-webkit-scrollbar-thumb:hover {
-  background-color: #2563eb; /* Azul um pouco mais escuro ao passar o mouse */
+  background-color: #2563eb;
 }
 
 .pulse-animation {
@@ -42,15 +42,13 @@
   }
 }
 
-/* Adicione isso ao seu arquivo CSS principal */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
-/* Para Firefox */
 .custom-scrollbar-blue {
   scrollbar-width: thin;
-  scrollbar-color: #3b82f6 #fff; /* Cor da barra e cor do fundo */
+  scrollbar-color: #3b82f6 #fff;
 }
 
 @theme inline {
