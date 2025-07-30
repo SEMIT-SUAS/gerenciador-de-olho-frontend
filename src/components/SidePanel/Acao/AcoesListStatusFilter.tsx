@@ -5,43 +5,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useFilters } from '@/context/FiltersContext';
 import type { AcaoStatusModelTypes } from '@/types/AcaoStatus';
-import type { DenunciaStatusModelTypes } from '@/types/Denuncia';
 
 const statusOptions = [
   { text: 'Todos', value: 'todos' },
-  { text: 'Aberto', value: 'aberto' },
   { text: 'Em analise', value: 'em_analise' },
   { text: 'Em andamento', value: 'em_andamento' },
   { text: 'Indeferidas', value: 'indeferido' },
   { text: 'Concluídas', value: 'concluido' },
 ];
 
-type FilterStatusSelectProps = {
-  id: string;
-  label: string;
-  value: string;
-  onStatusChange: (
-    status: 'todos' | AcaoStatusModelTypes | DenunciaStatusModelTypes,
-  ) => void;
-};
+export function AcoesListStatusFilter() {
+  const { setFiltroStatusAcao, filtroStatusAcao } = useFilters();
 
-export function FilterStatusSelect({
-  id,
-  label,
-  value,
-  onStatusChange,
-}: FilterStatusSelectProps) {
+  function handleOnValueSelected(value: AcaoStatusModelTypes | 'todos') {
+    setFiltroStatusAcao(value === 'todos' ? 'todos' : [value]);
+  }
+
   return (
     <div className="w-full">
       <label
-        htmlFor={id}
+        htmlFor={'select-acao-status-filter'}
         className="block text-sm font-medium text-gray-700 mb-1"
       >
-        {label}
+        Status
       </label>
-      <Select value={value} onValueChange={onStatusChange}>
-        <SelectTrigger id={id} className="w-full">
+
+      <Select
+        value={filtroStatusAcao === 'todos' ? 'todos' : filtroStatusAcao[0]}
+        onValueChange={handleOnValueSelected}
+      >
+        <SelectTrigger id="select-acao-status-filter" className="w-full">
           <SelectValue placeholder="Selecione um status..." />
         </SelectTrigger>
 

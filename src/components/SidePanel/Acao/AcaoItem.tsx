@@ -22,7 +22,7 @@ export function AcaoItem({ acao }: AcaoItemProps) {
           Responsável: {acao.secretaria.sigla}
         </p>
 
-        <Tag status={acao.status[0].status} />
+        <Tag status={acao.status[acao.status.length - 1].status} />
       </div>
     </div>
   );

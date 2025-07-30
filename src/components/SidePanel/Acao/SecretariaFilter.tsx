@@ -5,19 +5,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useFilters } from '@/context/FiltersContext';
 import { useOcorrencias } from '@/context/OcorrenciasContext';
 
-type SelectSecretariaFilterProps = {
-  onSecretariaChange: (secretaria: string) => void;
-};
-
-export function SelectSecretariaFilter({
-  onSecretariaChange,
-}: SelectSecretariaFilterProps) {
+export function SecretariaFilter() {
+  const { setFiltroSecretaria } = useFilters();
   const { secretarias } = useOcorrencias();
 
-  function handleOnSelect(event: any) {
-    onSecretariaChange(event.target.value);
+  function handleOnSelect(value: string) {
+    setFiltroSecretaria(value);
   }
 
   return (
@@ -29,16 +25,20 @@ export function SelectSecretariaFilter({
         Secretaria
       </label>
 
-      <Select defaultValue="todas" disabled={!secretarias}>
+      <Select
+        defaultValue="todas"
+        disabled={!secretarias}
+        onValueChange={handleOnSelect}
+      >
         <SelectTrigger id="secretaria-select" className="w-full">
           <SelectValue placeholder="Selecione uma secretaria..." />
         </SelectTrigger>
 
-        <SelectContent onChange={handleOnSelect}>
+        <SelectContent>
           <SelectItem value="todas">Todas</SelectItem>
 
           {secretarias.map((sec) => (
-            <SelectItem key={sec.id} value={sec.nome}>
+            <SelectItem key={sec.id} value={sec.sigla}>
               {sec.sigla}
             </SelectItem>
           ))}

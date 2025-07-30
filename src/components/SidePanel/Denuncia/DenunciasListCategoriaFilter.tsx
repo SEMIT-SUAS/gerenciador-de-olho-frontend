@@ -5,16 +5,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useFilters } from '@/context/FiltersContext';
 import { useOcorrencias } from '@/context/OcorrenciasContext';
 
-type SelectCategoriaFilterProps = {
-  onCategoriaChange: (categoria: string) => void;
-};
-
-export function SelectCategoriaFilter({
-  onCategoriaChange,
-}: SelectCategoriaFilterProps) {
+export function DenunciasListCategoriaFilter() {
   const { categorias } = useOcorrencias();
+  const { setFiltroCategoria } = useFilters();
+
+  function handleOnValueSelected(value: string) {
+    setFiltroCategoria(value);
+  }
 
   return (
     <div>
@@ -26,7 +26,7 @@ export function SelectCategoriaFilter({
       </label>
 
       <Select
-        onValueChange={onCategoriaChange}
+        onValueChange={handleOnValueSelected}
         defaultValue="todas"
         disabled={!categorias}
       >

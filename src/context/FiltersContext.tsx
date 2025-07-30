@@ -25,6 +25,7 @@ type FilterState = {
   filtroCategoria: 'todas' | string | null;
   filtroSecretaria: 'todas' | string | null;
   filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
+  filtrarAcoesPorId: number[] | 'desabilitado';
 };
 
 type FiltersContextProps = FilterState & {
@@ -58,6 +59,7 @@ const defaultFilters: FilterState = {
   filtroCategoria: 'todas',
   filtroSecretaria: 'todas',
   filtroDenunciasComAcao: 'desabilitado',
+  filtrarAcoesPorId: 'desabilitado',
 };
 
 const FiltersContext = createContext({} as FiltersContextProps);
@@ -102,6 +104,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       filtroCategoria,
       filtroSecretaria,
       filtroDenunciasComAcao,
+      filtrarAcoesPorId,
     });
   }, [
     isVisibleDenunciasInMap,
@@ -111,6 +114,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     filtroCategoria,
     filtroSecretaria,
     filtroDenunciasComAcao,
+    filtrarAcoesPorId,
   ]);
 
   const restoreCachedFilters = useCallback(() => {
@@ -123,6 +127,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     setFiltroCategoria(filtersToRestore.filtroCategoria);
     setFiltroSecretaria(filtersToRestore.filtroSecretaria);
     setFiltroDenunciasComAcao(filtersToRestore.filtroDenunciasComAcao);
+    setFiltrarAcoesPorId(filtersToRestore.filtrarAcoesPorId);
 
     if (cacheFilters) {
       setCacheFilters(null);
@@ -132,6 +137,8 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   const denunciasFiltradas = useMemo(() => {
     return denuncias.filter((d) => {
       const denunciaStatus = getDenunciaStatus(d);
+
+      // console.log(denunciaStatus);
 
       const passaStatus =
         filtroStatusDenuncia === 'todos' ||
@@ -153,26 +160,34 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     filtroStatusDenuncia,
     filtroCategoria,
     filtroDenunciasComAcao,
+    acoes,
   ]);
 
   const acoesFiltradas = useMemo(() => {
-    if (filtrarAcoesPorId != 'desabilitado') {
+    if (filtrarAcoesPorId !== 'desabilitado') {
       return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
     }
 
-    return acoes.filter((a) => {
-      const currentStatus = a.status?.[0]?.status;
-      if (!currentStatus) return false;
+    return acoes
+      .filter((a) => {
+        console.log(filtroSecretaria);
+        if (filtroSecretaria === 'todas') {
+          return a;
+        } else {
+          console.log(a.secretaria.sigla);
+          return a.secretaria.sigla === filtroSecretaria;
+        }
+      })
+      .filter((a) => {
+        const currentStatus = a.status?.[a.status.length - 1]?.status;
+        if (!currentStatus) return false;
 
-      const passaStatus =
-        filtroStatusAcao === 'todos' ||
-        filtroStatusAcao.includes(currentStatus);
-
-      const passaSecretaria =
-        filtroSecretaria === 'todas' || a.secretaria.nome === filtroSecretaria;
-
-      return passaStatus && passaSecretaria;
-    });
+        if (filtroStatusAcao === 'todos') {
+          return a;
+        } else {
+          return filtroStatusAcao[0] === currentStatus;
+        }
+      });
   }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
 
   return (

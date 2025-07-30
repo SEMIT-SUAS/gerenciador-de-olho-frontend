@@ -129,7 +129,6 @@ export function AcaoDetails() {
                     />
                   );
                 })}
-                "
               </ScrollArea>
             )
           ) : (

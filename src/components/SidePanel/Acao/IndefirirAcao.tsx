@@ -1,18 +1,31 @@
 import { BackButton } from '@/components/Buttons/Backbutton';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { mensagensSugeridasParaIndeferirAcao } from '@/constants/messagesRejectComplaint';
+import { userMock } from '@/constants/mocks';
+import { useFilters } from '@/context/FiltersContext';
 import { useOcorrencias } from '@/context/OcorrenciasContext';
-import { useMemo, useState } from 'react';
+import type { AcaoModel } from '@/types/Acao';
+import type { AcaoStatusModel } from '@/types/AcaoStatus';
+import { useEffect, useMemo, useState } from 'react';
 import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export function IndeferirAcao() {
   const [isOpenIndeferirModal, setIsOpenIndeferirModal] = useState(false);
+  const [isIndeferindoAcao, setIsIndeferindoAcao] = useState(false);
   const [motivo, setMotivo] = useState('');
 
-  const { acoes } = useOcorrencias();
+  const { acoes, setAcoes, setDenuncias } = useOcorrencias();
+  const {
+    cacheCurrentFilters,
+    restoreCachedFilters,
+    setIsVisibleDenunciasInMap,
+    setFiltrarAcoesPorId,
+  } = useFilters();
 
   const acaoId = useParams().acaoId;
+  const navigate = useNavigate();
 
   const acao = useMemo(() => {
     return acoes.find((ac) => ac.id === Number(acaoId));
@@ -31,6 +44,69 @@ export function IndeferirAcao() {
   ) {
     return <Navigate to="/404" />;
   }
+
+  function handleOnIndeferirAcaoConfirmation() {
+    if (!acao) return;
+
+    try {
+      setIsIndeferindoAcao(true);
+
+      const indeferirAcaoStatus: AcaoStatusModel = {
+        id: Math.random(),
+        motivo,
+        AlteradoEm: Date.now().toString(),
+        alteradoPor: userMock,
+        status: 'indeferido',
+      };
+
+      const acaoIndeferidaData: AcaoModel = {
+        ...acao,
+        status: [...acao.status, indeferirAcaoStatus],
+      };
+
+      //TODO: CALL API
+
+      setDenuncias((prev) =>
+        prev.map((denuncia) => {
+          if (denuncia?.acao && denuncia.acao.id === acao.id) {
+            return {
+              ...denuncia,
+              acao: acaoIndeferidaData,
+            };
+          }
+
+          return denuncia;
+        }),
+      );
+
+      setAcoes((prev) =>
+        prev.map((a) => {
+          if (a.id == acao.id) {
+            return acaoIndeferidaData;
+          }
+
+          return a;
+        }),
+      );
+
+      navigate(`/ocorrencias/acoes/${acaoId}`);
+      toast.success('Ação indeferida com sucesso!');
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsIndeferindoAcao(false);
+    }
+  }
+
+  useEffect(() => {
+    cacheCurrentFilters();
+    setIsVisibleDenunciasInMap(false);
+    setFiltrarAcoesPorId([acao.id]);
+
+    return () => {
+      restoreCachedFilters();
+    };
+  }, []);
 
   return (
     <>
@@ -95,13 +171,13 @@ export function IndeferirAcao() {
 
         <button
           onClick={() => setIsOpenIndeferirModal(true)}
-          disabled={!motivo.trim()}
+          disabled={!motivo.trim() || isIndeferindoAcao}
           className="flex items-center justify-center w-full max-w-xs bg-red-600 text-white font-bold py-3 rounded-lg transition-colors
                            hover:bg-red-700
                            disabled:bg-red-300 disabled:cursor-not-allowed"
         >
           <FaCheck className="mr-2" />
-          Confirmar Indeferimento
+          {isIndeferindoAcao ? 'Indeferindo...' : 'Confirmar Indeferimento'}
         </button>
       </div>
 
@@ -110,7 +186,7 @@ export function IndeferirAcao() {
         title="Indeferir Ação"
         message="Você realmente quer indeferir essa denúncia? Ação irreversível"
         onCancel={() => setIsOpenIndeferirModal(false)}
-        onConfirm={() => null}
+        onConfirm={() => handleOnIndeferirAcaoConfirmation()}
       />
     </>
   );

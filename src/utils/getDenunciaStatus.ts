@@ -18,7 +18,7 @@ export function getDenunciaStatus(
 
 type GetIndeferimentoDataReturnProps = {
   indeferidaPor: UsuarioModel | null;
-  motivo: string;
+  motivo: string | null;
 } | null;
 
 export function getIndeferimentoData(
