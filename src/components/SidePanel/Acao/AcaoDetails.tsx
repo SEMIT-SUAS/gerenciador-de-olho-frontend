@@ -13,6 +13,7 @@ import { IconProgressX } from '@tabler/icons-react';
 import { FilesCarrrousel } from '@/components/FilesCarrousel';
 import { IoIosAdd } from 'react-icons/io';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { IconCircleCheckFilled } from '@tabler/icons-react';
 
 export function AcaoDetails() {
   const { acoes, denuncias } = useOcorrencias();
@@ -157,12 +158,21 @@ export function AcaoDetails() {
 
       <footer className="flex flex-col gap-2 pt-4 border-t border-gray-200 flex-shrink-0">
         {['em_analise', 'em_andamento'].includes(currentAcaoStatus) && (
-          <div className="flex justify-end">
+          <div className="flex gap-1">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => navigate('concluir')}
+              className="w-full"
+            >
+              <IconCircleCheckFilled className="inline h-4" />
+              Concluir Ação
+            </Button>
+
             <Button
               variant="outline_danger"
               size="sm"
               onClick={() => navigate('indeferir')}
-              className=""
             >
               <IconProgressX className="inline h-4" />
               Indeferir Ação

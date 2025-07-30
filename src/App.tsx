@@ -15,6 +15,7 @@ import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
 import { NotFoundPage } from './pages/404';
 import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
+import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
 
 export function App() {
   return (
@@ -56,6 +57,7 @@ export function App() {
               path=":acaoId/vincular-denuncias"
               element={<VincularAcaoADenuncias />}
             />
+            <Route path=":acaoId/concluir" element={<ConcluirAcao />} />
           </Route>
         </Route>
 
