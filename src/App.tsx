@@ -19,6 +19,7 @@ import { ServicoNovo } from './pages/servicos/ServicoNovo';
 import { ServicoEditar } from './pages/servicos/ServicoEditar';
 import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import { PortaisList } from './pages/portais/PortaisList';
+import { BannersPage } from './pages/BannersPage';
 
 export function App() {
   return (
@@ -62,6 +63,9 @@ export function App() {
             />
           </Route>
         </Route>
+
+        <Route path="banners" element={<BannersPage />} />
+
         <Route path="/servicos">
           <Route index element={<ServicesList />} />
           <Route path="categorias" element={<ListaCategorias />} />
@@ -69,6 +73,7 @@ export function App() {
           <Route path=":id" element={<ServicoDetalhes />} />
           <Route path="editar/:id" element={<ServicoEditar />} />
         </Route>
+
         <Route path="/portais" element={<PortaisList />} />
 
         {/* Redirecionamento para a página inicial se a rota não for encontrada */}

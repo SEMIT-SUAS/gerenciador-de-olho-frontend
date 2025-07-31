@@ -8,7 +8,7 @@ export function LayoutPage({ children, additionalStyles }: LayoutPageProps) {
     <div
       className={`min-h-screen flex flex-col gap-5 ${additionalStyles || ''}`}
     >
-      <Navbar />
+      {/* <Navbar /> */}
       {children}
     </div>
   );
