@@ -26,7 +26,7 @@ export function SidePanel({ children }: SidePanelProps) {
             Painel de Ocorrências
           </h1>
 
-          <span className="text-blue-500 text-sm font-semibold">
+          <span className="text-blue-500 text-md font-bold">
             De olho na cidade
           </span>
         </div>
@@ -41,8 +41,8 @@ export function SidePanel({ children }: SidePanelProps) {
         />
       )}
 
-      <div className="p-4 overflow-y-auto custom-scrollbar-blue">
-        {children}
+      <div className="overflow-y-auto custom-scrollbar-blue">
+        <div className="p-4">{children}</div>
       </div>
     </aside>
   );

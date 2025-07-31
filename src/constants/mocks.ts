@@ -73,14 +73,19 @@ export const secretariasMock = [
 export const denunciasMock: DenunciaModel[] = [
   {
     id: 1,
-    descricao:
-      'Poste com lâmpada queimada há mais de uma semana, deixando a rua totalmente escura e perigosa à noite.',
+    descricao: 'Poste com lâmpada queimada há mais de uma semana.',
     tipo: {
       id: 8,
       nome: 'Lampada queimada',
       categoria: { id: 2, nome: 'Infraestrutura', cor: '#333' },
     },
-    files: [],
+    files: [
+      { id: 1, nome: 'poste_quebrado_1.jpg', tipo: 'imagem' },
+      { id: 2, nome: 'poste_quebrado_2.jpg', tipo: 'imagem' },
+      { id: 3, nome: 'poste_quebrado_3.jpg', tipo: 'imagem' },
+      { id: 4, nome: 'poste_quebrado_4.jpg', tipo: 'imagem' },
+      { id: 5, nome: 'poste_quebrado_5.mp4', tipo: 'video' },
+    ],
     acao: null,
     bairro: "Ponta d'Areia",
     rua: 'Avenida Litorânea',
@@ -93,18 +98,17 @@ export const denunciasMock: DenunciaModel[] = [
   },
   {
     id: 2,
-    descricao:
-      'Grande quantidade de lixo e entulho acumulado na calçada, atraindo pragas e dificultando a passagem de pedestres.',
+    descricao: 'Lixo e entulho acumulado na calçada.',
     tipo: {
       id: 6,
       nome: 'Coleta de lixo',
       categoria: { id: 2, nome: 'Infraestrutura', cor: '#333' },
     },
-    files: [],
+    files: [{ id: 3, nome: 'lixo_acumulado.mp4', tipo: 'video' }],
     acao: null,
     bairro: 'Centro',
     rua: 'Rua do Giz',
-    pontoDeReferencia: 'Em frente ao Museu Histórico e Artístico do Maranhão',
+    pontoDeReferencia: 'Em frente ao Museu Histórico',
     longitude: -44.3055,
     latitude: -2.5283,
     criadaEm: new Date('2025-07-21T14:30:00Z').toISOString(),
@@ -113,18 +117,20 @@ export const denunciasMock: DenunciaModel[] = [
   },
   {
     id: 3,
-    descricao:
-      'Buraco de grande proporção no asfalto, causando risco de acidentes para veículos que trafegam na via.',
+    descricao: 'Buraco de grande proporção no asfalto.',
     tipo: {
       id: 4,
       nome: 'Buraco na rua',
       categoria: { id: 2, nome: 'Infraestrutura', cor: '#333' },
     },
-    files: [],
+    files: [
+      { id: 4, nome: 'buraco_rua.jpg', tipo: 'imagem' },
+      { id: 5, nome: 'buraco_perigo.mp4', tipo: 'video' },
+    ],
     acao: null,
     bairro: 'Renascença',
     rua: 'Avenida Colares Moreira',
-    pontoDeReferencia: 'Perto da entrada do Tropical Shopping',
+    pontoDeReferencia: 'Perto do Tropical Shopping',
     longitude: -44.2825,
     latitude: -2.5089,
     criadaEm: new Date('2025-07-22T08:00:00Z').toISOString(),
@@ -133,14 +139,13 @@ export const denunciasMock: DenunciaModel[] = [
   },
   {
     id: 4,
-    descricao:
-      'Árvore com galhos quebrados pendurados sobre a calçada, representando risco de queda.',
+    descricao: 'Árvore com galhos quebrados pendurados.',
     tipo: {
       id: 13,
       nome: 'Podar arvores',
       categoria: { id: 2, nome: 'Infraestrutura', cor: '#333' },
     },
-    files: [],
+    files: [{ id: 6, nome: 'arvore_perigo.jpg', tipo: 'imagem' }],
     acao: null,
     bairro: 'Jardim Renascença',
     rua: 'Rua das Palmeiras',
@@ -153,18 +158,17 @@ export const denunciasMock: DenunciaModel[] = [
   },
   {
     id: 5,
-    descricao:
-      'Sinalização de trânsito apagada, dificultando a visibilidade para motoristas.',
+    descricao: 'Sinalização de trânsito apagada.',
     tipo: {
       id: 21,
       nome: 'Ma sinalizacao',
       categoria: { id: 5, nome: 'Trânsito e Transporte', cor: '#A1FF33' },
     },
-    files: [],
+    files: [{ id: 7, nome: 'sinalizacao_apagada.jpg', tipo: 'imagem' }],
     acao: null,
     bairro: 'São Francisco',
     rua: 'Avenida dos Holandeses',
-    pontoDeReferencia: 'Perto do Farol da Barra do São Francisco',
+    pontoDeReferencia: 'Perto do Farol da Barra',
     longitude: -44.295,
     latitude: -2.515,
     criadaEm: new Date('2025-07-23T09:00:00Z').toISOString(),
@@ -173,13 +177,16 @@ export const denunciasMock: DenunciaModel[] = [
   },
   {
     id: 6,
-    descricao: 'Foco de água parada com risco de proliferação de dengue.',
+    descricao: 'Foco de água parada com risco de dengue.',
     tipo: {
       id: 19,
       nome: 'Foco de dengue',
       categoria: { id: 4, nome: 'Saúde Pública', cor: '#5733FF' },
     },
-    files: [],
+    files: [
+      { id: 8, nome: 'agua_parada_1.jpg', tipo: 'imagem' },
+      { id: 9, nome: 'agua_parada_2.jpg', tipo: 'imagem' },
+    ],
     acao: null,
     bairro: 'Olho d’Água',
     rua: 'Rua da Saudade',
@@ -192,14 +199,13 @@ export const denunciasMock: DenunciaModel[] = [
   },
   {
     id: 7,
-    descricao:
-      'Descarte ilegal de resíduos próximo a um rio, poluindo o meio ambiente.',
+    descricao: 'Descarte ilegal de resíduos próximo a um rio.',
     tipo: {
       id: 15,
       nome: 'Descarte ilegal',
       categoria: { id: 3, nome: 'Meio Ambiente', cor: '#33FF57' },
     },
-    files: [],
+    files: [{ id: 10, nome: 'lixo_rio.mp4', tipo: 'video' }],
     acao: null,
     bairro: 'Calhau',
     rua: 'Avenida dos Caiacós',
@@ -212,14 +218,16 @@ export const denunciasMock: DenunciaModel[] = [
   },
   {
     id: 8,
-    descricao:
-      'Acessibilidade irregular em calçada pública, impedindo passagem de cadeirantes.',
+    descricao: 'Acessibilidade irregular em calçada pública.',
     tipo: {
       id: 1,
       nome: 'Acessibilidade irregular',
       categoria: { id: 1, nome: 'Acessibilidade', cor: '#FF5733' },
     },
-    files: [],
+    files: [
+      { id: 11, nome: 'calcada_irregular.jpg', tipo: 'imagem' },
+      { id: 12, nome: 'acessibilidade_video.mp4', tipo: 'video' },
+    ],
     acao: null,
     bairro: 'Turú',
     rua: 'Rua das Gaivotas',
@@ -232,13 +240,13 @@ export const denunciasMock: DenunciaModel[] = [
   },
   {
     id: 9,
-    descricao: 'Semáforo quebrado causando transtornos no trânsito.',
+    descricao: 'Semáforo quebrado causando transtornos.',
     tipo: {
       id: 22,
       nome: 'Semaforo quebrado',
       categoria: { id: 5, nome: 'Trânsito e Transporte', cor: '#A1FF33' },
     },
-    files: [],
+    files: [{ id: 13, nome: 'semaforo_quebrado.jpg', tipo: 'imagem' }],
     acao: null,
     bairro: 'Vinhais',
     rua: 'Avenida dos Africanos',
@@ -251,13 +259,13 @@ export const denunciasMock: DenunciaModel[] = [
   },
   {
     id: 10,
-    descricao: 'Falta de medicamento essencial na unidade de saúde local.',
+    descricao: 'Falta de medicamento essencial na UBS.',
     tipo: {
       id: 18,
       nome: 'Falta de medicamento',
       categoria: { id: 4, nome: 'Saúde Pública', cor: '#5733FF' },
     },
-    files: [],
+    files: [{ id: 14, nome: 'falta_medicamento.jpg', tipo: 'imagem' }],
     acao: null,
     bairro: 'Cohab',
     rua: 'Rua das Orquídeas',

@@ -6,6 +6,8 @@ import { FaExclamationTriangle, FaCheck } from 'react-icons/fa';
 import { BackButton } from '../../Buttons/Backbutton';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { toast } from 'react-toastify';
+import { getDenunciaStatus } from '@/utils/getDenunciaStatus';
+import denunciasService from '@/services/denunciasService';
 
 export function IndeferirDenuncia() {
   const [isUpdatingDenuncia, setIsUpdatingDenuncia] = useState(false);
@@ -24,38 +26,39 @@ export function IndeferirDenuncia() {
     return denuncias.find((d) => d.id == Number(denunciaId));
   }, [denuncias]);
 
+  const denunciaStatus = getDenunciaStatus(denuncia);
+
   if (
-    (!denuncia || !['aberto', 'em_andamento'].includes(denuncia.status)) &&
+    (!denuncia || !['aberto', 'em_andamento'].includes(denunciaStatus)) &&
     !isUpdatingDenuncia
   ) {
     return <Navigate to="/404" replace />;
   }
 
   async function handleOnConfirmIndeferirDenuncia() {
-    setIsUpdatingDenuncia(true);
+    try {
+      setIsUpdatingDenuncia(true);
 
-    const denunciaDataUpdated = {
-      ...denuncia!,
-      status: 'indeferido',
-      motivoStatus: motivo,
-    };
+      const denunciaDataUpdated = await denunciasService.indeferirDenuncia(
+        denuncia?.id!,
+        motivo,
+      );
 
-    // //TODO: CALL API
+      setDenuncias((denuncias) =>
+        denuncias.map((d) => (d.id == denuncia?.id ? denunciaDataUpdated : d)),
+      );
 
-    await navigate(`/ocorrencias/denuncias/${denunciaId}`, {
-      replace: true,
-    });
-
-    setDenuncias((denuncias) =>
-      denuncias.map((d) => (d.id == denuncia?.id ? denunciaDataUpdated : d)),
-    );
-    toast.success('Denúncia indeferida com sucesso!');
+      toast.success('Denúncia indeferida com sucesso!');
+      navigate(`/ocorrencias/denuncias/${denunciaId}`);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   }
 
   return (
     <>
-      <div className="flex flex-col gap-2 h-full p-4 bg-white">
-        <BackButton />
+      <div className="flex flex-col gap-2 h-full">
+        <BackButton children="Indeferir Denúncia" />
         <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
           <div className="flex items-center">
             <FaExclamationTriangle className="text-red-500 text-xl mr-3" />
@@ -64,7 +67,7 @@ export function IndeferirDenuncia() {
                 Você está indeferindo o item:
               </p>
               <p className="font-bold text-red-900 text-lg">
-                {denuncia?.titulo}
+                {denuncia?.tipo.nome}
               </p>
             </div>
           </div>

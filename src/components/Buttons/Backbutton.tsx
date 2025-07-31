@@ -18,9 +18,9 @@ export function BackButton({
   const navigate = useNavigate();
   const location = useLocation();
 
-  const finalClassName = `self-start flex items-center text-sm text-white px-3 py-2 rounded-full bg-blue-500 font-semibold hover:bg-blue-600 transition-colors ${
-    className || ''
-  }`;
+  const finalClassName = `flex items-center p-1.5 text-gray-300 rounded-md border border-gray-300 hover:bg-gray-300 hover:text-white transition-colors`;
+
+  const textButton = 'text-gray-800 ml-2 font-bold text-xl';
 
   function handleGoBack() {
     if (to) {
@@ -38,9 +38,11 @@ export function BackButton({
   }
 
   return (
-    <button onClick={handleGoBack} className={finalClassName}>
-      <FaArrowLeft className="inline-block mr-2" />
-      {children || 'Voltar'}
+    <button onClick={handleGoBack} className="flex items-center">
+      <span className={finalClassName}>
+        <FaArrowLeft />
+      </span>
+      <span className={textButton}>{children}</span>
     </button>
   );
 }

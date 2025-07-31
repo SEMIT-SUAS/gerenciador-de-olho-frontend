@@ -1,36 +1,19 @@
 import { DenunciaItem } from './DenunciaItem';
-import { useFilters } from '../../../context/FiltersContext';
+import { useFilters } from '@/context/FiltersContext';
 import { useNavigate } from 'react-router-dom';
-import { FilterStatusSelect } from '../Filters/FilterStatusSelect';
-import { SelectCategoriaFilter } from '../Filters/SelectCategoriaFilter';
+import { DenunciasListStatusFilter } from './DenunciasListStatusFilter';
+import { DenunciasListCategoriaFilter } from './DenunciasListCategoriaFilter';
 
 export function DenunciasList() {
-  const {
-    denunciasFiltradas: denuncias,
-    setFiltroStatusDenuncia,
-    filtroStatusDenuncia,
-    setFiltroCategoria,
-  } = useFilters();
+  const { denunciasFiltradas: denuncias } = useFilters();
 
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-2 gap-1">
-        <FilterStatusSelect
-          id="status-filter-select"
-          label="Status"
-          onStatusChange={(status) =>
-            setFiltroStatusDenuncia(status == 'todos' ? 'todos' : [status])
-          }
-          value={
-            filtroStatusDenuncia == 'todos' ? 'todos' : filtroStatusDenuncia[0]
-          }
-        />
-
-        <SelectCategoriaFilter
-          onCategoriaChange={(categoria) => setFiltroCategoria(categoria)}
-        />
+        <DenunciasListStatusFilter />
+        <DenunciasListCategoriaFilter />
       </div>
 
       {denuncias.length === 0 ? (
@@ -39,20 +22,25 @@ export function DenunciasList() {
         </p>
       ) : (
         <div className="flex flex-col gap-3">
-          {denuncias.map((denuncia) => {
-            return (
-              <DenunciaItem
-                key={denuncia.id}
-                denuncia={denuncia}
-                onClick={() =>
-                  navigate(`/ocorrencias/denuncias/${denuncia.id}`)
-                }
-                showTag={true}
-                showDescription={true}
-                isDeletable={false}
-              />
-            );
-          })}
+          {[...denuncias]
+            .sort(
+              (a, b) =>
+                new Date(b.criadaEm).getTime() - new Date(a.criadaEm).getTime(),
+            )
+            .map((denuncia) => {
+              return (
+                <DenunciaItem
+                  showDate={true}
+                  key={denuncia.id}
+                  denuncia={denuncia}
+                  onClick={() =>
+                    navigate(`/ocorrencias/denuncias/${denuncia.id}`)
+                  }
+                  showTag={true}
+                  isDeletable={false}
+                />
+              );
+            })}
         </div>
       )}
     </div>

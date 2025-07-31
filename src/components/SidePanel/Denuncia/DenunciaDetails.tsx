@@ -1,5 +1,4 @@
 import { Tag } from './../Tag';
-import { ImageModal } from '../../Modals/ImageModal';
 import { useEffect, useMemo, useState } from 'react';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
@@ -9,9 +8,14 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BackButton } from '../../Buttons/Backbutton';
 import { useMapActions } from '../../../context/MapActions';
+import {
+  getDenunciaStatus,
+  getIndeferimentoData,
+} from '@/utils/getDenunciaStatus';
+import { Button } from '@/components/Buttons/BaseButton';
+import { IconProgressX } from '@tabler/icons-react';
 
 export function DenunciaDetails() {
-  const [imagemEmDestaque, setImagemEmDestaque] = useState<string | null>(null);
   const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
   const { denuncias, acoes, setDenuncias } = useOcorrencias();
   const { setZoomTo } = useMapActions();
@@ -29,6 +33,9 @@ export function DenunciaDetails() {
       replace: true,
     });
   }
+
+  const denunciaStatus = getDenunciaStatus(denuncia);
+  const indeferimentoData = getIndeferimentoData(denuncia);
 
   const acaoVinculada = useMemo(() => {
     return acoes.find((a) => a.id == denuncia.acao?.id);
@@ -69,7 +76,10 @@ export function DenunciaDetails() {
   return (
     <>
       <div className="flex flex-col gap-2 space-y-4">
-        <BackButton fallback="/ocorrencias/denuncias" />
+        <BackButton
+          to="/ocorrencias/denuncias"
+          children="Detalhes da Denúncia"
+        />
 
         <>
           <div className="flex justify-between items-start">
@@ -82,16 +92,14 @@ export function DenunciaDetails() {
               </h2>
               <p className="text-sm text-gray-500">
                 Registrado em:{' '}
-                {new Date(denuncia.criadaEm).toLocaleDateString('pt-BR')}
+                {new Date(denuncia.criadaEm).toLocaleString('pt-BR')}
               </p>
             </div>
-            <Tag status={'indeferido'} />
+            <Tag status={denunciaStatus} />
           </div>
 
           <div>
-            <h3 className="font-semibold text-sm text-gray-800 mb-1">
-              Descrição:
-            </h3>
+            <h3 className="font-semibold text-sm text-gray-800">Descrição:</h3>
             <p className="text-sm text-gray-600">{denuncia.descricao}</p>
           </div>
 
@@ -131,51 +139,53 @@ export function DenunciaDetails() {
           )}
 
           {!acaoVinculada &&
-            !['indeferido', 'concluido'].includes('indeferido') && (
+            !['indeferido', 'concluido'].includes(denunciaStatus) && (
               <div className="py-3 px-4 rounded-xl border border-gray-200 text-center space-y-2">
                 <p className="text-sm font-semibold text-gray-800">
                   Nenhuma ação vinculada
                 </p>
-                <button
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="w-full"
                   onClick={() => navigate('vincular-acao')}
-                  className="w-full bg-blue-600 text-white text-sm font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Vincular a uma Ação
-                </button>
+                </Button>
               </div>
             )}
 
           {denuncia.files.length > 0 && (
             <div>
-              <h3 className="font-semibold text-gray-800 mb-2">Imagens:</h3>
+              <h3 className="font-semibold text-gray-800 mb-2">Mídia:</h3>
               <div>
                 <FilesCarrrousel files={denuncia.files} />
               </div>
             </div>
           )}
 
-          {/* {denuncia.status === 'indeferido' && denuncia.motivoStatus && (
+          {denunciaStatus === 'indeferido' && indeferimentoData && (
             <div className="p-3 bg-red-50 border-l-4 border-red-400 text-red-700">
               <p className="font-bold">Motivo do Indeferimento:</p>
-              <p>{denuncia.motivoStatus}</p>
+              <p>{indeferimentoData.motivo}</p>
             </div>
-          )} */}
+          )}
 
-          {/* {denuncia.status === 'aberto' && (
-            <button
-              onClick={() => navigate('indeferir')}
-              className="w-full border-2 text-sm border-red-500 text-red-500 font-semibold py-2 rounded-lg transition-colors hover:bg-red-500 hover:text-white"
-            >
-              Indeferir Denúncia
-            </button>
-          )} */}
+          <div className="flex justify-end">
+            {denunciaStatus === 'aberto' && (
+              <Button
+                variant="outline_danger"
+                size="sm"
+                onClick={() => navigate('indeferir')}
+                className=""
+              >
+                <IconProgressX className="inline h-4" />
+                Indeferir Denúncia
+              </Button>
+            )}
+          </div>
         </>
       </div>
-
-      <ImageModal
-        imageUrl={imagemEmDestaque}
-        onClose={() => setImagemEmDestaque(null)}
-      />
 
       <ConfirmModal
         isOpen={isDesvincularModalOpen}
