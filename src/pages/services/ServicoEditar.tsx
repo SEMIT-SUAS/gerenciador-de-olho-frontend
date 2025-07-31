@@ -1,64 +1,145 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import type { Services } from "../../types/Services";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { getServicoById, updateServico } from "../../services/servicosServices";
+import type { Services } from "../../types/Services";
+import { getAllCategorias } from "../../services/servicocategoriaService";
+import { getAllSecretarias } from "../../services/secretariaService";
+import { getAllPerosona } from "../../services/servicoPersona";
+import type { ServicoCategoria } from "../../types/CategoriaServico";
+import type { Secretaria } from "../../types/Secretaria";
+import type { Persona } from "../../types/Persona";
+import { toast } from "react-toastify";
+
+function parseMultilineInput(text: string): string[] {
+  return text
+    .split(/\r?\n|,/)
+    .map((line) => line.trim())
+    .filter((line) => line !== "");
+}
 
 export function ServicoEditar() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const [form, setForm] = useState<Services | null>(null);
+  const [categorias, setCategorias] = useState<ServicoCategoria[]>([]);
+  const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
+  const [persona, setPersona] = useState<Persona[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [formasSolicitacaoTexto, setFormasSolicitacaoTexto] = useState('');
+  const [documentacaoNecessariaTexto, setDocumentacaoNecessariaTexto] = useState('');
+  const [publicoDestinadoTexto, setPublicoDestinadoTexto] = useState('');
 
-  useEffect(() => 
-  {
-    async function fetchServico() {
-      try {
-        if (!id) return;
-        const servico = await getServicoById(Number(id));
-        setForm(servico);
-      } catch (err: any) {
-        setError(err.message || "Erro desconhecido");
-      } finally {
-        setLoading(false);
+  useEffect(() => {
+  if (!id) return; // garante que id não é undefined
+
+  async function fetchDados() {
+    try {
+      const serviceId = parseInt(id); // aqui id é string, garantido pelo if
+
+      const [service, secretariasData, categoriasData, personaData] = await Promise.all([
+        getServicoById(serviceId),
+        getAllSecretarias(),
+        getAllCategorias(),
+        getAllPerosona(),
+      ]);
+
+      const secretariaObj = secretariasData.find(s => s.nome === service.nomeOrgao);
+      const categoriaObj = categoriasData.find(c => c.nome === service.nomeCategoria);
+      const personaSelecionadas = personaData.filter(p =>service.nomesPersonas?.includes(p.nome));
+
+      setSecretarias(secretariasData);
+      setCategorias(categoriasData);
+      setPersona(personaData);
+
+      setForm({
+        ...service,
+        secretaria: secretariaObj || null,
+        categoria: categoriaObj || null,
+        persona: personaSelecionadas || [],
+      });
+
+      if (service.formasSolicitacao) {
+        setFormasSolicitacaoTexto(service.formasSolicitacao.join(', '));
       }
+      if (service.documentacaoNecessaria) {
+        setDocumentacaoNecessariaTexto(service.documentacaoNecessaria.join(', '));
+      }
+      if (service.publicoDestinado) {
+        setPublicoDestinadoTexto(service.publicoDestinado.join(', '));
+      }
+
+    } catch (error) {
+      console.error("Erro ao carregar dados:", error);
+      setError("Erro ao carregar dados.");
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchServico();
-  }, [id]);
+  fetchDados();
+}, [id]);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) 
-  {
-    const { name, value, type } = e.target;
-
-    let checked: boolean | undefined = undefined;
-    if (e.target instanceof HTMLInputElement && (type === "checkbox" || type === "radio")) {
-      checked = e.target.checked;
-    }
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+    const { name, value } = e.target;
 
     if (!form) return;
 
-    if (name === "visivel" || name === "ativo") {
-      // checked está garantido porque só entra aqui se for checkbox ou radio
-      setForm({ ...form, [name]: checked ?? false });
+    if (name === "categoria") {
+      const selectedCategoria = categorias.find((cat) => cat.id === Number(value));
+      setForm({ ...form, categoria: selectedCategoria || null });
       return;
     }
 
-    if (name.startsWith("orgao.")) {
-      setForm({
-        ...form,
-        secretaria: { ...form.secretaria, nome: value },
-      });
+    if (name === "formasSolicitacao") {
+    setFormasSolicitacaoTexto(value);
+    const lista = value.split(',').map(item => item.trim()).filter(item => item !== '');
+    setForm({ ...form, formasSolicitacao: lista });
+    return;
+  }
+
+  if (name === "documentacaoNecessaria") {
+    setDocumentacaoNecessariaTexto(value);
+    const lista = value.split(',').map(item => item.trim()).filter(item => item !== '');
+    setForm({ ...form, documentacaoNecessaria: lista });
+    return;
+  }
+
+  if (name === "publicoDestinado") {
+    setPublicoDestinadoTexto(value);
+    const lista = value.split(',').map(item => item.trim()).filter(item => item !== '');
+    setForm({ ...form, publicoDestinado: lista });
+    return;
+  }
+
+    if (
+      name === "publicoDestinado" ||
+      name === "formasSolicitacao" ||
+      name === "documentacaoNecessaria"
+    ) {
+      setForm({ ...form, [name]: parseMultilineInput(value) });
       return;
     }
 
-    if (name.startsWith("categoria.")) {
-      setForm({
-        ...form,
-        categoria: { ...form.categoria, nome: value },
-      });
+    if (name === "secretaria") {
+      const selectedSecretaria = secretarias.find((sec) => sec.id === Number(value));
+      setForm({ ...form, secretaria: selectedSecretaria || null });
+      return;
+    }
+
+    if (name === "persona") {
+      const selectedId = Number(value);
+      const exists = form.persona.some((p) => p.id === selectedId);
+      if (exists) {
+        const updated = form.persona.filter((p) => p.id !== selectedId);
+        setForm({ ...form, persona: updated });
+      } else {
+        const selected = persona.find((p) => p.id === selectedId);
+        if (selected) {
+          setForm({ ...form, persona: [...form.persona, selected] });
+        }
+      }
       return;
     }
 
@@ -69,25 +150,30 @@ export function ServicoEditar() {
     e.preventDefault();
     if (!form) return;
 
-    setSaving(true);
-    setError(null);
+    // Garante que o id está dentro do payload
+    const payload: Services = {
+      ...form,
+      orgao: form.secretaria?.id ?? null,
+      categoria: form.categoria?.id ?? null,
+      personas: form.persona.map(p => p.id),
+      // inclui o id aqui para garantir que ele exista no payload
+      id: form.id!,
+    };
+
+    // remove o campo secretaria porque backend não espera ele
+    delete (payload as any).secretaria;
 
     try {
-      // Usa diretamente a função updateServico que retorna erro se falhar
-      await updateServico(form);
-      
-      // Se chegou aqui, o serviço foi atualizado com sucesso
-      navigate("/"); // redireciona após o sucesso
+      await updateServico(payload); // Passa o objeto completo com id
+      toast.success("Serviço atualizado com sucesso!");
+      navigate("/");
     } catch (err: any) {
-      setError(err.message || "Erro inesperado");
-    } finally {
-      setSaving(false);
+      toast.error(err.message || "Erro ao atualizar serviço");
     }
   }
 
-  if (loading) return <p>Carregando dados do serviço...</p>;
-  if (error) return <p style={{ color: "red" }}>Erro: {error}</p>;
-  if (!form) return <p>Serviço não encontrado</p>;
+  if (loading) return <p>Carregando...</p>;
+  if (error || !form) return <p>{error || "Erro ao carregar serviço."}</p>;
 
   return (
     <div style={{ maxWidth: 800, margin: "auto" }}>
@@ -119,7 +205,7 @@ export function ServicoEditar() {
           Público Destinado:
           <textarea
             name="publicoDestinado"
-            value={form.publicoDestinado}
+            value={publicoDestinadoTexto}
             onChange={handleChange}
             rows={2}
           />
@@ -129,7 +215,7 @@ export function ServicoEditar() {
           Formas de Solicitação:
           <textarea
             name="formasSolicitacao"
-            value={form.formasSolicitacao}
+            value={formasSolicitacaoTexto}
             onChange={handleChange}
             rows={2}
           />
@@ -139,7 +225,7 @@ export function ServicoEditar() {
           Documentação Necessária:
           <textarea
             name="documentacaoNecessaria"
-            value={form.documentacaoNecessaria}
+            value={documentacaoNecessariaTexto}
             onChange={handleChange}
             rows={2}
           />
@@ -227,22 +313,50 @@ export function ServicoEditar() {
 
         <label>
           Órgão:
-          <input
-            type="text"
-            name="orgao"
-            value={form.secretaria?.nome}
-            onChange={handleChange}
-          />
+          <select
+            name="secretaria"
+            value={form?.secretaria?.id?.toString() || ""}
+            onChange={(e) => {
+              const selected = secretarias.find((s) => s.id === Number(e.target.value));
+              if (selected) {
+                setForm((prevForm) => ({
+                  ...prevForm!,
+                  secretaria: selected,
+                }));
+              }
+            }}
+          >
+            <option value="">Selecione o órgão</option>
+            {secretarias.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.nome}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
           Categoria:
-          <input
-            type="text"
+          <select
             name="categoria"
-            value={form.categoria?.nome}
-            onChange={handleChange}
-          />
+            value={form?.categoria?.id?.toString() || ""}
+            onChange={(e) => {
+              const selected = categorias.find((c) => c.id === Number(e.target.value));
+              if (selected) {
+                setForm((prevForm) => ({
+                  ...prevForm!,
+                  categoria: selected,
+                }));
+              }
+            }}
+          >
+            <option value="">Selecione a categoria</option>
+            {categorias.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.nome}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
@@ -265,39 +379,28 @@ export function ServicoEditar() {
           />
         </label>
 
-        <label>
-          Persona:
-          <input
-            type="text"
-            name="persona"
-            value={form.persona}
-            onChange={handleChange}
-          />
-        </label>
+        <select
+          name="persona"
+          multiple
+          value={form?.persona?.map((p) => String(p.id)) || []}
+          onChange={(e) => {
+            const selectedIds = Array.from(e.target.selectedOptions, option => Number(option.value));
+            const selectedPersonas = persona.filter(p => p.id !== null && selectedIds.includes(p.id));
 
-        <label>
-          Visível:
-          <input
-            type="checkbox"
-            name="visivel"
-            checked={form.visivel}
-            onChange={handleChange}
-          />
-        </label>
+            setForm({...form!,persona: selectedPersonas});
+          }}
+        >
+          {persona.length === 0 && <option disabled>Carregando...</option>}
+          {persona
+            .filter(p => p.id !== null)
+            .map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.nome}
+              </option>
+            ))}
+        </select>
 
-        <label>
-          Ativo:
-          <input
-            type="checkbox"
-            name="ativo"
-            checked={form.ativo}
-            onChange={handleChange}
-          />
-        </label>
-
-        <button type="submit" disabled={saving}>
-          {saving ? "Salvando..." : "Salvar"}
-        </button>
+         <button type="submit">Salvar Alterações</button>
       </form>
     </div>
   );

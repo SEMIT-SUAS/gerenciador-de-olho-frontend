@@ -62,6 +62,9 @@ export function ServicoNovo() {
         setCategorias(categoriasData);
         setPersona(personaData);
 
+        console.log("Secretarias recebidas:", secretariasData);
+        console.log("Categorias recebidas:", categoriasData);
+
         console.log(personaData);
       } catch (error) {
         console.error("Erro ao buscar dados:", error);

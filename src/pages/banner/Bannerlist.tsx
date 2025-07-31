@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import type { Banner } from "../../types/Banners";
 import { getAllBanners, uploadBanner } from "../../services/bannersService";
 import { toast } from "react-toastify";
-import { ModalCadastroBanner } from "./ModalCadastroBanner";
+import { BannerGrid } from "./components/BannerGrid";
+import { ModalCadastroBanner } from "./components/ModalCadastroBanner";
 
 export function BannerList() {
   const [banners, setBanners] = useState<Banner[]>([]);
@@ -17,7 +18,7 @@ export function BannerList() {
   const [visivel, setVisivel] = useState(true);
   const [ativo, setAtivo] = useState(true);
   const [mensagem, setMensagem] = useState("");
-
+  
   useEffect(() => {
     fetchBanners();
   }, []);
@@ -53,6 +54,7 @@ export function BannerList() {
         toast.success("Banner cadastrado com sucesso!");
         console.log(result);
         setModalAberto(false);
+        fetchBanners();
     } catch (error: any) {
         toast.error(`Erro ao cadastrar banner: ${error.message}`);
     }
@@ -93,36 +95,7 @@ export function BannerList() {
       ) : error ? (
         <p>Erro: {error}</p>
       ) : (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
-          {banners.map((banner) => (
-            <div
-              key={banner.id}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "10px",
-                width: "250px",
-                textAlign: "center",
-              }}
-            >
-              <img
-                src={banner.imagem}
-                alt={banner.nome}
-                style={{ maxWidth: "100%", height: "150px", objectFit: "cover" }}
-              />
-              <h4>{banner.nome}</h4>
-              {banner.link && (
-                <a href={banner.link} target="_blank" rel="noopener noreferrer">
-                  Acessar Link
-                </a>
-              )}
-              <p>
-                Visível: {banner.visivel ? "Sim" : "Não"} <br />
-                Ativo: {banner.ativo ? "Sim" : "Não"}
-              </p>
-            </div>
-          ))}
-        </div>
+        <BannerGrid banners={banners} />
       )}
     </div>
   );

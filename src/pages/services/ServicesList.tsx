@@ -3,6 +3,8 @@ import type { Services } from "../../types/Services";
 import { Link, useNavigate } from "react-router-dom";
 import { changeServiceAtivo, changeServiceVisibility, getAllServices } from "../../services/servicosServices";
 import { toast } from "react-toastify";
+import { SearchInput } from "./components/SearchInput";
+import { ServiceItem } from "./components/ServiceItem";
 
 export function ServicesList() {
   const navigate = useNavigate();
@@ -11,18 +13,20 @@ export function ServicesList() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    async function fetchServices() {
-      try {
-        const allServices = await getAllServices();
-        setServices(allServices);
-      } catch (err: any) {
-        setError(err.message || "Erro ao buscar os serviços.");
-      } finally {
-        setLoading(false);
-      }
+  async function fetchServices() {
+    setLoading(true);
+    try {
+      const allServices = await getAllServices();
+      setServices(allServices);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || "Erro ao buscar os serviços.");
+    } finally {
+      setLoading(false);
     }
+  }
 
+  useEffect(() => {
     fetchServices();
   }, []);
 
@@ -36,12 +40,13 @@ export function ServicesList() {
 
     changeServiceVisibility(id, newVisibility)
       .then(() => {
-        toast.success(`Visibilidade alterada para ${newVisibility}`);
-        // Atualize o estado local se necessário
+        const mensagem = newVisibility ? "mostrar" : "ocultar";
+        toast.success(`Visibilidade alterada para ${mensagem}`);
+        fetchServices();
       })
       .catch((error) => {
         toast.error(error.message);
-    });
+      });
   }
 
   function handleToggleActive(id: number, ativo: boolean) {
@@ -49,8 +54,9 @@ export function ServicesList() {
 
     changeServiceAtivo(id, newAtivo)
       .then(() => {
-        toast.success(`Ativo alterado para ${newAtivo}`);
-        // Atualize o estado local se necessário
+        const mensagem = newAtivo ? "ativar" : "inativar";
+        toast.success(`Visibilidade alterada para ${mensagem}`);
+        fetchServices();
       })
       .catch((error) => {
         toast.error(error.message);
@@ -83,44 +89,18 @@ export function ServicesList() {
         </Link>
       </div>
 
-      <input
-        type="text"
-        placeholder="Pesquisar por nome..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ marginBottom: "1rem", padding: "6px", width: "100%" }}
-      />
+       <SearchInput value={searchTerm} onChange={setSearchTerm} />
 
       <ul style={{ listStyle: "none", padding: 0 }}>
-          {filteredServices.map((service) => (
-            <li
-              key={service.id}
-              style={{
-              border: "1px solid #ccc",
-              padding: "1rem",
-              marginBottom: "1rem",
-              borderRadius: "4px",
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-              }}
-              >
-              <Link to={`/servico/${service.id}`} style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}>
-                <h3>{service.nome}</h3>
-                <p><strong>Descrição:</strong> {service.descricao}</p>
-                <p><strong>Categoria:</strong> {service.categoria?.nome}</p>
-              </Link>
-              <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
-                <button onClick={() => handleEdit(service.id!)}>Editar</button>
-                <button onClick={() => handleToggleVisibility(service.id!, service.visivel)}>
-                {service.visivel ? 'Ocultar' : 'Mostrar'}
-                </button>
-                <button onClick={() => handleToggleActive(service.id!, service.ativo)}>
-                {service.ativo ? 'Inativar' : 'Ativar'}
-                </button>
-              </div>
-            </li>
-          ))}
+        {filteredServices.map((service) => (
+          <ServiceItem
+            key={service.id}
+            service={service}
+            onEdit={handleEdit}
+            onToggleVisibility={handleToggleVisibility}
+            onToggleActive={handleToggleActive}
+          />
+        ))}
       </ul>
     </div>
   );

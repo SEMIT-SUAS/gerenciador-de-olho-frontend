@@ -82,21 +82,26 @@ async function getBannerById(id: number): Promise<Banner[]> {
     }    
 }
 
-async function updateBanner(id: number, formData: FormData): Promise<Banner> {
-    try {
-        const response = await fetch(`${API_BASE_URL}/banners/atualizar/${id}`, {
-            method: 'PUT',
-            body: formData,
-        })
+export async function updateBanner(id: number, formData: FormData): Promise<Banner> {
+  try {
+    formData.append("id", id.toString());
 
-        if (!response.ok){
-            throw new Error('Não foi possível atualizar banner')
-        }
+    const response = await fetch(`${API_BASE_URL}/banners/atualizar`, {
+      method: "PUT",
+      body: formData,
+    });
 
-        return await response.json()
-    } catch(error){
-        throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde')
-    }    
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Erro ao atualizar: ${text}`);
+    }
+
+    return await response.json(); // se o back retornar JSON
+  } catch (error: any) {
+    throw new Error(
+      error.message || "Infelizmente ocorreu um erro no servidor."
+    );
+  }
 }
 
 async function changeBannerVisibility(id: number, isVisible: boolean): Promise<Banner> {

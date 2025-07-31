@@ -36,7 +36,7 @@ export async function createService(servico: Services): Promise<Services> {
 
 export async function updateServico(servico: Services): Promise<Services> {
     try {
-        const response = await fetch(`${API_BASE_URL}/servico/atualizar/${servico.id!}`, {
+        const response = await fetch(`${API_BASE_URL}/servico/atualizar`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(servico),
@@ -81,40 +81,74 @@ export async function getServicoById(id: number): Promise<Services> {
     }    
 }
 
-export async function changeServiceVisibility(id: number, visivel: boolean): Promise<Services>{
-    try {
-        const response = await fetch(`${API_BASE_URL}/atualizar/visibilidade`, {
-        method: 'PUT',
-        headers: {
+export async function changeServiceVisibility(id: number, visivel: boolean): Promise<Services | { message: string }> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/servico/atualizar/visibilidade`, {
+      method: 'PUT',
+      headers: {
         'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id, visivel }),
+      },
+      body: JSON.stringify({ id, visivel }),
     });
 
-    if (!response.ok){
-        throw new Error('Não foi possível alterar visibilidade do serviço')
+    const contentType = response.headers.get("content-type");
+
+    if (!response.ok) {
+      // Tenta extrair mensagem de erro, se possível
+      if (contentType?.includes("application/json")) {
+        const errorJson = await response.json();
+        throw new Error(errorJson.message || "Erro ao cadastrar banner.");
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || "Erro ao cadastrar banner.");
+      }
     }
-    return await response.json()
-    } catch (error){
-        throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente')
+
+    // Se for JSON
+    if (contentType?.includes("application/json")) {
+      return await response.json();
+    } else {
+      // Se for texto (caso do seu backend agora)
+      const text = await response.text();
+      return { message: text };
     }
+  } catch (error: any) {
+    throw new Error(error.message || "Erro desconhecido ao cadastrar banner.");
+  }
 }
 
-export async function changeServiceAtivo(id: number, ativo: boolean): Promise<Services> {
+export async function changeServiceAtivo(id: number, ativo: boolean): Promise<Services | { message: string }> {
     try{
-        const response = await fetch(`${API_BASE_URL}/atualizar/atividade`, {
+        const response = await fetch(`${API_BASE_URL}/servico/atualizar/atividade`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id, ativo }),
         });
 
-        if (!response.ok){
-            throw new Error('Não foi possivel alterar a opção "ativo"')
-        }
-        return await response.json()
-    } catch (error){
-        throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente')
+        const contentType = response.headers.get("content-type");
+
+    if (!response.ok) {
+      // Tenta extrair mensagem de erro, se possível
+      if (contentType?.includes("application/json")) {
+        const errorJson = await response.json();
+        throw new Error(errorJson.message || "Erro ao cadastrar banner.");
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || "Erro ao cadastrar banner.");
+      }
     }
+
+    // Se for JSON
+    if (contentType?.includes("application/json")) {
+      return await response.json();
+    } else {
+      // Se for texto (caso do seu backend agora)
+      const text = await response.text();
+      return { message: text };
+    }
+  } catch (error: any) {
+    throw new Error(error.message || "Erro desconhecido ao cadastrar banner.");
+  }
 }
 
 export default {
