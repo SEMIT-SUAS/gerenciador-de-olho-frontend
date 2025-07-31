@@ -62,6 +62,9 @@ export function App() {
             />
           </Route>
         </Route>
+
+        <Route path="login" element={<LoginPage />} />
+
         <Route path="/servicos">
           <Route index element={<ServicesList />} />
           <Route path="categorias" element={<ListaCategorias />} />

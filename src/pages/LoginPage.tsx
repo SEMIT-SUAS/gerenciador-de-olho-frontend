@@ -1,7 +1,9 @@
+import { LoginForm } from '@/components/Forms/Login';
+
 export function LoginPage() {
   return (
-    <div>
-      <h1>Pagina de login</h1>
+    <div className="flex items-center justify-center">
+      <LoginForm />
     </div>
   );
 }
