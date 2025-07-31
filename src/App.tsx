@@ -16,6 +16,12 @@ import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcao
 import { NotFoundPage } from './pages/404';
 import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
 import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
+import { ServicesList } from './pages/servicos/ServicesList';
+import { ServicoDetalhes } from './pages/servicos/ServicoDetalhes';
+import { ServicoNovo } from './pages/servicos/ServicoNovo';
+import { ServicoEditar } from './pages/servicos/ServicoEditar';
+import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
+import { PortaisList } from './pages/portais/PortaisList';
 
 export function App() {
   return (
@@ -62,6 +68,16 @@ export function App() {
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/servicos">
+          <Route index element={<ServicesList />} />
+          <Route path="categorias" element={<ListaCategorias />} />
+          <Route path="novo" element={<ServicoNovo />} />
+          <Route path=":id" element={<ServicoDetalhes />} />
+          <Route path="editar/:id" element={<ServicoEditar />} />
+        </Route>
+        <Route path="/portais" element={<PortaisList />} />
+
+        {/* Redirecionamento para a página inicial se a rota não for encontrada */}
       </Routes>
 
       <ToastContainer
