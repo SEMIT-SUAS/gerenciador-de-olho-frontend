@@ -22,20 +22,25 @@ export function DenunciasList() {
         </p>
       ) : (
         <div className="flex flex-col gap-3">
-          {denuncias.map((denuncia) => {
-            return (
-              <DenunciaItem
-                showDate={true}
-                key={denuncia.id}
-                denuncia={denuncia}
-                onClick={() =>
-                  navigate(`/ocorrencias/denuncias/${denuncia.id}`)
-                }
-                showTag={true}
-                isDeletable={false}
-              />
-            );
-          })}
+          {[...denuncias]
+            .sort(
+              (a, b) =>
+                new Date(b.criadaEm).getTime() - new Date(a.criadaEm).getTime(),
+            )
+            .map((denuncia) => {
+              return (
+                <DenunciaItem
+                  showDate={true}
+                  key={denuncia.id}
+                  denuncia={denuncia}
+                  onClick={() =>
+                    navigate(`/ocorrencias/denuncias/${denuncia.id}`)
+                  }
+                  showTag={true}
+                  isDeletable={false}
+                />
+              );
+            })}
         </div>
       )}
     </div>

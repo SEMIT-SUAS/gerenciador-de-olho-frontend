@@ -2,13 +2,7 @@ type TagProps = {
   status: string;
 };
 
-import {
-  IconCircleCheckFilled,
-  IconLoader,
-  IconProgressX,
-  IconProgress,
-  IconRotateClockwise2,
-} from '@tabler/icons-react';
+import { StatusIcon } from '../../constants/StatusIcon';
 
 export function Tag({ status }: TagProps) {
   const styles: Record<string, string> = {
@@ -19,14 +13,6 @@ export function Tag({ status }: TagProps) {
     em_analise: 'bg-gray-100 text-gray-800',
   };
 
-  const icon: Record<string, React.ReactNode> = {
-    aberto: <IconLoader className="inline h-3.5" />,
-    em_andamento: <IconRotateClockwise2 className="inline h-3.5" />,
-    concluido: <IconCircleCheckFilled className="inline h-3.5" />,
-    indeferido: <IconProgressX className="inline h-3.5" />,
-    em_analise: <IconProgress className="inline h-3.5" />,
-  };
-
   const defaultStyle = 'bg-gray-100 text-gray-800';
 
   const style = styles[status] || defaultStyle;
@@ -35,7 +21,7 @@ export function Tag({ status }: TagProps) {
     <span
       className={`inline-flex w-fit text-xs font-medium pr-2 p-0.5 rounded-sm capitalize ${style} whitespace-nowrap items-center`}
     >
-      {icon[status]}
+      {StatusIcon[status]}
       {status.replace('_', ' ')}
     </span>
   );

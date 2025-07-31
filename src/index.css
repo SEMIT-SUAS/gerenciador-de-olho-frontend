@@ -51,6 +51,25 @@
   scrollbar-color: #3b82f6 #fff;
 }
 
+/* CSS para o Marcador com Status */
+.marker-container {
+  position: relative;
+}
+
+.marker-container img {
+  width: 50%;
+  height: 50%;
+  object-fit: contain;
+}
+
+.status-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 2px;
+  height: 2px;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

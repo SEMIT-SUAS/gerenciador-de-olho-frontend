@@ -79,10 +79,10 @@ export function AcaoDetails() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full space-y-7">
+      <BackButton to="/ocorrencias/acoes" children="Detalhes da Ação" />
       <div className="flex-shrink-0">
-        <BackButton to="/ocorrencias/acoes" children="Detalhes da Ação" />
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-between items-center">
           <div>
             <p className="text-sm text-gray-500">
               Responsável: {acao.secretaria.sigla}
@@ -96,7 +96,7 @@ export function AcaoDetails() {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col gap-4 mt-5">
+      <div className="flex-1 flex flex-col gap-4">
         {denunciasVinculadas.length > 0 && (
           <div className="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200">
             <FaInfoCircle className="text-blue-500 mr-3 flex-shrink-0" />
@@ -118,7 +118,9 @@ export function AcaoDetails() {
             size="md"
             onClick={() => setIsModalOpen(true)} // Abre o modal
             className="w-full"
-          ></Button>
+          >
+            Iniciar ação
+          </Button>
         )}
 
         <div
@@ -130,14 +132,15 @@ export function AcaoDetails() {
               <h1 className="font-semibold text-md text-gray-800">
                 Denúncias Vinculadas
               </h1>
-              <button
-                onClick={() => navigate('vincular-denuncias')}
-                className="bg-blue-500 rounded-full p-1 hover:bg-blue-600 transition-colors"
-              >
-                {currentAcaoStatus !== 'indeferido' && (
+
+              {!['indeferido', 'concluido'].includes(currentAcaoStatus) && (
+                <button
+                  onClick={() => navigate('vincular-denuncias')}
+                  className="bg-blue-500 rounded-full p-1 hover:bg-blue-600 transition-colors"
+                >
                   <IoIosAdd size={24} color="white" />
-                )}
-              </button>
+                </button>
+              )}
             </div>
           </div>
 
@@ -177,7 +180,7 @@ export function AcaoDetails() {
         </div>
       </div>
 
-      <div className="my-4">
+      <div>
         <h3 className="font-semibold text-gray-800 mb-1">Mídias:</h3>
         <FilesCarrrousel
           files={denunciasVinculadas.flatMap((denuncia) =>
@@ -191,7 +194,7 @@ export function AcaoDetails() {
         />
       </div>
 
-      <footer className="flex flex-col gap-2 pt-4 flex-shrink-0">
+      <footer className="flex flex-col gap-2 flex-shrink-0">
         {['em_analise', 'em_andamento'].includes(currentAcaoStatus) && (
           <div className="flex gap-1">
             <Button
