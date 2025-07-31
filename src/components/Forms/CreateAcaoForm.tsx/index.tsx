@@ -7,7 +7,6 @@ import { FormInput } from '../FormInput';
 import { FormInputError } from '../FormInputError';
 import { FormTextarea } from '../FormTextarea';
 import { Label } from '../Label';
-import { SelectArrowDown } from '../SelectArrowDown';
 import { useAddAcaoFormHook } from './addAcaoFormHook';
 import { DenunciaItem } from '../../SidePanel/Denuncia/DenunciaItem';
 import { useEffect, useState, type FormEvent } from 'react';
@@ -16,6 +15,15 @@ import { useFilters } from '../../../context/FiltersContext';
 import type { CreateAcaoModel } from '../../../types/Acao';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Button } from '@/components/Buttons/BaseButton';
+import { BackButton } from '@/components/Buttons/Backbutton';
 
 import acoesService from '../../../services/acoesService';
 
@@ -35,6 +43,7 @@ export function AddAcaoForm() {
   } = useMapActions();
 
   const {
+    setFormData,
     formData,
     formErrors,
     isSubmitingForm,
@@ -45,6 +54,19 @@ export function AddAcaoForm() {
   } = useAddAcaoFormHook();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    cacheCurrentFilters();
+
+    setFiltroDenunciasComAcao('sem_acao');
+    setSalvarDenunciasOnClick(true);
+
+    return () => {
+      restoreCachedFilters();
+      setDenunciasSelecionadas([]);
+      setSalvarDenunciasOnClick(false);
+    };
+  }, []);
 
   function handleSubmitForm(event: FormEvent) {
     event.preventDefault();
@@ -100,24 +122,15 @@ export function AddAcaoForm() {
     }
   }
 
-  useEffect(() => {
-    cacheCurrentFilters();
-
-    setFiltroDenunciasComAcao('sem_acao');
-    setSalvarDenunciasOnClick(true);
-
-    return () => {
-      setDenunciasSelecionadas([]);
-      setSalvarDenunciasOnClick(false);
-      restoreCachedFilters();
-    };
-  }, []);
-
   return (
     <>
       <form onSubmit={handleSubmitForm} className="flex flex-col gap-4 px-1">
-        <h2 className="text-2xl font-bold text-green-500">Criar ação</h2>
-
+        <div className="flex flex-col gap-4">
+          <BackButton to="/ocorrencias/acoes" children="Criar Ação" />
+          <p className="text-sm text-gray-500">
+            Crie uma ação para agrupar denúncias relacionadas
+          </p>
+        </div>
         <div className="flex flex-col gap-4">
           <FormGroup>
             <Label htmlFor="title">Título</Label>
@@ -128,7 +141,6 @@ export function AddAcaoForm() {
               value={formData.title}
               placeholder="Informa o título da ação"
               onChange={onChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
             <FormInputError message={formErrors?.title?._errors[0]} />
           </FormGroup>
@@ -137,25 +149,32 @@ export function AddAcaoForm() {
             <Label htmlFor="secretariaId">Secretaria</Label>
             {secretarias && (
               <div className="relative">
-                <select
-                  id="secretariaId"
+                <Select
                   name="secretariaId"
-                  onChange={onChange}
-                  value={String(formData.secretariaId)}
-                  className="w-full cursor-pointer appearance-none rounded-md border border-gray-300 bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+                  value={
+                    formData.secretariaId < 1
+                      ? ''
+                      : String(formData.secretariaId)
+                  }
+                  onValueChange={(value) => {
+                    const numericValue = Number(value) || 0;
+                    setFormData((prev) => ({
+                      ...prev,
+                      secretariaId: numericValue,
+                    }));
+                  }}
                 >
-                  <option value="0" disabled>
-                    Selecione uma secretaria
-                  </option>
-
-                  {secretarias.map((sec) => (
-                    <option key={sec.id} value={sec.id}>
-                      {sec.sigla}
-                    </option>
-                  ))}
-                </select>
-
-                <SelectArrowDown />
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecione uma secretaria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {secretarias.map((sec) => (
+                      <SelectItem key={sec.id} value={String(sec.id)}>
+                        {sec.sigla}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
             <FormInputError message={formErrors?.secretariaId?._errors[0]} />
@@ -190,9 +209,9 @@ export function AddAcaoForm() {
             denunciasSelecionas.map((d) => (
               <DenunciaItem
                 key={d.id}
+                showDate={true}
                 denuncia={d}
                 onClick={() => {}}
-                showDescription={false}
                 showTag={false}
                 isDeletable={true}
                 onTrashClick={() => {
@@ -205,13 +224,13 @@ export function AddAcaoForm() {
           )}
         </div>
 
-        <button
+        <Button
+          size="md"
           type="submit"
           disabled={isSubmitingForm || denunciasSelecionas.length === 0}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitingForm ? 'Criando...' : 'Criar Ação'}
-        </button>
+        </Button>
       </form>
 
       <ConfirmModal

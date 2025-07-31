@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { DashboardPage } from './pages/DashboardPage';
-import { LoginPage } from './pages/LoginPage';
+import LoginPage from './pages/LoginPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
 import { DenunciasList } from './components/SidePanel/Denuncia/DenunciasList';
@@ -13,6 +13,9 @@ import { AcoesList } from './components/SidePanel/Acao/AcoesList';
 import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
 import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
+import { NotFoundPage } from './pages/404';
+import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
+import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
 import { ServicesList } from './pages/servicos/ServicesList';
 import { ServicoDetalhes } from './pages/servicos/ServicoDetalhes';
 import { ServicoNovo } from './pages/servicos/ServicoNovo';
@@ -55,13 +58,16 @@ export function App() {
             <Route index element={<AcoesList />} />
             <Route path=":acaoId" element={<AcaoDetails />} />
             <Route path="add" element={<AddAcao />} />
-            <Route path=":acaoId/indeferir" element={<h1>Indeferir acao</h1>} />
+            <Route path=":acaoId/indeferir" element={<IndeferirAcao />} />
             <Route
               path=":acaoId/vincular-denuncias"
               element={<VincularAcaoADenuncias />}
             />
+            <Route path=":acaoId/concluir" element={<ConcluirAcao />} />
           </Route>
         </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
         <Route path="/servicos">
           <Route index element={<ServicesList />} />
           <Route path="categorias" element={<ListaCategorias />} />

@@ -3,7 +3,6 @@ import { FormGroup } from '../FormGroup';
 import { Label } from '../Label';
 import { FormInput } from '../FormInput';
 import { FormInputError } from '../FormInputError';
-import { SelectArrowDown } from '../SelectArrowDown';
 import { toast } from 'react-toastify';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
@@ -13,6 +12,13 @@ import type { CreateDenunciaModel } from '../../../types/Denuncia';
 import { useNavigate } from 'react-router-dom';
 import { useAddDenunciaFormHook } from './addDenunciaFormHook';
 import denunciaService from '../../../services/denunciasService';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export function AddDenunciaForm() {
   const { categorias } = useOcorrencias();
@@ -196,25 +202,31 @@ export function AddDenunciaForm() {
           <FormGroup>
             <Label htmlFor="categoryId">Categoria da denúncia</Label>
             <div className="relative">
-              <select
-                id="categoryId"
+              <Select
                 name="categoryId"
-                value={formData.categoryId < 1 ? '' : formData.categoryId}
-                onChange={onChangeInput}
+                value={
+                  formData.categoryId < 1 ? '' : String(formData.categoryId)
+                }
+                onValueChange={(value) => {
+                  const numericValue = Number(value);
+                  setFormData((prev) => ({
+                    ...prev,
+                    categoryId: numericValue,
+                  }));
+                }}
                 disabled={!newDenunciaCoordinates || isLoadingAddressSearch}
-                className="w-full cursor-pointer rounded-lg border bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <option value="" disabled>
-                  Selecione uma categoria
-                </option>
-
-                {categorias.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.nome}
-                  </option>
-                ))}
-              </select>
-              <SelectArrowDown />
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecione uma categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categorias.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <FormInputError message={formErrors.categoryId?._errors?.[0]} />
           </FormGroup>
@@ -223,25 +235,34 @@ export function AddDenunciaForm() {
             <FormGroup>
               <Label htmlFor="categoryTipoId">Tipo da denúncia</Label>
               <div className="relative">
-                <select
-                  id="categoryTipoId"
+                <Select
                   name="categoryTipoId"
                   value={
-                    formData.categoryTipoId < 1 ? '' : formData.categoryTipoId
+                    formData.categoryTipoId < 1
+                      ? ''
+                      : String(formData.categoryTipoId)
                   }
-                  onChange={onChangeInput}
-                  className="w-full cursor-pointer rounded-lg border bg-white py-2.5 pl-3 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none border-gray-300"
+                  onValueChange={(value) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      categoryTipoId: Number(value),
+                    }));
+                  }}
+                  disabled={
+                    !selectedCategory || !selectedCategory.tipos?.length
+                  }
                 >
-                  <option value="" disabled>
-                    Selecione um tipo
-                  </option>
-                  {selectedCategory?.tipos?.map((tipo) => (
-                    <option key={tipo.id} value={tipo.id}>
-                      {tipo.nome}
-                    </option>
-                  ))}
-                </select>
-                <SelectArrowDown />
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecione um tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedCategory?.tipos?.map((tipo) => (
+                      <SelectItem key={tipo.id} value={String(tipo.id)}>
+                        {tipo.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <FormInputError
                 message={formErrors.categoryTipoId?._errors?.[0]}

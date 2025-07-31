@@ -5,7 +5,7 @@ export const mensagensSugeridasParaIndeferirDenuncia = [
   'O assunto já está sendo tratado em outro processo ou esfera competente.',
 ];
 
-export const actionsSuggestions = [
+export const mensagensSugeridasParaIndeferirAcao = [
   'Fora do escopo de atuação ou da competência deste setor.',
   'Solicitação duplicada ou já atendida anteriormente.',
   'Indisponibilidade de recursos orçamentários para esta finalidade.',
