@@ -72,7 +72,7 @@ export function ServicoDetalhes() {
         <strong>Legislação:</strong> {service.legislacao}
       </p>
       <p>
-        <strong>orgão:</strong> {service.orgao.nome}
+        <strong>orgão:</strong> {service.nomeOrgao}
       </p>
       <p>
         <strong>categoria:</strong> {service.categoria.nome}

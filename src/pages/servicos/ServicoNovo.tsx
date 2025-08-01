@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Services } from '../../types/Services';
+import type { CreateService } from '../../types/Services';
 import { createService } from '../../services/servicosServices';
 import secretariaService from '../../services/secretariaService'; // ajuste o caminho se necessário
 import type { SecretariaModel } from '../../types/Secretaria';
@@ -8,6 +8,7 @@ import { getAllCategorias } from '../../services/servicocategoriaService';
 import type { ServicoCategoria } from '../../types/CategoriaServico';
 import { getAllPerosona } from '../../services/servicoPersona';
 import type { Persona } from '../../types/Persona';
+import { Input } from '@/components/ui/input';
 
 function parseMultilineInput(text: string): string[] {
   return text
@@ -19,7 +20,7 @@ function parseMultilineInput(text: string): string[] {
 export function ServicoNovo() {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState<Services>({
+  const [form, setForm] = useState<CreateService>({
     id: null,
     orgao: null,
     secretaria: null,
@@ -188,7 +189,7 @@ export function ServicoNovo() {
       <form onSubmit={handleSubmit}>
         <label>
           Nome:
-          <input
+          <Input
             type="text"
             name="nome"
             value={form.nome}
@@ -240,7 +241,7 @@ export function ServicoNovo() {
 
         <label>
           Custos:
-          <input
+          <Input
             type="text"
             name="custos"
             value={form.custos}
@@ -280,7 +281,7 @@ export function ServicoNovo() {
 
         <label>
           Prazo de Atendimento:
-          <input
+          <Input
             type="text"
             name="prazoAtendimento"
             value={form.prazoAtendimento}
@@ -300,7 +301,7 @@ export function ServicoNovo() {
 
         <label>
           Horário de Atendimento:
-          <input
+          <Input
             type="text"
             name="horarioAtendimento"
             value={form.horarioAtendimento}
@@ -352,7 +353,7 @@ export function ServicoNovo() {
 
         <label>
           Setor de Lotação:
-          <input
+          <Input
             type="text"
             name="setorLotacao"
             value={form.setorLotacao}
@@ -362,7 +363,7 @@ export function ServicoNovo() {
 
         <label>
           Modelo de Requerimento:
-          <input
+          <Input
             type="text"
             name="modeloRequerimento"
             value={form.modeloRequerimento}
@@ -403,7 +404,7 @@ export function ServicoNovo() {
 
         <label>
           Visível:
-          <input
+          <Input
             type="checkbox"
             name="visivel"
             checked={form.visivel}
@@ -413,7 +414,7 @@ export function ServicoNovo() {
 
         <label>
           Ativo:
-          <input
+          <Input
             type="checkbox"
             name="ativo"
             checked={form.ativo}

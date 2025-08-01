@@ -1,146 +1,203 @@
-import { useEffect, useState } from 'react';
-import type { Services } from '../../types/Services';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 import {
-  changeServiceAtivo,
-  changeServiceVisibility,
-  getAllServices,
-} from '../../services/servicosServices';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { SearchInput } from "@/components/ui/input";
+import { LayoutPage } from "./../LayoutPage";
+import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
+import { Plus } from "lucide-react";
+import { toast } from "sonner";
+
+import { getAllServices } from "@/services/servicosServices";
+import type { Services } from "@/types/Services";
+import { Badge } from "@/components/ui/badge";
 
 export function ServicesList() {
   const navigate = useNavigate();
+
   const [services, setServices] = useState<Services[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8);
+
+  async function fetchServices() {
+    try {
+      setLoading(true);
+      const data = await getAllServices();
+      setServices(data);
+    } catch (err: any) {
+      setError(err.message || "Erro ao buscar os serviços.");
+      toast.error(err.message || "Erro ao buscar os serviços.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    async function fetchServices() {
-      try {
-        const allServices = await getAllServices();
-        setServices(allServices);
-      } catch (err: any) {
-        setError(err.message || 'Erro ao buscar os serviços.');
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchServices();
   }, []);
 
-  function handleEdit(id: number) {
-    // Por exemplo, navegar para a página de edição
-    navigate(`/servico/editar/${id}`);
-  }
-
-  function handleToggleVisibility(id: number, visivel: boolean) {
-    const newVisibility = !visivel;
-
-    changeServiceVisibility(id, newVisibility)
-      .then(() => {
-        console.log(`Visibilidade alterada para ${newVisibility}`);
-        // Atualize o estado local se necessário
-      })
-      .catch((error) => {
-        console.error(error.message);
-      });
-  }
-
-  function handleToggleActive(id: number, ativo: boolean) {
-    const newAtivo = !ativo;
-
-    changeServiceAtivo(id, newAtivo)
-      .then(() => {
-        console.log(`Ativo alterado para ${newAtivo}`);
-        // Atualize o estado local se necessário
-      })
-      .catch((error) => {
-        console.error(error.message);
-      });
-  }
-
-  const filteredServices = services.filter((service) =>
-    service.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filtered = services.filter((s) =>
+    s.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <p>Erro: {error}</p>;
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const currentData = filtered.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <p className="text-gray-600">Carregando serviços...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-red-600">Erro: {error}</p>
+          <Button onClick={fetchServices} variant="outline" className="mt-4">
+            Tentar novamente
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h2>Lista de Serviços</h2>
+    <LayoutPage>
+      <div className="flex flex-col gap-6 py-8 px-36">
+        <div className="max-w-[640px]">
+          <h2 className="text-3xl font-bold tracking-tight">Serviços</h2>
+          <p className="text-slate-600 text-xs mt-1">
+            Gerencie os serviços disponíveis com clareza e objetividade.
+          </p>
+        </div>
 
-      {/* Botão para adicionar serviço */}
-      <div style={{ marginBottom: '1rem' }}>
-        <Link
-          to="/servico/novo"
-          style={{
-            padding: '0.5rem 1rem',
-            backgroundColor: '#007bff',
-            color: '#fff',
-            borderRadius: '4px',
-            textDecoration: 'none',
-            fontWeight: 'bold',
-            display: 'inline-block',
-          }}
-        >
-          + Adicionar Serviço
-        </Link>
-      </div>
+        <div className="flex items-center justify-between">
+          <div className="w-[320px]">
+            <SearchInput
+              placeholder="Pesquise por nome"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
 
-      <input
-        type="text"
-        placeholder="Pesquisar por nome..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ marginBottom: '1rem', padding: '6px', width: '100%' }}
-      />
-
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {filteredServices.map((service) => (
-          <li
-            key={service.id}
-            style={{
-              border: '1px solid #ccc',
-              padding: '1rem',
-              marginBottom: '1rem',
-              borderRadius: '4px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Link
-              to={`/servico/${service.id}`}
-              style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}
-            >
-              <h3>{service.nome}</h3>
-              <p>
-                <strong>Descrição:</strong> {service.descricao}
-              </p>
-              <p>
-                <strong>Categoria:</strong> {service.categoria?.nome}
-              </p>
+          <Button asChild>
+            <Link to="/servico/novo">
+              <Plus className="mr-2 h-4 w-4" />
+              Adicionar serviço
             </Link>
-            <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
-              <button onClick={() => handleEdit(service.id!)}>Editar</button>
-              <button
-                onClick={() =>
-                  handleToggleVisibility(service.id!, service.visivel)
-                }
-              >
-                {service.visivel ? 'Ocultar' : 'Mostrar'}
-              </button>
-              <button
-                onClick={() => handleToggleActive(service.id!, service.ativo)}
-              >
-                {service.ativo ? 'Inativar' : 'Ativar'}
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+          </Button>
+        </div>
+
+        <Table className="border border-slate-300 rounded-md shadow-sm">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nome</TableHead>
+              <TableHead>Categoria</TableHead>
+              <TableHead>Persona</TableHead>
+              <TableHead>Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {currentData.map((service) => (
+              <TableRow key={service.id}>
+                <TableCell>{service.nome}</TableCell>
+                <TableCell>{service.nomeCategoria ?? "-"}</TableCell>
+                <TableCell className="flex flex-wrap gap-2">
+                  {Array.isArray(service.nomesPersonas) && service.nomesPersonas.length > 0 ? (
+                   service.nomesPersonas.map((persona: string, idx: number) => (
+                  <Badge key={idx} variant="outline">
+                  {persona}
+                 </Badge>
+                ))
+             ) : (
+                <Badge variant="outline">-</Badge>
+                )}
+                </TableCell>
+                <TableCell>
+                  <button
+                    className="text-black-600"
+                    onClick={() => navigate(`/servico/editar/${service.id}`)}
+                  >
+                   <IconEdit size={18} stroke={2} className="text-black-600" />
+                  </button>
+                </TableCell>
+                <TableCell>
+                  <button
+                    className="text-black-600">
+                   <IconTrash size={18} stroke={2} className="text-black-600" />
+                  </button>
+                </TableCell>
+                <TableCell>
+                  <button
+                    className="text-black-600"      
+                    onClick={() => navigate(`/servico/detalhes/${service.id}`)}      >
+                  <IconEye size={18} stroke={2} className="text-black-600" />
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        <div className="flex items-center justify-between mt-4">
+          <span className="text-sm text-gray-600">
+            Página {currentPage} de {totalPages}
+          </span>
+
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1}
+            >
+              Início
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Anterior
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages || totalPages === 0}
+            >
+              Próxima
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages || totalPages === 0}
+            >
+              Final
+            </Button>
+          </div>
+        </div>
+      </div>
+    </LayoutPage>
   );
 }
