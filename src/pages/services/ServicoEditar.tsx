@@ -166,7 +166,7 @@ export function ServicoEditar() {
     try {
       await updateServico(payload); // Passa o objeto completo com id
       toast.success("Serviço atualizado com sucesso!");
-      navigate("/");
+      navigate("/servicos");
     } catch (err: any) {
       toast.error(err.message || "Erro ao atualizar serviço");
     }

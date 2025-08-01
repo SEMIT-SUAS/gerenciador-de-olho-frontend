@@ -1,12 +1,12 @@
 // src/pages/ServicoDetalhes.tsx
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import type { Services } from "../../types/Services";
+import type { ServicoDetalhado } from "../../types/ServicoDetalhado";
 import { getServicoById } from "../../services/servicosServices";
 
 export function ServicoDetalhes() {
   const { id } = useParams<{ id: string }>();
-  const [service, setService] = useState<Services | null>(null);
+  const [service, setService] = useState<ServicoDetalhado | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

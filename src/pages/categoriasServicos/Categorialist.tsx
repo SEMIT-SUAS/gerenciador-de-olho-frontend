@@ -3,6 +3,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { getAllCategorias, createCategoria, editarCategoria, toggleAtivo, toggleVisivel} from '../../services/servicocategoriaService';
 import type { ServicoCategoria } from '../../types/CategoriaServico';
 import type { ServicoCategoriaEditar } from "../../types/ServicoCategoriaEditar";
+import { toast } from "react-toastify";
 
 export function ListaCategorias() {
   const [categorias, setCategorias] = useState<(ServicoCategoria & { id: number })[]>([]);
@@ -78,12 +79,12 @@ export function ListaCategorias() {
     try {
       const nova: ServicoCategoria = { nome, icone, ativo, visivel };
       await createCategoria(nova);
-      alert("Categoria adicionada.");
+      toast.success("Categoria adicionada.");
       setShowAddForm(false);
       resetForm();
       fetchCategorias();
     } catch (error) {
-      alert((error as Error).message);
+      toast.error((error as Error).message);
     }
   }
 
@@ -94,12 +95,12 @@ export function ListaCategorias() {
     try {
       await editarCategoria(editCategoria);
 
-      alert("Categoria editada com sucesso.");
+      toast.success("Categoria editada com sucesso.");
       setShowEditModal(false);
       setEditCategoria(null);
       fetchCategorias();
     } catch (error) {
-      alert((error as Error).message);
+      toast.error((error as Error).message);
     }
   }
 

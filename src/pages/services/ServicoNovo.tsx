@@ -49,6 +49,9 @@ export function ServicoNovo() {
   const [loading, setLoading] = useState(false);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
   const [persona, setPersona] = useState<Persona[]>([]);
+  const [publicoDestinadoTexto, setPublicoDestinadoTexto] = useState('');
+  const [formasSolicitacaoTexto, setFormasSolicitacaoTexto] = useState('');
+  const [documentacaoTexto, setDocumentacaoTexto] = useState('');
 
   useEffect(() => {
     async function fetchDados() {
@@ -77,6 +80,55 @@ export function ServicoNovo() {
   useEffect(() => {
     console.log("form.persona:", form.persona);
   }, [form.persona]);
+
+  useEffect(() => {
+    if (Array.isArray(form?.publicoDestinado)) {
+      setPublicoDestinadoTexto(form.publicoDestinado.join(', '));
+    }
+    if (Array.isArray(form?.formasSolicitacao)) {
+      setFormasSolicitacaoTexto(form.formasSolicitacao.join(', '));
+    }
+    if (Array.isArray(form?.documentacaoNecessaria)) {
+      setDocumentacaoTexto(form.documentacaoNecessaria.join(', '));
+    }
+  }, [form?.publicoDestinado, form?.formasSolicitacao, form?.documentacaoNecessaria]);
+
+  function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const { name, value } = e.target;
+
+    switch (name) {
+      case "publicoDestinado":
+        setPublicoDestinadoTexto(value);
+        break;
+      case "formasSolicitacao":
+        setFormasSolicitacaoTexto(value);
+        break;
+      case "documentacaoNecessaria":
+        setDocumentacaoTexto(value);
+        break;
+    }
+  }
+
+  function handleTextareaBlur(e: React.FocusEvent<HTMLTextAreaElement>) {
+    const { name } = e.target;
+
+    const parseAndSetForm = (text: string, formKey: keyof Services) => {
+      const arr = parseMultilineInput(text);
+      setForm(form => ({ ...form!, [formKey]: arr }));
+    };
+
+    switch (name) {
+      case "publicoDestinado":
+        parseAndSetForm(publicoDestinadoTexto, "publicoDestinado");
+        break;
+      case "formasSolicitacao":
+        parseAndSetForm(formasSolicitacaoTexto, "formasSolicitacao");
+        break;
+      case "documentacaoNecessaria":
+        parseAndSetForm(documentacaoTexto, "documentacaoNecessaria");
+        break;
+    }
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) 
   {
@@ -213,8 +265,9 @@ export function ServicoNovo() {
           Público Destinado:
           <textarea
             name="publicoDestinado"
-            value={form.publicoDestinado.join('\n')}
-            onChange={handleChange}
+            value={publicoDestinadoTexto}
+            onChange={handleTextareaChange}
+            onBlur={handleTextareaBlur}
             rows={3}
           />
         </label>
@@ -223,8 +276,9 @@ export function ServicoNovo() {
           Formas de Solicitação:
           <textarea
             name="formasSolicitacao"
-            value={form.formasSolicitacao.join('\n')}
-            onChange={handleChange}
+            value={formasSolicitacaoTexto}
+            onChange={handleTextareaChange}
+            onBlur={handleTextareaBlur}
             rows={3}
           />
         </label>
@@ -233,8 +287,9 @@ export function ServicoNovo() {
           Documentação Necessária:
           <textarea
             name="documentacaoNecessaria"
-            value={form.documentacaoNecessaria.join('\n')}
-            onChange={handleChange}
+            value={documentacaoTexto}
+            onChange={handleTextareaChange}
+            onBlur={handleTextareaBlur}
             rows={4}
           />
         </label>
