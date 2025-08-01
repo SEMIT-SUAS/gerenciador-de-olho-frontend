@@ -9,6 +9,7 @@ import { ServicoDetalhes } from "../pages/services/ServicoDetalhes";
 import { ServicoNovo } from "../pages/services/ServicoNovo";
 import { ServicoEditar } from "../pages/services/ServicoEditar";
 import{ ServicoExternoList } from "../pages/ServicoExterno/ServicoExternoList"
+import { SecretariaPage } from "../pages/secretaria/SecretariaPage";
 
 export function Navigator() {
   return (
@@ -22,6 +23,7 @@ export function Navigator() {
       <Route path="/servico/:id" element={<ServicoDetalhes />} />
       <Route path="/servico/editar/:id" element={<ServicoEditar />} />
       <Route path="/servico-externo" element={<ServicoExternoList/>}/>
+      <Route path="/secretaria" element={<SecretariaPage/>}/>
     </Routes>
   );
 }

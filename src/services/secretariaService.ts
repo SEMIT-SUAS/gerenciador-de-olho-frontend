@@ -16,3 +16,20 @@ export async function getAllSecretarias(): Promise<Secretaria[]> {
     throw new Error('Erro ao buscar secretarias. Tente novamente mais tarde.');
   }
 }
+
+export async function uploadSecretaria(secretaria: Secretaria): Promise<Secretaria> {
+  try{
+    const response = await fetch(`${API_BASE_URL}/secretaria/cadastrar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(secretaria),
+    })
+
+    if (!response.ok){
+      throw new Error("Não foi possível salvar secretaria")
+    }
+    return await response.json()
+  } catch(error){
+    throw new Error('infelizmente ocorreu um erro no servidor. Tente novamente')
+  } 
+}

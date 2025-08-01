@@ -1,7 +1,6 @@
 import type { ServiceExterno } from '../types/ServicoExterno';
 import { API_BASE_URL } from '../config/api';
 
-// src/services/servicosExternosService.ts
 export async function uploadServicoExterno(formData: FormData): Promise<any> {
   try {
     const response = await fetch(`${API_BASE_URL}/servico-externo/cadastrar`, {

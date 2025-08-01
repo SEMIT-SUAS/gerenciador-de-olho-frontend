@@ -95,7 +95,7 @@ export function BannerList() {
       ) : error ? (
         <p>Erro: {error}</p>
       ) : (
-        <BannerGrid banners={banners} />
+        <BannerGrid banners={banners} onToggle={fetchBanners} />
       )}
     </div>
   );

@@ -1,11 +1,25 @@
 // BannerCard.tsx
 import type { Banner } from "../../../types/Banners";
+import { changeBannerVisibility } from "../../../services/bannersService";
+import { toast } from "react-toastify";
 
 interface BannerCardProps {
   banner: Banner;
+  onToggle: () => void;
 }
 
-export function BannerCard({ banner }: BannerCardProps) {
+export function BannerCard({ banner, onToggle }: BannerCardProps) {
+
+  const toggleVisibility = async () => {
+    try {
+      await changeBannerVisibility(banner.id, !banner.visivel);
+      toast.success("Visibilidade atualizada com sucesso!");
+      onToggle(); // Atualiza a lista
+    } catch (error: any) {
+      toast.error(error.message || "Erro ao atualizar visibilidade.");
+    }
+  };
+
   return (
     <div
       style={{
@@ -31,6 +45,9 @@ export function BannerCard({ banner }: BannerCardProps) {
         Visível: {banner.visivel ? "Sim" : "Não"} <br />
         Ativo: {banner.ativo ? "Sim" : "Não"}
       </p>
+      <button onClick={toggleVisibility}>
+        {banner.visivel ? "Ocultar" : "Exibir"}
+      </button>
     </div>
   );
 }

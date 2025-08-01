@@ -104,11 +104,16 @@ export async function updateBanner(id: number, formData: FormData): Promise<Bann
   }
 }
 
-async function changeBannerVisibility(id: number, isVisible: boolean): Promise<Banner> {
+export async function changeBannerVisibility(id: number, visivel: boolean): Promise<Banner> {
     try {
-        const response = await fetch(`${API_BASE_URL}/banners/visibilidade/${id}?isVisible=${isVisible}`, {
-            method: 'PUT'
-        })
+        const response = await fetch(`${API_BASE_URL}/banners/visibilidade`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, visivel }),
+      });
+
 
         if (!response.ok){
             throw new Error('Não foi possível trocar visibilidade do Banner')

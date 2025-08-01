@@ -4,13 +4,14 @@ import { BannerCard } from "./BannerCard";
 
 interface BannerGridProps {
   banners: Banner[];
+  onToggle: () => void;
 }
 
-export function BannerGrid({ banners }: BannerGridProps) {
+export function BannerGrid({ banners,  onToggle }: BannerGridProps) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
       {banners.map((banner) => (
-        <BannerCard key={banner.id} banner={banner} />
+        <BannerCard key={banner.id} banner={banner} onToggle={onToggle} />
       ))}
     </div>
   );
