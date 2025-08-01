@@ -22,6 +22,27 @@ async function getAll(): Promise<BannerModel[]> {
   }
 }
 
+async function upload(formData: FormData): Promise<BannerModel> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/banner/cadastrar`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.status != 201) {
+      throw new Error('Não foi possível criar o banner.');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    throw new Error(
+      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
+    );
+  }
+}
+
 export default {
   getAll,
+  upload,
 };

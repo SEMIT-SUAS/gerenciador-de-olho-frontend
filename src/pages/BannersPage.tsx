@@ -31,14 +31,14 @@ import { BannerListItem } from '@/components/Banners/BannerListItem';
 import { SkeletonItem } from '@/components/Loading/SkeletonItem';
 import { SkeletonImage } from '@/components/Loading/SkeletonImage';
 import { RenderIf } from '@/components/RenderIf';
-import { CreateBannerModal } from '@/components/Banners/Modals/CreateBannerModal';
+import { AddBannerModal } from '@/components/Banners/Modals/AddBannerModal';
 
 export function BannersPage() {
   const [banners, setBanners] = useState<BannerModel[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isOpenCreateBannerModal, setIsOpenCreateBannerModal] = useState(false);
+  const [isOpenAddBannerModal, setIsOpenAddBannerModal] = useState(false);
 
   async function getAllBanners() {
     try {
@@ -104,7 +104,7 @@ export function BannersPage() {
             <Button
               variant="outline"
               className="flex items-center gap-2"
-              onClick={() => setIsOpenCreateBannerModal(true)}
+              onClick={() => setIsOpenAddBannerModal(true)}
             >
               <PlusIcon className="h-4 w-4" />
               Adicionar banner
@@ -257,9 +257,10 @@ export function BannersPage() {
         </div>
       </LayoutPage>
 
-      <CreateBannerModal
-        isOpen={isOpenCreateBannerModal}
-        onClose={() => setIsOpenCreateBannerModal(false)}
+      <AddBannerModal
+        isOpen={isOpenAddBannerModal}
+        onClose={() => setIsOpenAddBannerModal(false)}
+        setBanners={setBanners}
       />
     </>
   );
