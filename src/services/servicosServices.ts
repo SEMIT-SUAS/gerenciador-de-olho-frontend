@@ -1,4 +1,4 @@
-import type { Services } from '../types/Services';
+import type { CreateService, Services } from '../types/Services';
 import { API_BASE_URL } from '../config/api';
 
 export async function getAllServices(): Promise<Services[]> {
@@ -17,7 +17,7 @@ export async function getAllServices(): Promise<Services[]> {
   }
 }
 
-export async function createService(servico: Services): Promise<Services> {
+export async function createService(servico: CreateService): Promise<Services> {
     try {
         const response = await fetch(`${API_BASE_URL}/servico/cadastrar`, {
             method: 'POST',
