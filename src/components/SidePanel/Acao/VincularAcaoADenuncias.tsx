@@ -8,7 +8,7 @@ import { useMapActions } from '../../../context/MapActions';
 import { Tag } from '../Tag';
 import { getPolygonoCenter } from '../../../utils/geometry';
 import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { DenunciaItem } from '../Denuncia/DenunciaItem';
 import { Button } from '@/components/Buttons/BaseButton';
 

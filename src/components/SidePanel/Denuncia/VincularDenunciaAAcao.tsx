@@ -6,7 +6,7 @@ import { FaMapPin } from 'react-icons/fa';
 import { useFilters } from '../../../context/FiltersContext';
 import { useMapActions } from '../../../context/MapActions';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 // import denunciasService from '@/services/denunciasService';
 import { getPolygonoCenter } from '@/utils/geometry';
 import type { DenunciaModel } from '@/types/Denuncia';

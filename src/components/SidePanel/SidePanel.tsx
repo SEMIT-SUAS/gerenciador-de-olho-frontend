@@ -45,7 +45,7 @@ export function SidePanel({ children }: SidePanelProps) {
         <Separator />
       </div> */}
       <div className="overflow-y-auto custom-scrollbar-blue">
-        <div className="p-4">{children}</div>
+        <div className="m-4">{children}</div>
       </div>
     </aside>
   );

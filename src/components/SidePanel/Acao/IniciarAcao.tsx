@@ -1,4 +1,4 @@
-import { toast } from 'react-toastify'; // Exemplo de importação de toast
+import { toast } from 'sonner'; // Exemplo de importação de toast
 import React from 'react'; // Importação do React para tipos de estado
 import type { AcaoModel } from '@/types/Acao';
 import type { DenunciaModel } from '@/types/Denuncia';
@@ -17,7 +17,7 @@ export const handleIniciarAcao = ({
 }: HandleIniciarAcaoParams) => {
   if (!acao) {
     console.error('Ação não fornecida para handleIniciarAcao.');
-    toast.warn('Ação não encontrada. Tente novamente.');
+    toast('Ação não encontrada. Tente novamente.');
     return;
   }
 
@@ -33,11 +33,11 @@ export const handleIniciarAcao = ({
         telefone: '',
         email: '',
         senha: '',
-        perfil: 1, // Substitua por um valor válido de PerfilModel
+        perfil: 1,
         criadoEm: new Date().toISOString(),
         atualizadoEm: new Date().toISOString(),
-      }, // Substitua pelos dados reais do usuário
-      status: 'em_andamento', // O novo status da ação
+      },
+      status: 'em_andamento',
     };
 
     const acaoAtualizada: AcaoModel = {

@@ -5,7 +5,7 @@ import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { FaTrashAlt } from 'react-icons/fa';
 import { FilesCarrrousel } from '../../FilesCarrousel';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { BackButton } from '../../Buttons/Backbutton';
 import { useMapActions } from '../../../context/MapActions';
 import {

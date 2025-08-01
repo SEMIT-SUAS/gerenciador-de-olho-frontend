@@ -22,6 +22,7 @@ import { ServicoNovo } from './pages/servicos/ServicoNovo';
 import { ServicoEditar } from './pages/servicos/ServicoEditar';
 import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import { PortaisList } from './pages/portais/PortaisList';
+import { Toaster } from 'sonner';
 
 export function App() {
   return (
@@ -80,17 +81,7 @@ export function App() {
         {/* Redirecionamento para a página inicial se a rota não for encontrada */}
       </Routes>
 
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover={false}
-        theme="light"
-        className="z-50"
-      />
+      <Toaster position="top-center" duration={3000} />
     </BrowserRouter>
   );
 }
