@@ -11,15 +11,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useEffect, useState } from 'react';
-import type { Banner } from '@/types/Banner';
+import type { BannerModel } from '@/types/Banner';
 import {
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconEdit,
-  IconEye,
-  IconTrash,
 } from '@tabler/icons-react';
 import {
   Select,
@@ -28,200 +25,242 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import bannersService from '@/services/bannersService';
+import { toast } from 'react-toastify';
+import { BannerListItem } from '@/components/Banners/BannerListItem';
+import { SkeletonItem } from '@/components/Loading/SkeletonItem';
+import { SkeletonImage } from '@/components/Loading/SkeletonImage';
+import { RenderIf } from '@/components/RenderIf';
+import { CreateBannerModal } from '@/components/Banners/Modals/CreateBannerModal';
 
 export function BannersPage() {
-  const [banners, setBanners] = useState<Banner[]>([]);
+  const [banners, setBanners] = useState<BannerModel[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isOpenCreateBannerModal, setIsOpenCreateBannerModal] = useState(false);
+
+  async function getAllBanners() {
+    try {
+      return await bannersService.getAll();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
 
   useEffect(() => {
-    setBanners([
-      {
-        id: 1,
-        nome: 'Trânsito e Transporte',
-        to: 'https://saoiuis.prefeitura.com.br',
-        isVisible: true,
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: 2,
-        nome: 'Trânsito e Transporte',
-        to: 'https://saoiuis.prefeitura.com.br',
-        isVisible: true,
-        createdAt: new Date().toISOString(),
-      },
-      ...Array.from({ length: 82 }, (_, i) => ({
-        id: i + 3,
-        nome: `Trânsito e Transporte ${i + 3}`,
-        to: 'https://saoiuis.prefeitura.com.br',
-        isVisible: true,
-        createdAt: new Date().toISOString(),
-      })),
-    ]);
+    getAllBanners().then((bannersData) => {
+      if (bannersData) {
+        setBanners(bannersData);
+      }
+    });
+
+    return () => {
+      setBanners(null);
+    };
   }, []);
 
-  const filteredBanners = banners.filter((banner) =>
+  const filteredBanners = banners?.filter((banner) =>
     banner.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const totalPages = Math.ceil(filteredBanners.length / itemsPerPage);
-  const currentBanners = filteredBanners.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
+  const totalPages = Math.ceil((filteredBanners?.length ?? 0) / itemsPerPage);
+  const currentBanners =
+    filteredBanners?.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage,
+    ) || [];
 
   const itemsPerPageOptions = [8, 16, 24];
 
   return (
-    <LayoutPage additionalStyles="px-[39px]">
-      <div className="flex flex-col gap-6 py-8 px-36">
-        <div className="w-[50%]">
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Banners
-          </h3>
-          <p className="text-slate-600 text-xs">
-            Gerencie com precisão todas as Personas para serviços da prefeitura.
-            Tenha controle total para adicionar, visualizar, editar e remover
-            cada órgão, garantindo informações sempre atualizadas e acessíveis.
-          </p>
-        </div>
-
-        <div className="flex items-center justify-end gap-4">
-          <div className="relative w-[320px]">
-            <SearchInput
-              placeholder="Pesquise um nome"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
+    <>
+      <LayoutPage additionalStyles="px-[39px]">
+        <div className="flex flex-col gap-6 py-8 px-36">
+          <div className="w-[50%]">
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+              Banners
+            </h3>
+            <p className="text-slate-600 text-xs">
+              Gerencie com precisão todas as Personas para serviços da
+              prefeitura. Tenha controle total para adicionar, visualizar,
+              editar e remover cada órgão, garantindo informações sempre
+              atualizadas e acessíveis.
+            </p>
           </div>
 
-          <Button variant="outline" className="flex items-center gap-2">
-            <PlusIcon className="h-4 w-4" />
-            Adicionar banner
-          </Button>
-        </div>
+          <div className="flex items-center justify-end gap-4">
+            <div className="relative w-[320px]">
+              <SearchInput
+                placeholder="Pesquise um nome"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
 
-        <Table className="rounded-md overflow-hidden border border-solid shadow-lg">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Imagem</TableHead>
-              <TableHead>Nome</TableHead>
-              <TableHead>Link</TableHead>
-              <TableHead>Ações</TableHead>
-            </TableRow>
-          </TableHeader>
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={() => setIsOpenCreateBannerModal(true)}
+            >
+              <PlusIcon className="h-4 w-4" />
+              Adicionar banner
+            </Button>
+          </div>
 
-          <TableBody>
-            {currentBanners.map((banner) => (
-              <TableRow key={banner.id}>
-                <TableCell>
-                  <img
-                    src="/logo_slz_sem_fundo.png"
-                    alt={banner.nome}
-                    className="h-10 w-auto"
-                  />
-                </TableCell>
-                <TableCell>{banner.nome}</TableCell>
-                <TableCell>
-                  <a
-                    href={banner.to}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    {banner.to}
-                  </a>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-4">
-                    <button className="text-blue-500 hover:text-blue-700">
-                      <IconEye stroke={2} size={18} />
-                    </button>
-                    <button className="text-green-500 hover:text-green-700">
-                      <IconEdit stroke={2} size={18} />
-                    </button>
-                    <button className="text-red-500 hover:text-red-700">
-                      <IconTrash stroke={2} size={18} />
-                    </button>
-                  </div>
-                </TableCell>
+          <Table className="rounded-md overflow-hidden border border-solid shadow-lg">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Imagem</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Link</TableHead>
+                <TableHead>Ações</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Linhas por página:</span>
+            <TableBody>
+              {banners ? (
+                <RenderIf
+                  condition={currentBanners.length > 0}
+                  ifRender={currentBanners?.map((banner) => (
+                    <BannerListItem key={banner.id} banner={banner} />
+                  ))}
+                  elseRender={
+                    <TableRow>
+                      <TableCell colSpan={4} className="py-8 text-center">
+                        <p className="text-sm text-gray-500">
+                          {searchTerm
+                            ? `Nenhum resultado para "${searchTerm}"`
+                            : 'Nenhum banner encontrado'}
+                        </p>
+                      </TableCell>
+                    </TableRow>
+                  }
+                />
+              ) : (
+                Array.from({ length: itemsPerPage }).map((_, idx) => (
+                  <TableRow key={`skeleton-${idx}`}>
+                    <TableCell className="border-r">
+                      <div className="flex items-center gap-3">
+                        <SkeletonImage
+                          height={40}
+                          width={40}
+                          className="rounded"
+                        />
+                        <SkeletonItem
+                          titleWidth="20"
+                          className="p-0 border-0"
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell className="border-r">
+                      <SkeletonItem titleWidth="3/4" className="p-0 border-0" />
+                    </TableCell>
+                    <TableCell className="border-r">
+                      <SkeletonItem titleWidth="1/2" className="p-0 border-0" />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-4">
+                        <SkeletonImage
+                          height={24}
+                          width={24}
+                          className="rounded-full"
+                        />
+                        <SkeletonImage
+                          height={24}
+                          width={24}
+                          className="rounded-full"
+                        />
+                        <SkeletonImage
+                          height={24}
+                          width={24}
+                          className="rounded-full"
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
 
-            <Select
-              value={itemsPerPage.toString()}
-              onValueChange={(value) => {
-                setItemsPerPage(Number(value));
-                setCurrentPage(1);
-              }}
-            >
-              <SelectTrigger className="w-20 h-8">
-                <SelectValue placeholder={itemsPerPage} />
-              </SelectTrigger>
-              <SelectContent>
-                {itemsPerPageOptions.map((option) => (
-                  <SelectItem key={option} value={option.toString()}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Linhas por página:</span>
 
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">
-              Página {currentPage} de {totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(1)}
-              disabled={currentPage === 1}
-            >
-              <IconChevronsLeft stroke={2} />
-            </Button>
+              <Select
+                value={itemsPerPage.toString()}
+                onValueChange={(value) => {
+                  setItemsPerPage(Number(value));
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="w-20 h-8">
+                  <SelectValue placeholder={itemsPerPage} />
+                </SelectTrigger>
+                <SelectContent>
+                  {itemsPerPageOptions.map((option) => (
+                    <SelectItem key={option} value={option.toString()}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              <IconChevronLeft stroke={2} />
-            </Button>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">
+                Página {currentPage} de {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+              >
+                <IconChevronsLeft stroke={2} />
+              </Button>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages || totalPages === 0}
-            >
-              <IconChevronRight />
-            </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                <IconChevronLeft stroke={2} />
+              </Button>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(totalPages)}
-              disabled={currentPage === totalPages || totalPages === 0}
-            >
-              <IconChevronsRight stroke={2} />
-            </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages || totalPages === 0}
+              >
+                <IconChevronRight />
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages || totalPages === 0}
+              >
+                <IconChevronsRight stroke={2} />
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </LayoutPage>
+      </LayoutPage>
+
+      <CreateBannerModal
+        isOpen={isOpenCreateBannerModal}
+        onClose={() => setIsOpenCreateBannerModal(false)}
+      />
+    </>
   );
 }

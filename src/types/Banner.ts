@@ -1,7 +1,8 @@
-export interface Banner {
+export interface BannerModel {
   id: number;
   nome: string;
-  to: string;
-  isVisible: boolean;
-  createdAt: string;
+  imagem: string;
+  link: string;
+  visivel: boolean;
+  ativo: boolean;
 }
