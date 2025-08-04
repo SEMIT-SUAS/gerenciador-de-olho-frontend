@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/input";
 import { LayoutPage } from "./../LayoutPage";
@@ -88,6 +89,13 @@ export function ServicesList() {
             Gerencie os serviços disponíveis com clareza e objetividade.
           </p>
         </div>
+
+        <Tabs defaultValue="account" className="w-[400px]">
+          <TabsList>
+            <TabsTrigger value="account">Serviços</TabsTrigger>
+            <TabsTrigger value="password">Serviços temporarios</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         <div className="flex items-center justify-between">
           <div className="w-[320px]">
