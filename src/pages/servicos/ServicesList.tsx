@@ -110,7 +110,7 @@ export function ServicesList() {
           </div>
 
           <Button asChild>
-            <Link to="/servico/novo">
+            <Link to="/servicos/novo">
               <Plus className="mr-2 h-4 w-4" />
               Adicionar serviço
             </Link>
