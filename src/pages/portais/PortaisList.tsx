@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { PortalModal } from "./PortalModal";
 import { PortalCard } from "./PortalCard";
 import { getAllPortais, createPortal, toggleAtivo, changeServiceVisibility } from "../../services/PortaisService";
+import { portalSchema } from "../../schemas/portalSchema";
 
 export function PortaisList() {
   const [portais, setPortais] = useState<Portais[]>([]);
@@ -49,20 +50,31 @@ export function PortaisList() {
 
   async function handleSubmitNewPortal(e: React.FormEvent) {
     e.preventDefault();
+
     try {
-        const portalCriado = await createPortal(newPortal); // <-- chama o serviço que envia para o backend
-        setPortais((prev) => [...prev, portalCriado]); // usa o que veio do backend (com ID real, etc)
-        setIsModalOpen(false);
-        setNewPortal({
+      // valida dados do form com Zod
+      const dadosValidados = portalSchema.parse(newPortal);
+
+      const portalCriado = await createPortal(dadosValidados);
+
+      setPortais((prev) => [...prev, portalCriado]);
+      setIsModalOpen(false);
+      setNewPortal({
         nome: "",
         destaque: false,
         link: "",
         visivel: true,
         ativo: true,
-        });        
+      });
       toast.success("Portal cadastrado com sucesso!");
-    } catch (error) {
-      toast.error("Erro ao criar portal");
+    } catch (error: any) {
+      // tratamento de erro do Zod
+      if (error.name === "ZodError") {
+        const mensagens = error.errors.map((err: any) => err.message).join("\n");
+        toast.error(mensagens);
+      } else {
+        toast.error("Erro ao criar portal");
+      }
     }
   }
 

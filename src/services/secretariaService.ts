@@ -1,5 +1,5 @@
 import { API_BASE_URL } from '../config/api';
-import type { Secretaria } from '../types/Secretaria'; // Ajuste o caminho conforme necessário
+import type { createSecretaria, Secretaria } from '../types/Secretaria'; // Ajuste o caminho conforme necessário
 
 export async function getAllSecretarias(): Promise<Secretaria[]> {
   try {
@@ -17,7 +17,7 @@ export async function getAllSecretarias(): Promise<Secretaria[]> {
   }
 }
 
-export async function uploadSecretaria(secretaria: Secretaria): Promise<Secretaria> {
+export async function uploadSecretaria(secretaria: createSecretaria): Promise<{ message: string }> {
   try{
     const response = await fetch(`${API_BASE_URL}/secretaria/cadastrar`, {
       method: 'POST',
@@ -25,11 +25,25 @@ export async function uploadSecretaria(secretaria: Secretaria): Promise<Secretar
       body: JSON.stringify(secretaria),
     })
 
-    if (!response.ok){
-      throw new Error("Não foi possível salvar secretaria")
+    const contentType = response.headers.get("content-type");
+
+    if (!response.ok) {
+      if (contentType?.includes("application/json")) {
+        const errorJson = await response.json();
+        throw new Error(errorJson.message || "Erro ao cadastrar serviço externo.");
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || "Erro ao cadastrar serviço externo.");
+      }
     }
-    return await response.json()
-  } catch(error){
-    throw new Error('infelizmente ocorreu um erro no servidor. Tente novamente')
-  } 
+
+    if (contentType?.includes("application/json")) {
+      return await response.json();
+    } else {
+      const text = await response.text();
+      return { message: text };
+    }
+  } catch (error: any) {
+    throw new Error(error.message || "Erro desconhecido ao cadastrar serviço externo.");
+  }
 }
