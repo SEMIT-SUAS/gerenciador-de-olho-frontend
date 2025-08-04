@@ -135,9 +135,9 @@ export function ServicesList() {
                 <TableCell className="flex flex-wrap gap-2">
                   {Array.isArray(service.personas) &&
                   service.personas.length > 0 ? (
-                    service.personas.map((persona: string, idx: number) => (
-                      <Badge key={idx} variant="outline">
-                        {persona}
+                    service.personas.map((persona, idx) => (
+                      <Badge key={persona.id ?? idx} variant="outline">
+                        {persona.nome}
                       </Badge>
                     ))
                   ) : (
