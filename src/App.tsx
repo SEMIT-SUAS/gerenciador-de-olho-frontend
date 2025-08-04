@@ -15,10 +15,10 @@ import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
 import { ServicesList } from './pages/servicos/ServicesList';
 import { ServicoDetalhes } from './pages/servicos/ServicoDetalhes';
-import { ServicoNovo } from './pages/servicos/ServicoNovo';
 import { ServicoEditar } from './pages/servicos/ServicoEditar';
 import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import { PortaisList } from './pages/portais/PortaisList';
+import ServicoNovo from './pages/servicos/ServicoNovo';
 
 export function App() {
   return (

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import {
   Table,
@@ -8,27 +8,27 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button";
-import { SearchInput } from "@/components/ui/input";
-import { LayoutPage } from "./../LayoutPage";
+} from '@/components/ui/table';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { SearchInput } from '@/components/ui/input';
+import { LayoutPage } from './../LayoutPage';
 import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
-import { Plus } from "lucide-react";
-import { toast } from "sonner";
+import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
 
-import { getAllServices } from "@/services/servicosServices";
-import type { Services } from "@/types/Services";
-import { Badge } from "@/components/ui/badge";
+import { getAllServices } from '@/services/servicosServices';
+import type { Servicos } from '@/types/Servicos';
+import { Badge } from '@/components/ui/badge';
 
 export function ServicesList() {
   const navigate = useNavigate();
 
-  const [services, setServices] = useState<Services[]>([]);
+  const [services, setServices] = useState<Servicos[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
 
@@ -38,8 +38,8 @@ export function ServicesList() {
       const data = await getAllServices();
       setServices(data);
     } catch (err: any) {
-      setError(err.message || "Erro ao buscar os serviços.");
-      toast.error(err.message || "Erro ao buscar os serviços.");
+      setError(err.message || 'Erro ao buscar os serviços.');
+      toast.error(err.message || 'Erro ao buscar os serviços.');
     } finally {
       setLoading(false);
     }
@@ -50,13 +50,13 @@ export function ServicesList() {
   }, []);
 
   const filtered = services.filter((s) =>
-    s.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    s.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   const currentData = filtered.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   if (loading) {
@@ -131,37 +131,42 @@ export function ServicesList() {
             {currentData.map((service) => (
               <TableRow key={service.id}>
                 <TableCell>{service.nome}</TableCell>
-                <TableCell>{service.nomeCategoria ?? "-"}</TableCell>
+                <TableCell>{service.categoria.nome ?? '-'}</TableCell>
                 <TableCell className="flex flex-wrap gap-2">
-                  {Array.isArray(service.nomesPersonas) && service.nomesPersonas.length > 0 ? (
-                   service.nomesPersonas.map((persona: string, idx: number) => (
-                  <Badge key={idx} variant="outline">
-                  {persona}
-                 </Badge>
-                ))
-             ) : (
-                <Badge variant="outline">-</Badge>
-                )}
+                  {Array.isArray(service.personas) &&
+                  service.personas.length > 0 ? (
+                    service.personas.map((persona: string, idx: number) => (
+                      <Badge key={idx} variant="outline">
+                        {persona}
+                      </Badge>
+                    ))
+                  ) : (
+                    <Badge variant="outline">-</Badge>
+                  )}
                 </TableCell>
                 <TableCell>
                   <button
                     className="text-black-600"
                     onClick={() => navigate(`/servico/editar/${service.id}`)}
                   >
-                   <IconEdit size={18} stroke={2} className="text-black-600" />
+                    <IconEdit size={18} stroke={2} className="text-black-600" />
+                  </button>
+                </TableCell>
+                <TableCell>
+                  <button className="text-black-600">
+                    <IconTrash
+                      size={18}
+                      stroke={2}
+                      className="text-black-600"
+                    />
                   </button>
                 </TableCell>
                 <TableCell>
                   <button
-                    className="text-black-600">
-                   <IconTrash size={18} stroke={2} className="text-black-600" />
-                  </button>
-                </TableCell>
-                <TableCell>
-                  <button
-                    className="text-black-600"      
-                    onClick={() => navigate(`/servico/detalhes/${service.id}`)}      >
-                  <IconEye size={18} stroke={2} className="text-black-600" />
+                    className="text-black-600"
+                    onClick={() => navigate(`/servicos/${service.id}`)}
+                  >
+                    <IconEye size={18} stroke={2} className="text-black-600" />
                   </button>
                 </TableCell>
               </TableRow>
@@ -191,7 +196,9 @@ export function ServicesList() {
             </Button>
             <Button
               variant="outline"
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
               disabled={currentPage === totalPages || totalPages === 0}
             >
               Próxima
