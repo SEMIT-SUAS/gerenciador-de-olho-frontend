@@ -1,6 +1,6 @@
-import type { ServicoCategoria } from '../types/CategoriaServico';
+import type { createServicoCategoria, ServicoCategoria, ServicoCategoriaEditar } from '../types/CategoriaServico';
 import { API_BASE_URL } from '../config/api';
-import type { ServicoCategoriaEditar } from '../types/ServicoCategoriaEditar';
+import type { createSecretaria } from '../types/Secretaria';
 
 export async function getAllCategorias(): Promise<ServicoCategoria[]> {
   try {
@@ -18,7 +18,7 @@ export async function getAllCategorias(): Promise<ServicoCategoria[]> {
   }
 }
 
-export async function createCategoria(categoria: ServicoCategoria): Promise<string> {
+export async function createCategoria(categoria: createServicoCategoria): Promise<string> {
   const formData = new FormData();
   formData.append('nome', categoria.nome);
   formData.append('visivel', String(categoria.visivel));

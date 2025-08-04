@@ -1,8 +1,7 @@
 import { useEffect, useState} from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { getAllCategorias, createCategoria, editarCategoria, toggleAtivo, toggleVisivel} from '../../services/servicocategoriaService';
-import type { ServicoCategoria } from '../../types/CategoriaServico';
-import type { ServicoCategoriaEditar } from "../../types/ServicoCategoriaEditar";
+import type { ServicoCategoria, createServicoCategoria, ServicoCategoriaEditar } from '../../types/CategoriaServico';
 import { toast } from "react-toastify";
 
 export function ListaCategorias() {
@@ -77,7 +76,7 @@ export function ListaCategorias() {
     }
 
     try {
-      const nova: ServicoCategoria = { nome, icone, ativo, visivel };
+      const nova: createServicoCategoria = { nome, icone, ativo, visivel };
       await createCategoria(nova);
       toast.success("Categoria adicionada.");
       setShowAddForm(false);
