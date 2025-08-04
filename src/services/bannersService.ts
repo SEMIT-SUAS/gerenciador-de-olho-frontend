@@ -104,25 +104,21 @@ export async function updateBanner(id: number, formData: FormData): Promise<Bann
   }
 }
 
-export async function changeBannerVisibility(id: number, visivel: boolean): Promise<Banner> {
+export async function changeBannerVisibility(id: number, visivel: boolean): Promise<void> {
     try {
-        const response = await fetch(`${API_BASE_URL}/banners/visibilidade`, {
+        const response = await fetch(`${API_BASE_URL}/banner/atualizar/visibilidade`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ id, visivel }),
       });
 
-
-        if (!response.ok){
-            throw new Error('Não foi possível trocar visibilidade do Banner')
-        }
-
-        return await response.json()
-    } catch(error){
-        throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde')
-    }    
+    if (!response.ok) {
+      throw new Error(`Erro ao alterar status de visibilidade: ${response.status} - ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Erro na requisição changeServiceVisibility:', error);
+    throw error;
+  }
 }
 
 export default {

@@ -85,7 +85,7 @@ export function BannerList() {
             overlayStyle={modalOverlayStyle}
             contentStyle={modalContentStyle}
         />
-        )}
+      )}
 
       <hr style={{ margin: "2rem 0" }} />
 
