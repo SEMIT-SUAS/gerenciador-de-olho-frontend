@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Portais } from "../../types/Portais";
 import { toast } from "react-toastify";
-import { PortalModal } from "./PortalModal";
-import { PortalCard } from "./PortalCard";
+import { PortalModal } from "./components/PortalModal";
+import { PortalCard } from "./components/PortalCard";
 import { getAllPortais, createPortal, toggleAtivo, changeServiceVisibility } from "../../services/PortaisService";
 import { portalSchema } from "../../schemas/portalSchema";
 

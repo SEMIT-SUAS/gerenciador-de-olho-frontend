@@ -1,5 +1,5 @@
 import React from "react";
-import type { Portais } from "../../types/Portais";
+import type { Portais } from "../../../types/Portais";
 
 interface PortalModalProps {
   isOpen: boolean;

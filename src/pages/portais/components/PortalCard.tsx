@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { Portais } from "../../types/Portais";
+import type { Portais } from "../../../types/Portais";
 
 interface Props {
   portal: Portais;
