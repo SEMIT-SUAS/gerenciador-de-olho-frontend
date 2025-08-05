@@ -1,4 +1,4 @@
-import type { EspacoPublico } from '../types/EspacoPublico'
+import type { EspacoPublico, EspacoPublicoById } from '../types/EspacoPublico'
 import { API_BASE_URL } from '../config/api'
 
 export async function uploadEspacoPublico(formData: FormData): Promise<any> {
@@ -30,5 +30,74 @@ export async function uploadEspacoPublico(formData: FormData): Promise<any> {
     }
   } catch (error: any) {
     throw new Error(error.message || "Erro desconhecido ao cadastrar banner.");
+  }
+}
+
+export async function getAllEspacoPublico(): Promise<EspacoPublico[]> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/espaco-publico/listar-ativos`, {
+      method: 'GET',
+    })
+
+    if (!response.ok) {
+      throw new Error('Não foi possível listar os Banners.')
+    }
+
+    return await response.json()
+  } catch (error) {
+    throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde')
+  }
+}
+
+export async function getEspacoPublicoById(id: number): Promise<EspacoPublicoById> {
+  const response = await fetch(`${API_BASE_URL}/espaco-publico/buscar/${id}`);
+  if (!response.ok) throw new Error("Erro ao buscar espaço público");
+  return await response.json();
+}
+
+export async function updateEspacoPublico(formData: FormData): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/espaco-publico/atualizar`, {
+    method: "PUT",
+    body: formData,
+  });
+
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || "Erro ao atualizar espaço público");
+  }
+}
+
+export async function changeEspacoPublicoVisibility(id:number, visivel: boolean): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/espaco-publico/atualizar/visibilidade`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, visivel }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro ao alterar status de visibilidade: ${response.status} - ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Erro na requisição changeServiceVisibility:', error);
+    throw error;
+  }
+}
+
+export async function changeEspacoPublicoAtivo(id:number, ativo: boolean): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/espaco-publico/atualizar/atividade`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, ativo }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro ao alterar status de visibilidade: ${response.status} - ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Erro na requisição changeServiceVisibility:', error);
+    throw error;
   }
 }

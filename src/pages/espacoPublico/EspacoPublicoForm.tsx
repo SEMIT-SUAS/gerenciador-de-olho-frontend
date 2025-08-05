@@ -21,7 +21,7 @@ export function EspacoPublicoForm() {
       rua: "",
       latitude: "",
       longitude: "",
-      capcidade_maxima: null,
+      capacidade_maxima: null,
       hora_inicio: "",
       hora_fim: "",
       visivel: true,
@@ -37,15 +37,15 @@ export function EspacoPublicoForm() {
 
       const formData = new FormData();
 
-    Object.entries(data).forEach(([key, value]) => {
-    if (key === "arquivos" && value instanceof FileList) {
-        Array.from(value).forEach((file) => {
-        formData.append("arquivos", file);
-        });
-    } else if (value !== null && value !== undefined) {
-        formData.append(key, value as any);
-    }
-    });
+      Object.entries(data).forEach(([key, value]) => {
+      if (key === "arquivos" && value instanceof FileList) {
+          Array.from(value).forEach((file) => {
+          formData.append("arquivos", file);
+          });
+      } else if (value !== null && value !== undefined) {
+          formData.append(key, value as any);
+      }
+      });
 
       await uploadEspacoPublico(formData);
       toast.success("Serviço cadastrado com sucesso!");
@@ -59,7 +59,7 @@ export function EspacoPublicoForm() {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Cadastrar Serviço</h2>
+      <h2 style={styles.title}>Cadastrar Espaço Público</h2>
       <form onSubmit={handleSubmit(onSubmit)} style={styles.form}>
         <input placeholder="Nome" {...register("nome", {required: "Estado obrigatório" })} style={styles.input}/>
         {errors.estado && <p style={styles.error}>{errors.estado.message}</p>}
@@ -73,10 +73,10 @@ export function EspacoPublicoForm() {
         <input placeholder="Bairro" {...register("bairro")} style={styles.input} />
         <input placeholder="Rua" {...register("rua")} style={styles.input} />
 
-        <input placeholder="Latitude" {...register("latitude")} style={styles.input} />
-        <input placeholder="Longitude" {...register("longitude")} style={styles.input} />
+        <input type="number" step="any" placeholder="Latitude" {...register("latitude", { valueAsNumber: true })} style={styles.input} />
+        <input type="number" step="any" placeholder="Longitude" {...register("longitude", { valueAsNumber: true })} style={styles.input} />
 
-        <input type="number" placeholder="Capacidade Máxima" {...register("capcidade_maxima", { valueAsNumber: true })} style={styles.input} />
+        <input type="number" placeholder="Capacidade Máxima" {...register("capacidade_maxima" )} style={styles.input} />
         <input type="time" {...register("hora_inicio")} style={styles.input} />
         <input type="time" {...register("hora_fim")} style={styles.input} />
 

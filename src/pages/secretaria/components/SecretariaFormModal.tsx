@@ -32,7 +32,7 @@ export function SecretariaFormModal({ onClose, onSuccess }: SecretariaFormModalP
   const onSubmit = async (data: createSecretaria) => {
     setLoading(true);
     try {
-      secretariaSchema.parse(data); // valida com zod
+      secretariaSchema.parse(data); // valida com Zod
 
       await uploadSecretaria(data);
 

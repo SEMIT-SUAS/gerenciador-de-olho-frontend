@@ -11,6 +11,8 @@ import { ServicoEditar } from "../pages/services/ServicoEditar";
 import{ ServicoExternoList } from "../pages/ServicoExterno/ServicoExternoList"
 import { SecretariaPage } from "../pages/secretaria/SecretariaPage";
 import { EspacoPublicoForm } from "../pages/espacoPublico/EspacoPublicoForm";
+import { EspacoPublicoList } from "../pages/espacoPublico/EspacoPublicoList";
+import { EspacoPublicoEdit } from "../pages/espacoPublico/EspacoPublicoEdit";
 
 export function Navigator() {
   return (
@@ -25,7 +27,9 @@ export function Navigator() {
       <Route path="/servico/editar/:id" element={<ServicoEditar />} />
       <Route path="/servico-externo" element={<ServicoExternoList/>}/>
       <Route path="/secretaria" element={<SecretariaPage/>}/>
-      <Route path="/espaco-publico" element={<EspacoPublicoForm/>}/>
+      <Route path="/espaco-publico-cadastrar" element={<EspacoPublicoForm/>}/>
+      <Route path="/espaco-publico" element={<EspacoPublicoList/>}/>
+      <Route path="/espaco-publico-editar/:id" element={<EspacoPublicoEdit />} /> 
     </Routes>
   );
 }

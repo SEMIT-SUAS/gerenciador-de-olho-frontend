@@ -38,9 +38,7 @@ export function PortaisList() {
     fetchPortais();
   }, []);
 
-  function handleInputChange(
-    e: React.ChangeEvent<HTMLInputElement>
-  ) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value, type, checked } = e.target;
     setNewPortal((prev) => ({
       ...prev,
@@ -83,7 +81,7 @@ export function PortaisList() {
       await toggleAtivo(id, !ativo);
       setPortais((prev) =>
         prev.map((p) =>
-        p.id === id ? { ...p, ativo: !ativo } : p
+          p.id === id ? { ...p, ativo: !ativo } : p
         )
       );
     } catch (error) {
@@ -92,16 +90,16 @@ export function PortaisList() {
   }
 
   async function handleServiceVisibility(id: number, visivel: boolean) {
-    try{
+    try {
       await changeServiceVisibility(id, !visivel);
-      setPortais((prev) => 
+      setPortais((prev) =>
         prev.map((p) =>
-          p.id === id ? { ...p, visivel: !visivel} : p
-      )
-     );
+          p.id === id ? { ...p, visivel: !visivel } : p
+        )
+      );
     } catch (error) {
-      alert("Erro ao atualizar status de atividade")
-    }    
+      alert("Erro ao atualizar status de visibilidade");
+    }
   }
 
   if (loading) return <p>Carregando...</p>;
@@ -114,6 +112,7 @@ export function PortaisList() {
       <button onClick={() => setIsModalOpen(true)} style={{ marginBottom: "1rem" }}>
         + Adicionar Portal
       </button>
+
       <ul style={{ listStyle: "none", padding: 0 }}>
         {portais.map((portal) => (
           <PortalCard
@@ -132,7 +131,6 @@ export function PortaisList() {
         handleInputChange={handleInputChange}
         handleSubmit={handleSubmitNewPortal}
       />
-
     </div>
   );
 }

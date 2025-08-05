@@ -1,6 +1,5 @@
 import type { createServicoCategoria, ServicoCategoria, ServicoCategoriaEditar } from '../types/CategoriaServico';
 import { API_BASE_URL } from '../config/api';
-import type { createSecretaria } from '../types/Secretaria';
 
 export async function getAllCategorias(): Promise<ServicoCategoria[]> {
   try {
