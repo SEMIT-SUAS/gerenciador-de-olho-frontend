@@ -1,12 +1,37 @@
 import type { BannerModel } from '@/types/Banner';
 import { TableCell, TableRow } from '../ui/table';
-import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
+import { BannerVisibility } from './BannerVisibility';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
+import { ConfirmModal } from '../Modals/ConfirmModal';
+import { toast } from 'react-toastify';
+import bannersService from '@/services/bannersService';
+import { EditBannerModal } from './Modals/EditBannerModal';
 
 type BannerListItemProps = {
   banner: BannerModel;
+  setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
 };
 
-export function BannerListItem({ banner }: BannerListItemProps) {
+export function BannerListItem({ banner, setBanners }: BannerListItemProps) {
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+  const [isOpenEditBannerModal, setIsOpenEditBannerModal] = useState(false);
+
+  async function handleDeleteBanner() {
+    try {
+      await bannersService.trash(banner.id);
+
+      setBanners(
+        (prev) =>
+          prev?.filter((prevBanner) => prevBanner.id !== banner.id) ?? null,
+      );
+
+      toast.success('Banner excluído com sucesso');
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
+
   return (
     <>
       <TableRow key={banner.id}>
@@ -36,18 +61,39 @@ export function BannerListItem({ banner }: BannerListItemProps) {
 
         <TableCell>
           <div className="flex items-center gap-4">
-            <button className="text-blue-500 hover:text-blue-700">
-              <IconEye stroke={2} size={18} />
-            </button>
-            <button className="text-green-500 hover:text-green-700">
+            <BannerVisibility banner={banner} setBanners={setBanners} />
+
+            <button
+              className="text-green-500 hover:text-green-700"
+              onClick={() => setIsOpenEditBannerModal(true)}
+            >
               <IconEdit stroke={2} size={18} />
             </button>
-            <button className="text-red-500 hover:text-red-700">
+
+            <button
+              className="text-red-500 hover:text-red-700"
+              onClick={() => setIsOpenDeleteModal(true)}
+            >
               <IconTrash stroke={2} size={18} />
             </button>
           </div>
         </TableCell>
       </TableRow>
+
+      <ConfirmModal
+        isOpen={isOpenDeleteModal}
+        onConfirm={handleDeleteBanner}
+        onCancel={() => setIsOpenDeleteModal(false)}
+        title={`Tem certeza que deseja excluir o banner ${banner.nome}?`}
+        message="Essa ação não pode ser desfeita."
+      />
+
+      <EditBannerModal
+        isOpen={isOpenEditBannerModal}
+        onClose={() => setIsOpenEditBannerModal(false)}
+        setBanners={setBanners}
+        bannerToEdit={banner}
+      />
     </>
   );
 }

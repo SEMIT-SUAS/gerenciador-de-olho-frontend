@@ -1,4 +1,3 @@
-import { AddABannerForm } from '@/components/Forms/AddBannerForm';
 import { DialogHeader } from '@/components/ui/dialog';
 import {
   Dialog,
@@ -9,17 +8,19 @@ import {
 import type { BannerModel } from '@/types/Banner';
 import type { Dispatch, SetStateAction } from 'react';
 
-type AddBannerModalProps = {
+type EditBannerModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  bannerToEdit: BannerModel;
   setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
 };
 
-export function AddBannerModal({
+export function EditBannerModal({
   isOpen,
   onClose,
   setBanners,
-}: AddBannerModalProps) {
+  bannerToEdit,
+}: EditBannerModalProps) {
   if (!isOpen) {
     return null;
   }
@@ -29,14 +30,12 @@ export function AddBannerModal({
       <DialogContent>
         <DialogHeader className="text-center!">
           <DialogTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Criar Banner
+            Editar Banner
           </DialogTitle>
           <DialogDescription className="text-slate-600">
-            Preencha os detalhes do banner que deseja criar.
+            Preencha as informações que você quer alterar do banner.
           </DialogDescription>
         </DialogHeader>
-
-        <AddABannerForm setBanners={setBanners} onSuccess={() => onClose()} />
       </DialogContent>
     </Dialog>
   );

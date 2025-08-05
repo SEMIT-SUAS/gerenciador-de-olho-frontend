@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { AddBannerFormSchema, type AddBannerFormValues } from './types';
 import {
   Form,
   FormControl,
@@ -13,85 +12,61 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import {
-  useCallback,
-  useState,
-  type Dispatch,
-  type SetStateAction,
-} from 'react';
-import { IconImageInPicture, IconX } from '@tabler/icons-react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
 import bannersService from '@/services/bannersService';
 import type { BannerModel } from '@/types/Banner';
+import { AddBannerFormSchema, type AddBannerFormValues } from './types';
+import { Loading } from '@/components/Loading/Loading';
+import { ImageInput } from '../ImageInput';
+import { Checkbox } from '@/components/ui/checkbox';
 
-type AddBannerFormProps = {
+type AddABannerFormProps = {
   setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
   onSuccess: () => void;
 };
 
-export function AddBannerForm({ setBanners, onSuccess }: AddBannerFormProps) {
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+export function AddABannerForm({ setBanners, onSuccess }: AddABannerFormProps) {
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+
   const form = useForm<AddBannerFormValues>({
     resolver: zodResolver(AddBannerFormSchema),
     defaultValues: {
       name: '',
       link: '',
       image: undefined,
+      visivel: false,
     },
   });
 
-  const handleImageChange = useCallback(
-    (
-      e: React.ChangeEvent<HTMLInputElement>,
-      fieldChange: (file: File) => void,
-    ) => {
-      e.preventDefault();
-      const file = e.target.files?.[0];
-
-      if (!file) return;
-
-      if (!file.type.includes('image')) {
-        toast.error('Por favor, envie um arquivo de imagem');
-        return;
-      }
-
-      fieldChange(file);
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setImagePreview(event.target?.result?.toString() || null);
-      };
-      reader.readAsDataURL(file);
-    },
-    [],
-  );
-
   async function onSubmit(data: AddBannerFormValues) {
     try {
+      setIsSubmittingForm(true);
+
       const formData = new FormData();
       formData.append('nome', data.name);
-      formData.append('imagem', data.image);
       formData.append('link', data.link);
-      formData.append('visivel', false.toString());
-      formData.append('ativo', true.toString());
+      formData.append('imagem', data.image);
+      formData.append('visivel', `${data.visivel}`);
+      formData.append('ativo', 'true');
 
       const newBanner = await bannersService.upload(formData);
+      setBanners((prev) => {
+        if (!prev) return null;
+        return [...prev, newBanner];
+      });
 
-      setBanners((prev) => [...(prev ?? []), newBanner]);
       toast.success(`Banner "${newBanner.nome}" criado com sucesso!`);
       onSuccess();
     } catch (error: any) {
-      console.error('Error creating banner:', error);
       toast.error(error.message);
+    } finally {
+      setIsSubmittingForm(false);
     }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className={cn('space-y-6')}>
-        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-          Detalhes do Banner
-        </h4>
-
         <div className="space-y-4">
           <FormField
             control={form.control}
@@ -100,7 +75,11 @@ export function AddBannerForm({ setBanners, onSuccess }: AddBannerFormProps) {
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Nome do banner" {...field} />
+                  <Input
+                    placeholder="Nome do banner"
+                    autoComplete="off"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -114,7 +93,11 @@ export function AddBannerForm({ setBanners, onSuccess }: AddBannerFormProps) {
               <FormItem>
                 <FormLabel>Link de destino</FormLabel>
                 <FormControl>
-                  <Input placeholder="https://exemplo.com" {...field} />
+                  <Input
+                    placeholder="https://exemplo.com"
+                    autoComplete="off"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -127,56 +110,45 @@ export function AddBannerForm({ setBanners, onSuccess }: AddBannerFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Imagem do banner</FormLabel>
+                <FormControl>
+                  <ImageInput onChange={field.onChange} className="w-full" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-                {imagePreview ? (
-                  <div className="relative group">
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="w-full h-48 object-cover rounded-lg"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setImagePreview(null);
-                        field.onChange(undefined);
-                      }}
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
-                    >
-                      <IconX className="h-4 w-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <FormControl>
-                    <div className="flex items-center justify-center w-full">
-                      <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <IconImageInPicture className="h-10 w-10 text-gray-400 mb-2" />
-                          <p className="text-sm text-gray-500">
-                            Clique para enviar ou arraste uma imagem
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            Formatos suportados: JPG, PNG, GIF
-                          </p>
-                        </div>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => handleImageChange(e, field.onChange)}
-                        />
-                      </label>
-                    </div>
-                  </FormControl>
-                )}
+          <FormField
+            control={form.control}
+            name="visivel"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Banner visível</FormLabel>
+                  <p className="text-sm text-muted-foreground">
+                    Se marcado, o banner será exibido automaticamente ao clicar
+                  </p>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        <Button type="submit" className="w-full">
-          Criar Banner
+        <Button type="submit" className="w-full" disabled={isSubmittingForm}>
+          {isSubmittingForm ? (
+            <div className="mx-auto">
+              <Loading className="size-3" />
+            </div>
+          ) : (
+            'Criar Banner'
+          )}
         </Button>
       </form>
     </Form>

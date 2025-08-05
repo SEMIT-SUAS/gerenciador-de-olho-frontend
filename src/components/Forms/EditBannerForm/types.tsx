@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-export const AddBannerFormSchema = z.object({
+export const EditBannerFormSchema = z.object({
   name: z.string().min(2, {
     message: 'O nome deve ter pelo menos 2 caracteres',
   }),
@@ -10,7 +10,6 @@ export const AddBannerFormSchema = z.object({
   image: z.instanceof(File, {
     message: 'Por favor, selecione uma imagem',
   }),
-  visivel: z.boolean(),
 });
 
-export type AddBannerFormValues = z.infer<typeof AddBannerFormSchema>;
+export type EditBannerFormValues = z.infer<typeof EditBannerFormSchema>;

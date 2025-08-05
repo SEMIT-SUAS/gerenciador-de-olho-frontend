@@ -2,14 +2,6 @@ import { SearchInput } from '@/components/ui/input';
 import { LayoutPage } from './LayoutPage';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { useEffect, useState } from 'react';
 import type { BannerModel } from '@/types/Banner';
 import {
@@ -27,16 +19,13 @@ import {
 } from '@/components/ui/select';
 import bannersService from '@/services/bannersService';
 import { toast } from 'react-toastify';
-import { BannerListItem } from '@/components/Banners/BannerListItem';
-import { SkeletonItem } from '@/components/Loading/SkeletonItem';
-import { SkeletonImage } from '@/components/Loading/SkeletonImage';
-import { RenderIf } from '@/components/RenderIf';
 import { AddBannerModal } from '@/components/Banners/Modals/AddBannerModal';
+import { BannersList } from '@/components/Banners/BannersList';
 
 export function BannersPage() {
-  const [banners, setBanners] = useState<BannerModel[] | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [banners, setBanners] = useState<BannerModel[] | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpenAddBannerModal, setIsOpenAddBannerModal] = useState(false);
 
@@ -111,81 +100,12 @@ export function BannersPage() {
             </Button>
           </div>
 
-          <Table className="rounded-md overflow-hidden border border-solid shadow-lg">
-            <TableHeader>
-              <TableRow>
-                <TableHead>Imagem</TableHead>
-                <TableHead>Nome</TableHead>
-                <TableHead>Link</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {banners ? (
-                <RenderIf
-                  condition={currentBanners.length > 0}
-                  ifRender={currentBanners?.map((banner) => (
-                    <BannerListItem key={banner.id} banner={banner} />
-                  ))}
-                  elseRender={
-                    <TableRow>
-                      <TableCell colSpan={4} className="py-8 text-center">
-                        <p className="text-sm text-gray-500">
-                          {searchTerm
-                            ? `Nenhum resultado para "${searchTerm}"`
-                            : 'Nenhum banner encontrado'}
-                        </p>
-                      </TableCell>
-                    </TableRow>
-                  }
-                />
-              ) : (
-                Array.from({ length: itemsPerPage }).map((_, idx) => (
-                  <TableRow key={`skeleton-${idx}`}>
-                    <TableCell className="border-r">
-                      <div className="flex items-center gap-3">
-                        <SkeletonImage
-                          height={40}
-                          width={40}
-                          className="rounded"
-                        />
-                        <SkeletonItem
-                          titleWidth="20"
-                          className="p-0 border-0"
-                        />
-                      </div>
-                    </TableCell>
-                    <TableCell className="border-r">
-                      <SkeletonItem titleWidth="3/4" className="p-0 border-0" />
-                    </TableCell>
-                    <TableCell className="border-r">
-                      <SkeletonItem titleWidth="1/2" className="p-0 border-0" />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-4">
-                        <SkeletonImage
-                          height={24}
-                          width={24}
-                          className="rounded-full"
-                        />
-                        <SkeletonImage
-                          height={24}
-                          width={24}
-                          className="rounded-full"
-                        />
-                        <SkeletonImage
-                          height={24}
-                          width={24}
-                          className="rounded-full"
-                        />
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+          <BannersList
+            itemsPerPage={itemsPerPage}
+            searchTerm={searchTerm}
+            banners={currentBanners}
+            setBanners={setBanners}
+          />
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
