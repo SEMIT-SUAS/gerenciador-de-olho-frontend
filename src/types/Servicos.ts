@@ -4,7 +4,7 @@ import type { ServicoCategoria } from './CategoriaServico';
 
 export interface Servicos {
   orgao: SecretariaModel | null;
-  id: number | null;
+  id: number;
   nome: string;
   descricao: string;
   publicoDestinado: string;

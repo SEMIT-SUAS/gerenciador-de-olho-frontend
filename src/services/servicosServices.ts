@@ -97,19 +97,23 @@ export async function getServicoById(id: number): Promise<Servicos> {
 export async function changeServiceVisibility(
   id: number,
   visivel: boolean,
-): Promise<Servicos> {
+): Promise<ServicosListar> {
   try {
-    const response = await fetch(`${API_BASE_URL}/atualizar/visibilidade`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${API_BASE_URL}/servico/atualizar/visibilidade`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, visivel }),
       },
-      body: JSON.stringify({ id, visivel }),
-    });
+    );
 
     if (!response.ok) {
       throw new Error('Não foi possível alterar visibilidade do serviço');
     }
+
     return await response.json();
   } catch (error) {
     throw new Error(
@@ -123,15 +127,19 @@ export async function changeServiceAtivo(
   ativo: boolean,
 ): Promise<Servicos> {
   try {
-    const response = await fetch(`${API_BASE_URL}/atualizar/atividade`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, ativo }),
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/servico/atualizar/atividade`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ativo }),
+      },
+    );
 
     if (!response.ok) {
       throw new Error('Não foi possivel alterar a opção "ativo"');
     }
+
     return await response.json();
   } catch (error) {
     throw new Error(

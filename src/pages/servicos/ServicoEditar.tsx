@@ -15,7 +15,6 @@ import type { Persona } from '@/types/Persona';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
 
 import { ServicoForm } from '@/components/Forms/ServicoForm/ServicoForm';
-import type { Servicos, UpdateServiceModel } from '@/types/Servicos';
 
 function ServicoEditarPage() {
   const navigate = useNavigate();

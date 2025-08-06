@@ -35,13 +35,14 @@ function ServicoNovo() {
   }, []);
 
   async function handleFormSubmit(data: ServicoFormOutput) {
-    setIsLoading(true);
     const payload = {
       ...data,
       orgao: data.secretariaId,
       categoria: data.categoriaId,
-      personas: data.personaIds.map((id) => ({ id })),
+      personas: data.personaIds,
     };
+
+    console.log(payload);
 
     try {
       await createService(payload as any);

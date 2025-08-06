@@ -1,6 +1,6 @@
 export interface ServicosListar {
   nomeOrgao: string | null;
-  id: number | null;
+  id: number;
   nome: string;
   descricao: string;
   publicoDestinado: string[];

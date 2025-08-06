@@ -16,10 +16,12 @@ import { LayoutPage } from './../LayoutPage';
 import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
+import { ServicoVisibility } from '@/components/Forms/ServicoForm/ServicoVisibility';
 
-import { getAllServices } from '@/services/servicosServices';
+import servicosServices, { getAllServices } from '@/services/servicosServices';
 import type { ServicosListar } from '@/types/ServicosListar';
 import { Badge } from '@/components/ui/badge';
+import { ServicesListItem } from './ServicesListItem';
 
 export function ServicesList() {
   const navigate = useNavigate();
@@ -31,6 +33,8 @@ export function ServicesList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
+
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
 
   async function fetchServices() {
     try {
@@ -129,47 +133,11 @@ export function ServicesList() {
 
           <TableBody>
             {currentData.map((service) => (
-              <TableRow key={service.id}>
-                <TableCell>{service.nome}</TableCell>
-                <TableCell>{service.nomeCategoria ?? '-'}</TableCell>
-                <TableCell className="flex flex-wrap gap-2">
-                  {Array.isArray(service.nomesPersonas) &&
-                  service.nomesPersonas.length > 0 ? (
-                    service.nomesPersonas.map((personas, id) => (
-                      <Badge key={id} variant="outline">
-                        {personas}
-                      </Badge>
-                    ))
-                  ) : (
-                    <Badge variant="outline">-</Badge>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <button
-                    className="text-black-600"
-                    onClick={() => navigate(`/servicos/editar/${service.id}`)}
-                  >
-                    <IconEdit size={18} stroke={2} className="text-black-600" />
-                  </button>
-                </TableCell>
-                <TableCell>
-                  <button className="text-black-600">
-                    <IconTrash
-                      size={18}
-                      stroke={2}
-                      className="text-black-600"
-                    />
-                  </button>
-                </TableCell>
-                <TableCell>
-                  <button
-                    className="text-black-600"
-                    onClick={() => navigate(`/servicos/${service.id}`)}
-                  >
-                    <IconEye size={18} stroke={2} className="text-black-600" />
-                  </button>
-                </TableCell>
-              </TableRow>
+              <ServicesListItem
+                key={service.id}
+                servico={service}
+                setServicos={setServices}
+              />
             ))}
           </TableBody>
         </Table>
