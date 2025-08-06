@@ -6,7 +6,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import { ServicoVisibility } from '@/components/Forms/ServicoForm/ServicoVisibility';
+import { ServicoVisibility } from '@/components/Servicos/ServicoVisibility';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 interface ServiceListItemProps {
@@ -40,7 +40,10 @@ export function ServicesListItem({
 
   return (
     <>
-      <TableRow key={servico.id}>
+      <TableRow
+        key={servico.id}
+        onClick={() => navigate(`/servicos/${servico.id}`)}
+      >
         <TableCell>{servico.nome}</TableCell>
         <TableCell>{servico.nomeCategoria ?? '-'}</TableCell>
         <TableCell className="flex flex-wrap gap-2">
@@ -75,6 +78,7 @@ export function ServicesListItem({
           </div>
         </TableCell>
       </TableRow>
+
       <ConfirmModal
         isOpen={isOpenDeleteModal}
         onConfirm={handleDeleteServico}

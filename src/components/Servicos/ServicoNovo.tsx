@@ -1,7 +1,7 @@
 // Exemplo de uso em uma página
 import { getAll } from '@/services/secretariaService';
-import { ServicoForm } from '../../components/Forms/ServicoForm/ServicoForm';
-import { type ServicoFormOutput } from '../../components/Forms/ServicoForm/servicoSchema';
+import { ServicoForm } from '../Forms/ServicoForm/ServicoForm';
+import { type ServicoFormOutput } from '../Forms/ServicoForm/servicoSchema';
 import { useState, useEffect } from 'react';
 import { getAllCategorias } from '@/services/servicocategoriaService';
 import { getAllPerosona } from '@/services/servicoPersona';
@@ -10,6 +10,7 @@ import type { Persona } from '@/types/Persona';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
 import { createService } from '@/services/servicosServices';
 import { useNavigate } from 'react-router-dom';
+import { LayoutPage } from '@/pages/LayoutPage';
 
 function ServicoNovo() {
   const [secretarias, setSecretarias] = useState<SecretariaModel[]>([]);
@@ -54,16 +55,27 @@ function ServicoNovo() {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">Criar Novo Serviço</h1>
-      <ServicoForm
-        secretarias={secretarias}
-        categorias={categorias}
-        personas={personas}
-        onSubmit={handleFormSubmit}
-        isLoading={isLoading}
-      />
-    </div>
+    <LayoutPage>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="mb-8">
+          <h1 className=" text-center text-2xl font-bold text-gray-900 mb-2">
+            Adicionar novo serviço
+          </h1>
+          <p className="text-gray-600 text-center">
+            Gerencie com precisão todos os serviços que a prefeitura oferece.
+            Tenha controle total para adicionar, visualizar, editar e remover
+            cada item, garantindo informações sempre atualizadas e acessíveis.
+          </p>
+        </div>
+        <ServicoForm
+          secretarias={secretarias}
+          categorias={categorias}
+          personas={personas}
+          onSubmit={handleFormSubmit}
+          isLoading={isLoading}
+        />
+      </div>
+    </LayoutPage>
   );
 }
 

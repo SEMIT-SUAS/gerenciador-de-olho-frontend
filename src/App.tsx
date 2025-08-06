@@ -13,12 +13,13 @@ import { AcoesList } from './components/SidePanel/Acao/AcoesList';
 import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
 import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
-import { ServicesList } from './pages/servicos/ServicesList';
-import { ServicoDetalhes } from './pages/servicos/ServicoDetalhes';
-import ServicoEditarPage from './pages/servicos/ServicoEditar';
+import { ServicesList } from './components/Servicos/ServicesList';
+import { ServicoDetalhes } from './components/Servicos/ServicoDetalhes';
+import ServicoEditarPage from './components/Servicos/ServicoEditar';
 import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import { PortaisList } from './pages/portais/PortaisList';
-import ServicoNovo from './pages/servicos/ServicoNovo';
+import ServicoNovo from './components/Servicos/ServicoNovo';
+import { ServicesPage } from './pages/ServicesPage';
 
 export function App() {
   return (
@@ -63,7 +64,7 @@ export function App() {
           </Route>
         </Route>
         <Route path="/servicos">
-          <Route index element={<ServicesList />} />
+          <Route index element={<ServicesPage />} />
           <Route path="categorias" element={<ListaCategorias />} />
           <Route path="novo" element={<ServicoNovo />} />
           <Route path=":id" element={<ServicoDetalhes />} />

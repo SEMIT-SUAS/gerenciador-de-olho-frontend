@@ -1,35 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { SearchInput } from '@/components/ui/input';
-import { LayoutPage } from './../LayoutPage';
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-  IconEdit,
-  IconEye,
-  IconTrash,
-} from '@tabler/icons-react';
-import { Plus } from 'lucide-react';
+import { LayoutPage } from './LayoutPage';
+import { getAllServices } from '@/services/servicosServices';
 import { toast } from 'sonner';
-import { ServicoVisibility } from '@/components/Forms/ServicoForm/ServicoVisibility';
-
-import servicosServices, { getAllServices } from '@/services/servicosServices';
 import type { ServicosListar } from '@/types/ServicosListar';
-import { Badge } from '@/components/ui/badge';
-import { ServicesListItem } from './ServicesListItem';
+import { Button } from '@/components/ui/button';
+
+import { ServicesList } from '../components/Servicos/ServicesList';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SearchInput } from '@/components/ui/input';
+import { Link } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -37,10 +17,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronsLeft,
+  IconChevronsRight,
+} from '@tabler/icons-react';
 
-export function ServicesList() {
-  const navigate = useNavigate();
-
+export function ServicesPage() {
   const [services, setServices] = useState<ServicosListar[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,22 +53,6 @@ export function ServicesList() {
     s.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const itemsPerPageOptions = [8, 16, 24];
-
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
-  const currentData = filtered.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-600">Carregando serviços...</p>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -97,6 +65,23 @@ export function ServicesList() {
       </div>
     );
   }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <p className="text-gray-600">Carregando serviços...</p>
+      </div>
+    );
+  }
+
+  const itemsPerPageOptions = [8, 16, 24];
+
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+
+  const currentData = filtered.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
   return (
     <LayoutPage>
@@ -136,27 +121,7 @@ export function ServicesList() {
           </div>
         </div>
 
-        <Table className="rounded-md overflow-hidden border-2 border-gray-500 shadow-lg">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nome</TableHead>
-              <TableHead>Categoria</TableHead>
-              <TableHead>Persona</TableHead>
-              <TableHead>Ações</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {currentData.map((service) => (
-              <ServicesListItem
-                key={service.id}
-                servico={service}
-                setServicos={setServices}
-              />
-            ))}
-          </TableBody>
-        </Table>
-
+        <ServicesList setServicos={setServices} servicos={currentData} />
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600">Linhas por página:</span>

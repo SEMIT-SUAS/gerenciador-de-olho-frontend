@@ -13,6 +13,7 @@ import type {
 import type { SecretariaModel } from '@/types/Secretaria';
 import type { Persona } from '@/types/Persona';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
+import { LayoutPage } from '@/pages/LayoutPage';
 
 import { ServicoForm } from '@/components/Forms/ServicoForm/ServicoForm';
 
@@ -150,19 +151,28 @@ function ServicoEditarPage() {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">
-        Editar Serviço: {servicoParaEditar.nome}
-      </h1>
-      <ServicoForm
-        secretarias={secretarias}
-        categorias={categorias}
-        personas={personas}
-        onSubmit={handleFormSubmit}
-        isLoading={isSubmitting}
-        defaultValues={servicoParaEditar}
-      />
-    </div>
+    <LayoutPage>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="mb-8">
+          <h1 className="text-center text-2xl font-bold text-gray-900 mb-2">
+            Editar serviço
+          </h1>
+          <p className="text-gray-600  text-center">
+            Gerencie com precisão todos os serviços que a prefeitura oferece.
+            Tenha controle total para adicionar, visualizar, editar e remover
+            cada item, garantindo informações sempre atualizadas e acessíveis.
+          </p>
+        </div>
+        <ServicoForm
+          secretarias={secretarias}
+          categorias={categorias}
+          personas={personas}
+          onSubmit={handleFormSubmit}
+          isLoading={isSubmitting}
+          defaultValues={servicoParaEditar}
+        />
+      </div>
+    </LayoutPage>
   );
 }
 
