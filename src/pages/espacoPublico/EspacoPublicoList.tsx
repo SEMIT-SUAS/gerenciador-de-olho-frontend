@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllEspacoPublico, changeEspacoPublicoAtivo, changeEspacoPublicoVisibility } from "../../services/EspacoPublico";
 import type { EspacoPublicoById } from "../../types/EspacoPublico";
-import { EspacoPublicoItem } from "./components/EspacoPublicoItem";
+import { EspacoPublicoItem } from "./components/EspacoPublicoList";
 import { Loader } from "./components/Loader";
 import { ErrorMessage } from "./components/ErrorMessage";
 import { styles } from "./components/styles";
