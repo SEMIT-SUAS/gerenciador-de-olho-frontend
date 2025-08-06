@@ -1,8 +1,6 @@
-// src/schemas/servicoSchema.ts (Ajustado)
-
 import { z } from 'zod';
 
-export const servicoSchema = z.object({
+export const servicoInputSchema = z.object({
   nome: z.string().min(3, 'O nome deve ter no mínimo 3 caracteres.'),
   descricao: z.string().min(1, 'A descrição é obrigatória.'),
 
@@ -13,20 +11,20 @@ export const servicoSchema = z.object({
     .array(z.enum(['Presencial', 'Online', 'Telefone']))
     .min(1, 'Selecione ao menos uma forma de solicitação.'),
 
-  documentacaoNecessaria: z.array(z.string()).optional().default([]),
+  documentacaoNecessaria: z.array(z.string()),
 
-  custos: z.string().optional().default(''),
-  etapas: z.string().optional().default(''),
-  requisitos: z.string().optional().default(''),
-  formasAcompanhamento: z.string().optional().default(''),
-  prazoAtendimento: z.string().optional().default(''),
-  prioridades: z.string().optional().default(''),
-  horarioAtendimento: z.string().optional().default(''),
-  legislacao: z.string().optional().default(''),
-  setorLotacao: z.string().optional().default(''),
-  modeloRequerimento: z.string().optional().default(''),
+  custos: z.string().optional(),
+  etapas: z.string().optional(),
+  requisitos: z.string().optional(),
+  formasAcompanhamento: z.string().optional(),
+  prazoAtendimento: z.string().optional(),
+  prioridades: z.string().optional(),
+  horarioAtendimento: z.string().optional(),
+  legislacao: z.string().optional(),
+  setorLotacao: z.string().optional(),
+  modeloRequerimento: z.string().optional(),
 
-  nomesPersonas: z.array(z.string()).optional().default([]),
+  nomesPersonas: z.array(z.string()).optional(),
 
   secretariaId: z.coerce
     .number({ invalid_type_error: 'Selecione uma secretaria.' })
@@ -38,9 +36,14 @@ export const servicoSchema = z.object({
     .array(z.coerce.number())
     .min(1, 'Selecione ao menos uma persona.'),
 
-  visivel: z.boolean().default(true),
+  visivel: z.boolean(),
+  ativo: z.boolean(),
+});
+
+export const servicoOutputSchema = servicoInputSchema.extend({
+  documentacaoNecessaria: z.array(z.string()),
   ativo: z.boolean().default(true),
 });
 
-export type ServicoFormInput = z.input<typeof servicoSchema>;
-export type ServicoFormOutput = z.output<typeof servicoSchema>;
+export type ServicoFormInput = z.input<typeof servicoInputSchema>;
+export type ServicoFormOutput = z.output<typeof servicoOutputSchema>;

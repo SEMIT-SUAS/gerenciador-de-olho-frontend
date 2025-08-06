@@ -1,5 +1,6 @@
 import type { Servicos } from '../types/Servicos';
 import { API_BASE_URL } from '../config/api';
+import type { ServicosListar } from '@/types/ServicosListar';
 
 export async function getAllServices(): Promise<ServicosListar[]> {
   try {

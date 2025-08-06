@@ -7,9 +7,9 @@ export interface Servicos {
   id: number | null;
   nome: string;
   descricao: string;
-  publicoDestinado: string[];
-  formasSolicitacao: string[];
-  documentacaoNecessaria: string[];
+  publicoDestinado: string;
+  formasSolicitacao: string;
+  documentacaoNecessaria: string;
   custos: string;
   etapas: string;
   requisitos: string;
@@ -24,4 +24,28 @@ export interface Servicos {
   visivel: boolean;
   ativo: boolean;
   personas?: Persona[];
+}
+
+export interface UpdateServiceModel {
+  secretariaId: number;
+  categoriaId: number;
+  id: number;
+  nome: string;
+  descricao: string;
+  publicoDestinado: string[];
+  formasSolicitacao: string[];
+  documentacaoNecessaria: string[];
+  custos?: string;
+  etapas?: string;
+  requisitos?: string;
+  formasAcompanhamento?: string;
+  prazoAtendimento?: string;
+  prioridades?: string;
+  horarioAtendimento?: string;
+  legislacao?: string;
+  setorLotacao?: string;
+  modeloRequerimento?: string;
+  visivel: boolean;
+  ativo: boolean;
+  personaIds: number[];
 }

@@ -18,13 +18,13 @@ import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { getAllServices } from '@/services/servicosServices';
-import type { Servicos } from '@/types/Servicos';
+import type { ServicosListar } from '@/types/ServicosListar';
 import { Badge } from '@/components/ui/badge';
 
 export function ServicesList() {
   const navigate = useNavigate();
 
-  const [services, setServices] = useState<Servicos[]>([]);
+  const [services, setServices] = useState<ServicosListar[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,11 +80,6 @@ export function ServicesList() {
     );
   }
 
-  async function handleDelete() {
-    try {
-    } catch {}
-  }
-
   return (
     <LayoutPage>
       <div className="flex flex-col gap-6 py-8 px-36">
@@ -136,13 +131,13 @@ export function ServicesList() {
             {currentData.map((service) => (
               <TableRow key={service.id}>
                 <TableCell>{service.nome}</TableCell>
-                <TableCell>{service.categoria.nome ?? '-'}</TableCell>
+                <TableCell>{service.nomeCategoria ?? '-'}</TableCell>
                 <TableCell className="flex flex-wrap gap-2">
-                  {Array.isArray(service.personas) &&
-                  service.personas.length > 0 ? (
-                    service.personas.map((persona, idx) => (
-                      <Badge key={persona.id ?? idx} variant="outline">
-                        {persona.nome}
+                  {Array.isArray(service.nomesPersonas) &&
+                  service.nomesPersonas.length > 0 ? (
+                    service.nomesPersonas.map((personas, id) => (
+                      <Badge key={id} variant="outline">
+                        {personas}
                       </Badge>
                     ))
                   ) : (
@@ -152,7 +147,7 @@ export function ServicesList() {
                 <TableCell>
                   <button
                     className="text-black-600"
-                    onClick={() => navigate(`/servico/editar/${service.id}`)}
+                    onClick={() => navigate(`/servicos/editar/${service.id}`)}
                   >
                     <IconEdit size={18} stroke={2} className="text-black-600" />
                   </button>
