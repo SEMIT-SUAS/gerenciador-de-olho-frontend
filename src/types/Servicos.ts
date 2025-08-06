@@ -25,7 +25,6 @@ export interface Servicos {
   ativo: boolean;
   personas?: Persona[];
 }
-
 export interface UpdateServiceModel {
   secretariaId: number;
   categoriaId: number;

@@ -1,4 +1,4 @@
-import type { Servicos } from '../types/Servicos';
+import type { Servicos, UpdateServiceModel } from '../types/Servicos';
 import { API_BASE_URL } from '../config/api';
 import type { ServicosListar } from '@/types/ServicosListar';
 
@@ -39,7 +39,9 @@ export async function createService(servico: Servicos): Promise<Servicos> {
   }
 }
 
-export async function updateServico(servico: Servicos): Promise<Servicos> {
+export async function updateServico(
+  servico: UpdateServiceModel,
+): Promise<UpdateServiceModel> {
   try {
     const response = await fetch(`${API_BASE_URL}/servico/atualizar`, {
       method: 'PUT',

@@ -114,9 +114,12 @@ function ServicoEditarPage() {
 
     setIsSubmitting(true);
 
-    const payload: UpdateServiceModel = {
+    const payload = {
       ...data,
       id: Number(servicoId),
+      orgao: data.secretariaId,
+      categoria: data.categoriaId,
+      personas: data.personaIds,
     };
 
     console.log('Payload enviado:', JSON.stringify(payload, null, 2));
