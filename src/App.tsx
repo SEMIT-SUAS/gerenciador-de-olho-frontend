@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { DashboardPage } from './pages/DashboardPage';
-import { LoginPage } from './pages/LoginPage';
+import LoginPage from './pages/LoginPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
 import { DenunciasList } from './components/SidePanel/Denuncia/DenunciasList';
@@ -21,6 +21,12 @@ import { PortaisList } from './pages/portais/PortaisList';
 import ServicoNovo from './components/Servicos/ServicoNovo';
 import { ServicesPage } from './pages/ServicesPage';
 
+import { NotFoundPage } from './pages/404';
+import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
+import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
+import { BannersPage } from './pages/BannersPage';
+import { Toaster } from 'sonner';
+
 export function App() {
   return (
     <BrowserRouter>
@@ -37,7 +43,6 @@ export function App() {
           }
         >
           <Route index element={<Navigate to="denuncias" replace />} />
-
           <Route path="denuncias">
             <Route index element={<DenunciasList />} />
             <Route path=":denunciaId" element={<DenunciaDetails />} />
@@ -56,13 +61,15 @@ export function App() {
             <Route index element={<AcoesList />} />
             <Route path=":acaoId" element={<AcaoDetails />} />
             <Route path="add" element={<AddAcao />} />
-            <Route path=":acaoId/indeferir" element={<h1>Indeferir acao</h1>} />
+            <Route path=":acaoId/indeferir" element={<IndeferirAcao />} />
             <Route
               path=":acaoId/vincular-denuncias"
               element={<VincularAcaoADenuncias />}
             />
+            <Route path=":acaoId/concluir" element={<ConcluirAcao />} />
           </Route>
         </Route>
+
         <Route path="/servicos">
           <Route index element={<ServicesPage />} />
           <Route path="categorias" element={<ListaCategorias />} />
@@ -71,21 +78,13 @@ export function App() {
           <Route path="editar/:id" element={<ServicoEditarPage />} />
         </Route>
         <Route path="/portais" element={<PortaisList />} />
-
-        {/* Redirecionamento para a página inicial se a rota não for encontrada */}
+        <Route path="/banners" element={<BannersPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover={false}
-        theme="light"
-        className="z-50"
-      />
+      {/* Notification systems */}
+      <ToastContainer />
+      <Toaster position="top-center" duration={3000} />
     </BrowserRouter>
   );
 }

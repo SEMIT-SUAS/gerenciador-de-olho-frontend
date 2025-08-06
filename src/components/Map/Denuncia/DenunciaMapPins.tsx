@@ -8,8 +8,16 @@ import { getConvexHull } from '../../../utils/geometry';
 import { DenunciaTooltip } from './DenunciaTooltip';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { LeafletMouseEvent } from 'leaflet';
-import { selectedIcon } from '../../../constants/mapIcons';
+import { type LeafletMouseEvent, divIcon } from 'leaflet';
+
+const statusIconMap: Record<string, string> = {
+  indeferido: '../../../public/status/indeferido.png',
+  concluido: '../../../public/status/concluido.png',
+  em_andamento: '../../../public/status/em_andamento.png',
+  em_aberto: '../../../public/status/em_aberto.png',
+  em_analise: '../../../public/status/em_analise.png',
+  default: '../../../public/status/indeferido.png',
+};
 
 export function DenunciaMapPins() {
   const { denunciasFiltradas, isVisibleDenunciasInMap } = useFilters();
@@ -44,17 +52,16 @@ export function DenunciaMapPins() {
           lat: event.latlng.lat,
           lng: event.latlng.lng,
         });
-
         setIsSelectingNewDenuncia(false);
         map.off('click');
       }
     }
-
     map.on('click', handleClick);
   }, [
     isSelectingNewDenuncia,
     setNewDenunciaCoordinates,
     setIsSelectingNewDenuncia,
+    map,
   ]);
 
   function handleOnDenunciaClick(currentDenuncia: DenunciaModel) {
@@ -63,6 +70,32 @@ export function DenunciaMapPins() {
     } else {
       navigate(`/ocorrencias/denuncias/${currentDenuncia.id}`);
     }
+  }
+
+  function handleGetIcon(denuncia: DenunciaModel) {
+    const isSelected = !!denunciasSelecionas.find((d) => d.id === denuncia.id);
+
+    const baseIcon = getDenunciaIconByTipo(denuncia.tipo.nome, isSelected);
+    const mainIconUrl = baseIcon.options.iconUrl;
+    const iconSize = baseIcon.options.iconSize as [number, number];
+
+    const statusValue = denuncia.acao?.status[0].status || 'default';
+
+    const statusIconUrl = statusIconMap[statusValue] || statusIconMap.default;
+
+    const iconHTML = `
+      <div class="marker-container">
+        <img src="${mainIconUrl}" style="width: ${iconSize[0]}px; height: ${iconSize[1]}px;" />
+        <img src="${statusIconUrl}" class="status-badge" />
+      </div>
+    `;
+
+    return divIcon({
+      html: iconHTML,
+      className: '',
+      iconSize: iconSize,
+      iconAnchor: baseIcon.options.iconAnchor,
+    });
   }
 
   if (!isVisibleDenunciasInMap) {
@@ -76,26 +109,26 @@ export function DenunciaMapPins() {
           <Marker
             key={`d-${d.id}`}
             position={[d.latitude, d.longitude]}
-            icon={getDenunciaIconByTipo(d.tipo.nome)}
+            icon={handleGetIcon(d)}
             eventHandlers={{
               click: () => handleOnDenunciaClick(d),
             }}
           >
             {!salvarDenunciasOnclick && <DenunciaTooltip denuncia={d} />}
-
-            {denunciaPolygonCoordinates.length > 0 && (
-              <DenunciasSelecionadasPolygon
-                coordinates={denunciaPolygonCoordinates}
-              />
-            )}
           </Marker>
         );
       })}
 
+      {denunciaPolygonCoordinates.length > 0 && (
+        <DenunciasSelecionadasPolygon
+          coordinates={denunciaPolygonCoordinates}
+        />
+      )}
+
       {!isSelectingNewDenuncia && newDenunciaCoordinates && (
         <Marker
           position={[newDenunciaCoordinates.lat, newDenunciaCoordinates.lng]}
-          icon={selectedIcon}
+          icon={getDenunciaIconByTipo('default', true)}
         />
       )}
     </>

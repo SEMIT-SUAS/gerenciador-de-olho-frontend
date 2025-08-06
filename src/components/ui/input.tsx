@@ -35,4 +35,5 @@ const SearchInput = React.forwardRef<
   );
 });
 
+
 export { Input, SearchInput };

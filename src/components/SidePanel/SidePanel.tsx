@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { TabButtons } from './TabButtons';
 import { useOcorrencias } from '../../context/OcorrenciasContext';
 import { AddButton } from '../Buttons/AddButton';
+import { Separator } from '@/components/ui/separator';
 
 interface SidePanelProps {
   children: ReactNode;
@@ -26,7 +27,7 @@ export function SidePanel({ children }: SidePanelProps) {
             Painel de Ocorrências
           </h1>
 
-          <span className="text-blue-500 text-sm font-semibold">
+          <span className="text-blue-500 text-md font-bold">
             De olho na cidade
           </span>
         </div>
@@ -40,9 +41,11 @@ export function SidePanel({ children }: SidePanelProps) {
           denunciasAmount={denunciasFiltradas.length}
         />
       )}
-
-      <div className="p-4 overflow-y-auto custom-scrollbar-blue">
-        {children}
+      {/* <div className="flex items-center justify-between mx-5">
+        <Separator />
+      </div> */}
+      <div className="overflow-y-auto custom-scrollbar-blue">
+        <div className="m-4">{children}</div>
       </div>
     </aside>
   );
