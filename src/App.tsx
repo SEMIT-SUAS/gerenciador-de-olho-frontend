@@ -15,7 +15,7 @@ import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
 import { ServicesList } from './pages/servicos/ServicesList';
 import { ServicoDetalhes } from './pages/servicos/ServicoDetalhes';
-import { ServicoEditar } from './pages/servicos/ServicoEditar';
+import ServicoEditarPage from './pages/servicos/ServicoEditar';
 import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import { PortaisList } from './pages/portais/PortaisList';
 import ServicoNovo from './pages/servicos/ServicoNovo';
@@ -67,7 +67,7 @@ export function App() {
           <Route path="categorias" element={<ListaCategorias />} />
           <Route path="novo" element={<ServicoNovo />} />
           <Route path=":id" element={<ServicoDetalhes />} />
-          <Route path="editar/:id" element={<ServicoEditar />} />
+          <Route path="editar/:id" element={<ServicoEditarPage />} />
         </Route>
         <Route path="/portais" element={<PortaisList />} />
 

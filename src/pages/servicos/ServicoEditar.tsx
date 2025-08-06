@@ -13,13 +13,8 @@ import type {
 import type { SecretariaModel } from '@/types/Secretaria';
 import type { Persona } from '@/types/Persona';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
-<<<<<<< HEAD
 import { ServicoForm } from '@/components/Forms/ServicoForm/ServicoForm';
 import type { Servicos, UpdateServiceModel } from '@/types/Servicos';
-=======
-
-import { ServicoForm } from '@/components/Forms/AddServicoForm/ServicoForm';
->>>>>>> parent of ade0442 (editar-form-incompleto)
 
 function ServicoEditarPage() {
   const navigate = useNavigate();
