@@ -1,4 +1,4 @@
-import type { Servicos } from '../types/Servicos';
+import type { Servicos, UpdateServiceModel } from '../types/Servicos';
 import { API_BASE_URL } from '../config/api';
 import type { ServicosListar } from '@/types/ServicosListar';
 
@@ -11,6 +11,7 @@ export async function getAllServices(): Promise<ServicosListar[]> {
     if (!response.ok) {
       throw new Error('Não foi possível listar os serviços.');
     }
+
     return await response.json();
   } catch (error) {
     throw new Error(
@@ -39,11 +40,10 @@ export async function createService(servico: Servicos): Promise<Servicos> {
 }
 
 export async function updateServico(
-  id: number,
-  servico: Servicos,
-): Promise<Servicos> {
+  servico: UpdateServiceModel,
+): Promise<UpdateServiceModel> {
   try {
-    const response = await fetch(`${API_BASE_URL}/servico/atualizar/${id!}`, {
+    const response = await fetch(`${API_BASE_URL}/servico/atualizar`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(servico),

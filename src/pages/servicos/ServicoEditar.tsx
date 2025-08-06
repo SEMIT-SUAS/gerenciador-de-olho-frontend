@@ -13,12 +13,13 @@ import type {
 import type { SecretariaModel } from '@/types/Secretaria';
 import type { Persona } from '@/types/Persona';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
+import { LayoutPage } from '@/pages/LayoutPage';
 
-import { ServicoForm } from '@/components/Forms/ServiceForm/ServiceForm';
+import { ServicoForm } from '@/components/Forms/ServiceForm/ServicoForm';
 
 function ServicoEditarPage() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { id: servicoId } = useParams<{ id: string }>();
 
   const [secretarias, setSecretarias] = useState<SecretariaModel[]>([]);
   const [categorias, setCategorias] = useState<ServicoCategoria[]>([]);
@@ -32,7 +33,7 @@ function ServicoEditarPage() {
 
   useEffect(() => {
     async function fetchDadosParaEdicao() {
-      if (!id) {
+      if (!servicoId) {
         console.error('ID não encontrado na URL');
         setIsLoading(false);
         return;
@@ -44,7 +45,7 @@ function ServicoEditarPage() {
             getAll(),
             getAllCategorias(),
             getAllPerosona(),
-            getServicoById(Number(id)),
+            getServicoById(Number(servicoId)),
           ]);
 
         setSecretarias(secretariasData);
@@ -54,48 +55,78 @@ function ServicoEditarPage() {
         const dadosFormatadosParaForm: ServicoFormInput = {
           nome: servicoData.nome,
           descricao: servicoData.descricao,
-          publicoDestinado: (servicoData.publicoDestinado ?? []).filter(
-            (p: string): p is 'Pessoa Física' | 'Pessoa Jurídica' =>
-              p === 'Pessoa Física' || p === 'Pessoa Jurídica',
-          ),
-          formasSolicitacao: (servicoData.formasSolicitacao ?? []).filter(
-            (f: string): f is 'Presencial' | 'Online' | 'Telefone' =>
-              f === 'Presencial' || f === 'Online' || f === 'Telefone',
-          ),
-          documentacaoNecessaria: servicoData.documentacaoNecessaria,
+          publicoDestinado: servicoData.publicoDestinado
+            .split(',')
+            .map((publico) => publico.trim())
+            .filter(
+              (publico): publico is 'Pessoa Física' | 'Pessoa Jurídica' =>
+                publico === 'Pessoa Física' || publico === 'Pessoa Jurídica',
+            ),
+
+          formasSolicitacao: servicoData.formasSolicitacao
+            .split(',')
+            .map((item) => item.trim())
+            .filter(
+              (item): item is 'Presencial' | 'Online' | 'Telefone' =>
+                item === 'Presencial' ||
+                item === 'Online' ||
+                item === 'Telefone',
+            ),
+
+          documentacaoNecessaria: servicoData.documentacaoNecessaria
+            .split(',')
+            .map((s) => s.trim()),
+
+          prazoAtendimento: servicoData.prazoAtendimento,
+          horarioAtendimento: servicoData.horarioAtendimento,
+          setorLotacao: servicoData.setorLotacao,
+          prioridades: servicoData.prioridades,
+          formasAcompanhamento: servicoData.formasAcompanhamento,
+          legislacao: servicoData.legislacao,
+          modeloRequerimento: servicoData.modeloRequerimento,
           custos: servicoData.custos,
           etapas: servicoData.etapas,
           requisitos: servicoData.requisitos,
           secretariaId: servicoData.orgao?.id ?? 0,
           categoriaId: servicoData.categoria?.id ?? 0,
-          personaIds: servicoData.personas?.map((p) => p.id) ?? [],
+
+          personaIds: (servicoData.personas ?? [])
+            .map((p) => p.id)
+            .filter((id) => id != null),
+
           visivel: servicoData.visivel,
           ativo: servicoData.ativo,
         };
         setServicoParaEditar(dadosFormatadosParaForm);
+        console.log('dadosFormatadosParaForm:', dadosFormatadosParaForm);
       } catch (err) {
         console.error('Erro ao buscar dados para edição:', err);
       } finally {
         setIsLoading(false);
       }
     }
+
     fetchDadosParaEdicao();
-  }, [id]);
+  }, [servicoId]);
 
   async function handleFormSubmit(data: ServicoFormOutput) {
-    if (!id) return;
+    if (!servicoId) return;
 
     setIsSubmitting(true);
 
     const payload = {
       ...data,
+      id: Number(servicoId),
       orgao: data.secretariaId,
       categoria: data.categoriaId,
+      personas: data.personaIds,
     };
 
+    console.log('Payload enviado:', JSON.stringify(payload, null, 2));
+
     try {
-      await updateServico(Number(id), payload as any);
-      navigate(`/servicos/${id}`);
+      await updateServico(payload);
+      navigate(`/servicos/${servicoId}`);
     } catch (err: any) {
       console.error('Erro ao atualizar o serviço:', err);
     } finally {
@@ -120,19 +151,28 @@ function ServicoEditarPage() {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">
-        Editar Serviço: {servicoParaEditar.nome}
-      </h1>
-      <ServicoForm
-        secretarias={secretarias}
-        categorias={categorias}
-        personas={personas}
-        onSubmit={handleFormSubmit}
-        isLoading={isSubmitting}
-        defaultValues={servicoParaEditar}
-      />
-    </div>
+    <LayoutPage>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="mb-8">
+          <h1 className="text-center text-2xl font-bold text-gray-900 mb-2">
+            Editar serviço
+          </h1>
+          <p className="text-gray-600  text-center">
+            Gerencie com precisão todos os serviços que a prefeitura oferece.
+            Tenha controle total para adicionar, visualizar, editar e remover
+            cada item, garantindo informações sempre atualizadas e acessíveis.
+          </p>
+        </div>
+        <ServicoForm
+          secretarias={secretarias}
+          categorias={categorias}
+          personas={personas}
+          onSubmit={handleFormSubmit}
+          isLoading={isSubmitting}
+          defaultValues={servicoParaEditar}
+        />
+      </div>
+    </LayoutPage>
   );
 }
 
