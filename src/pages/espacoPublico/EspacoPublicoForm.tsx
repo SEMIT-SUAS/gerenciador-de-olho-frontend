@@ -1,11 +1,14 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import type { EspacoPublico } from "../../types/EspacoPublico";
 import { uploadEspacoPublico } from "../../services/EspacoPublico";
+import { espacoPublicoSchema } from "../../schemas/espacoPublicoSchema";
 
 export function EspacoPublicoForm() {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -32,26 +35,35 @@ export function EspacoPublicoForm() {
   });
 
   const onSubmit = async (data: EspacoPublico) => {
+    const parsed = espacoPublicoSchema.safeParse(data);
+
+    if (!parsed.success) {
+      parsed.error.errors.forEach((err) => {
+        toast.error(err.message);
+      });
+      return;
+    }
+
     try {
       setLoading(true);
-
       const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {
-      if (key === "arquivos" && value instanceof FileList) {
+        if (key === "arquivos" && value instanceof FileList) {
           Array.from(value).forEach((file) => {
-          formData.append("arquivos", file);
+            formData.append("arquivos", file);
           });
-      } else if (value !== null && value !== undefined) {
-          formData.append(key, value as any);
-      }
+        } else if (value !== null && value !== undefined) {
+          formData.append(key, String(value));
+        }
       });
 
       await uploadEspacoPublico(formData);
-      toast.success("Serviço cadastrado com sucesso!");
+      toast.success("Espaço público cadastrado com sucesso!");
       reset();
+      navigate("/espaco-publico");
     } catch (error: any) {
-      toast.error(error.message || "Erro ao cadastrar serviço");
+      toast.error(error.message || "Erro ao cadastrar espaço público");
     } finally {
       setLoading(false);
     }
