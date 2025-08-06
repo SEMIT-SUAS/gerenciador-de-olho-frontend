@@ -27,11 +27,7 @@ export function ServicesListItem({
       await servicosServices.changeServiceAtivo(servico.id, false);
 
       setServicos((prev) =>
-        prev.map((s) =>
-          s.id === servico.id
-            ? { ...s, ativo: false } // Garante que 'ativo' seja false
-            : s,
-        ),
+        prev.map((s) => (s.id === servico.id ? { ...s, ativo: false } : s)),
       );
 
       toast.success('Serviço desativado com sucesso!');
@@ -60,25 +56,23 @@ export function ServicesListItem({
           )}
         </TableCell>
         <TableCell>
-          <button
-            className="text-black-600"
-            onClick={() => navigate(`/servicos/editar/${servico.id}`)}
-          >
-            <IconEdit size={18} stroke={2} className="text-black-600" />
-          </button>
-        </TableCell>
-        <TableCell>
-          <button
-            onClick={() => setIsOpenDeleteModal(true)}
-            className="text-black-600"
-          >
-            <IconTrash size={18} stroke={2} className="text-black-600" />
-          </button>
-        </TableCell>
-        <TableCell>
-          <button className="text-black-600">
-            <ServicoVisibility servico={servico} setServicos={setServicos} />
-          </button>
+          <div className="gap-6">
+            <button
+              className="text-black-600 mr-2"
+              onClick={() => navigate(`/servicos/editar/${servico.id}`)}
+            >
+              <IconEdit size={18} stroke={2} className="text-black-600" />
+            </button>
+            <button
+              onClick={() => setIsOpenDeleteModal(true)}
+              className="text-black-600 mr-2"
+            >
+              <IconTrash size={18} stroke={2} className="text-black-600" />
+            </button>
+            <button className="text-black-600 mr-2">
+              <ServicoVisibility servico={servico} setServicos={setServicos} />
+            </button>
+          </div>
         </TableCell>
       </TableRow>
       <ConfirmModal
