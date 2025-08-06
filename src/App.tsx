@@ -24,6 +24,8 @@ import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import { PortaisList } from './pages/portais/PortaisList';
 import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
+import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
+import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
 
 export function App() {
   return (
@@ -75,12 +77,18 @@ export function App() {
           <Route path=":id" element={<ServicoDetalhes />} />
           <Route path="editar/:id" element={<ServicoEditar />} />
         </Route>
+
         <Route path="/portais" element={<PortaisList />} />
         <Route path="/banners" element={<BannersPage />} />
+
+        <Route path="/espacos-publicos">
+          <Route index element={<EspacosPublicosPage />} />
+          <Route path="add" element={<AddEspacoPublicoPage />} />
+        </Route>
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
-      {/* Notification systems */}
       <ToastContainer />
       <Toaster position="top-center" duration={3000} />
     </BrowserRouter>

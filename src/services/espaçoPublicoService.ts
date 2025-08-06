@@ -1,0 +1,87 @@
+import { API_BASE_URL } from '@/config/api';
+import type { EspacoPublicoModel } from '@/types/EspacoPublico';
+
+async function create() {}
+
+async function getAll(): Promise<EspacoPublicoModel[]> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/espaco-publico/listar-ativos`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    if (response.status != 200) {
+      throw new Error(
+        `Não foi possível buscar os espaços públicos. Tente novamente mais tarde.`,
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw new Error(
+      'Serviço indisponível no momento. Tente novamente mais tarde.',
+    );
+  }
+}
+
+async function toggleVisibility(id: number, visivel: boolean): Promise<void> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/espaco-publico/atualizar/visibilidade`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, visivel }),
+      },
+    );
+
+    if (response.status != 200) {
+      throw new Error(
+        `Não foi possível alterar a visibilidade do espaço público. Tente novamente mais tarde.`,
+      );
+    }
+  } catch (error) {
+    throw new Error(
+      'Serviço indisponível no momento. Tente novamente mais tarde.',
+    );
+  }
+}
+
+async function trash(id: number): Promise<void> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/espaco-publico/atualizar/atividade`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, ativo: false }),
+      },
+    );
+
+    if (response.status != 200) {
+      throw new Error(
+        `Não foi possível excluir o espaço público. Tente novamente mais tarde.`,
+      );
+    }
+  } catch (error) {
+    throw new Error(
+      'Serviço indisponível no momento. Tente novamente mais tarde.',
+    );
+  }
+}
+
+export default {
+  create,
+  getAll,
+  toggleVisibility,
+  trash,
+};
