@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-import { secretariaSchema } from "../../../schemas/secretariaSchema";
-import { uploadSecretaria } from "../../../services/secretariaService";
-import type { createSecretaria } from "../../../types/Secretaria";
+import { secretariaSchema } from "../../schemas/secretariaSchema";
+import { uploadSecretaria } from "../../services/secretariaService";
+import type { createSecretaria } from "../../types/Secretaria";
 
 interface SecretariaFormModalProps {
   onClose: () => void;

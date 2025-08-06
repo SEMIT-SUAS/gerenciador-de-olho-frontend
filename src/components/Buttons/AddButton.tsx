@@ -4,6 +4,7 @@ type AddButtonProps = {
   label: string;
   isAdding: boolean;
   onClick: () => void;
+
 };
 
 export function AddButton({ isAdding, onClick, label }: AddButtonProps) {
