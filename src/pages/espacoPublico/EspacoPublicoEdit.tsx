@@ -14,9 +14,9 @@ export function EspacoPublicoEdit() {
   const [imagensExistentes, setImagensExistentes] = useState<string[]>([]);
 
   // Função para remover uma imagem da lista local
-    function removerImagem(index: number) {
+  function removerImagem(index: number) {
     setImagensExistentes((imgs) => imgs.filter((_, i) => i !== index));
-    }
+  }
 
   const {
     register,
