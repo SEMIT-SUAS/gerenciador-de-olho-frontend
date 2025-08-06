@@ -50,9 +50,25 @@ export async function getAllEspacoPublico(): Promise<EspacoPublicoById[]> {
 }
 
 export async function getEspacoPublicoById(id: number): Promise<EspacoPublicoById> {
-  const response = await fetch(`${API_BASE_URL}/espaco-publico/buscar/${id}`);
-  if (!response.ok) throw new Error("Erro ao buscar espaço público");
-  return await response.json();
+  try {
+    const response = await fetch(`${API_BASE_URL}/espaco-publico/buscar/${id}`);
+
+    const contentType = response.headers.get("content-type");
+
+    if (!response.ok) {
+      if (contentType?.includes("application/json")) {
+        const errorJson = await response.json();
+        throw new Error(errorJson.message || "Erro ao buscar espaço público.");
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || "Erro ao buscar espaço público.");
+      }
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    throw new Error(error.message || "Erro desconhecido ao buscar espaço público.");
+  }
 }
 
 export async function updateEspacoPublico(formData: FormData): Promise<void> {
