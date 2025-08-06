@@ -8,18 +8,13 @@ import { getServicoById, updateServico } from '@/services/servicosServices';
 import type {
   ServicoFormInput,
   ServicoFormOutput,
-} from '../../components/Forms/AddServicoForm/servicoSchema';
+} from '../../components/Forms/ServicoForm/servicoSchema';
 
 import type { SecretariaModel } from '@/types/Secretaria';
 import type { Persona } from '@/types/Persona';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
-
-<<<<<<< Updated upstream
-import { ServicoForm } from '@/components/Forms/AddServicoForm/ServicoForm';
-=======
-import { ServicoForm } from '@/components/Forms/ServiceForm/ServiceForm';
+import { ServicoForm } from '@/components/Forms/ServicoForm/ServicoForm';
 import type { Servicos, UpdateServiceModel } from '@/types/Servicos';
->>>>>>> Stashed changes
 
 function ServicoEditarPage() {
   const navigate = useNavigate();

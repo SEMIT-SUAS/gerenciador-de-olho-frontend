@@ -1,7 +1,7 @@
 // Exemplo de uso em uma página
 import { getAll } from '@/services/secretariaService';
-import { ServicoForm } from '../../components/Forms/AddServicoForm/ServicoForm';
-import { type ServicoFormOutput } from '../../components/Forms/AddServicoForm/servicoSchema';
+import { ServicoForm } from '../../components/Forms/ServicoForm/ServicoForm';
+import { type ServicoFormOutput } from '../../components/Forms/ServicoForm/servicoSchema';
 import { useState, useEffect } from 'react';
 import { getAllCategorias } from '@/services/servicocategoriaService';
 import { getAllPerosona } from '@/services/servicoPersona';
