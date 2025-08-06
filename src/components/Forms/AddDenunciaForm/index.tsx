@@ -3,7 +3,7 @@ import { FormGroup } from '../FormGroup';
 import { Label } from '../Label';
 import { FormInput } from '../FormInput';
 import { FormInputError } from '../FormInputError';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { useMapActions } from '../../../context/MapActions';
@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { IconCircleCheckFilled } from '@tabler/icons-react';
 
 export function AddDenunciaForm() {
   const { categorias } = useOcorrencias();
@@ -67,7 +68,7 @@ export function AddDenunciaForm() {
         rua: address.rua,
       }));
     } catch (err: any) {
-      toast.error(err.message);
+      toast.warning(err.message);
     } finally {
       setIsLoadingAddressSearch(false);
     }
@@ -126,7 +127,11 @@ export function AddDenunciaForm() {
         createDenunciaData,
       );
 
-      toast.success('Denuncia criada com sucesso!');
+      toast.success('Denúncia criada com sucesso!', {
+        icon: <IconCircleCheckFilled className="h-5 w-5 text-green-500" />,
+        description: 'Verifique os detalhes da denúncia criada.',
+      });
+
       resetForm();
       navigate(`/ocorrencias/denuncias/${newDenunciaData.id}`);
     } catch (error: any) {

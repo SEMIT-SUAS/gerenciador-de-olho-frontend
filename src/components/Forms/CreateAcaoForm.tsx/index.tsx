@@ -14,7 +14,7 @@ import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { useFilters } from '../../../context/FiltersContext';
 import type { CreateAcaoModel } from '../../../types/Acao';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import {
   Select,
   SelectContent,
@@ -26,6 +26,10 @@ import { Button } from '@/components/Buttons/BaseButton';
 import { BackButton } from '@/components/Buttons/Backbutton';
 
 import acoesService from '../../../services/acoesService';
+import {
+  IconCircleCheckFilled,
+  IconFileCheckFilled,
+} from '@tabler/icons-react';
 
 export function AddAcaoForm() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
@@ -107,7 +111,11 @@ export function AddAcaoForm() {
 
       setAcoes((currentAcoes) => [...currentAcoes, newAcao]);
 
-      toast.success('Ação criada com sucesso!');
+      toast.success('Ação criada com sucesso!', {
+        icon: <IconCircleCheckFilled className="h-5 w-5 text-green-500" />,
+        description: 'Verifique as informações na página detalhes da ação.',
+      });
+
       resetForm();
       navigate(`/ocorrencias/acoes/${newAcao.id}`);
 

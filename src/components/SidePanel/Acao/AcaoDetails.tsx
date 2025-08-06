@@ -144,36 +144,26 @@ export function AcaoDetails() {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar-blue">
-            {currentAcaoStatus !== 'indeferido' ? (
-              denunciasVinculadas.length === 0 ? (
-                <div className="text-center py-10">
-                  <p className="text-gray-500">Nenhuma denúncia vinculada.</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {denunciasVinculadas.map((denuncia) => {
-                    const canDisvincular =
-                      denunciasVinculadas.length > 1 &&
-                      ['em_analise', 'em_andamento'].includes(
-                        currentAcaoStatus,
-                      );
-
-                    return (
-                      <DenunciaManageInAction
-                        key={denuncia.id}
-                        denuncia={denuncia}
-                        allowDisvincularItem={canDisvincular}
-                      />
-                    );
-                  })}
-                </div>
-              )
-            ) : (
+          <div className="flex-1 overflow-y-auto custom-scrollbar-blue">
+            {denunciasVinculadas.length === 0 ? (
               <div className="text-center py-10">
-                <p className="text-red-600 font-semibold">
-                  Esta ação foi indeferida.
-                </p>
+                <p className="text-gray-500">Nenhuma denúncia vinculada.</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {denunciasVinculadas.map((denuncia) => {
+                  const canDisvincular =
+                    denunciasVinculadas.length > 1 &&
+                    ['em_analise', 'em_andamento'].includes(currentAcaoStatus);
+
+                  return (
+                    <DenunciaManageInAction
+                      key={denuncia.id}
+                      denuncia={denuncia}
+                      allowDisvincularItem={canDisvincular}
+                    />
+                  );
+                })}
               </div>
             )}
           </div>

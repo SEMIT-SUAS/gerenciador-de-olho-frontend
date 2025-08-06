@@ -1,15 +1,17 @@
 import { BackButton } from '@/components/Buttons/Backbutton';
+import { Button } from '@/components/Buttons/BaseButton'; // Supondo que você use este botão em algum lugar
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
+import { Textarea } from '@/components/ui/textarea'; // Supondo que você use este componente
+import { mensagensSugeridasParaConcluirAcao } from '@/constants/MensagensConcluirAcao';
+import { userMock } from '@/constants/mocks';
+import { useFilters } from '@/context/FiltersContext';
 import { useOcorrencias } from '@/context/OcorrenciasContext';
-import { useMemo, useState, useEffect } from 'react';
+import type { AcaoModel } from '@/types/Acao';
+import type { AcaoStatusModel } from '@/types/AcaoStatus';
+import { useEffect, useMemo, useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { mensagensSugeridasParaConcluirAcao } from '@/constants/MensagensConcluirAcao';
-import type { AcaoStatusModel } from '@/types/AcaoStatus';
-import { userMock } from '@/constants/mocks';
-import type { AcaoModel } from '@/types/Acao';
-import { toast } from 'react-toastify';
-import { useFilters } from '@/context/FiltersContext';
+import { toast } from 'sonner';
 
 export function ConcluirAcao() {
   const [isOpenConcluirModal, setIsOpenConcluirModal] = useState(false);
@@ -57,10 +59,13 @@ export function ConcluirAcao() {
         status: 'concluido',
       };
 
+      // O nome da ação aqui seria "Buracos na Rua dos Afogados" no seu exemplo
       const acaoConcluidaData: AcaoModel = {
         ...acao,
         status: [...acao.status, concluirAcaoStatus],
       };
+
+      //TODO: CALL API
 
       setDenuncias((prev) =>
         prev.map((denuncia) => {
@@ -107,12 +112,12 @@ export function ConcluirAcao() {
 
   return (
     <>
-      <div className="flex flex-col gap-4 h-full ">
+      <div className="flex flex-col gap-4 h-full space-y-7">
         <BackButton>Concluir Ação</BackButton>
 
-        <div className="mb-6 p-4 bg-green-50 border-l-4 border-green-400 rounded-r-lg">
+        <div className="p-4 bg-green-100 rounded-md">
           <div className="flex items-center">
-            <FaCheck className="text-green-500 text-xl mr-3" />
+            <FaCheck className="text-green-600 text-xl mr-3" />
             <div>
               <p className="text-sm font-semibold text-green-800">
                 Você está concluindo a ação:
@@ -122,7 +127,7 @@ export function ConcluirAcao() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col space-y-6 overflow-y-auto pr-2">
+        <div className="flex-1 flex flex-col space-y-6 overflow-y-auto">
           <div>
             <label
               htmlFor="relatorio-conclusao"
@@ -131,14 +136,13 @@ export function ConcluirAcao() {
               Relatório de Conclusão
             </label>
             <div className="relative">
-              <textarea
+              <Textarea
                 id="relatorio-conclusao"
                 value={motivo}
                 onChange={(e) => setMotivo(e.target.value)}
                 rows={6}
                 maxLength={500}
-                className="w-full resize-none border-slate-300 rounded-md shadow-sm p-3 text-slate-700 text-sm
-                           focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                className="min-h-[200px]"
                 placeholder="Descreva o que foi feito para concluir esta ação..."
               />
               <span className="absolute bottom-2 right-3 text-xs text-slate-400">
@@ -152,14 +156,16 @@ export function ConcluirAcao() {
               Ou selecione um relatório rápido
             </h4>
             <div className="flex flex-wrap gap-2">
-              {/* Usando a nova lista de mensagens */}
               {mensagensSugeridasParaConcluirAcao.map((message) => (
                 <button
                   key={message}
                   onClick={() => setMotivo(message)}
-                  className="px-4 py-2 text-xs text-start border border-slate-300 rounded-full text-slate-700 
-                             font-medium hover:bg-green-50 hover:border-green-400 hover:text-green-700 
-                             focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all"
+                  className="
+                    w-full
+                  cursor-pointer rounded-md border border-gray-300 px-3 py-1 
+                  text-[13px] text-gray-500
+                  transition-colors hover:border-gray-400 hover:bg-gray-100
+                  focus:outline-none"
                 >
                   {message}
                 </button>
@@ -169,14 +175,15 @@ export function ConcluirAcao() {
         </div>
 
         <div className="pt-4">
-          <button
+          <Button
+            variant="primary"
             onClick={() => setIsOpenConcluirModal(true)}
             disabled={!motivo.trim() || isConcluindoAcao}
-            className="flex items-center justify-center w-full bg-green-600 text-white font-semibold py-2 rounded-lg transition-colors hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full"
           >
             <FaCheck className="mr-2" />
-            {isConcluindoAcao ? 'Indeferindo...' : 'Confirmar Indeferimento'}
-          </button>
+            {isConcluindoAcao ? 'Concluindo...' : 'Confirmar Conclusão'}
+          </Button>
         </div>
       </div>
 
