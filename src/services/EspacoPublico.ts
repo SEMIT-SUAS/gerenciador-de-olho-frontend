@@ -61,7 +61,6 @@ export async function updateEspacoPublico(formData: FormData): Promise<void> {
     body: formData,
   });
 
-
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(errorText || "Erro ao atualizar espaço público");

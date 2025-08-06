@@ -1,4 +1,4 @@
-export interface EspacoPublico {
+export interface CreateEspacoPublico {
   nome: string;
   estado: string;
   cidade: string;

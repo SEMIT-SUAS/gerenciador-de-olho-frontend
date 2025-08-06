@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import type { EspacoPublico } from "../../types/EspacoPublico";
+import type { CreateEspacoPublico } from "../../types/EspacoPublico";
 import { uploadEspacoPublico } from "../../services/EspacoPublico";
 import { espacoPublicoSchema } from "../../schemas/espacoPublicoSchema";
 
@@ -15,7 +15,7 @@ export function EspacoPublicoForm() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<EspacoPublico>({
+  } = useForm<CreateEspacoPublico>({
     defaultValues: {
       nome: "",
       estado: "",
@@ -34,7 +34,7 @@ export function EspacoPublicoForm() {
     },
   });
 
-  const onSubmit = async (data: EspacoPublico) => {
+  const onSubmit = async (data: CreateEspacoPublico) => {
     const parsed = espacoPublicoSchema.safeParse(data);
 
     if (!parsed.success) {
