@@ -1,4 +1,4 @@
-import type { EspacoPublico, EspacoPublicoById } from '../types/EspacoPublico'
+import type { CreateEspacoPublico, EspacoPublicoById } from '../types/EspacoPublico'
 import { API_BASE_URL } from '../config/api'
 
 export async function uploadEspacoPublico(formData: FormData): Promise<any> {
