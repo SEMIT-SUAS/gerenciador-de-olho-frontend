@@ -1,3 +1,4 @@
+import { EditBannerForm } from '@/components/Forms/EditBannerForm';
 import { DialogHeader } from '@/components/ui/dialog';
 import {
   Dialog,
@@ -36,6 +37,12 @@ export function EditBannerModal({
             Preencha as informações que você quer alterar do banner.
           </DialogDescription>
         </DialogHeader>
+
+        <EditBannerForm
+          banner={bannerToEdit}
+          setBanners={setBanners}
+          onSuccess={onClose}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -7,13 +7,14 @@ import { ConfirmModal } from '../Modals/ConfirmModal';
 import { toast } from 'react-toastify';
 import bannersService from '@/services/bannersService';
 import { EditBannerModal } from './Modals/EditBannerModal';
+import { textAliases } from '@/utils/textAliases';
 
-type BannerListItemProps = {
+type BannerItemProps = {
   banner: BannerModel;
   setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
 };
 
-export function BannerListItem({ banner, setBanners }: BannerListItemProps) {
+export function BannerItem({ banner, setBanners }: BannerItemProps) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenEditBannerModal, setIsOpenEditBannerModal] = useState(false);
 
@@ -52,7 +53,7 @@ export function BannerListItem({ banner, setBanners }: BannerListItemProps) {
               rel="noopener noreferrer"
               className="text-blue-500 hover:underline"
             >
-              {banner.link}
+              {textAliases(banner.link)}
             </a>
           ) : (
             <span>Sem link</span>

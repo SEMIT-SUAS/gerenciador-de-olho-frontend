@@ -10,7 +10,7 @@ import {
 import { RenderIf } from '../RenderIf';
 import { SkeletonImage } from '../Loading/SkeletonImage';
 import { SkeletonItem } from '../Loading/SkeletonItem';
-import { BannerListItem } from './BannerListItem';
+import { BannerItem } from './BannerItem';
 import type { Dispatch, SetStateAction } from 'react';
 
 type BannerListProps = {
@@ -42,7 +42,7 @@ export function BannersList({
           <RenderIf
             condition={banners.length > 0}
             ifRender={banners?.map((banner) => (
-              <BannerListItem
+              <BannerItem
                 key={banner.id}
                 banner={banner}
                 setBanners={setBanners}

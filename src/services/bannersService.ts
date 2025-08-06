@@ -1,5 +1,6 @@
 import type { BannerModel } from '../types/Banner';
 import { API_BASE_URL } from '../config/api';
+import { getAPIFileURL } from '@/utils/getAPIFileURL';
 
 async function getAll(): Promise<BannerModel[]> {
   try {
@@ -31,9 +32,7 @@ async function upload(formData: FormData): Promise<BannerModel> {
     }
 
     const newBanner: BannerModel = await response.json();
-    const imagePath = newBanner.imagem;
-    const fileName = imagePath.split('/').pop() || imagePath;
-    newBanner.imagem = `${API_BASE_URL}/arquivo/upload/banners/${fileName}`;
+    newBanner.imagem = getAPIFileURL(newBanner.imagem);
 
     return newBanner;
   } catch (error) {
@@ -99,9 +98,6 @@ async function update(formData: FormData): Promise<BannerModel> {
   try {
     const response = await fetch(`${API_BASE_URL}/banner/atualizar`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: formData,
     });
 
@@ -109,7 +105,10 @@ async function update(formData: FormData): Promise<BannerModel> {
       throw new Error('Não foi possível atualizar o banner.');
     }
 
-    return await response.json();
+    const data = await response.json();
+    data.imagem = getAPIFileURL(data.imagem);
+
+    return data;
   } catch (error) {
     throw new Error(
       'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
