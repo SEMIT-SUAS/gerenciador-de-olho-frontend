@@ -1,4 +1,4 @@
-import type { Servicos, UpdateServiceModel } from '../types/Servicos';
+import type { Servicos } from '../types/Servicos';
 import { API_BASE_URL } from '../config/api';
 
 export async function getAllServices(): Promise<Servicos[]> {
@@ -39,10 +39,15 @@ export async function createService(servico: Servicos): Promise<Servicos> {
 }
 
 export async function updateServico(
-  servico: UpdateServiceModel,
+  id: number,
+  servico: Servicos,
 ): Promise<Servicos> {
   try {
+<<<<<<< HEAD
     const response = await fetch(`${API_BASE_URL}/servico/atualizar`, {
+=======
+    const response = await fetch(`${API_BASE_URL}/servico/atualizar/${id!}`, {
+>>>>>>> parent of ade0442 (editar-form-incompleto)
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(servico),

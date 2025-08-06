@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import React from 'react';
 
 import {
-  servicoInputSchema,
+  servicoSchema,
   type ServicoFormInput,
   type ServicoFormOutput,
 } from './servicoSchema';
@@ -56,28 +56,28 @@ export function ServicoForm({
   defaultValues,
 }: ServicoFormProps) {
   const form = useForm<ServicoFormInput>({
-    resolver: zodResolver(servicoInputSchema),
-    defaultValues: defaultValues || {
-      nome: '',
-      setorLotacao: '',
-      modeloRequerimento: '',
-      secretariaId: undefined,
-      categoriaId: undefined,
-      personaIds: [],
-      descricao: '',
-      publicoDestinado: [],
-      formasSolicitacao: [],
-      documentacaoNecessaria: [],
-      visivel: true,
-      ativo: true,
-      etapas: '',
-      requisitos: '',
-      formasAcompanhamento: '',
-      prazoAtendimento: '',
-      prioridades: '',
-      horarioAtendimento: '',
-      legislacao: '',
-      custos: '',
+    resolver: zodResolver(servicoSchema),
+    defaultValues: {
+      nome: defaultValues?.nome ?? '',
+      setorLotacao: defaultValues?.setorLotacao ?? '',
+      modeloRequerimento: defaultValues?.modeloRequerimento ?? '',
+      secretariaId: defaultValues?.secretariaId ?? undefined,
+      categoriaId: defaultValues?.categoriaId ?? undefined,
+      personaIds: defaultValues?.personaIds ?? [],
+      descricao: defaultValues?.descricao ?? '',
+      publicoDestinado: defaultValues?.publicoDestinado ?? [],
+      formasSolicitacao: defaultValues?.formasSolicitacao ?? [],
+      documentacaoNecessaria: defaultValues?.documentacaoNecessaria ?? [],
+      custos: defaultValues?.custos ?? '',
+      visivel: defaultValues?.visivel ?? true,
+      ativo: defaultValues?.ativo ?? true,
+      etapas: defaultValues?.etapas ?? '',
+      requisitos: defaultValues?.requisitos ?? '',
+      formasAcompanhamento: defaultValues?.formasAcompanhamento ?? '',
+      prazoAtendimento: defaultValues?.prazoAtendimento ?? '',
+      prioridades: defaultValues?.prioridades ?? '',
+      horarioAtendimento: defaultValues?.horarioAtendimento ?? '',
+      legislacao: defaultValues?.legislacao ?? '',
     },
   });
 
@@ -86,6 +86,7 @@ export function ServicoForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* --- Nome e Descrição --- */}
         <FormField
           control={form.control}
           name="nome"
@@ -120,6 +121,7 @@ export function ServicoForm({
           )}
         />
 
+        {/* --- Checkboxes --- */}
         <FormField
           control={form.control}
           name="publicoDestinado"
@@ -197,6 +199,7 @@ export function ServicoForm({
           )}
         />
 
+        {/* --- Campos de Tags Dinâmicas --- */}
         <FormField
           control={form.control}
           name="documentacaoNecessaria"

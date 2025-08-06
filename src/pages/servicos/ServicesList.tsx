@@ -80,11 +80,6 @@ export function ServicesList() {
     );
   }
 
-  async function handleDelete() {
-    try {
-    } catch {}
-  }
-
   return (
     <LayoutPage>
       <div className="flex flex-col gap-6 py-8 px-36">

@@ -13,12 +13,17 @@ import type {
 import type { SecretariaModel } from '@/types/Secretaria';
 import type { Persona } from '@/types/Persona';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
+<<<<<<< HEAD
 import { ServicoForm } from '@/components/Forms/ServicoForm/ServicoForm';
 import type { Servicos, UpdateServiceModel } from '@/types/Servicos';
+=======
+
+import { ServicoForm } from '@/components/Forms/AddServicoForm/ServicoForm';
+>>>>>>> parent of ade0442 (editar-form-incompleto)
 
 function ServicoEditarPage() {
   const navigate = useNavigate();
-  const { id: servicoId } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
 
   const [secretarias, setSecretarias] = useState<SecretariaModel[]>([]);
   const [categorias, setCategorias] = useState<ServicoCategoria[]>([]);
@@ -32,7 +37,7 @@ function ServicoEditarPage() {
 
   useEffect(() => {
     async function fetchDadosParaEdicao() {
-      if (!servicoId) {
+      if (!id) {
         console.error('ID não encontrado na URL');
         setIsLoading(false);
         return;
@@ -44,7 +49,7 @@ function ServicoEditarPage() {
             getAll(),
             getAllCategorias(),
             getAllPerosona(),
-            getServicoById(Number(servicoId)),
+            getServicoById(Number(id)),
           ]);
 
         setSecretarias(secretariasData);
@@ -54,75 +59,48 @@ function ServicoEditarPage() {
         const dadosFormatadosParaForm: ServicoFormInput = {
           nome: servicoData.nome,
           descricao: servicoData.descricao,
-          publicoDestinado: servicoData.publicoDestinado
-            .split(',')
-            .map((publico) => publico.trim())
-            .filter(
-              (publico): publico is 'Pessoa Física' | 'Pessoa Jurídica' =>
-                publico === 'Pessoa Física' || publico === 'Pessoa Jurídica',
-            ),
-
-          formasSolicitacao: servicoData.formasSolicitacao
-            .split(',')
-            .map((item) => item.trim())
-            .filter(
-              (item): item is 'Presencial' | 'Online' | 'Telefone' =>
-                item === 'Presencial' ||
-                item === 'Online' ||
-                item === 'Telefone',
-            ),
-
-          documentacaoNecessaria: servicoData.documentacaoNecessaria
-            .split(',')
-            .map((s) => s.trim()),
-
-          prazoAtendimento: servicoData.prazoAtendimento,
-          horarioAtendimento: servicoData.horarioAtendimento,
-          setorLotacao: servicoData.setorLotacao,
-          prioridades: servicoData.prioridades,
-          formasAcompanhamento: servicoData.formasAcompanhamento,
-          legislacao: servicoData.legislacao,
-          modeloRequerimento: servicoData.modeloRequerimento,
+          publicoDestinado: (servicoData.publicoDestinado ?? []).filter(
+            (p: string): p is 'Pessoa Física' | 'Pessoa Jurídica' =>
+              p === 'Pessoa Física' || p === 'Pessoa Jurídica',
+          ),
+          formasSolicitacao: (servicoData.formasSolicitacao ?? []).filter(
+            (f: string): f is 'Presencial' | 'Online' | 'Telefone' =>
+              f === 'Presencial' || f === 'Online' || f === 'Telefone',
+          ),
+          documentacaoNecessaria: servicoData.documentacaoNecessaria,
           custos: servicoData.custos,
           etapas: servicoData.etapas,
           requisitos: servicoData.requisitos,
           secretariaId: servicoData.orgao?.id ?? 0,
           categoriaId: servicoData.categoria?.id ?? 0,
-
-          personaIds: (servicoData.personas ?? [])
-            .map((p) => p.id)
-            .filter((id) => id != null),
-
+          personaIds: servicoData.personas?.map((p) => p.id) ?? [],
           visivel: servicoData.visivel,
           ativo: servicoData.ativo,
         };
         setServicoParaEditar(dadosFormatadosParaForm);
-        console.log('dadosFormatadosParaForm:', dadosFormatadosParaForm);
       } catch (err) {
         console.error('Erro ao buscar dados para edição:', err);
       } finally {
         setIsLoading(false);
       }
     }
-
     fetchDadosParaEdicao();
-  }, [servicoId]);
+  }, [id]);
 
   async function handleFormSubmit(data: ServicoFormOutput) {
-    if (!servicoId) return;
+    if (!id) return;
 
     setIsSubmitting(true);
 
     const payload = {
       ...data,
-      id: Number(servicoId),
+      orgao: data.secretariaId,
+      categoria: data.categoriaId,
     };
 
-    console.log('Payload enviado:', JSON.stringify(payload, null, 2));
-
     try {
-      await updateServico(payload);
-      navigate(`/servicos/${servicoId}`);
+      await updateServico(Number(id), payload as any);
+      navigate(`/servicos/${id}`);
     } catch (err: any) {
       console.error('Erro ao atualizar o serviço:', err);
     } finally {
