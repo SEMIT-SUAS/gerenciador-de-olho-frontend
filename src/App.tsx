@@ -22,6 +22,7 @@ import { ServicoNovo } from './pages/servicos/ServicoNovo';
 import { ServicoEditar } from './pages/servicos/ServicoEditar';
 import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import { PortaisList } from './pages/portais/PortaisList';
+import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
 
 export function App() {
@@ -40,7 +41,6 @@ export function App() {
           }
         >
           <Route index element={<Navigate to="denuncias" replace />} />
-
           <Route path="denuncias">
             <Route index element={<DenunciasList />} />
             <Route path=":denunciaId" element={<DenunciaDetails />} />
@@ -68,7 +68,6 @@ export function App() {
           </Route>
         </Route>
 
-        <Route path="*" element={<NotFoundPage />} />
         <Route path="/servicos">
           <Route index element={<ServicesList />} />
           <Route path="categorias" element={<ListaCategorias />} />
@@ -77,10 +76,12 @@ export function App() {
           <Route path="editar/:id" element={<ServicoEditar />} />
         </Route>
         <Route path="/portais" element={<PortaisList />} />
-
-        {/* Redirecionamento para a página inicial se a rota não for encontrada */}
+        <Route path="/banners" element={<BannersPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
+      {/* Notification systems */}
+      <ToastContainer />
       <Toaster position="top-center" duration={3000} />
     </BrowserRouter>
   );

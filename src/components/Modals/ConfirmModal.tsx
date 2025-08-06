@@ -17,9 +17,10 @@ interface ConfirmModalProps {
   onConfirm: () => void;
   title: string;
   message: string;
-  confirmText?: string; // Opcional: para customizar o botão de confirmação
-  cancelText?: string; // Opcional: para customizar o botão de cancelar
-  variant?: 'default' | 'destructive'; // Opcional: para ações destrutivas (botão vermelho)
+  confirmText?: string;
+  cancelText?: string;
+  variant?: 'default' | 'destructive';
+  isLoading?: boolean;
 }
 
 export const ConfirmModal: FC<ConfirmModalProps> = ({
@@ -31,9 +32,8 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
   confirmText = 'Confirmar',
   cancelText = 'Cancelar',
   variant = 'default',
+  isLoading = false,
 }) => {
-  // A lógica de controle agora é feita pelo componente AlertDialog
-  // usando as props `open` e `onOpenChange`.
   return (
     <AlertDialog open={isOpen} onOpenChange={onCancel}>
       <AlertDialogContent>
@@ -41,17 +41,29 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{message}</AlertDialogDescription>
         </AlertDialogHeader>
+        
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>{cancelText}</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
+            {cancelText}
+          </AlertDialogCancel>
+          
           <AlertDialogAction
             onClick={onConfirm}
+            disabled={isLoading}
             className={
               variant === 'destructive'
                 ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+                : 'bg-primary text-primary-foreground hover:bg-primary/90'
             }
           >
-            {confirmText}
+            {isLoading ? (
+              <span className="flex items-center gap-2">
+                <span className="animate-spin">↻</span>
+                Processando...
+              </span>
+            ) : (
+              confirmText
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
