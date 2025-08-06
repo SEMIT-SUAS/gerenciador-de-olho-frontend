@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllEspacoPublico, changeEspacoPublicoAtivo, changeEspacoPublicoVisibility } from "../../services/EspacoPublico";
-import type { EspacoPublico } from "../../types/EspacoPublico";
+import type { EspacoPublicoById } from "../../types/EspacoPublico";
 import { EspacoPublicoItem } from "./components/EspacoPublicoItem";
 import { Loader } from "./components/Loader";
 import { ErrorMessage } from "./components/ErrorMessage";
 import { styles } from "./components/styles";
 
 export function EspacoPublicoList() {
-  const [espacos, setEspacos] = useState<EspacoPublico[]>([]);
+  const [espacos, setEspacos] = useState<EspacoPublicoById[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

@@ -33,7 +33,7 @@ export async function uploadEspacoPublico(formData: FormData): Promise<any> {
   }
 }
 
-export async function getAllEspacoPublico(): Promise<EspacoPublico[]> {
+export async function getAllEspacoPublico(): Promise<EspacoPublicoById[]> {
   try {
     const response = await fetch(`${API_BASE_URL}/espaco-publico/listar-ativos`, {
       method: 'GET',

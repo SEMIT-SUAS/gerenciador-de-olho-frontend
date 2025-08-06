@@ -1,9 +1,9 @@
 // EspacoPublicoItem.tsx
-import type { EspacoPublico } from "../../../types/EspacoPublico";
+import type { EspacoPublicoById } from "../../../types/EspacoPublico";
 import { styles } from "./styles";
 
 type EspacoPublicoItemProps = {
-  espaco: EspacoPublico;
+  espaco: EspacoPublicoById;
   onToggleVisivel: (id: number, visivelAtual: boolean) => void;
   onToggleAtivo: (id: number, ativoAtual: boolean) => void;
   onEdit: (id: number) => void;
@@ -16,8 +16,8 @@ export function EspacoPublicoItem({ espaco, onToggleVisivel, onToggleAtivo, onEd
       <p>
         <strong>Endereço:</strong> {espaco.rua}, {espaco.bairro}, {espaco.cidade} - {espaco.estado}
       </p>
-      <p><strong>Capacidade:</strong> {espaco.capacidade_maxima}</p>
-      <p><strong>Horário:</strong> {espaco.hora_inicio} às {espaco.hora_fim}</p>
+      <p><strong>Capacidade:</strong> {espaco.capacidadeMaxima}</p>
+      <p><strong>Horário:</strong> {espaco.horaInicio} às {espaco.horaFim}</p>
       <p><strong>Latitude:</strong> {espaco.latitude} | <strong>Longitude:</strong> {espaco.longitude}</p>
       <p>
         <strong>Visível:</strong> {espaco.visivel ? "Sim" : "Não"} | <strong>Ativo:</strong> {espaco.ativo ? "Sim" : "Não"}
