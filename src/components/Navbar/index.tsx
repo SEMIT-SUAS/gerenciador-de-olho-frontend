@@ -1,32 +1,64 @@
 import { Link } from 'react-router-dom';
 import { modules } from './constants';
 import { Button } from '../ui/button';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+  NavigationMenuViewport,
+} from '@/components/ui/navigation-menu';
 
 export function Navbar() {
   return (
-    <div className="w-full shadow-lg p-5">
-      <img src="" alt="" />
+    <div className="w-full flex py-5 px-20 justify-between items-center border-b">
+      <img src="/logo.svg" alt="Logo da Empresa" className="h-8" />
 
-      <ul className="flex items-center gap-4">
-        {modules.map((module) => {
-          if (!module.to && !module.childs) {
-            throw new Error('Module must be a to or childs');
-          }
+      <div className="flex items-center gap-8">
+        <NavigationMenu>
+          <NavigationMenuList>
+            {modules.map((module) =>
+              module.childs ? (
+                <NavigationMenuItem key={module.title}>
+                  <NavigationMenuTrigger>{module.title}</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="flex flex-col w-[200px]">
+                      {module.childs.map((child) => (
+                        <Link
+                          key={child.title}
+                          to={child.to!}
+                          className="p-2 rounded-md hover:bg-accent text-sm"
+                        >
+                          {child.title}
+                        </Link>
+                      ))}
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ) : (
+                <NavigationMenuItem key={module.title}>
+                  <Link to={module.to ?? '/'}>
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      {module.title}
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              ),
+            )}
+          </NavigationMenuList>
 
-          if (module.childs) {
-          }
+          <NavigationMenuViewport />
+        </NavigationMenu>
 
-          return (
-            <li>
-              <Link to={module.to ?? '/'} children={module.title} />
-            </li>
-          );
-        })}
-
-        <Button className="bg-white text-black border-2 border-gray-50 shadow-lg">
+        <Button variant={'outline'} asChild>
           <Link to="/sair">Sair</Link>
         </Button>
-      </ul>
+      </div>
     </div>
   );
 }

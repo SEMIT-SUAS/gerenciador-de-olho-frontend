@@ -13,15 +13,17 @@ import { AcoesList } from './components/SidePanel/Acao/AcoesList';
 import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
 import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
+import { ServicesList } from './components/Servicos/ServicesList';
+import { ServicoDetalhes } from './components/Servicos/ServicoDetalhes';
+import ServicoEditarPage from './components/Servicos/ServicoEditar';
+import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
+import { PortaisList } from './pages/portais/PortaisList';
+import ServicoNovo from './components/Servicos/ServicoNovo';
+import { ServicesPage } from './pages/ServicesPage';
+
 import { NotFoundPage } from './pages/404';
 import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
 import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
-import { ServicesList } from './pages/servicos/ServicesList';
-import { ServicoDetalhes } from './pages/servicos/ServicoDetalhes';
-import { ServicoNovo } from './pages/servicos/ServicoNovo';
-import { ServicoEditar } from './pages/servicos/ServicoEditar';
-import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
-import { PortaisList } from './pages/portais/PortaisList';
 import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
 
@@ -69,11 +71,11 @@ export function App() {
         </Route>
 
         <Route path="/servicos">
-          <Route index element={<ServicesList />} />
+          <Route index element={<ServicesPage />} />
           <Route path="categorias" element={<ListaCategorias />} />
           <Route path="novo" element={<ServicoNovo />} />
           <Route path=":id" element={<ServicoDetalhes />} />
-          <Route path="editar/:id" element={<ServicoEditar />} />
+          <Route path="editar/:id" element={<ServicoEditarPage />} />
         </Route>
         <Route path="/portais" element={<PortaisList />} />
         <Route path="/banners" element={<BannersPage />} />

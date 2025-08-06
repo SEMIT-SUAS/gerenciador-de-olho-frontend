@@ -1,7 +1,7 @@
 import type { SecretariaModel } from '../types/Secretaria';
 import { API_BASE_URL } from '../config/api';
 
-async function getAll(): Promise<SecretariaModel[]> {
+export async function getAll(): Promise<SecretariaModel[]> {
   try {
     const response = await fetch(`${API_BASE_URL}/secretaria/listar-todas`, {
       method: 'GET',

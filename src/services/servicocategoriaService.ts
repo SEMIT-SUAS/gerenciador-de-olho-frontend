@@ -4,7 +4,7 @@ import type { ServicoCategoriaEditar } from '../types/ServicoCategoriaEditar';
 
 export async function getAllCategorias(): Promise<ServicoCategoria[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/categoria-servico/listar-todos`, {
+    const response = await fetch(`${API_BASE_URL}/categoria-servico/listar-ativos`, {
       method: 'GET',
     });
 
