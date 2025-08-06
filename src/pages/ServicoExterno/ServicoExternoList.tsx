@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { getAllServicoExterno, changeServiceVisibility } from "../../services/servicoExternoService";
 import type { ServiceExterno } from "../../types/ServicoExterno";
-import { FormularioServicoExterno } from "./components/FormularioServicoExterno";
+import { FormServicoExterno } from "./components/FormServicoExterno";
 
 export function ServicoExternoList() {
   const [servicos, setServicos] = useState<ServiceExterno[]>([]);
@@ -58,7 +58,7 @@ export function ServicoExternoList() {
       </ul>
 
       {modalAberto && (
-        <FormularioServicoExterno
+        <FormServicoExterno
           onClose={() => setModalAberto(false)}
           onSuccess={() => {
             carregarServicos();

@@ -8,7 +8,7 @@ type Props = {
   onSuccess: () => void;
 };
 
-export function FormularioServicoExterno({ onClose, onSuccess }: Props) {
+export function FormServicoExterno({ onClose, onSuccess }: Props) {
   const [nome, setNome] = useState("");
   const [imagem, setImagem] = useState<File | null>(null);
   const [visivel, setVisivel] = useState(true);
