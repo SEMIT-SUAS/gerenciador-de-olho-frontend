@@ -1,4 +1,3 @@
-// EspacoPublicoItem.tsx
 import type { EspacoPublicoById } from "../../../types/EspacoPublico";
 import { styles } from "./styles";
 
