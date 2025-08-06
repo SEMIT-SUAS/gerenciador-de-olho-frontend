@@ -42,7 +42,7 @@ export async function updateServico(
   servico: UpdateServiceModel,
 ): Promise<Servicos> {
   try {
-    const response = await fetch(`${API_BASE_URL}/servico/atualizar/`, {
+    const response = await fetch(`${API_BASE_URL}/servico/atualizar`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(servico),
