@@ -97,7 +97,6 @@ export async function getServicoById(id: number): Promise<Servicos> {
 export async function changeServiceVisibility(
   id: number,
   visivel: boolean,
-<<<<<<< HEAD
 ): Promise<Servicos> {
   try {
     const response = await fetch(`${API_BASE_URL}/atualizar/visibilidade`, {
@@ -107,28 +106,10 @@ export async function changeServiceVisibility(
       },
       body: JSON.stringify({ id, visivel }),
     });
-=======
-): Promise<ServicosListar> {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/servico/atualizar/visibilidade`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id, visivel }),
-      },
-    );
->>>>>>> 625e753ab51fcc8dcd66e856f1778ad1697fb266
 
     if (!response.ok) {
       throw new Error('Não foi possível alterar visibilidade do serviço');
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 625e753ab51fcc8dcd66e856f1778ad1697fb266
     return await response.json();
   } catch (error) {
     throw new Error(
@@ -142,30 +123,15 @@ export async function changeServiceAtivo(
   ativo: boolean,
 ): Promise<Servicos> {
   try {
-<<<<<<< HEAD
     const response = await fetch(`${API_BASE_URL}/atualizar/atividade`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, ativo }),
     });
-=======
-    const response = await fetch(
-      `${API_BASE_URL}/servico/atualizar/atividade`,
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ativo }),
-      },
-    );
->>>>>>> 625e753ab51fcc8dcd66e856f1778ad1697fb266
 
     if (!response.ok) {
       throw new Error('Não foi possivel alterar a opção "ativo"');
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 625e753ab51fcc8dcd66e856f1778ad1697fb266
     return await response.json();
   } catch (error) {
     throw new Error(
