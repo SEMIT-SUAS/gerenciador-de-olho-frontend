@@ -94,7 +94,7 @@ export function ServicesPage() {
         </div>
 
         <div className="flex items-center justify-between">
-          <Tabs defaultValue="account" className="w-[400px]">
+          <Tabs defaultValue="servicos" className="w-[400px]">
             <TabsList>
               <TabsTrigger value="servicos">Serviços</TabsTrigger>
               <TabsTrigger value="externos">Serviços Externos</TabsTrigger>
