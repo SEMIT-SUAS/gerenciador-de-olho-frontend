@@ -40,10 +40,7 @@ export function ServicesListItem({
 
   return (
     <>
-      <TableRow
-        key={servico.id}
-        onClick={() => navigate(`/servicos/${servico.id}`)}
-      >
+      <TableRow key={servico.id}>
         <TableCell>{servico.nome}</TableCell>
         <TableCell>{servico.nomeCategoria ?? '-'}</TableCell>
         <TableCell className="flex flex-wrap gap-2">
@@ -78,10 +75,12 @@ export function ServicesListItem({
           </div>
         </TableCell>
       </TableRow>
-
       <ConfirmModal
         isOpen={isOpenDeleteModal}
-        onConfirm={handleDeleteServico}
+        onConfirm={async () => {
+          await handleDeleteServico();
+          window.location.reload();
+        }}
         onCancel={() => setIsOpenDeleteModal(false)}
         title="Você deseja apagar o serviço?"
         message="Tem certeza de que quer apagar o serviço? Ao confirmar, todos os dados relacionados a ele serão permanentemente excluídos."
