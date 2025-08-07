@@ -7,6 +7,7 @@ export const modules: Module[] = [
     title: 'Serviços',
     to: '/servicos',
     childs: [
+      {title: 'Todos os Serviços', to: '/servicos'},
       { title: 'Secretarias', to: '/secretarias' },
       { title: 'Personas', to: '/personas' },
     ],
