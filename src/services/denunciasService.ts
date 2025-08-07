@@ -3,6 +3,7 @@ import { API_BASE_URL } from '../config/api.ts';
 import { denunciasMock, userMock } from '../constants/mocks.ts';
 import convert from 'xml-js';
 import categoriaService from './categoriaService.ts';
+import { acoes } from './acoesService.ts';
 
 type addressResponseData = {
   rua: string;
@@ -93,51 +94,69 @@ async function updateDenuncia(denuncia: DenunciaModel): Promise<DenunciaModel> {
 }
 
 async function indeferirDenuncia(
-  id: number,
-  motivoStatus: string,
+  denunciaId: number,
+  motivo: string,
 ): Promise<DenunciaModel> {
   try {
-    const response = await fetch(`${API_BASE_URL}/denuncias/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        status: 'indeferido',
-        motivo: motivoStatus,
-      }),
-    });
+    const denuncia = denunciasData.find((d) => d.id == denunciaId)!;
 
-    if (!response.ok) {
-      const errorData = await response
-        .json()
-        .catch(() => ({ message: 'Erro desconhecido na API.' }));
-      throw new Error(
-        errorData.message || 'Não foi possível atualizar o status na API.',
-      );
-    }
-
-    return await response.json();
+    return {
+      ...denuncia,
+      denunciaIndeferida: {
+        id: 1,
+        motivo,
+        indeferidaEm: new Date().toUTCString(),
+        indeferidaPor: userMock,
+      },
+    };
   } catch (error) {
     throw error;
   }
 }
 
-async function vincularDenunciaToAcao(): Promise<DenunciaModel> {
-  return null;
+async function vincularDenunciaToAcao(
+  denunciaId: number,
+  acaoId: number,
+): Promise<DenunciaModel> {
+  let denunciaUpdatedData;
+  const denunciasDataUpdated = denunciasData.map((d) => {
+    if (d.id === denunciaId) {
+      denunciaUpdatedData = {
+        ...d,
+        acao: acoes.find((a) => a.id === acaoId)!,
+      };
+
+      return denunciaUpdatedData;
+    }
+
+    return d;
+  });
+
+  console.log(denunciaUpdatedData);
+  updateDenunciasData(denunciasDataUpdated);
+  return denunciaUpdatedData!;
 }
 
-async function desvincularDenunciaAcao(denunciaId: number): Promise<void> {
+async function desvincularDenunciaAcao(
+  denunciaId: number,
+): Promise<DenunciaModel> {
+  let denunciaDataUpdated;
+
   const updatedDenunciaData = denunciasData.map((d) => {
     if (d.id === denunciaId) {
-      return {
+      denunciaDataUpdated = {
         ...d,
         acao: null,
       };
+
+      return denunciaDataUpdated;
     }
 
     return d;
   });
 
   denunciasData = updatedDenunciaData;
+  return denunciaDataUpdated!;
 }
 
 async function getAddressByCoordinates(

@@ -8,7 +8,9 @@ import { useMapActions } from '../../../context/MapActions';
 import { Tag } from '../Tag';
 import { getPolygonoCenter } from '../../../utils/geometry';
 import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
-import type { AcaoModel } from '../../../types/Acao';
+import { toast } from 'sonner';
+import { DenunciaItem } from '../Denuncia/DenunciaItem';
+import { Button } from '@/components/Buttons/BaseButton';
 
 export function VincularAcaoADenuncias() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
@@ -17,6 +19,7 @@ export function VincularAcaoADenuncias() {
     addDenunciaNaSelecao,
     setSalvarDenunciasOnClick,
     setDenunciasJaVinculadas,
+    setDenunciasSelecionadas,
   } = useMapActions();
   const { acoes, denuncias, setDenuncias, setAcoes } = useOcorrencias();
   const {
@@ -26,6 +29,7 @@ export function VincularAcaoADenuncias() {
     cacheCurrentFilters,
     restoreCachedFilters,
     setIsVisibleAcoesInMap,
+    setIsVisibleDenunciasInMap,
   } = useFilters();
 
   const params = useParams();
@@ -53,57 +57,70 @@ export function VincularAcaoADenuncias() {
   }, [denuncias]);
 
   async function handleVincularDenuncias() {
-    if (!acao) return;
+    try {
+      if (!acao) return;
 
-    const denunciasSelecionadasIds = new Set(
-      denunciasSelecionas.map((d) => d.id),
-    );
+      setDenuncias((prevDenuncias) => {
+        const denunciasSelecionadasIds = new Set(
+          denunciasSelecionas.map((d) => d.id),
+        );
 
-    const denunciasDataUpdated = denuncias.map((denuncia) => {
-      if (denunciasSelecionadasIds.has(denuncia.id)) {
-        return { ...denuncia, acaoId: acao.id, status: acao.status };
-      }
-      return denuncia;
-    });
+        const updatedDenuncias = prevDenuncias.map((d) =>
+          denunciasSelecionadasIds.has(d.id)
+            ? {
+                ...d,
+                acao,
+              }
+            : d,
+        );
 
-    const todasDenunciasDaAcao = denunciasDataUpdated.filter(
-      (d) => d.acao?.id === acao.id,
-    );
+        const newCenterCoordinates = getPolygonoCenter(
+          updatedDenuncias
+            .filter((d) => d.acao?.id === acao.id)
+            .map((d) => [d.latitude, d.longitude]),
+        );
 
-    const coordinates = todasDenunciasDaAcao.map((d) => ({
-      lat: d.latitude,
-      lng: d.longitude,
-    }));
+        setAcoes((prevAcoes) =>
+          prevAcoes.map((a) => {
+            if (a.id === acao.id) {
+              return {
+                ...a,
+                latitude: newCenterCoordinates[0],
+                longitude: newCenterCoordinates[1],
+              };
+            }
 
-    const actionCenter = getPolygonoCenter(coordinates);
+            return a;
+          }),
+        );
 
-    const acaoDataUpdated: AcaoModel = {
-      ...acao,
-      latitude: actionCenter[0],
-      longitude: actionCenter[1],
-    };
+        return updatedDenuncias;
+      });
 
-    setDenuncias(denunciasDataUpdated);
-    setAcoes((currentAcoes) =>
-      currentAcoes.map((a) => (a.id === acao.id ? acaoDataUpdated : a)),
-    );
-
-    navigate(`/ocorrencias/acoes/${acao.id}`);
+      toast.success('Denúncias vinculadas com sucesso!');
+      navigate(`/ocorrencias/acoes/${acao.id}`);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   }
 
   function resetFiltersAndMapActions() {
     restoreCachedFilters();
     setSalvarDenunciasOnClick(false);
     setDenunciasJaVinculadas([]);
+    setDenunciasSelecionadas([]);
   }
 
   useEffect(() => {
     cacheCurrentFilters();
     setSalvarDenunciasOnClick(true);
     setIsVisibleAcoesInMap(false);
+    setIsVisibleDenunciasInMap(true);
     setFiltroDenunciasComAcao('sem_acao');
     setFiltroStatusDenuncia(['aberto']);
     setDenunciasJaVinculadas(denunciasDaAcao);
+
+    console.log(denunciasFiltradas);
 
     return () => resetFiltersAndMapActions();
   }, []);
@@ -111,13 +128,17 @@ export function VincularAcaoADenuncias() {
   return (
     <>
       <div className="flex gap-4 flex-col h-full">
-        <BackButton to={`/ocorrencias/acoes/${acaoId}`} />
+        <BackButton
+          to={`/ocorrencias/acoes/${acaoId}`}
+          children="Vincular Denúncias"
+        />
 
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Vinculando denúncias á ação:</p>
           <p className="font-bold text-blue-900">{acao.nome}</p>
-
-          <Tag status={currentAcaoStatus} />
+          <p className="text-sm text-blue-900 font-semibold">
+            Responsável: {acao.secretaria.sigla}
+          </p>
         </div>
 
         <div className="flex flex-col gap-1">
@@ -125,32 +146,30 @@ export function VincularAcaoADenuncias() {
             Selecione denuncias existentes:
           </h3>
 
-          <div className="flex flex-col gap-2 p-2 rounded-lg overflow-y-auto">
+          <div className="flex flex-col gap-2 p-2 rounded-lg overflow-y-auto max-h-120">
             {denunciasFiltradas.map((denuncia) => (
-              <button
+              <DenunciaItem
+                showTag={false}
+                showDate={true}
+                isSelected={denunciasSelecionas.some(
+                  (d) => d.id === denuncia.id,
+                )}
                 key={denuncia.id}
+                denuncia={denuncia}
                 onClick={() => addDenunciaNaSelecao(denuncia)}
-                className={`w-full text-left p-3 ${
-                  denunciasSelecionas.find((d) => d.id == denuncia.id)
-                    ? 'bg-gray-300'
-                    : 'bg-white hover:bg-gray-100'
-                } rounded-lg shadow-sm transition-colors cursor-pointer`}
-              >
-                {denuncia.tipo.nome}
-              </button>
+                isDeletable={false}
+              />
             ))}
           </div>
         </div>
 
-        <button
-          className="w-full bg-bg-blue-600 bg-green-700 text-white font-semibold 
-          py-2.5 rounded-lg transition-colors cursor-pointer 
-          disabled:cursor-not-allowed disabled:opacity-60 text-sm"
+        <Button
+          size="md"
           onClick={() => setIsOpenConfirmationModal(true)}
           disabled={denunciasSelecionas.length < 1}
         >
           Víncular á ação
-        </button>
+        </Button>
       </div>
 
       <ConfirmModal

@@ -4,7 +4,11 @@ import type { ServicoCategoria } from './CategoriaServico';
 
 export interface Servicos {
   orgao: SecretariaModel | null;
+<<<<<<< HEAD
   id: number | null;
+=======
+  id: number;
+>>>>>>> 625e753ab51fcc8dcd66e856f1778ad1697fb266
   nome: string;
   descricao: string;
   publicoDestinado: string;

@@ -4,7 +4,7 @@ import { getPolygonoCenter } from '../utils/geometry';
 import type { SecretariaModel } from '../types/Secretaria';
 import { secretariasMock, userMock } from '../constants/mocks';
 
-const acoes: AcaoModel[] = [];
+export const acoes: AcaoModel[] = [];
 
 async function getAllAcoes(): Promise<AcaoModel[]> {
   return acoes;

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { DashboardPage } from './pages/DashboardPage';
-import { LoginPage } from './pages/LoginPage';
+import LoginPage from './pages/LoginPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
 import { DenunciasList } from './components/SidePanel/Denuncia/DenunciasList';
@@ -13,12 +13,26 @@ import { AcoesList } from './components/SidePanel/Acao/AcoesList';
 import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
 import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
+<<<<<<< HEAD
 import { ServicesList } from './pages/servicos/ServicesList';
 import { ServicoDetalhes } from './pages/servicos/ServicoDetalhes';
 import ServicoNovo from './pages/servicos/ServicoNovo';
 import ServicoEditar from './pages/servicos/ServicoEditar';
+=======
+import { ServicesList } from './components/Servicos/ServicesList';
+import { ServicoDetalhes } from './components/Servicos/ServicoDetalhes';
+import ServicoEditarPage from './components/Servicos/ServicoEditar';
+>>>>>>> 625e753ab51fcc8dcd66e856f1778ad1697fb266
 import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import { PortaisList } from './pages/portais/PortaisList';
+import ServicoNovo from './components/Servicos/ServicoNovo';
+import { ServicesPage } from './pages/ServicesPage';
+
+import { NotFoundPage } from './pages/404';
+import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
+import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
+import { BannersPage } from './pages/BannersPage';
+import { Toaster } from 'sonner';
 
 export function App() {
   return (
@@ -36,7 +50,6 @@ export function App() {
           }
         >
           <Route index element={<Navigate to="denuncias" replace />} />
-
           <Route path="denuncias">
             <Route index element={<DenunciasList />} />
             <Route path=":denunciaId" element={<DenunciaDetails />} />
@@ -55,36 +68,35 @@ export function App() {
             <Route index element={<AcoesList />} />
             <Route path=":acaoId" element={<AcaoDetails />} />
             <Route path="add" element={<AddAcao />} />
-            <Route path=":acaoId/indeferir" element={<h1>Indeferir acao</h1>} />
+            <Route path=":acaoId/indeferir" element={<IndeferirAcao />} />
             <Route
               path=":acaoId/vincular-denuncias"
               element={<VincularAcaoADenuncias />}
             />
+            <Route path=":acaoId/concluir" element={<ConcluirAcao />} />
           </Route>
         </Route>
+
         <Route path="/servicos">
-          <Route index element={<ServicesList />} />
+          <Route index element={<ServicesPage />} />
           <Route path="categorias" element={<ListaCategorias />} />
           <Route path="novo" element={<ServicoNovo />} />
+<<<<<<< HEAD
           <Route path="detalhes/:id" element={<ServicoDetalhes />} />
           <Route path="editar/:id" element={<ServicoEditar />} />
+=======
+          <Route path=":id" element={<ServicoDetalhes />} />
+          <Route path="editar/:id" element={<ServicoEditarPage />} />
+>>>>>>> 625e753ab51fcc8dcd66e856f1778ad1697fb266
         </Route>
         <Route path="/portais" element={<PortaisList />} />
-
-        {/* Redirecionamento para a página inicial se a rota não for encontrada */}
+        <Route path="/banners" element={<BannersPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover={false}
-        theme="light"
-        className="z-50"
-      />
+      {/* Notification systems */}
+      <ToastContainer />
+      <Toaster position="top-center" duration={3000} />
     </BrowserRouter>
   );
 }
