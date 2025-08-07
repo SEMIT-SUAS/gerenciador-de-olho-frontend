@@ -1,130 +1,130 @@
-import { useCallback, useState } from 'react';
-import { IconImageInPicture, IconX } from '@tabler/icons-react';
+import { useCallback, useState, useRef, useEffect } from 'react';
+import { IconPhoto, IconX } from '@tabler/icons-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-toastify';
+import { cn } from '@/lib/utils';
+import 'leaflet/dist/leaflet.css';
 
 type ImageInputProps = {
-  initialImageUrl?: string;
-  onChange: (file: File | undefined) => void;
+  value?: File | string | null;
+  onChange?: (file: File | undefined) => void;
   className?: string;
+  initialImageUrl?: string;
 };
 
 export function ImageInput({
-  initialImageUrl,
+  value = null,
   onChange,
   className = '',
+  initialImageUrl,
 }: ImageInputProps) {
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    initialImageUrl || null,
-  );
+  const [dragActive, setDragActive] = useState(false);
+  const [isImageRemoved, setIsImageRemoved] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      e.preventDefault();
-      const file = e.target.files?.[0];
+  const getPreviewUrl = (): string | null => {
+    if (isImageRemoved) return null;
+    if (value) {
+      return typeof value === 'string' ? value : URL.createObjectURL(value);
+    }
+    return initialImageUrl || null;
+  };
 
-      if (!file) return;
+  const previewUrl = getPreviewUrl();
 
-      if (!file.type.includes('image')) {
-        toast.error('Por favor, envie um arquivo de imagem');
+  const handleFile = useCallback(
+    (file: File | undefined) => {
+      if (file && !file.type.startsWith('image/')) {
+        toast.error('Por favor, envie um arquivo de imagem.');
         return;
       }
-
-      onChange(file);
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setImagePreview(event.target?.result?.toString() || null);
-      };
-      reader.readAsDataURL(file);
+      setIsImageRemoved(!file);
+      onChange?.(file);
     },
     [onChange],
   );
 
-  const handleImageDrop = useCallback(
-    (e: React.DragEvent<HTMLLabelElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleFile(e.target.files?.[0]);
+  };
 
-      const file = e.dataTransfer.files?.[0];
-      if (!file) return;
-
-      if (!file.type.includes('image')) {
-        toast.error('Por favor, envie um arquivo de imagem');
-        return;
-      }
-
-      onChange(file);
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setImagePreview(event.target?.result?.toString() || null);
-      };
-      reader.readAsDataURL(file);
-    },
-    [onChange],
-  );
-
-  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    e.currentTarget.classList.add('bg-gray-50', 'border-blue-500');
+    setDragActive(false);
+    handleFile(e.dataTransfer.files?.[0]);
   };
 
-  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+  const removeImage = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    e.currentTarget.classList.remove('bg-gray-50', 'border-blue-500');
+    handleFile(undefined);
   };
 
-  const removeImage = () => {
-    setImagePreview(null);
-    onChange(undefined);
+  const handleDragEvents = (
+    e: React.DragEvent<HTMLLabelElement>,
+    active: boolean,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(active);
   };
+
+  useEffect(() => {
+    if (value) {
+      setIsImageRemoved(false);
+    }
+  }, [value]);
 
   return (
-    <div className={className}>
-      {imagePreview ? (
-        <div className="relative group">
-          <img
-            src={imagePreview}
-            alt="Preview"
-            className="w-full h-48 object-cover rounded-lg"
-          />
-          <button
-            type="button"
-            onClick={removeImage}
-            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
-          >
-            <IconX className="h-4 w-4" />
-          </button>
-        </div>
-      ) : (
-        <div className="flex items-center justify-center w-full">
-          <label
-            className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleImageDrop}
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <IconImageInPicture className="h-10 w-10 text-gray-400 mb-2" />
-              <p className="text-sm text-gray-500">
-                Clique para enviar ou arraste uma imagem
-              </p>
-              <p className="text-xs text-gray-400">
-                Formatos suportados: JPG, PNG, GIF
-              </p>
-            </div>
-            <Input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageChange}
+    <div className={cn('relative w-full', className)}>
+      <label
+        htmlFor="single-image-upload"
+        className={cn(
+          'group relative flex cursor-pointer aspect-video w-full items-center justify-center rounded-lg border-2 border-dashed transition-colors duration-300',
+          {
+            'border-blue-500 bg-slate-50 dark:bg-slate-800/80': dragActive,
+            'border-slate-300 hover:border-blue-500 dark:border-slate-700 dark:hover:bg-slate-800/80':
+              !dragActive,
+          },
+        )}
+        onDrop={handleDrop}
+        onDragOver={(e) => handleDragEvents(e, true)}
+        onDragLeave={(e) => handleDragEvents(e, false)}
+      >
+        {previewUrl ? (
+          <>
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="h-full w-full rounded-lg object-cover"
             />
-          </label>
-        </div>
-      )}
+            <div className="absolute inset-0 rounded-lg bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <button
+              type="button"
+              onClick={removeImage}
+              aria-label="Remover imagem"
+              className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/70 text-slate-800 opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-white hover:text-red-500 group-hover:opacity-100"
+            >
+              <IconX size={18} />
+            </button>
+          </>
+        ) : (
+          <div className="flex flex-col items-center gap-2 text-slate-500 transition-colors group-hover:text-blue-500 dark:text-slate-400">
+            <IconPhoto size={32} />
+            <p className="font-medium">Enviar imagem</p>
+            <p className="text-xs">Arraste e solte ou clique</p>
+          </div>
+        )}
+      </label>
+      <Input
+        ref={inputRef}
+        id="single-image-upload"
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
     </div>
   );
 }

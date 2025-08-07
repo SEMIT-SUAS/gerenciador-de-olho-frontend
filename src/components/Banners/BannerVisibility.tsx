@@ -2,8 +2,9 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { BannerModel } from '@/types/Banner';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { Loading } from '../Loading/Loading';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import bannersService from '@/services/bannersService';
+import { Button } from '../ui/button';
 
 type BannerVisibilityProps = {
   banner: BannerModel;
@@ -37,16 +38,13 @@ export function BannerVisibility({
   }
 
   return (
-    <button
-      className="text-blue-500 hover:text-blue-700"
-      onClick={handleOnClickButton}
-    >
+    <button onClick={handleOnClickButton}>
       {isChangingVisibility ? (
         <Loading className="size-[18px]" />
       ) : banner.visivel ? (
-        <IconEye stroke={2} size={18} />
+        <IconEye stroke={2.3} size={18} />
       ) : (
-        <IconEyeOff stroke={2} size={18} />
+        <IconEyeOff stroke={2.3} size={18} />
       )}
     </button>
   );

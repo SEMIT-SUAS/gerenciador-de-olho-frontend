@@ -1,12 +1,12 @@
-import { SidePanel } from '../components/SidePanel/SidePanel';
+import { SidePanel } from '../components/SidePanel';
 import { MapComponent } from '../components/Map/MapComponent';
 import { Outlet } from 'react-router-dom';
 import { FiltersProvider } from '../context/FiltersContext';
 import { useOcorrencias } from '../context/OcorrenciasContext';
-import { SidePanelSkeleton } from '../components/Loading/SidePanelSkeleton';
-import { MapSkeleton } from '../components/Loading/MapSkeleton';
 import { MapActionsProvider } from '../context/MapActions';
 import { FilesProvider } from '@/context/FilesContext';
+import { SidePanelLoadingContent } from '@/components/Loading/SidePanelLoadingContent';
+import { MapLoading } from '@/components/Loading/MapLoading';
 
 export function OcorrenciasPage() {
   const { loading } = useOcorrencias();
@@ -17,12 +17,12 @@ export function OcorrenciasPage() {
         <MapActionsProvider>
           <FilesProvider>
             <SidePanel>
-              {loading ? <SidePanelSkeleton /> : <Outlet />}
+              {loading ? <SidePanelLoadingContent /> : <Outlet />}
             </SidePanel>
           </FilesProvider>
 
           <main className="flex-1 z-10 relative">
-            {loading ? <MapSkeleton /> : <MapComponent />}
+            {loading ? <MapLoading /> : <MapComponent />}
           </main>
         </MapActionsProvider>
       </FiltersProvider>
