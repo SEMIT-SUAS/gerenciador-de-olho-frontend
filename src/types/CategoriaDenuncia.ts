@@ -1,10 +1,20 @@
-import type { TipoDenuncia } from './TipoDenuncia'
+export interface GetCategoriaDenuncia {
+  id: number;
+  nome: string;
+  descricao: string;
+  icone: string;      // nome do arquivo da imagem
+  cor: string;        // hexadecimal
+  destaque: boolean;
+  visivel: boolean;
+  ativo: boolean;
+}
 
-export type Categorias = 'Infraestrutura' | 'Meio Ambiente' | 'Trânsito e Mobilidade' | 'Acessibilidade' | 'Saúde pública';
-
-export type Categoria = {
-  id: number
-  description: string
-  name: Categorias;
-  tipos: TipoDenuncia[]
+export interface FormCategoriaDenuncia{
+  nome: string;
+  descricao: string;
+  icone: File | null;      // nome do arquivo da imagem
+  cor: string;        // hexadecimal
+  destaque: boolean;
+  visivel: boolean;
+  ativo: boolean;
 }

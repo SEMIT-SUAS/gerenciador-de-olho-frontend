@@ -7,7 +7,7 @@ import {
 } from 'react'
 import { z } from 'zod/v4'
 import type { Categoria } from '../../types/CategoriaDenuncia'
-import categoriaService from '../../services/categoriaService'
+import categoriaService from '../../services/categoriaDenunciaService'
 import denunciasService from '../../services/denunciasService'
 import { FormGroup } from './FormGroup'
 import { Label } from './Label'

@@ -13,6 +13,7 @@ import { SecretariaPage } from "../pages/secretaria/SecretariaPage";
 import { EspacoPublicoForm } from "../pages/espacoPublico/EspacoPublicoCadastrar";
 import { EspacoPublicoList } from "../pages/espacoPublico/EspacoPublicoPage";
 import { EspacoPublicoEdit } from "../pages/espacoPublico/EspacoPublicoEdit";
+import {ListaCategoriaDenuncia} from "../pages/categoriaDenuncias/PageCategoriaDenuncia";
 
 export function Navigator() {
   return (
@@ -29,7 +30,8 @@ export function Navigator() {
       <Route path="/secretaria" element={<SecretariaPage/>}/>
       <Route path="/espaco-publico-cadastrar" element={<EspacoPublicoForm/>}/>
       <Route path="/espaco-publico" element={<EspacoPublicoList/>}/>
-      <Route path="/espaco-publico-editar/:id" element={<EspacoPublicoEdit/>} /> 
+      <Route path="/espaco-publico-editar/:id" element={<EspacoPublicoEdit/>} />
+      <Route path="/categorias-denuncias" element={<ListaCategoriaDenuncia/>}/> 
     </Routes>
   );
 }

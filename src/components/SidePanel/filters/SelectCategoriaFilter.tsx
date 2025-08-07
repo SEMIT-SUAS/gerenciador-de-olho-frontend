@@ -1,6 +1,6 @@
 import { useEffect, useState, type ChangeEvent } from "react"
 import type { Categoria, Categorias } from "../../../types/CategoriaDenuncia"
-import categoriaService from "../../../services/categoriaService"
+import categoriaService from "../../../services/categoriaDenunciaService"
 import { toast } from "react-toastify"
 import { ArrowDown } from "../../ArrowDown";
 
