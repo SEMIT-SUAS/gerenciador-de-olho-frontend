@@ -2,12 +2,17 @@ import { useEffect, useState } from 'react';
 import type { GetCategoriaDenuncia } from '../../types/CategoriaDenuncia';
 import {getAll,changeCategoriaDenunciaVisibility,changeCategoriaDenunciaAtivo,createCategoriaDenuncia,} from '../../services/categoriaDenunciaService';
 import { CategoriaDenunciaModal } from './components/CategoriaDenunciaModal';
+import { EditarCategoriaDenunciaModal } from './components/EditarCategoriaDenunciaModal';
 
 export function ListaCategoriaDenuncia() {
   const [categorias, setCategorias] = useState<GetCategoriaDenuncia[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
   const [modalAberto, setModalAberto] = useState(false);
+
+  // Estados para edição
+  const [modalEditarAberto, setModalEditarAberto] = useState(false);
+  const [categoriaEmEdicao, setCategoriaEmEdicao] = useState<GetCategoriaDenuncia | null>(null);
 
   useEffect(() => {
     async function fetchCategorias() {
@@ -28,9 +33,7 @@ export function ListaCategoriaDenuncia() {
       const novoVisivel = !visivelAtual;
       await changeCategoriaDenunciaVisibility(id, novoVisivel);
       setCategorias((prev) =>
-        prev.map((cat) =>
-          cat.id === id ? { ...cat, visivel: novoVisivel } : cat
-        )
+        prev.map((cat) => (cat.id === id ? { ...cat, visivel: novoVisivel } : cat))
       );
     } catch (err: any) {
       alert('Erro ao alterar visibilidade: ' + err.message);
@@ -42,9 +45,7 @@ export function ListaCategoriaDenuncia() {
       const novoAtivo = !ativoAtual;
       await changeCategoriaDenunciaAtivo(id, novoAtivo);
       setCategorias((prev) =>
-        prev.map((cat) =>
-          cat.id === id ? { ...cat, ativo: novoAtivo } : cat
-        )
+        prev.map((cat) => (cat.id === id ? { ...cat, ativo: novoAtivo } : cat))
       );
     } catch (err: any) {
       alert('Erro ao alterar atividade: ' + err.message);
@@ -56,6 +57,11 @@ export function ListaCategoriaDenuncia() {
     setModalAberto(false);
     const atualizadas = await getAll();
     setCategorias(atualizadas);
+  }
+
+  function abrirModalEditar(categoria: GetCategoriaDenuncia) {
+    setCategoriaEmEdicao(categoria);
+    setModalEditarAberto(true);
   }
 
   if (carregando) return <p>Carregando categorias...</p>;
@@ -76,6 +82,20 @@ export function ListaCategoriaDenuncia() {
         onFechar={() => setModalAberto(false)}
         onSalvar={handleSalvar}
       />
+
+      {modalEditarAberto && categoriaEmEdicao && (
+        <EditarCategoriaDenunciaModal
+          aberto={modalEditarAberto}
+          categoria={categoriaEmEdicao}
+          onFechar={() => setModalEditarAberto(false)}
+          onSalvar={async () => {
+            const atualizadas = await getAll();
+            setCategorias(atualizadas);
+            setModalEditarAberto(false);
+            setCategoriaEmEdicao(null);
+          }}
+        />
+      )}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
         {categorias.map((categoria) => (
@@ -122,6 +142,7 @@ export function ListaCategoriaDenuncia() {
                 borderRadius: '4px',
                 cursor: 'pointer',
                 marginBottom: '8px',
+                marginRight: '8px',
               }}
             >
               {categoria.visivel ? 'Ocultar' : 'Exibir'}
@@ -136,9 +157,24 @@ export function ListaCategoriaDenuncia() {
                 border: 'none',
                 borderRadius: '4px',
                 cursor: 'pointer',
+                marginRight: '8px',
               }}
             >
               {categoria.ativo ? 'Desativar' : 'Ativar'}
+            </button>
+
+            <button
+              onClick={() => abrirModalEditar(categoria)}
+              style={{
+                padding: '8px 12px',
+                backgroundColor: '#007bff',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
+            >
+              Editar
             </button>
           </div>
         ))}
