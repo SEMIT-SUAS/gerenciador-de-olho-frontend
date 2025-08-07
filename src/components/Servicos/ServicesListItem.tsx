@@ -42,7 +42,7 @@ export function ServicesListItem({
     <>
       <TableRow
         key={servico.id}
-        onClick={() => navigate(`/servicos/${servico.id}`)}
+        // onClick={() => navigate(`/servicos/${servico.id}`)}
       >
         <TableCell>{servico.nome}</TableCell>
         <TableCell>{servico.nomeCategoria ?? '-'}</TableCell>
