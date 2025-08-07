@@ -15,7 +15,7 @@ import {
 export function Navbar() {
   return (
     <div className="w-full flex py-5 px-20 justify-between items-center border-b">
-      <img src="/logo.svg" alt="Logo da Empresa" className="h-8" />
+      <img src="logo_slz_sem_fundo.png" alt="Logo slz" className="h-16" />
 
       <div className="flex items-center gap-8">
         <NavigationMenu>
