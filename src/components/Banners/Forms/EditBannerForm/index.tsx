@@ -12,10 +12,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { useForm } from 'react-hook-form';
 import { EditBannerFormSchema, type EditBannerFormValues } from './types';
-import { ImageInput } from '../ImageInput';
+import { ImageInput } from '@/components/Forms/ImageInput';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { Loading } from '@/components/Loading/Loading';
 import bannersService from '@/services/bannersService';
 
@@ -145,6 +145,7 @@ export function EditBannerForm({
                 <FormLabel>Imagem do banner</FormLabel>
                 <FormControl>
                   <ImageInput
+                    value={field.value}
                     onChange={field.onChange}
                     className="w-full"
                     initialImageUrl={banner.imagem}
