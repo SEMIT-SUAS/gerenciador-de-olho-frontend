@@ -8,10 +8,10 @@ import {
   TableRow,
 } from '../ui/table';
 import { RenderIf } from '../RenderIf';
-import { SkeletonImage } from '../Loading/SkeletonImage';
-import { SkeletonItem } from '../Loading/SkeletonItem';
 import { BannerItem } from './BannerItem';
 import type { Dispatch, SetStateAction } from 'react';
+import { ImageSkeleton } from '../Loading/ImageSkeleton';
+import { ListItemSkeleton } from '../Loading/ListItemSkeleton';
 
 type BannerListProps = {
   searchTerm: string;
@@ -65,29 +65,29 @@ export function BannersList({
             <TableRow key={`skeleton-${idx}`}>
               <TableCell className="border-r">
                 <div className="flex items-center gap-3">
-                  <SkeletonImage height={40} width={40} className="rounded" />
-                  <SkeletonItem titleWidth="20" className="p-0 border-0" />
+                  <ImageSkeleton height={40} width={40} className="rounded" />
+                  <ListItemSkeleton titleWidth="20" className="p-0 border-0" />
                 </div>
               </TableCell>
               <TableCell className="border-r">
-                <SkeletonItem titleWidth="3/4" className="p-0 border-0" />
+                <ListItemSkeleton titleWidth="3/4" className="p-0 border-0" />
               </TableCell>
               <TableCell className="border-r">
-                <SkeletonItem titleWidth="1/2" className="p-0 border-0" />
+                <ListItemSkeleton titleWidth="1/2" className="p-0 border-0" />
               </TableCell>
               <TableCell>
                 <div className="flex gap-4">
-                  <SkeletonImage
+                  <ImageSkeleton
                     height={24}
                     width={24}
                     className="rounded-full"
                   />
-                  <SkeletonImage
+                  <ImageSkeleton
                     height={24}
                     width={24}
                     className="rounded-full"
                   />
-                  <SkeletonImage
+                  <ImageSkeleton
                     height={24}
                     width={24}
                     className="rounded-full"
