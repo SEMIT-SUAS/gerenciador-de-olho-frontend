@@ -13,19 +13,17 @@ import { AcoesList } from './components/SidePanel/Acao/AcoesList';
 import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
 import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
-import { ServicesList } from './components/Servicos/ServicesList';
 import { ServicoDetalhes } from './components/Servicos/ServicoDetalhes';
 import ServicoEditarPage from './components/Servicos/ServicoEditar';
 import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
-import { PortaisList } from './pages/portais/PortaisList';
 import ServicoNovo from './components/Servicos/ServicoNovo';
 import { ServicesPage } from './pages/ServicesPage';
-
 import { NotFoundPage } from './pages/404';
 import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
 import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
 import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
+import { PortaisPage } from './pages/PortaisPage';
 
 export function App() {
   return (
@@ -77,7 +75,7 @@ export function App() {
           <Route path=":id" element={<ServicoDetalhes />} />
           <Route path="editar/:id" element={<ServicoEditarPage />} />
         </Route>
-        <Route path="/portais" element={<PortaisList />} />
+        <Route path="/portais" element={<PortaisPage />} />
         <Route path="/banners" element={<BannersPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
