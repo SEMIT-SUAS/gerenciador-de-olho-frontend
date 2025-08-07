@@ -20,7 +20,7 @@ export function ServicesList({ servicos, setServicos }: ServicesListProps) {
       <Table className="rounded-md overflow-hidden border-2 border-gray-500 shadow-lg">
         <TableHeader>
           <TableRow>
-            <TableHead>Nome</TableHead>
+            <TableHead> Nome </TableHead>
             <TableHead>Categoria</TableHead>
             <TableHead>Persona</TableHead>
             <TableHead>Ações</TableHead>

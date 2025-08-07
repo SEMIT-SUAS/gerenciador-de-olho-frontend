@@ -43,8 +43,6 @@ function ServicoNovo() {
       personas: data.personaIds,
     };
 
-    console.log(payload);
-
     try {
       await createService(payload as any);
       navigate('/servicos');

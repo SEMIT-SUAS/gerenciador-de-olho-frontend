@@ -41,9 +41,16 @@ export function ServicesListItem({
   return (
     <>
       <TableRow key={servico.id}>
-        <TableCell>{servico.nome}</TableCell>
-        <TableCell>{servico.nomeCategoria ?? '-'}</TableCell>
-        <TableCell className="flex flex-wrap gap-2">
+        <TableCell onClick={() => navigate(`/servicos/${servico.id}`)}>
+          {servico.nome}
+        </TableCell>
+        <TableCell onClick={() => navigate(`/servicos/${servico.id}`)}>
+          {servico.nomeCategoria ?? '-'}
+        </TableCell>
+        <TableCell
+          onClick={() => navigate(`/servicos/${servico.id}`)}
+          className="flex flex-wrap gap-2"
+        >
           {Array.isArray(servico.nomesPersonas) &&
           servico.nomesPersonas.length > 0 ? (
             servico.nomesPersonas.map((personas, id) => (

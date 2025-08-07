@@ -2,7 +2,6 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { toast } from 'react-toastify';
 import servicosServices from '@/services/servicosServices';
-import type { Servicos, UpdateServiceModel } from '@/types/Servicos';
 import type { ServicosListar } from '@/types/ServicosListar';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 

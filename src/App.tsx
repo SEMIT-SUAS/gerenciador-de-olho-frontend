@@ -16,7 +16,7 @@ import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcao
 import { ServicesList } from './components/Servicos/ServicesList';
 import { ServicoDetalhes } from './components/Servicos/ServicoDetalhes';
 import ServicoEditarPage from './components/Servicos/ServicoEditar';
-import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
+import { ListaCategorias } from './CategoriaServicos/Categorialist';
 import { PortaisList } from './pages/portais/PortaisList';
 import ServicoNovo from './components/Servicos/ServicoNovo';
 import { ServicesPage } from './pages/ServicesPage';
