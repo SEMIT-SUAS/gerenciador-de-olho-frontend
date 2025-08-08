@@ -1,7 +1,7 @@
 // schemas/categoriaSchema.ts
 import { z } from 'zod';
 
-export const categoriaSchema = z.object({
+export const categoriaServicoSchema = z.object({
   nome: z.string().min(1, 'Nome é obrigatório'),
   icone: z
     .instanceof(File)
@@ -10,7 +10,7 @@ export const categoriaSchema = z.object({
   visivel: z.boolean(),
 });
 
-export type CategoriaSchema = z.infer<typeof categoriaSchema>;
+export type CategoriaSchema = z.infer<typeof categoriaServicoSchema>;
 
 export const categoriaEditarSchema = z.object({
   nome: z.string().min(1, 'Nome é obrigatório'),

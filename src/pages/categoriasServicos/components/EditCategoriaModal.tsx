@@ -1,6 +1,6 @@
 import { useState, type FormEvent, type ChangeEvent, useEffect } from "react";
 import type { ServicoCategoriaEditar } from "../../../types/CategoriaServico";
-import { categoriaEditarSchema } from "../../../schemas/categoriaSchema";
+import { categoriaEditarSchema } from "../../../schemas/categoriaServicoSchema";
 import { z } from "zod";
 import { toast } from "react-toastify";
 
@@ -47,10 +47,7 @@ export function EditCategoriaModal({ categoria, onClose, onSubmit }: Props) {
       }
     }
   }
-
-  console.log("icone:", editCategoria.icone);
-
-
+  
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,

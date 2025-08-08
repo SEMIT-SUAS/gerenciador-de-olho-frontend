@@ -1,6 +1,6 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import type { createServicoCategoria } from "../../../types/CategoriaServico";
-import { categoriaSchema } from "../../../schemas/categoriaSchema"; // ajuste o caminho
+import { categoriaServicoSchema } from "../../../schemas/categoriaServicoSchema"; // ajuste o caminho
 import { z } from "zod";
 import { toast } from "react-toastify";
 
@@ -28,7 +28,7 @@ export function AddCategoriaForm({ onSubmit, onCancel }: Props) {
     const dados = { nome, icone, ativo, visivel };
 
     try {
-      categoriaSchema.parse(dados);
+      categoriaServicoSchema.parse(dados);
       setErros({});
       onSubmit(dados);
     } catch (error) {
