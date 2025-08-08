@@ -4,7 +4,6 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'sonner';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ServicoVisibility } from '@/components/Servicos/ServicoVisibility';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
@@ -19,8 +18,6 @@ export function ServicesListItem({
   setServicos,
 }: ServiceListItemProps) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-
-  const navigate = useNavigate();
 
   async function handleDeleteServico() {
     try {
@@ -41,16 +38,9 @@ export function ServicesListItem({
   return (
     <>
       <TableRow key={servico.id}>
-        <TableCell onClick={() => navigate(`/servicos/${servico.id}`)}>
-          {servico.nome}
-        </TableCell>
-        <TableCell onClick={() => navigate(`/servicos/${servico.id}`)}>
-          {servico.nomeCategoria ?? '-'}
-        </TableCell>
-        <TableCell
-          onClick={() => navigate(`/servicos/${servico.id}`)}
-          className="flex flex-wrap gap-2"
-        >
+        <TableCell>{servico.nome}</TableCell>
+        <TableCell>{servico.nomeCategoria ?? '-'}</TableCell>
+        <TableCell className="flex flex-wrap gap-2">
           {Array.isArray(servico.nomesPersonas) &&
           servico.nomesPersonas.length > 0 ? (
             servico.nomesPersonas.map((personas, id) => (
@@ -64,10 +54,7 @@ export function ServicesListItem({
         </TableCell>
         <TableCell>
           <div className="gap-6">
-            <button
-              className="text-black-600 mr-2"
-              onClick={() => navigate(`/servicos/editar/${servico.id}`)}
-            >
+            <button className="text-black-600 mr-2">
               <IconEdit size={18} stroke={2} className="text-black-600" />
             </button>
             <button

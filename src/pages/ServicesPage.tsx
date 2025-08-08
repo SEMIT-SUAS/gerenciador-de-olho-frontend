@@ -112,7 +112,7 @@ export function ServicesPage() {
               />
             </div>
 
-            <Button asChild>
+            <Button variant={'outline'} asChild>
               <Link to="/servicos/novo">
                 <Plus className="mr-2 h-4 w-4" />
                 Adicionar serviço

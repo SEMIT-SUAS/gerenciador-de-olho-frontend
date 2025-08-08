@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 // Validação customizada para garantir que é um File válido
-const fileValidator = z.custom<File>(
+const fileValidator = z.custom<File | null>(
   (value) => {
     return value instanceof File && value.size > 0;
   },
