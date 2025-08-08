@@ -36,6 +36,7 @@ export function EditarCategoriaDenunciaModal({ aberto, onFechar, onSalvar, categ
     e.preventDefault();
 
     const formData = new FormData();
+    formData.append('id', String(categoria.id));
     formData.append('nome', nome);
     formData.append('descricao', descricao);
     formData.append('cor', cor);

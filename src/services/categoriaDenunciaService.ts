@@ -80,6 +80,19 @@ export async function changeCategoriaDenunciaAtivo(id: number, ativo: boolean) {
   }
 }
 
+export async function updateCategoriaDenuncia(formData: FormData) {
+  const response = await fetch(`${API_BASE_URL}/categoria-denuncia/atualizar`, {
+    method: "PUT",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || "Erro ao atualizar espaço público");
+  }
+  
+}
+
 export default {
   getAll,
   getCategoriaById,

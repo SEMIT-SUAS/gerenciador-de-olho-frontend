@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { GetCategoriaDenuncia } from '../../types/CategoriaDenuncia';
-import {getAll,changeCategoriaDenunciaVisibility,changeCategoriaDenunciaAtivo,createCategoriaDenuncia,} from '../../services/categoriaDenunciaService';
+import {getAll,changeCategoriaDenunciaVisibility,changeCategoriaDenunciaAtivo,createCategoriaDenuncia,updateCategoriaDenuncia,} from '../../services/categoriaDenunciaService';
 import { CategoriaDenunciaModal } from './components/CategoriaDenunciaModal';
 import { EditarCategoriaDenunciaModal } from './components/EditarCategoriaDenunciaModal';
 
@@ -15,18 +15,20 @@ export function ListaCategoriaDenuncia() {
   const [categoriaEmEdicao, setCategoriaEmEdicao] = useState<GetCategoriaDenuncia | null>(null);
 
   useEffect(() => {
-    async function fetchCategorias() {
-      try {
-        const resultado = await getAll();
-        setCategorias(resultado);
-      } catch (err: any) {
-        setErro(err.message);
-      } finally {
-        setCarregando(false);
-      }
-    }
-    fetchCategorias();
+    carregarCategorias();
   }, []);
+
+  async function carregarCategorias() {
+    try {
+      const resultado = await getAll();
+      console.log(resultado);
+      setCategorias(resultado);
+    } catch (err: any) {
+      setErro(err.message);
+    } finally {
+      setCarregando(false);
+    }
+  }
 
   async function toggleVisibilidade(id: number, visivelAtual: boolean) {
     try {
@@ -53,10 +55,24 @@ export function ListaCategoriaDenuncia() {
   }
 
   async function handleSalvar(formData: FormData) {
-    await createCategoriaDenuncia(formData);
-    setModalAberto(false);
-    const atualizadas = await getAll();
-    setCategorias(atualizadas);
+    try {
+      await createCategoriaDenuncia(formData);
+      setModalAberto(false);
+      await carregarCategorias();
+    } catch (error: any) {
+      alert('Erro ao salvar nova categoria: ' + error.message);
+    }
+  }
+
+  async function handleSalvarEdicao(formData: FormData) {
+    try {
+      await updateCategoriaDenuncia(formData);
+      await carregarCategorias();
+      setModalEditarAberto(false);
+      setCategoriaEmEdicao(null);
+    } catch (error: any) {
+      alert('Erro ao editar categoria: ' + error.message);
+    }
   }
 
   function abrirModalEditar(categoria: GetCategoriaDenuncia) {
@@ -87,13 +103,11 @@ export function ListaCategoriaDenuncia() {
         <EditarCategoriaDenunciaModal
           aberto={modalEditarAberto}
           categoria={categoriaEmEdicao}
-          onFechar={() => setModalEditarAberto(false)}
-          onSalvar={async () => {
-            const atualizadas = await getAll();
-            setCategorias(atualizadas);
+          onFechar={() => {
             setModalEditarAberto(false);
             setCategoriaEmEdicao(null);
           }}
+          onSalvar={handleSalvarEdicao}
         />
       )}
 
