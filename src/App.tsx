@@ -23,6 +23,9 @@ import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
 import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
 import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
+import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
+import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
+import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/edit';
 import { PortaisPage } from './pages/PortaisPage';
 
 export function App() {
@@ -75,12 +78,19 @@ export function App() {
           <Route path=":id" element={<ServicoDetalhes />} />
           <Route path="editar/:id" element={<ServicoEditarPage />} />
         </Route>
+
         <Route path="/portais" element={<PortaisPage />} />
         <Route path="/banners" element={<BannersPage />} />
+
+        <Route path="/espacos-publicos">
+          <Route index element={<EspacosPublicosPage />} />
+          <Route path="add" element={<AddEspacoPublicoPage />} />
+          <Route path="edit/:id" element={<EditEspacoPublicoPage />} />
+        </Route>
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
-      {/* Notification systems */}
       <ToastContainer />
       <Toaster position="top-center" duration={3000} />
     </BrowserRouter>
