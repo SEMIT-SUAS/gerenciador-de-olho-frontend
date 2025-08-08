@@ -81,7 +81,7 @@ export async function changeServiceVisibility(id: number, visivel: boolean): Pro
   }
 }
 
-export async function changeServiceAtivo(id: number, ativo: boolean): Promise<ServiceExterno | { message: string }> {
+export async function changeServiceExternoAtivo(id: number, ativo: boolean): Promise<ServiceExterno | { message: string }> {
     try{
         const response = await fetch(`${API_BASE_URL}/servico-externo/atualizar/atividade`, {
             method: 'PUT',

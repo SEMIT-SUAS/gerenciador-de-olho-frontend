@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { getAllServicoExterno, changeServiceVisibility } from "../../services/servicoExternoService";
+import { getAllServicoExterno, changeServiceVisibility, changeServiceExternoAtivo } from "../../services/servicoExternoService";
 import type { ServiceExterno } from "../../types/ServicoExterno";
 import { FormServicoExterno } from "./components/FormServicoExterno";
 
@@ -41,6 +41,26 @@ export function ServicoExternoList() {
     }
   }
 
+  async function toggleAtividade(servico: ServiceExterno) {
+    try{
+      setLoading(true);
+      const data = await changeServiceExternoAtivo(servico.id, !servico.ativo);
+      console.log(data);
+
+      if (typeof data === "object" && "message" in data) {
+      toast.success(data.message);
+    } else {
+      toast.success("Atividade atualizada com sucesso!");
+    }
+      
+      await carregarServicos();
+    } catch (error: any){
+      toast.error(error?.message || "Erro ao alterar atividade.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div>
       <h2>Serviços Externos</h2>
@@ -57,6 +77,13 @@ export function ServicoExternoList() {
             {s.visivel ? "Visível" : "Oculto"} | {s.ativo ? "Ativo" : "Inativo"}{" "}
             <button onClick={() => toggleVisibilidade(s)} disabled={loading}>
               {s.visivel ? "Ocultar" : "Mostrar"}
+            </button>
+            <button
+              onClick={() => toggleAtividade(s)}
+              disabled={loading}
+              style={{ marginLeft: "8px" }}
+            >
+              {s.ativo ? "Desativar" : "Ativar"}
             </button>
           </li>
         ))}
