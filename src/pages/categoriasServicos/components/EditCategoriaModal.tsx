@@ -79,7 +79,7 @@ export function EditCategoriaModal({ categoria, onClose, onSubmit }: Props) {
             </label>
             {editCategoria.icone && typeof editCategoria.icone === 'string' && (
               <p>
-                Arquivo: {editCategoria.icone.split('/').pop()?.split('-').slice(1).join('-') || editCategoria.icone}
+                Icone atual: {editCategoria.icone.split('/').pop()?.split('-').slice(1).join('-') || editCategoria.icone}
               </p>
             )}
             {erros.icone && <p style={{ color: 'red' }}>{erros.icone}</p>}
