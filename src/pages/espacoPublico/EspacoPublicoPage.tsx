@@ -6,6 +6,7 @@ import { EspacoPublicoItem } from "./components/EspacoPublicoList";
 import { Loader } from "./components/Loader";
 import { ErrorMessage } from "./components/ErrorMessage";
 import { styles } from "./components/styles";
+import { toast } from "react-toastify";
 
 export function EspacoPublicoList() {
   const [espacos, setEspacos] = useState<EspacoPublicoById[]>([]);
@@ -62,6 +63,8 @@ export function EspacoPublicoList() {
           espaco.id === id ? { ...espaco, ativo: novoAtivo } : espaco
         )
       );
+
+      toast.success("Status atualizado com sucesso.");
     } catch (err: any) {
       alert(err.message || "Erro ao alterar status de atividade.");
     }
