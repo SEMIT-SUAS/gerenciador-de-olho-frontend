@@ -5,9 +5,11 @@ export const modules: Module[] = [
   { title: 'Reserva', to: '/reserva' },
   {
     title: 'Serviços',
+    to: '/servicos',
     childs: [
-      { title: 'Serviço A', to: '/servicos/a' },
-      { title: 'Serviço B', to: '/servicos/b' },
+      {title: 'Todos os Serviços', to: '/servicos'},
+      { title: 'Secretarias', to: '/secretarias' },
+      { title: 'Personas', to: '/personas' },
     ],
   },
   { title: 'Banners', to: '/banners' },

@@ -1,4 +1,4 @@
-import { EditBannerForm } from '@/components/Forms/EditBannerForm';
+import { EditBannerForm } from '@/components/Banners/Forms/EditBannerForm';
 import { DialogHeader } from '@/components/ui/dialog';
 import {
   Dialog,

@@ -81,7 +81,7 @@ export function BannersPage() {
           <div className="flex items-center justify-end gap-4">
             <div className="relative w-[320px]">
               <SearchInput
-                placeholder="Pesquise um nome"
+                placeholder="Pesquise pelo nome"
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
@@ -91,7 +91,6 @@ export function BannersPage() {
             </div>
 
             <Button
-              variant="outline"
               className="flex items-center gap-2"
               onClick={() => setIsOpenAddBannerModal(true)}
             >
@@ -102,7 +101,6 @@ export function BannersPage() {
 
           <BannersList
             itemsPerPage={itemsPerPage}
-            searchTerm={searchTerm}
             banners={currentBanners}
             setBanners={setBanners}
           />

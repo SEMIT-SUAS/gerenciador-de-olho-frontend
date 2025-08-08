@@ -1,4 +1,4 @@
-import { AddABannerForm } from '@/components/Forms/AddBannerForm';
+import { AddABannerForm } from '@/components/Banners/Forms/AddBannerForm';
 import { DialogHeader } from '@/components/ui/dialog';
 import {
   Dialog,

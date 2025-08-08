@@ -1,6 +1,6 @@
 import { ImSpinner2 } from 'react-icons/im';
 
-export function MapSkeleton() {
+export function MapLoading() {
   return (
     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
       <div className="text-center">

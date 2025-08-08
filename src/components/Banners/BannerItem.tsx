@@ -4,10 +4,12 @@ import { BannerVisibility } from './BannerVisibility';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { ConfirmModal } from '../Modals/ConfirmModal';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import bannersService from '@/services/bannersService';
 import { EditBannerModal } from './Modals/EditBannerModal';
 import { textAliases } from '@/utils/textAliases';
+import { Button } from '../ui/button';
+import { cn } from '@/lib/utils';
 
 type BannerItemProps = {
   banner: BannerModel;
@@ -61,21 +63,15 @@ export function BannerItem({ banner, setBanners }: BannerItemProps) {
         </TableCell>
 
         <TableCell>
-          <div className="flex items-center gap-4">
-            <BannerVisibility banner={banner} setBanners={setBanners} />
-
-            <button
-              className="text-green-500 hover:text-green-700"
-              onClick={() => setIsOpenEditBannerModal(true)}
-            >
-              <IconEdit stroke={2} size={18} />
+          <div className="flex items-center gap-3">
+            <button onClick={() => setIsOpenEditBannerModal(true)}>
+              <IconEdit stroke={2.3} size={18} />
             </button>
 
-            <button
-              className="text-red-500 hover:text-red-700"
-              onClick={() => setIsOpenDeleteModal(true)}
-            >
-              <IconTrash stroke={2} size={18} />
+            <BannerVisibility banner={banner} setBanners={setBanners} />
+
+            <button onClick={() => setIsOpenDeleteModal(true)}>
+              <IconTrash stroke={2.3} size={18} />
             </button>
           </div>
         </TableCell>
