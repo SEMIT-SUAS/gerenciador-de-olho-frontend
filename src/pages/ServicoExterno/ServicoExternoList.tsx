@@ -42,19 +42,12 @@ export function ServicoExternoList() {
   }
 
   async function toggleAtividade(servico: ServiceExterno) {
-    try{
+    try {
       setLoading(true);
-      const data = await changeServiceExternoAtivo(servico.id, !servico.ativo);
-      console.log(data);
-
-      if (typeof data === "object" && "message" in data) {
-      toast.success(data.message);
-    } else {
-      toast.success("Atividade atualizada com sucesso!");
-    }
-      
+      const mensagem = await changeServiceExternoAtivo(servico.id, !servico.ativo);
+      toast.success(mensagem);
       await carregarServicos();
-    } catch (error: any){
+    } catch (error: any) {
       toast.error(error?.message || "Erro ao alterar atividade.");
     } finally {
       setLoading(false);

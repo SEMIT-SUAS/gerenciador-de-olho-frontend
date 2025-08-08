@@ -81,36 +81,32 @@ export async function changeServiceVisibility(id: number, visivel: boolean): Pro
   }
 }
 
-export async function changeServiceExternoAtivo(id: number, ativo: boolean): Promise<ServiceExterno | { message: string }> {
-    try{
-        const response = await fetch(`${API_BASE_URL}/servico-externo/atualizar/atividade`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, ativo }),
-        });
-
-        const contentType = response.headers.get("content-type");
+export async function changeServiceExternoAtivo(
+  id: number,
+  ativo: boolean
+): Promise<string> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/servico-externo/atualizar/atividade`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, ativo }),
+    });
 
     if (!response.ok) {
-      // Tenta extrair mensagem de erro, se possível
-      if (contentType?.includes("application/json")) {
-        const errorJson = await response.json();
-        throw new Error(errorJson.message || "Erro ao cadastrar banner.");
-      } else {
-        const errorText = await response.text();
-        throw new Error(errorText || "Erro ao cadastrar banner.");
-      }
+      throw new Error(`Erro ao alterar status de visibilidade: ${response.status} - ${response.statusText}`);
     }
 
-    // Se for JSON
+    const contentType = response.headers.get("content-type");
+
     if (contentType?.includes("application/json")) {
-      return await response.json();
+      const json = await response.json();
+      return json.message || "Alterado com sucesso.";
     } else {
-      // Se for texto (caso do seu backend agora)
       const text = await response.text();
-      return { message: text };
+      return text || "Alterado com sucesso.";
     }
-  } catch (error: any) {
-    throw new Error(error.message || "Erro desconhecido ao cadastrar banner.");
+  } catch (error) {
+    console.error('Erro na requisição changeServiceExternoAtivo:', error);
+    throw error;
   }
 }
