@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ChangeEvent } from "react";
+import { useState, type FormEvent, type ChangeEvent, useEffect } from "react";
 import type { ServicoCategoriaEditar } from "../../../types/CategoriaServico";
 import { categoriaEditarSchema } from "../../../schemas/categoriaSchema";
 import { z } from "zod";
@@ -13,6 +13,11 @@ interface Props {
 export function EditCategoriaModal({ categoria, onClose, onSubmit }: Props) {
   const [editCategoria, setEditCategoria] = useState<ServicoCategoriaEditar>(categoria);
   const [erros, setErros] = useState<Partial<Record<keyof ServicoCategoriaEditar, string>>>({});
+
+  useEffect(() => {
+    setEditCategoria(categoria);
+    console.log(categoria);
+  }, [categoria]);
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
@@ -43,6 +48,9 @@ export function EditCategoriaModal({ categoria, onClose, onSubmit }: Props) {
     }
   }
 
+  console.log("icone:", editCategoria.icone);
+
+
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
@@ -69,8 +77,10 @@ export function EditCategoriaModal({ categoria, onClose, onSubmit }: Props) {
             <label>Ícone:
               <input type="file" accept="image/*" onChange={handleFileChange} />
             </label>
-            {editCategoria.icone && typeof editCategoria.icone !== 'string' && (
-              <p>Arquivo: {editCategoria.icone.name}</p>
+            {editCategoria.icone && typeof editCategoria.icone === 'string' && (
+              <p>
+                Arquivo: {editCategoria.icone.split('/').pop()?.split('-').slice(1).join('-') || editCategoria.icone}
+              </p>
             )}
             {erros.icone && <p style={{ color: 'red' }}>{erros.icone}</p>}
           </div>

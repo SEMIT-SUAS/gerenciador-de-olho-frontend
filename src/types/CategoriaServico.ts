@@ -16,5 +16,5 @@ export interface createServicoCategoria{
 export interface ServicoCategoriaEditar {
   id: number;
   nome: string;
-  icone?: File | string;
+  icone?: File | string | null;
 }
