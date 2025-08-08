@@ -47,7 +47,7 @@ export async function getAllServicoExterno(): Promise<ServiceExterno[]> {
   }
 }
 
-export async function changeServiceVisibility(id: number, visivel: boolean): Promise<ServiceExterno | { message: string }> {
+export async function changeServiceVisibility(id: number, visivel: boolean): Promise<ServiceExterno | { retorno: string }> {
   try {
     const response = await fetch(`${API_BASE_URL}/servico-externo/atualizar/visibilidade`, {
       method: 'PUT',
@@ -73,7 +73,7 @@ export async function changeServiceVisibility(id: number, visivel: boolean): Pro
       return await response.json();
     } else {
       const text = await response.text();
-      return { message: text };
+      return { retorno: text };
     }
   } catch (error: any) {
     console.error("Erro no catch do changeServiceVisibility:", error);

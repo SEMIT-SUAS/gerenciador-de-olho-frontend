@@ -26,11 +26,16 @@ export function ServicoExternoList() {
   async function toggleVisibilidade(servico: ServiceExterno) {
     try {
       setLoading(true);
-      await changeServiceVisibility(servico.id, !servico.visivel);
+      const data = await changeServiceVisibility(servico.id, !servico.visivel);
+      console.log(data);
+      // Exibe a mensagem do backend, se existir
+      if (typeof data === "object" && "retorno" in data && data.retorno) {
+        toast.success(data.retorno);
+      }
+
       await carregarServicos();
-      toast.success(`Visibilidade do serviço "${servico.nome}" alterada.`);
     } catch (error: any) {
-      toast.error(error.message || "Erro ao alterar visibilidade.");
+      toast.error(error?.message || "Erro ao alterar visibilidade.");
     } finally {
       setLoading(false);
     }
