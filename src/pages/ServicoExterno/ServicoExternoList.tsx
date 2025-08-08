@@ -45,8 +45,13 @@ export function ServicoExternoList() {
     try {
       setLoading(true);
       const mensagem = await changeServiceExternoAtivo(servico.id, !servico.ativo);
-      toast.success(mensagem);
-      await carregarServicos();
+      toast.success(mensagem || "Status atualizado com sucesso.");
+
+      setServicos((prev) =>
+        prev.map((s) =>
+          s.id === servico.id ? { ...s, ativo: !s.ativo } : s
+        )
+      );
     } catch (error: any) {
       toast.error(error?.message || "Erro ao alterar atividade.");
     } finally {

@@ -81,10 +81,7 @@ export async function changeServiceVisibility(id: number, visivel: boolean): Pro
   }
 }
 
-export async function changeServiceExternoAtivo(
-  id: number,
-  ativo: boolean
-): Promise<string> {
+export async function changeServiceExternoAtivo(id: number, ativo: boolean): Promise<string> {
   try {
     const response = await fetch(`${API_BASE_URL}/servico-externo/atualizar/atividade`, {
       method: 'PUT',
@@ -96,17 +93,13 @@ export async function changeServiceExternoAtivo(
       throw new Error(`Erro ao alterar status de visibilidade: ${response.status} - ${response.statusText}`);
     }
 
-    const contentType = response.headers.get("content-type");
-
-    if (contentType?.includes("application/json")) {
-      const json = await response.json();
-      return json.message || "Alterado com sucesso.";
-    } else {
-      const text = await response.text();
-      return text || "Alterado com sucesso.";
-    }
+    const mensagem = await response.text();
+    return mensagem;
   } catch (error) {
     console.error('Erro na requisição changeServiceExternoAtivo:', error);
     throw error;
   }
 }
+
+
+
