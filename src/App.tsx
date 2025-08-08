@@ -26,6 +26,7 @@ import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
 import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
 import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
+import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/edit';
 
 export function App() {
   return (
@@ -84,6 +85,7 @@ export function App() {
         <Route path="/espacos-publicos">
           <Route index element={<EspacosPublicosPage />} />
           <Route path="add" element={<AddEspacoPublicoPage />} />
+          <Route path="edit/:id" element={<EditEspacoPublicoPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

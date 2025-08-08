@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Loading } from '../Loading/Loading';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { toast } from 'sonner';
-import espaçoPublicoService from '@/services/espaçoPublicoService';
+import espaçoPublicoService from '@/services/espacoPublicoService';
 
 interface EspacoPublicoVisibilityProps {
   espacoPublico: EspacoPublicoModel;

@@ -1,7 +1,47 @@
 import { API_BASE_URL } from '@/config/api';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
 
-async function create() {}
+async function create(formData: FormData): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/espaco-publico/cadastrar`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.status != 201) {
+      throw new Error(
+        `Não foi possível buscar os espaços públicos. Tente novamente mais tarde.`,
+      );
+    }
+  } catch (error) {
+    throw new Error(
+      'Serviço indisponível no momento. Tente novamente mais tarde.',
+    );
+  }
+}
+
+async function get(espacoPublicoId: number): Promise<EspacoPublicoModel> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/espaco-publico/buscar/${espacoPublicoId}`,
+      {
+        method: 'GET',
+      },
+    );
+
+    if (response.status != 200) {
+      throw new Error(
+        `Não foi possível buscar esse espaço público. Tente novamente mais tarde.`,
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw new Error(
+      'Serviço indisponível no momento. Tente novamente mais tarde.',
+    );
+  }
+}
 
 async function getAll(): Promise<EspacoPublicoModel[]> {
   try {
@@ -84,4 +124,5 @@ export default {
   getAll,
   toggleVisibility,
   trash,
+  get,
 };

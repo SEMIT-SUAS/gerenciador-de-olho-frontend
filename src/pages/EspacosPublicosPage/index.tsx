@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { LayoutPage } from '../LayoutPage';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
-import espaçoPublicoService from '@/services/espaçoPublicoService';
+import espaçoPublicoService from '@/services/espacoPublicoService';
 import { EspacosPublicosList } from '@/components/EspacosPublicos/EspacosPublicosList';
 import { SearchInput } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -80,7 +80,6 @@ export function EspacosPublicosPage() {
             </div>
 
             <Button
-              variant="outline"
               className="flex items-center gap-2"
               onClick={() => navigate('/espacos-publicos/add')}
             >

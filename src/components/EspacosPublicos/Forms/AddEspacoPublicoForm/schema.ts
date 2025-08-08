@@ -2,10 +2,9 @@ import { z } from 'zod/v4';
 
 export const AddEspacoPublicoFormSchema = z.object({
   name: z.string().trim().min(1, 'O nome é obrigatório'),
-  address: z.string().min(1, 'O endereço é obrigatório'),
-  maxCapacity: z.coerce
-    .number()
-    .min(1, 'A capacidade máxima deve ser maior que 0'),
+  addressRua: z.string().min(1, 'A rua é obrigatória'),
+  addressBairro: z.string().min(1, 'O bairro é obrigatório'),
+  maxCapacity: z.number().min(1, 'A capacidade máxima deve ser maior que 0'),
   startHour: z.string().min(1, 'Hora de início é obrigatória'),
   endHour: z.string().min(1, 'Hora de fim é obrigatória'),
   visivel: z.boolean(),

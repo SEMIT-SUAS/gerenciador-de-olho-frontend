@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { EspacoPublicoVisibility } from './EspacoPublicoVisibility';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 import { toast } from 'sonner';
-import espaçoPublicoService from '@/services/espaçoPublicoService';
+import espaçoPublicoService from '@/services/espacoPublicoService';
 
 interface EspacoPublicoItemProps {
   espacoPublico: EspacoPublicoModel;
@@ -64,7 +64,7 @@ export function EspacoPublicoItem({
               />
 
               <Link
-                to={`/admin/espacos-publicos/editar/${espacoPublico.id}`}
+                to={`/espacos-publicos/edit/${espacoPublico.id}`}
                 title="Editar espaço"
                 className="text-green-500 hover:text-green-700"
               >

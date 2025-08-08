@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { LayoutPage } from '../LayoutPage';
-import { AddEspacoPublicoForm } from '@/components/Forms/AddEspacoPublicoForm';
+import { AddEspacoPublicoForm } from '@/components/EspacosPublicos/Forms/AddEspacoPublicoForm';
 
 export function AddEspacoPublicoPage() {
   const navigate = useNavigate();
