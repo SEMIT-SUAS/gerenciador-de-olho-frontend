@@ -1,6 +1,6 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { toggleVisivel } from '@/services/servicocategoriaService'; // ← import correto
 import type { ServicoCategoria } from '@/types/CategoriaServico';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
@@ -17,24 +17,24 @@ export function CategoriaVisibility({
   setCategorias,
 }: CategoriaVisibilityProps) {
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
-
   async function handleOnClickButton() {
     try {
-      await toggleVisivel(categoria.id, !categoria.visivel);
+      const novoValorVisivel = !categoria.visivel;
 
-      setCategorias(
-        (prev: (ServicoCategoria & { id: number })[]) =>
-          prev?.map((cat) =>
-            cat.id === categoria.id
-              ? { ...cat, visivel: !categoria.visivel }
-              : cat,
-          ) ?? [],
-      );
+      await toggleVisivel(categoria.id, novoValorVisivel);
+
+      setCategorias((prev: (ServicoCategoria & { id: number })[]) => {
+        const novoEstado = prev.map((cat) =>
+          cat.id === categoria.id ? { ...cat, visivel: novoValorVisivel } : cat,
+        );
+
+        return novoEstado;
+      });
 
       toast.success(
-        categoria.visivel
-          ? 'Categoria ocultada com sucesso!'
-          : 'Categoria tornada visível com sucesso!',
+        novoValorVisivel
+          ? 'Categoria tornada visível com sucesso!'
+          : 'Categoria ocultada com sucesso!',
       );
     } catch (error: any) {
       toast.error(error.message ?? 'Erro ao alterar visibilidade da categoria');
