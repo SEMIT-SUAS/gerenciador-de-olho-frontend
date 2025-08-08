@@ -31,7 +31,7 @@ export async function getAll() {
   }
 }
 
-async function getCategoriaById(id: number): Promise<GetCategoriaDenuncia> {
+export async function getCategoriaById(id: number): Promise<GetCategoriaDenuncia> {
   try {
     const response = await fetch(`${API_BASE_URL}/categoria/${id}`)
     const body = await response.json()
@@ -91,9 +91,4 @@ export async function updateCategoriaDenuncia(formData: FormData) {
     throw new Error(errorText || "Erro ao atualizar espaço público");
   }
   
-}
-
-export default {
-  getAll,
-  getCategoriaById,
 }
