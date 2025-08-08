@@ -1,0 +1,164 @@
+import { useCallback, useState, useRef } from 'react';
+import { IconPhoto, IconPlus, IconX } from '@tabler/icons-react';
+import { Input } from '@/components/ui/input';
+import { toast } from 'react-toastify';
+import { cn } from '@/lib/utils';
+
+type MultipleImageInputProps = {
+  initialImageUrls?: string[];
+  onChange: (files: File[]) => void;
+  className?: string;
+  maxFiles?: number;
+};
+
+export function MultipleImageInput({
+  initialImageUrls = [],
+  onChange,
+  className = '',
+  maxFiles = 10,
+}: MultipleImageInputProps) {
+  const [previews, setPreviews] = useState<(string | File)[]>(initialImageUrls);
+  const [dragActive, setDragActive] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const updateFiles = (newPreviews: (string | File)[]) => {
+    setPreviews(newPreviews);
+    const updatedFiles = newPreviews.filter(
+      (p): p is File => p instanceof File,
+    );
+    onChange(updatedFiles);
+  };
+
+  const handleNewFiles = useCallback(
+    (newFiles: File[]) => {
+      if (previews.length + newFiles.length > maxFiles) {
+        toast.error(`Você pode enviar no máximo ${maxFiles} imagens.`);
+        return;
+      }
+      const validFiles = newFiles.filter((file) =>
+        file.type.startsWith('image/'),
+      );
+      if (validFiles.length !== newFiles.length) {
+        toast.warn('Apenas arquivos de imagem são permitidos.');
+      }
+      if (validFiles.length > 0) {
+        updateFiles([...previews, ...validFiles]);
+      }
+    },
+    [previews, maxFiles],
+  );
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleNewFiles(Array.from(files));
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleNewFiles(Array.from(files));
+    }
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    const updatedPreviews = previews.filter(
+      (_, index) => index !== indexToRemove,
+    );
+    updateFiles(updatedPreviews);
+  };
+
+  const handleDragEvents = (
+    e: React.DragEvent<HTMLDivElement>,
+    active: boolean,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(active);
+  };
+
+  return (
+    <div
+      className={cn(
+        'rounded-lg border-2 border-dashed bg-slate-50 p-4 transition-colors duration-300 dark:bg-slate-800/80',
+        {
+          'border-blue-500': dragActive,
+          'border-slate-300 dark:border-slate-700': !dragActive,
+        },
+        className,
+      )}
+      onDrop={handleDrop}
+      onDragOver={(e) => handleDragEvents(e, true)}
+      onDragLeave={(e) => handleDragEvents(e, false)}
+    >
+      {previews.length === 0 ? (
+        <div
+          className="flex cursor-pointer flex-col items-center justify-center gap-2 py-10 text-center text-slate-500"
+          onClick={() => inputRef.current?.click()}
+        >
+          <IconPhoto size={32} />
+          <p className="font-medium">Arraste e solte ou clique para enviar</p>
+          <p className="text-xs">Máximo de {maxFiles} imagens</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {previews.map((preview, index) => (
+            <div
+              key={index}
+              className="group relative aspect-square overflow-hidden rounded-lg"
+            >
+              <img
+                src={
+                  typeof preview === 'string'
+                    ? preview
+                    : URL.createObjectURL(preview)
+                }
+                alt={`Preview ${index + 1}`}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                onLoad={(e) => {
+                  if (typeof preview !== 'string') {
+                    URL.revokeObjectURL(e.currentTarget.src);
+                  }
+                }}
+              />
+              <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <button
+                type="button"
+                onClick={() => removeImage(index)}
+                aria-label="Remover imagem"
+                className="absolute right-1.5 top-1.5 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/70 text-slate-800 opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-white hover:text-red-500 group-hover:opacity-100"
+              >
+                <IconX size={16} />
+              </button>
+            </div>
+          ))}
+
+          {previews.length < maxFiles && (
+            <label
+              htmlFor="image-upload-button"
+              className="group flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-transparent transition-colors hover:border-blue-500 hover:bg-slate-100 dark:border-slate-600 dark:hover:border-blue-500 dark:hover:bg-slate-700"
+            >
+              <div className="flex flex-col items-center gap-1 p-4 text-slate-400 transition-colors group-hover:text-blue-500">
+                <IconPlus size={24} />
+                <span className="text-sm font-medium">Adicionar</span>
+              </div>
+            </label>
+          )}
+        </div>
+      )}
+      <Input
+        ref={inputRef}
+        id="image-upload-button"
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+        multiple
+      />
+    </div>
+  );
+}

@@ -8,6 +8,7 @@ import { acoes } from './acoesService.ts';
 type addressResponseData = {
   rua: string;
   bairro: string;
+  cep: string;
 };
 
 export let denunciasData: DenunciaModel[] = denunciasMock;
@@ -168,6 +169,8 @@ async function getAddressByCoordinates(
       `https://nominatim.openstreetmap.org/reverse?lon=${lng}&lat=${lat}`,
     );
 
+    console.log(response.status);
+
     if (response.status != 200) {
       throw new Error(
         'Não foi possível achar as informações desse endereço. Coloque manualmente',
@@ -181,12 +184,14 @@ async function getAddressByCoordinates(
     const address = json.reversegeocode.addressparts;
 
     const infos: addressResponseData = {
-      bairro: address.neighbourhood._text,
+      bairro: address?.suburb._text || address?.quarter._text,
       rua: address.road._text,
+      cep: address.postcode._text,
     };
 
     return infos;
-  } catch {
+  } catch (error) {
+    console.error(error);
     throw new Error(
       'Não foi possível buscar as informações desse local selecionado. Tente novamente mais tarde',
     );
