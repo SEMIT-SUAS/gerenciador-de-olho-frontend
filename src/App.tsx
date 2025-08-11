@@ -15,7 +15,6 @@ import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
 import { ServicoDetalhes } from './components/Servicos/ServicoDetalhes';
 import ServicoEditarPage from './components/Servicos/ServicoEditar';
-import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import ServicoNovo from './components/Servicos/ServicoNovo';
 import { ServicesPage } from './pages/ServicesPage';
 import { NotFoundPage } from './pages/404';
@@ -23,6 +22,7 @@ import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
 import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
 import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
+import { CategoriasPage } from './pages/CategoriaServicoPage';
 import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
 import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
 import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/edit';
@@ -74,7 +74,7 @@ export function App() {
 
         <Route path="/servicos">
           <Route index element={<ServicesPage />} />
-          <Route path="categorias" element={<ListaCategorias />} />
+          <Route path="categorias" element={<CategoriasPage />} />
           <Route path="novo" element={<ServicoNovo />} />
           <Route path=":id" element={<ServicoDetalhes />} />
           <Route path="editar/:id" element={<ServicoEditarPage />} />

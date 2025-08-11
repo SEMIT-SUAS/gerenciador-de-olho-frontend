@@ -1,12 +1,18 @@
-import type { ServicoCategoria } from '../types/CategoriaServico';
+import type {
+  createServicoCategoria,
+  ServicoCategoria,
+} from '../types/CategoriaServico';
 import { API_BASE_URL } from '../config/api';
 import type { ServicoCategoriaEditar } from '../types/ServicoCategoriaEditar';
 
 export async function getAllCategorias(): Promise<ServicoCategoria[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/categoria-servico/listar-ativos`, {
-      method: 'GET',
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/categoria-servico/listar-ativos`,
+      {
+        method: 'GET',
+      },
+    );
 
     if (!response.ok) {
       throw new Error('Não foi possível listar as categorias.');
@@ -18,7 +24,9 @@ export async function getAllCategorias(): Promise<ServicoCategoria[]> {
   }
 }
 
-export async function createCategoria(categoria: ServicoCategoria): Promise<string> {
+export async function createCategoria(
+  categoria: createServicoCategoria,
+): Promise<string> {
   const formData = new FormData();
   formData.append('nome', categoria.nome);
   formData.append('visivel', String(categoria.visivel));
@@ -28,10 +36,13 @@ export async function createCategoria(categoria: ServicoCategoria): Promise<stri
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/categoria-servico/cadastrar`, {
-      method: 'POST',
-      body: formData,
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/categoria-servico/cadastrar`,
+      {
+        method: 'POST',
+        body: formData,
+      },
+    );
 
     if (!response.ok) {
       throw new Error('Não foi possível cadastrar a categoria.');
@@ -43,7 +54,9 @@ export async function createCategoria(categoria: ServicoCategoria): Promise<stri
   }
 }
 
-export async function editarCategoria(categoria: ServicoCategoriaEditar): Promise<string> {
+export async function editarCategoria(
+  categoria: ServicoCategoriaEditar,
+): Promise<string> {
   try {
     const formData = new FormData();
 
@@ -54,14 +67,19 @@ export async function editarCategoria(categoria: ServicoCategoriaEditar): Promis
       formData.append('icone', categoria.icone);
     }
 
-    const response = await fetch(`${API_BASE_URL}/categoria-servico/atualizar/layout`, {
-      method: 'PUT',
-      body: formData,
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/categoria-servico/atualizar/layout`,
+      {
+        method: 'PUT',
+        body: formData,
+      },
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Não foi possível editar a categoria. Status ${response.status}. Detalhes: ${errorText}`);
+      throw new Error(
+        `Não foi possível editar a categoria. Status ${response.status}. Detalhes: ${errorText}`,
+      );
     }
 
     return await response.text();
@@ -72,26 +90,37 @@ export async function editarCategoria(categoria: ServicoCategoriaEditar): Promis
 
 // Ativa/desativa a categoria (toggle)
 export async function toggleAtivo(id: number, ativo: boolean): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/categoria-servico/atualizar/atividade`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id, ativo }),
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/categoria-servico/atualizar/atividade`,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, ativo }),
+    },
+  );
   if (!response.ok) throw new Error('Erro ao alterar status ativo:');
 }
 
 // Mostra/oculta a categoria (toggle)
-export async function toggleVisivel(id: number, visivel: boolean): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/categoria-servico/atualizar/visibilidade`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
+export async function toggleVisivel(
+  id: number,
+  visivel: boolean,
+): Promise<void> {
+  const response = await fetch(
+    `${API_BASE_URL}/categoria-servico/atualizar/visibilidade`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id, visivel }),
     },
-    body: JSON.stringify({ id, visivel }),
-  });
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Erro ao atualizar visibilidade. Status ${response.status}: ${errorText}`);
+    throw new Error(
+      `Erro ao atualizar visibilidade. Status ${response.status}: ${errorText}`,
+    );
   }
 }

@@ -98,7 +98,6 @@ function ServicoEditarPage() {
           ativo: servicoData.ativo,
         };
         setServicoParaEditar(dadosFormatadosParaForm);
-        console.log('dadosFormatadosParaForm:', dadosFormatadosParaForm);
       } catch (err) {
         console.error('Erro ao buscar dados para edição:', err);
       } finally {

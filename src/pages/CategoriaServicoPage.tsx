@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react';
 import { LayoutPage } from './LayoutPage';
-import { getAllServices } from '@/services/servicosServices';
 import { toast } from 'sonner';
-import type { ServicosListar } from '@/types/ServicosListar';
 import { Button } from '@/components/ui/button';
-import { ServicesList } from '../components/Servicos/ServicesList';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SearchInput } from '@/components/ui/input';
-import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import {
   Select,
@@ -22,48 +17,76 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
 } from '@tabler/icons-react';
-import { getAllServicoExterno } from '@/services/servicosExternosService';
-import type { ServicoExterno } from '@/types/servicoExterno';
-import { ServicosExternosList } from '@/components/ServicosExternos/ServicosExternosList';
 
-export function ServicesPage() {
-  const [cartaDeServicos, setCartaDeServicos] = useState<ServicosListar[]>([]);
-  const [servicosExternos, setServicosExternos] = useState<ServicoExterno[]>(
-    [],
-  );
+import {
+  getAllCategorias,
+  createCategoria,
+  editarCategoria,
+} from '@/services/servicocategoriaService';
+import type {
+  ServicoCategoria,
+  createServicoCategoria,
+  ServicoCategoriaEditar,
+} from '@/types/CategoriaServico';
+import { CategoriasList } from '@/CategoriaServicos/Categorialist';
+import { AddCategoriaForm } from '@/components/Forms/CategoriaForm/CategoriaForm';
+
+export function CategoriasPage() {
+  const [categorias, setCategorias] = useState<
+    (ServicoCategoria & { id: number })[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
-  const [activeTab, setActiveTab] = useState('servicos');
 
-  async function fetchServices() {
+  // Estados do modal
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editCategoria, setEditCategoria] = useState<
+    (ServicoCategoria & { id: number }) | null
+  >(null);
+
+  async function fetchCategorias() {
     try {
       setLoading(true);
-      const dataCartaDeServico = await getAllServices();
-      const dataServicoExterno = await getAllServicoExterno();
-
-      setCartaDeServicos(dataCartaDeServico);
-      setServicosExternos(dataServicoExterno);
+      const data = await getAllCategorias();
+      setCategorias(data);
     } catch (err: any) {
-      setError(err.message || 'Erro ao buscar os serviços.');
-      toast.error(err.message || 'Erro ao buscar os serviços.');
+      setError(err.message || 'Erro ao buscar as categorias.');
+      toast.error(err.message || 'Erro ao buscar as categorias.');
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchServices();
+    fetchCategorias();
   }, []);
 
-  const filteredCartaDeServicos = cartaDeServicos.filter((s) =>
-    s.nome.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const handleSubmitCategoria = async (
+    data: createServicoCategoria | (ServicoCategoriaEditar & { id: number }),
+  ) => {
+    try {
+      // Se tem id, é edição
+      if ('id' in data && data.id) {
+        await editarCategoria(data as ServicoCategoriaEditar & { id: number });
+        toast.success('Categoria editada com sucesso!');
+        setEditCategoria(null);
+      } else {
+        // Se não tem id, é criação
+        await createCategoria(data as createServicoCategoria);
+        toast.success('Categoria criada com sucesso!');
+        setShowCreateModal(false);
+      }
+      fetchCategorias();
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao salvar categoria');
+    }
+  };
 
-  const filteredServicosExternos = servicosExternos.filter((s) =>
-    s.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filtered = categorias.filter((c) =>
+    c.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (error) {
@@ -71,7 +94,7 @@ export function ServicesPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <p className="text-red-600">Erro: {error}</p>
-          <Button onClick={fetchServices} variant="outline" className="mt-4">
+          <Button onClick={fetchCategorias} variant="outline" className="mt-4">
             Tentar novamente
           </Button>
         </div>
@@ -82,26 +105,14 @@ export function ServicesPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-600">Carregando serviços...</p>
+        <p className="text-gray-600">Carregando categorias...</p>
       </div>
     );
   }
 
-  const activeList =
-    activeTab === 'servicos'
-      ? filteredCartaDeServicos
-      : filteredServicosExternos;
-
   const itemsPerPageOptions = [8, 16, 24];
-
-  const totalPages = Math.ceil(activeList.length / itemsPerPage);
-
-  const currentDataCartaDeServicos = filteredCartaDeServicos.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
-
-  const currentDataServicosExternos = filteredServicosExternos.slice(
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const currentData = filtered.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
@@ -110,32 +121,12 @@ export function ServicesPage() {
     <LayoutPage>
       <div className="flex flex-col gap-6 py-8 px-36">
         <div className="max-w-[640px]">
-          <h2 className="text-3xl font-bold tracking-tight">
-            {activeTab === 'servicos'
-              ? 'Carta de Serviços'
-              : 'Serviços Externos'}
-          </h2>
+          <h2 className="text-3xl font-bold tracking-tight">Categorias</h2>
           <p className="text-slate-600 text-xs mt-1">
-            Gerencie os serviços disponíveis com clareza e objetividade.
+            Gerencie as categorias disponíveis com clareza e objetividade.
           </p>
         </div>
-
-        <div className="flex items-center justify-between">
-          <Tabs
-            defaultValue="servicos"
-            value={activeTab}
-            onValueChange={(value) => {
-              setActiveTab(value);
-              setCurrentPage(1);
-            }}
-            className="w-[400px]"
-          >
-            <TabsList>
-              <TabsTrigger value="servicos">Serviços</TabsTrigger>
-              <TabsTrigger value="externos">Serviços Externos</TabsTrigger>
-            </TabsList>
-          </Tabs>
-
+        <div className="flex items-center justify-end">
           <div className="flex gap-2">
             <div className="w-[320px]">
               <SearchInput
@@ -148,26 +139,21 @@ export function ServicesPage() {
               />
             </div>
 
-            <Button variant={'outline'} asChild>
-              <Link to="/servicos/novo">
-                <Plus className="mr-2 h-4 w-4" />
-                Adicionar serviço
-              </Link>
+            <Button
+              variant={'outline'}
+              onClick={() => setShowCreateModal(true)}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Adicionar categoria
             </Button>
           </div>
         </div>
 
-        {activeTab === 'servicos' ? (
-          <ServicesList
-            setServicos={setCartaDeServicos}
-            servicos={currentDataCartaDeServicos}
-          />
-        ) : (
-          <ServicosExternosList
-            setServicos={setServicosExternos}
-            servicos={servicosExternos}
-          />
-        )}
+        <CategoriasList
+          setCategorias={setCategorias}
+          categorias={currentData}
+          onEdit={setEditCategoria}
+        />
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -240,6 +226,39 @@ export function ServicesPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de Criar */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <AddCategoriaForm
+              mode="create"
+              onSubmit={handleSubmitCategoria}
+              onCancel={() => setShowCreateModal(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Editar */}
+      {editCategoria && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[60vh] overflow-y-auto">
+            <AddCategoriaForm
+              mode="edit"
+              defaultValues={{
+                id: editCategoria.id,
+                nome: editCategoria.nome,
+                icone: editCategoria.icone,
+                ativo: editCategoria.ativo,
+                visivel: editCategoria.visivel,
+              }}
+              onSubmit={handleSubmitCategoria}
+              onCancel={() => setEditCategoria(null)}
+            />
+          </div>
+        </div>
+      )}
     </LayoutPage>
   );
 }

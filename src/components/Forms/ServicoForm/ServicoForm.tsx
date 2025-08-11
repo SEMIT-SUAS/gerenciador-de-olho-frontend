@@ -618,8 +618,15 @@ export function ServicoForm({
               )}
             />
           </div>
-
-          <div className="flex justify-end pt-6">
+          <div className="flex justify-end pt-5 gap-4">
+            <Button
+              variant="outline"
+              className="px-8"
+              onClick={() => window.history.back()}
+              type="button"
+            >
+              Cancelar
+            </Button>
             <Button type="submit" disabled={isLoading} className="px-8">
               {isLoading ? 'Salvando...' : 'Salvar Serviço'}
             </Button>

@@ -5,31 +5,39 @@ import type { Portais } from '@/types/Portais'; // Ajuste o caminho se necessár
 import { getAllPortais } from '@/services/PortaisService'; // Ajuste o caminho se necessário
 import { toast } from 'sonner';
 
-// Componentes Reutilizáveis
 import { PortaisList } from '@/components/Forms/PortaisForm/PortaisList';
-// Componentes de UI (baseado na sua ServicesPage)
 import { LayoutPage } from './LayoutPage';
 import { Button } from '@/components/ui/button';
 import { SearchInput } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Plus } from 'lucide-react';
-import { IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from '@tabler/icons-react';
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronsLeft,
+  IconChevronsRight,
+} from '@tabler/icons-react';
 import { AddPortalModal } from '@/components/Forms/PortaisForm/AddPortal';
 
 export function PortaisPage() {
-  // --- SEÇÃO DE ESTADO (State Management) ---
   const [portais, setPortais] = useState<Portais[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Estado para UI: busca e paginação (como na ServicesPage)
+
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
 
-  // Estado para o modal de formulário (como na nossa refatoração anterior)
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingPortal, setEditingPortal] = useState<Portais | undefined>(undefined);
+  const [editingPortal, setEditingPortal] = useState<Portais | undefined>(
+    undefined,
+  );
 
   async function fetchPortais() {
     try {
@@ -49,10 +57,9 @@ export function PortaisPage() {
     fetchPortais();
   }, []);
 
-  // --- SEÇÃO DE DADOS DERIVADOS E MEMOIZADOS (Derived & Memoized Data) ---
   const filteredPortais = useMemo(() => {
     return portais.filter((p) =>
-      p.nome.toLowerCase().includes(searchTerm.toLowerCase())
+      p.nome.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [portais, searchTerm]);
 
@@ -61,11 +68,10 @@ export function PortaisPage() {
   const currentData = useMemo(() => {
     return filteredPortais.slice(
       (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
+      currentPage * itemsPerPage,
     );
   }, [filteredPortais, currentPage, itemsPerPage]);
 
-  // --- SEÇÃO DE MANIPULADORES DE EVENTOS (Event Handlers) ---
   function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
@@ -77,7 +83,13 @@ export function PortaisPage() {
   }
 
   if (loading) {
-    return <LayoutPage><div className="flex items-center justify-center min-h-[400px]">Carregando...</div></LayoutPage>;
+    return (
+      <LayoutPage>
+        <div className="flex items-center justify-center min-h-[400px]">
+          Carregando...
+        </div>
+      </LayoutPage>
+    );
   }
 
   if (error) {
@@ -85,7 +97,9 @@ export function PortaisPage() {
       <LayoutPage>
         <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
           <p className="text-red-600">Erro: {error}</p>
-          <Button onClick={fetchPortais} variant="outline">Tentar novamente</Button>
+          <Button onClick={fetchPortais} variant="outline">
+            Tentar novamente
+          </Button>
         </div>
       </LayoutPage>
     );
@@ -94,7 +108,6 @@ export function PortaisPage() {
   return (
     <LayoutPage>
       <div className="flex flex-col gap-6 py-8 px-36">
-        {/* Toolbar (Layout da ServicesPage) */}
         <div className="max-w-[640px]">
           <h2 className="text-3xl font-bold tracking-tight">Portais</h2>
           <p className="text-slate-600 text-xs mt-1">
@@ -102,7 +115,7 @@ export function PortaisPage() {
           </p>
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex-1"></div> {/* Espaço para manter alinhamento à direita */}
+          <div className="flex-1"></div>{' '}
           <div className="flex items-center gap-2">
             <div className="w-[320px]">
               <SearchInput
@@ -118,21 +131,23 @@ export function PortaisPage() {
           </div>
         </div>
 
-        <PortaisList
-          portais={currentData}
-          setPortais={setPortais}
-        />
+        <PortaisList portais={currentData} setPortais={setPortais} />
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600">Linhas por página:</span>
-            <Select value={itemsPerPage.toString()} onValueChange={handleItemsPerPageChange}>
+            <Select
+              value={itemsPerPage.toString()}
+              onValueChange={handleItemsPerPageChange}
+            >
               <SelectTrigger className="w-20 h-8">
                 <SelectValue placeholder={itemsPerPage} />
               </SelectTrigger>
               <SelectContent>
                 {[8, 16, 24].map((option) => (
-                  <SelectItem key={option} value={option.toString()}>{option}</SelectItem>
+                  <SelectItem key={option} value={option.toString()}>
+                    {option}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -142,16 +157,52 @@ export function PortaisPage() {
               Página {totalPages > 0 ? currentPage : 0} de {totalPages}
             </span>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setCurrentPage(1)} disabled={currentPage === 1}><IconChevronsLeft /></Button>
-              <Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}><IconChevronLeft /></Button>
-              <Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages || totalPages === 0}><IconChevronRight /></Button>
-              <Button variant="outline" size="sm" onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages || totalPages === 0}><IconChevronsRight /></Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+              >
+                <IconChevronsLeft />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <IconChevronLeft />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages || totalPages === 0}
+              >
+                <IconChevronRight />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages || totalPages === 0}
+              >
+                <IconChevronsRight />
+              </Button>
             </div>
           </div>
         </div>
       </div>
 
-      <AddPortalModal open={isFormOpen} onOpenChange={(isFormOpen) => {if (!isFormOpen) {setIsFormOpen(false)}}} setPortais={setPortais}/>
+      <AddPortalModal
+        open={isFormOpen}
+        onOpenChange={(isFormOpen) => {
+          if (!isFormOpen) {
+            setIsFormOpen(false);
+          }
+        }}
+        setPortais={setPortais}
+      />
     </LayoutPage>
   );
 }
