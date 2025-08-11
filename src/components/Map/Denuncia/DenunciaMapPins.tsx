@@ -75,7 +75,7 @@ export function DenunciaMapPins() {
   function handleGetIcon(denuncia: DenunciaModel) {
     const isSelected = !!denunciasSelecionas.find((d) => d.id === denuncia.id);
 
-    const baseIcon = getDenunciaIconByTipo(denuncia.tipo.nome, isSelected);
+    const baseIcon = getDenunciaIconByTipo(denuncia.tipo, isSelected);
     const mainIconUrl = baseIcon.options.iconUrl;
     const iconSize = baseIcon.options.iconSize as [number, number];
 

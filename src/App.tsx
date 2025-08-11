@@ -15,7 +15,6 @@ import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
 import { ServicoDetalhes } from './components/Servicos/ServicoDetalhes';
 import ServicoEditarPage from './components/Servicos/ServicoEditar';
-import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import ServicoNovo from './components/Servicos/ServicoNovo';
 import { ServicesPage } from './pages/ServicesPage';
 import { NotFoundPage } from './pages/404';
@@ -28,7 +27,7 @@ import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
 import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
 import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/edit';
 import { PortaisPage } from './pages/PortaisPage';
-
+import { ServicoExternoForm } from './components/ServicosExternos/ServicoExternoForm';
 
 export function App() {
   return (

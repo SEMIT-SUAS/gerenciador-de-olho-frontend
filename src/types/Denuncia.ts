@@ -20,11 +20,13 @@ export type DenunciaStatusModelTypes = 'aberto' | AcaoStatusModelTypes;
 
 export interface DenunciaModel {
   id: number;
+  codigo: string;
   descricao: string;
   tipo: TipoDenunciaModel;
-  files: DenunciaFile[];
   acao: AcaoModel | null;
 
+  estado: string;
+  cidade: string;
   bairro: string;
   rua: string;
   pontoDeReferencia?: string | null;
@@ -32,7 +34,26 @@ export interface DenunciaModel {
   latitude: number;
 
   criadaEm: string;
-
+  dataFim: string;
+  ativo: boolean;
   usuario: UsuarioModel | null;
-  denunciaIndeferida: DenunciaIndeferidaModel | null;
+  // denunciaIndeferida: DenunciaIndeferidaModel | null;
+}
+
+export interface DenunciaModelMap {
+  id: number;
+  nomeTipoDenuncia: string;
+  acaoStatus: string | null;
+  latitude: number;
+  longitude: number;
+  criadaEm: string;
+}
+
+export interface DenunciaModelList {
+  id: number;
+  nomeTipoDenuncia: string;
+  acaoStatus: string | null;
+  criadoEm: string;
+  endereco: string; // Junta rua e bairro Ex: Rua Dez, Cohama
+  firstFile: string;
 }

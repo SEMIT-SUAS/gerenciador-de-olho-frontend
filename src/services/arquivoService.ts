@@ -1,25 +1,28 @@
-async function getByName(fileName: string): Promise<Blob> {
+import { API_BASE_URL } from '@/config/api';
+import type { DenunciaFile } from '@/types/DenunciaFile';
+
+async function getFilesByDenunciaId(
+  idDenuncia: number,
+): Promise<DenunciaFile[]> {
   try {
-    let response;
-
-    if (fileName.endsWith('.mp4')) {
-      response = await fetch('/test_video_2.mp4');
-    } else {
-      response = await fetch('https://picsum.photos/500');
-    }
-
-    if (response.status != 200) {
-      throw new Error('Não foi possível buscar por esse arquivo');
-    }
-
-    return (await response.blob()) as Blob;
-  } catch {
-    throw new Error(
-      'Serviço de arquivos fora do ar. Tente novamente mais tarde.',
+    const response = await fetch(
+      `${API_BASE_URL}/denuncia/arquivos/uploads/${idDenuncia}`,
+      { method: 'GET' },
     );
+
+    if (!response.ok) {
+      throw new Error('Não foi possível encontrar os arquivos da denúncia.');
+    }
+
+    // A resposta já contém a lista de arquivos com suas URLs
+    return await response.json();
+  } catch (error) {
+    console.error(`Erro ao buscar arquivos da denúncia ${idDenuncia}:`, error);
+    // Retorna um array vazio em caso de erro para não quebrar o fluxo
+    return [];
   }
 }
 
 export default {
-  getByName,
+  getFilesByDenunciaId,
 };

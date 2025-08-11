@@ -6,7 +6,7 @@ import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import type { ServicoExterno } from '@/types/ServicoExterno';
 
 import servicosExternosService from '@/services/servicosExternosService';
-import { FormServicoExterno } from './FormServicoExterno';
+import { ServicoExternoForm } from './ServicoExternoForm';
 
 interface ServiceListItemProps {
   servico: ServicoExterno;
@@ -91,7 +91,7 @@ export function ServicesExternoListItem({
         </TableCell>
       </TableRow>
       {isEditModalOpen && (
-        <FormServicoExterno
+        <ServicoExternoForm
           mode="edit"
           defaultValues={servico} //mudar de file para string no FormServicoExterno ou ao contrario
           onClose={() => setIsEditModalOpen(false)}

@@ -31,6 +31,7 @@ export async function createService(servico: Servicos): Promise<Servicos> {
     if (!response.ok) {
       throw new Error('Não foi possível salvar serviço');
     }
+
     return await response.json();
   } catch (error) {
     throw new Error(

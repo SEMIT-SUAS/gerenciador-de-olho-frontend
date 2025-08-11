@@ -1,8 +1,7 @@
-import type { CreateDenunciaModel, DenunciaModel } from '../types/Denuncia.ts';
+import type { DenunciaModel } from '../types/Denuncia.ts';
 import { API_BASE_URL } from '../config/api.ts';
 import { denunciasMock, userMock } from '../constants/mocks.ts';
 import convert from 'xml-js';
-import categoriaService from './categoriaService.ts';
 import { acoes } from './acoesService.ts';
 
 type addressResponseData = {
@@ -21,7 +20,28 @@ export function updateDenunciasData(
 }
 
 async function getAllDenuncias(): Promise<DenunciaModel[]> {
-  return denunciasData;
+  try {
+    const response = await fetch(`${API_BASE_URL}/denuncia/listar-todas`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error('Não foi possível encontrar a denúncia.');
+    }
+
+    const data = await response.json();
+
+    console.log('SERVICE', data);
+
+    return data;
+  } catch (error) {
+    throw new Error(
+      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
+    );
+  }
 }
 
 async function getDenunciaById(id: number): Promise<DenunciaModel> {
@@ -42,35 +62,35 @@ async function getDenunciaById(id: number): Promise<DenunciaModel> {
   }
 }
 
-async function createDenuncia(
-  newDenuncia: CreateDenunciaModel,
-): Promise<DenunciaModel> {
-  const tipo = await categoriaService.getTipoById(newDenuncia.tipoId);
+// async function createDenuncia(
+//   newDenuncia: CreateDenunciaModel,
+// ): Promise<DenunciaModel> {
+//   const tipo = await categoriaService.getTipoById(newDenuncia.tipoId);
 
-  const denunciaCreatedData: DenunciaModel = {
-    id: Math.floor(Math.random() * 100000),
-    descricao: newDenuncia.descricao,
-    bairro: newDenuncia.bairro,
-    rua: newDenuncia.rua,
-    pontoDeReferencia: newDenuncia.pontoDeReferencia,
-    latitude: newDenuncia.latitude,
-    longitude: newDenuncia.longitude,
-    tipo: tipo!,
-    files: newDenuncia.files.map((f, idx) => ({
-      id: idx,
-      tipo: 'imagem',
-      nome: f.name,
-    })),
-    acao: null,
-    criadaEm: new Date().toISOString(),
-    usuario: userMock,
-    denunciaIndeferida: null,
-  };
+//   const denunciaCreatedData: DenunciaModel = {
+//     id: Math.floor(Math.random() * 100000),
+//     descricao: newDenuncia.descricao,
+//     bairro: newDenuncia.bairro,
+//     rua: newDenuncia.rua,
+//     pontoDeReferencia: newDenuncia.pontoDeReferencia,
+//     latitude: newDenuncia.latitude,
+//     longitude: newDenuncia.longitude,
+//     tipo: tipo!,
+//     files: newDenuncia.files.map((f, idx) => ({
+//       id: idx,
+//       tipo: 'imagem',
+//       nome: f.name,
+//     })),
+//     acao: null,
+//     criadaEm: new Date().toISOString(),
+//     usuario: userMock,
+//     denunciaIndeferida: null,
+//   };
 
-  denunciasData.push(denunciaCreatedData);
+//   denunciasData.push(denunciaCreatedData);
 
-  return denunciaCreatedData;
-}
+//   return denunciaCreatedData;
+// }
 
 async function updateDenuncia(denuncia: DenunciaModel): Promise<DenunciaModel> {
   try {
@@ -200,7 +220,7 @@ async function getAddressByCoordinates(
 
 export default {
   getAllDenuncias,
-  createDenuncia,
+  // createDenuncia,
   updateDenuncia,
   getDenunciaById,
   indeferirDenuncia,

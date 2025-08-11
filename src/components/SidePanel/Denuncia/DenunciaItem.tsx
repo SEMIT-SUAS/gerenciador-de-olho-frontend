@@ -60,7 +60,7 @@ export function DenunciaItem({
           <div>
             {showDate && <p className="text-xs text-gray-500">{diasAtras}</p>}
             <h3 className="font-semibold text-md text-gray-700 line-clamp-1">
-              {denuncia.tipo.nome}
+              {denuncia.tipo}
             </h3>
           </div>
 

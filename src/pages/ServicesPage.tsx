@@ -23,8 +23,9 @@ import {
   IconChevronsRight,
 } from '@tabler/icons-react';
 import { getAllServicoExterno } from '@/services/servicosExternosService';
-import type { ServicoExterno } from '@/types/servicoExterno';
+import type { ServicoExterno } from '@/types/ServicoExterno';
 import { ServicosExternosList } from '@/components/ServicosExternos/ServicosExternosList';
+import { AddServicoExternoModal } from '@/components/ServicosExternos/AddServicoExternoModal';
 
 export function ServicesPage() {
   const [cartaDeServicos, setCartaDeServicos] = useState<ServicosListar[]>([]);
@@ -37,6 +38,7 @@ export function ServicesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const [activeTab, setActiveTab] = useState('servicos');
+  const [modalAddServicoExterno, setModalAddServicoExterno] = useState(false);
 
   async function fetchServices() {
     try {
@@ -148,12 +150,23 @@ export function ServicesPage() {
               />
             </div>
 
-            <Button variant={'outline'} asChild>
-              <Link to="/servicos/novo">
+            {activeTab === 'servicos' ? (
+              <Button variant={'outline'} asChild>
+                <Link to={'/servico/novo'}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Adicionar serviço
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                variant={'outline'}
+                onClick={() => setModalAddServicoExterno(true)}
+                asChild
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Adicionar serviço
-              </Link>
-            </Button>
+              </Button>
+            )}
           </div>
         </div>
 
@@ -165,7 +178,7 @@ export function ServicesPage() {
         ) : (
           <ServicosExternosList
             setServicos={setServicosExternos}
-            servicos={servicosExternos}
+            servicos={currentDataServicosExternos}
           />
         )}
 
@@ -240,6 +253,11 @@ export function ServicesPage() {
           </div>
         </div>
       </div>
+      <AddServicoExternoModal
+        open={modalAddServicoExterno}
+        onOpenChange={() => setModalAddServicoExterno(false)}
+        setServicos={setServicosExternos}
+      />
     </LayoutPage>
   );
 }

@@ -19,3 +19,21 @@ export interface AcaoModel {
   secretaria: SecretariaModel;
   status: AcaoStatusModel[];
 }
+
+export interface AcaoModelMap {
+  id: number;
+  nome: string;
+  latitude: number;
+  longitude: number;
+  nomeStatus: string;
+  criadoEm: string;
+  nomeSecretaria: string;
+}
+
+export interface AcaoModelList {
+  id: number;
+  nome: string;
+  nomeStatus: string;
+  criadoEm: string;
+  nomeSecretaria: string;
+}

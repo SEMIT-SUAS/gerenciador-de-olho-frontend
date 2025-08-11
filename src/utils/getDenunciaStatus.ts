@@ -5,9 +5,9 @@ import type { DenunciaModel } from '../types/Denuncia';
 export function getDenunciaStatus(
   denuncia: DenunciaModel,
 ): 'aberto' | AcaoStatusModelTypes {
-  if (denuncia.denunciaIndeferida) {
-    return 'indeferido';
-  }
+  // if (denuncia.denunciaIndeferida) {
+  //   return 'indeferido';
+  // }
 
   if (denuncia.acao == null) {
     return 'aberto';
@@ -28,12 +28,12 @@ export function getIndeferimentoData(
     return null;
   }
 
-  if (denuncia.denunciaIndeferida) {
-    return {
-      indeferidaPor: denuncia.denunciaIndeferida.indeferidaPor,
-      motivo: denuncia.denunciaIndeferida.motivo,
-    };
-  }
+  // if (denuncia.denunciaIndeferida) {
+  //   return {
+  //     indeferidaPor: denuncia.denunciaIndeferida.indeferidaPor,
+  //     motivo: denuncia.denunciaIndeferida.motivo,
+  //   };
+  // }
 
   if (!denuncia.acao) {
     return null;

@@ -1,12 +1,10 @@
-import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import { servicoSchema } from './schemaServicoExterno';
-import { z } from 'zod';
-import { uploadServicoExterno } from '@/services/servicosExternosService';
-
-type ServicoSchema = z.infer<typeof servicoSchema>;
+import {
+  servicoSchema,
+  type ServicoSchema,
+  type ServicoSchemaOutput,
+} from './schemaServicoExterno';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -18,73 +16,34 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import { Loading } from '../Loading/Loading';
 
-type Props = {
-  onClose: () => void;
-  onSuccess: () => void;
-  mode?: 'create' | 'edit';
-  defaultValues?: Partial<z.infer<typeof servicoSchema>> & { id?: number };
+type ServicoExternoFormProps = {
+  defaultValues?: ServicoSchemaOutput;
+  onSubmit: (data: ServicoSchema) => void;
+  isSubmitting: boolean;
 };
 
-export function FormServicoExterno({
-  onClose,
-  onSuccess,
-  mode = 'create',
+export function ServicoExternoForm({
   defaultValues,
-}: Props) {
-  const [loading, setLoading] = useState(false);
-
+  isSubmitting,
+  onSubmit,
+}: ServicoExternoFormProps) {
   const form = useForm<ServicoSchema>({
     resolver: zodResolver(servicoSchema),
-    defaultValues: {
-      nome: defaultValues?.nome || '',
-      imagem: defaultValues?.imagem,
-      visivel: defaultValues?.visivel ?? true,
-      ativo: defaultValues?.ativo ?? true,
+    defaultValues: defaultValues || {
+      nome: '',
+      imagem: undefined,
+      visivel: true,
+      ativo: true,
     },
   });
-
-  const handleSubmit = async (data: ServicoSchema) => {
-    setLoading(true);
-
-    const formData = new FormData();
-    formData.append('nome', data.nome);
-    if (data.imagem && data.imagem instanceof File) {
-      formData.append('imagem', data.imagem);
-    }
-    formData.append('visivel', String(data.visivel));
-    formData.append('ativo', String(data.ativo));
-
-    try {
-      if (mode === 'edit' && defaultValues?.id) {
-        await uploadServicoExterno(formData);
-        toast.success(
-          mode === 'edit'
-            ? 'Serviço atualizado com sucesso!'
-            : 'Serviço cadastrado com sucesso!',
-        );
-        onSuccess();
-      }
-    } catch (error: any) {
-      toast.error(error.message || 'Erro ao salvar serviço.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-lg">
-        <h3 className="text-xl font-semibold mb-6">
-          {mode === 'edit' ? 'Editar Serviço' : 'Cadastrar Novo Serviço'}
-        </h3>
-
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6"
-          >
-            {/* Nome */}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="nome"
@@ -99,7 +58,6 @@ export function FormServicoExterno({
               )}
             />
 
-            {/* Imagem */}
             <FormField
               control={form.control}
               name="imagem"
@@ -124,9 +82,8 @@ export function FormServicoExterno({
                         }}
                         {...fieldProps}
                       />
-
-                      {/* Mostrar imagem atual no modo edição */}
-                      {mode === 'edit' &&
+                      Mostrar imagem atual no modo edição
+                      {/* {mode === 'edit' &&
                         typeof value === 'string' &&
                         value && (
                           <div className="text-sm text-blue-600 bg-blue-100 p-2 rounded">
@@ -138,15 +95,14 @@ export function FormServicoExterno({
                               Selecione um novo arquivo para substituir
                             </div>
                           </div>
-                        )}
-
+                        )} */}
                       {/* Mostrar novo arquivo selecionado */}
-                      {value instanceof File && (
+                      {/* {value instanceof File && (
                         <div className="text-sm text-green-600 bg-green-100 p-2 rounded">
                           Novo arquivo selecionado:{' '}
                           <span className="font-medium">{value.name}</span>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -201,13 +157,18 @@ export function FormServicoExterno({
               <Button
                 type="button"
                 variant="outline"
-                onClick={onClose}
-                disabled={loading}
+                // onClick={() => {() => void}}
+                // disabled={loading}
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? 'Salvando...' : 'Salvar'}
+
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <Loading className="size-4" />
+                ) : (
+                  'Salvar Portal'
+                )}
               </Button>
             </div>
           </form>

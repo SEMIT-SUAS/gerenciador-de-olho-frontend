@@ -1,7 +1,10 @@
-import type { TipoDenunciaModel } from './TipoDenuncia';
 export interface CategoriaDenunciaModel {
   id: number;
   nome: string;
   cor: string;
-  tipos?: TipoDenunciaModel[];
+  descricao: string;
+  icone: string;
+  destaque: boolean;
+  visivel: boolean;
+  ativo: boolean;
 }

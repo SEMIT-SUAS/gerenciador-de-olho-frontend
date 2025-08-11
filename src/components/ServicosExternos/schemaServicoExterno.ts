@@ -11,3 +11,6 @@ export const servicoSchema = z.object({
       message: 'A imagem deve ser um arquivo do tipo imagem.',
     }),
 });
+
+export type ServicoSchema = z.infer<typeof servicoSchema>;
+export type ServicoSchemaOutput = z.infer<typeof servicoSchema>;
