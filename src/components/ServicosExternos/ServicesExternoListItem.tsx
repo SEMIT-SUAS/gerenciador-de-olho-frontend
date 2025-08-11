@@ -57,7 +57,9 @@ export function ServicesExternoListItem({
   return (
     <>
       <TableRow key={servico.id}>
-        <TableCell>{servico.imagem}</TableCell>
+        <TableCell>
+          <img src={servico.imagem} className="h-14 w-auto rounded-md" />
+        </TableCell>
         <TableCell>{servico.nome}</TableCell>
         <TableCell>{servico.link}</TableCell>
         <TableCell>
