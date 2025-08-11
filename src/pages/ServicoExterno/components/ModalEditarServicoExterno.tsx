@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {getServicoExternoById,updateServicoExterno,} from "../../../services/servicoExternoService";
 import type { ServiceExterno } from "../../../types/ServicoExterno";
+import { servicoSchema } from "../../../schemas/ServicoExterno";
 
 interface ModalEditarServicoExternoProps {
   servicoId: number;
@@ -50,7 +51,6 @@ export function ModalEditarServicoExterno({
         setNome(dados.nome ?? "");
         setLink(dados.link ?? "");
         setImagemUrl(dados.imagem ?? null);
-        console.log(dados);
       } catch (err: any) {
         toast.error(err?.message || "Erro ao carregar serviço.");
         onClose();
@@ -78,6 +78,20 @@ export function ModalEditarServicoExterno({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    // Monta objeto para validação
+    const servicoData = { nome, link, visivel: true, ativo: true, imagem: imagemFile ?? undefined };
+    // Você pode ajustar visivel e ativo se quiser que o modal permita editar
+
+    const parsed = servicoSchema.safeParse(servicoData);
+
+    if (!parsed.success) {
+      const firstError = parsed.error.errors[0]?.message;
+      toast.error(firstError || "Dados inválidos.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("id", String(servicoId));
