@@ -1,66 +1,54 @@
+import { useEffect, useState } from 'react';
+import { LayoutPage } from '../LayoutPage';
+import type { EspacoPublicoModel } from '@/types/EspacoPublico';
+import espaçoPublicoService from '@/services/espacoPublicoService';
+import { EspacosPublicosList } from '@/components/EspacosPublicos/EspacosPublicosList';
 import { SearchInput } from '@/components/ui/input';
-import { LayoutPage } from './LayoutPage';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import type { BannerModel } from '@/types/Banner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
 } from '@tabler/icons-react';
-import {
-  Select,
-  SelectItem,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import bannersService from '@/services/bannersService';
-import { toast } from 'react-toastify';
-import { AddBannerModal } from '@/components/Banners/Modals/AddBannerModal';
-import { BannersList } from '@/components/Banners/BannersList';
+import { useNavigate } from 'react-router-dom';
 
-export function BannersPage() {
-  const [itemsPerPage, setItemsPerPage] = useState(8);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [banners, setBanners] = useState<BannerModel[] | null>(null);
+export function EspacosPublicosPage() {
+  const navigate = useNavigate();
+  const [espacosPublicos, setEspacosPublicos] = useState<
+    EspacoPublicoModel[] | null
+  >(null);
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [isOpenAddBannerModal, setIsOpenAddBannerModal] = useState(false);
-
-  async function getAllBanners() {
-    try {
-      return await bannersService.getAll();
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  }
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    getAllBanners().then((bannersData) => {
-      if (bannersData) {
-        setBanners(bannersData);
-      }
+    espaçoPublicoService.getAll().then((data) => {
+      setEspacosPublicos(data);
     });
-
-    return () => {
-      setBanners(null);
-    };
   }, []);
 
-  const filteredBanners = banners?.filter((banner) =>
-    banner.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredEspacos = espacosPublicos?.filter((espaco) =>
+    espaco.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const totalPages = Math.ceil((filteredBanners?.length ?? 0) / itemsPerPage);
-  const currentBanners =
-    filteredBanners?.slice(
+  const totalPages = Math.ceil((filteredEspacos?.length ?? 0) / itemsPerPage);
+  const currentEspacos =
+    filteredEspacos?.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage,
     ) || [];
 
-  const itemsPerPageOptions = [8, 16, 24];
+  const itemsPerPageOptions = [5, 10, 15, 20];
 
   return (
     <>
@@ -68,12 +56,13 @@ export function BannersPage() {
         <div className="flex flex-col gap-6 py-8 px-36">
           <div className="w-[50%]">
             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-              Banners
+              Espaços públicos
             </h3>
+
             <p className="text-slate-600 text-xs">
-              Gerencie com precisão todas as Personas para serviços da
+              Gerencie com precisão todos os espaços públicos para serviços da
               prefeitura. Tenha controle total para adicionar, visualizar,
-              editar e remover cada órgão, garantindo informações sempre
+              editar e remover cada espaço, garantindo informações sempre
               atualizadas e acessíveis.
             </p>
           </div>
@@ -92,22 +81,22 @@ export function BannersPage() {
 
             <Button
               className="flex items-center gap-2"
-              onClick={() => setIsOpenAddBannerModal(true)}
+              onClick={() => navigate('/espacos-publicos/add')}
             >
               <PlusIcon className="h-4 w-4" />
-              Adicionar banner
+              Adicionar espaço público
             </Button>
           </div>
 
-          <BannersList
-            itemsPerPage={itemsPerPage}
-            banners={currentBanners}
-            setBanners={setBanners}
+          <EspacosPublicosList
+            espacosPublicos={currentEspacos}
+            itensPerPage={itemsPerPage}
+            setEspacosPublicos={setEspacosPublicos}
           />
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Linhas por página:</span>
+              <span className="text-sm text-gray-600">Itens por página:</span>
 
               <Select
                 value={itemsPerPage.toString()}
@@ -174,12 +163,6 @@ export function BannersPage() {
           </div>
         </div>
       </LayoutPage>
-
-      <AddBannerModal
-        isOpen={isOpenAddBannerModal}
-        onClose={() => setIsOpenAddBannerModal(false)}
-        setBanners={setBanners}
-      />
     </>
   );
 }

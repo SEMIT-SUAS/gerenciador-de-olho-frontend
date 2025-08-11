@@ -9,16 +9,16 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useState, type Dispatch, type SetStateAction } from 'react';
-import bannersService from '@/services/bannersService';
 import type { BannerModel } from '@/types/Banner';
 import { AddBannerFormSchema, type AddBannerFormValues } from './types';
 import { Loading } from '@/components/Loading/Loading';
-import { ImageInput } from '../ImageInput';
+import { ImageInput } from '@/components/Forms/ImageInput';
 import { Checkbox } from '@/components/ui/checkbox';
+import bannersService from '@/services/bannersService';
 
 type AddABannerFormProps = {
   setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
@@ -34,7 +34,7 @@ export function AddABannerForm({ setBanners, onSuccess }: AddABannerFormProps) {
       name: '',
       link: '',
       image: undefined,
-      visivel: false,
+      visivel: true,
     },
   });
 
@@ -111,7 +111,11 @@ export function AddABannerForm({ setBanners, onSuccess }: AddABannerFormProps) {
               <FormItem>
                 <FormLabel>Imagem do banner</FormLabel>
                 <FormControl>
-                  <ImageInput onChange={field.onChange} className="w-full" />
+                  <ImageInput
+                    value={field.value}
+                    onChange={field.onChange}
+                    className="w-full"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -130,9 +134,10 @@ export function AddABannerForm({ setBanners, onSuccess }: AddABannerFormProps) {
                   />
                 </FormControl>
                 <div className="space-y-1 leading-none">
-                  <FormLabel>Banner visível</FormLabel>
+                  <FormLabel>Vísivel</FormLabel>
                   <p className="text-sm text-muted-foreground">
-                    Se marcado, o banner será exibido automaticamente ao clicar
+                    Se marcado, o banner será exibido automaticamente ao ser
+                    cadastrado
                   </p>
                 </div>
                 <FormMessage />

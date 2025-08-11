@@ -37,7 +37,11 @@ export function ServicesListItem({
 
   return (
     <>
-      <TableRow key={servico.id}>
+
+      <TableRow
+        key={servico.id}
+        // onClick={() => navigate(`/servicos/${servico.id}`)}
+      >
         <TableCell>{servico.nome}</TableCell>
         <TableCell>{servico.nomeCategoria ?? '-'}</TableCell>
         <TableCell className="flex flex-wrap gap-2">

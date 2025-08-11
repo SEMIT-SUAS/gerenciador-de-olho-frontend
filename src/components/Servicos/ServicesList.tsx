@@ -29,13 +29,15 @@ export function ServicesList({ servicos, setServicos }: ServicesListProps) {
 
         <TableBody>
           {Array.isArray(servicos) &&
-            servicos.map((servico) => (
-              <ServicesListItem
-                key={servico.id}
-                servico={servico}
-                setServicos={setServicos}
-              />
-            ))}
+            servicos
+              .filter((s) => s.ativo) // <-- Adicione esta linha
+              .map((servico) => (
+                <ServicesListItem
+                  key={servico.id}
+                  servico={servico}
+                  setServicos={setServicos}
+                />
+              ))}
         </TableBody>
       </Table>
     </>

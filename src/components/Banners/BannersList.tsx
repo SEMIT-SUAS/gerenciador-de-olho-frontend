@@ -8,96 +8,119 @@ import {
   TableRow,
 } from '../ui/table';
 import { RenderIf } from '../RenderIf';
-import { SkeletonImage } from '../Loading/SkeletonImage';
-import { SkeletonItem } from '../Loading/SkeletonItem';
 import { BannerItem } from './BannerItem';
 import type { Dispatch, SetStateAction } from 'react';
+import { ImageSkeleton } from '../Loading/ImageSkeleton';
+import { ListItemSkeleton } from '../Loading/ListItemSkeleton';
+import { IconPhotoOff } from '@tabler/icons-react';
+import { Card, CardContent } from '../ui/card';
 
 type BannerListProps = {
-  searchTerm: string;
   banners: BannerModel[] | null;
   itemsPerPage: number;
   setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
 };
 
 export function BannersList({
-  searchTerm,
   itemsPerPage,
   banners,
   setBanners,
 }: BannerListProps) {
   return (
-    <Table className="rounded-md overflow-hidden border border-solid shadow-lg">
-      <TableHeader>
-        <TableRow>
-          <TableHead>Imagem</TableHead>
-          <TableHead>Nome</TableHead>
-          <TableHead>Link</TableHead>
-          <TableHead>Ações</TableHead>
-        </TableRow>
-      </TableHeader>
-
-      <TableBody>
-        {banners ? (
-          <RenderIf
-            condition={banners.length > 0}
-            ifRender={banners?.map((banner) => (
-              <BannerItem
-                key={banner.id}
-                banner={banner}
-                setBanners={setBanners}
-              />
-            ))}
-            elseRender={
+    <Card className="py-0">
+      <CardContent className="p-0">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={4} className="py-8 text-center">
-                  <p className="text-sm text-gray-500">
-                    {searchTerm
-                      ? `Nenhum resultado para "${searchTerm}"`
-                      : 'Nenhum banner encontrado'}
-                  </p>
-                </TableCell>
+                <TableHead className="w-[150px]">Imagem</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Link</TableHead>
+                <TableHead className="w-[120px]">Ações</TableHead>
               </TableRow>
-            }
-          />
-        ) : (
-          Array.from({ length: itemsPerPage }).map((_, idx) => (
-            <TableRow key={`skeleton-${idx}`}>
-              <TableCell className="border-r">
-                <div className="flex items-center gap-3">
-                  <SkeletonImage height={40} width={40} className="rounded" />
-                  <SkeletonItem titleWidth="20" className="p-0 border-0" />
-                </div>
-              </TableCell>
-              <TableCell className="border-r">
-                <SkeletonItem titleWidth="3/4" className="p-0 border-0" />
-              </TableCell>
-              <TableCell className="border-r">
-                <SkeletonItem titleWidth="1/2" className="p-0 border-0" />
-              </TableCell>
-              <TableCell>
-                <div className="flex gap-4">
-                  <SkeletonImage
-                    height={24}
-                    width={24}
-                    className="rounded-full"
-                  />
-                  <SkeletonImage
-                    height={24}
-                    width={24}
-                    className="rounded-full"
-                  />
-                  <SkeletonImage
-                    height={24}
-                    width={24}
-                    className="rounded-full"
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
-          ))
-        )}
-      </TableBody>
-    </Table>
+            </TableHeader>
+
+            <TableBody>
+              {banners ? (
+                <RenderIf
+                  condition={banners.length > 0}
+                  ifRender={banners?.map((banner) => (
+                    <BannerItem
+                      key={banner.id}
+                      banner={banner}
+                      setBanners={setBanners}
+                    />
+                  ))}
+                  elseRender={
+                    <TableRow>
+                      <TableCell colSpan={4} className="py-8 text-center">
+                        <div className="flex flex-col items-center justify-center space-y-2">
+                          <IconPhotoOff className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto" />
+                          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Nenhum banner encontrado
+                          </h3>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  }
+                />
+              ) : (
+                Array.from({ length: itemsPerPage }).map((_, idx) => (
+                  <TableRow key={`skeleton-${idx}`}>
+                    <TableCell className="border-r">
+                      <div className="flex items-center gap-3">
+                        <ImageSkeleton
+                          height={40}
+                          width={40}
+                          className="rounded"
+                        />
+                        <ListItemSkeleton
+                          titleWidth="20"
+                          className="p-0 border-0"
+                        />
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="border-r">
+                      <ListItemSkeleton
+                        titleWidth="3/4"
+                        className="p-0 border-0"
+                      />
+                    </TableCell>
+
+                    <TableCell className="border-r">
+                      <ListItemSkeleton
+                        titleWidth="1/2"
+                        className="p-0 border-0"
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="flex gap-4">
+                        <ImageSkeleton
+                          height={24}
+                          width={24}
+                          className="rounded-full"
+                        />
+                        <ImageSkeleton
+                          height={24}
+                          width={24}
+                          className="rounded-full"
+                        />
+                        <ImageSkeleton
+                          height={24}
+                          width={24}
+                          className="rounded-full"
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

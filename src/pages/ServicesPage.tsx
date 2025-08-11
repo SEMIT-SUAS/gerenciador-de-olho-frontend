@@ -4,7 +4,6 @@ import { getAllServices } from '@/services/servicosServices';
 import { toast } from 'sonner';
 import type { ServicosListar } from '@/types/ServicosListar';
 import { Button } from '@/components/ui/button';
-
 import { ServicesList } from '../components/Servicos/ServicesList';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SearchInput } from '@/components/ui/input';
@@ -23,20 +22,30 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
 } from '@tabler/icons-react';
+import { getAllServicoExterno } from '@/services/servicosExternosService';
+import type { ServicoExterno } from '@/types/servicoExterno';
+import { ServicosExternosList } from '@/components/ServicosExternos/ServicosExternosList';
 
 export function ServicesPage() {
-  const [services, setServices] = useState<ServicosListar[]>([]);
+  const [cartaDeServicos, setCartaDeServicos] = useState<ServicosListar[]>([]);
+  const [servicosExternos, setServicosExternos] = useState<ServicoExterno[]>(
+    [],
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [activeTab, setActiveTab] = useState('servicos');
 
   async function fetchServices() {
     try {
       setLoading(true);
-      const data = await getAllServices();
-      setServices(data);
+      const dataCartaDeServico = await getAllServices();
+      const dataServicoExterno = await getAllServicoExterno();
+
+      setCartaDeServicos(dataCartaDeServico);
+      setServicosExternos(dataServicoExterno);
     } catch (err: any) {
       setError(err.message || 'Erro ao buscar os serviços.');
       toast.error(err.message || 'Erro ao buscar os serviços.');
@@ -49,7 +58,11 @@ export function ServicesPage() {
     fetchServices();
   }, []);
 
-  const filtered = services.filter((s) =>
+  const filteredCartaDeServicos = cartaDeServicos.filter((s) =>
+    s.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const filteredServicosExternos = servicosExternos.filter((s) =>
     s.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
@@ -74,11 +87,21 @@ export function ServicesPage() {
     );
   }
 
+  const activeList =
+    activeTab === 'servicos'
+      ? filteredCartaDeServicos
+      : filteredServicosExternos;
+
   const itemsPerPageOptions = [8, 16, 24];
 
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const totalPages = Math.ceil(activeList.length / itemsPerPage);
 
-  const currentData = filtered.slice(
+  const currentDataCartaDeServicos = filteredCartaDeServicos.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
+
+  const currentDataServicosExternos = filteredServicosExternos.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
@@ -87,19 +110,32 @@ export function ServicesPage() {
     <LayoutPage>
       <div className="flex flex-col gap-6 py-8 px-36">
         <div className="max-w-[640px]">
-          <h2 className="text-3xl font-bold tracking-tight">Serviços</h2>
+          <h2 className="text-3xl font-bold tracking-tight">
+            {activeTab === 'servicos'
+              ? 'Carta de Serviços'
+              : 'Serviços Externos'}
+          </h2>
           <p className="text-slate-600 text-xs mt-1">
             Gerencie os serviços disponíveis com clareza e objetividade.
           </p>
         </div>
 
         <div className="flex items-center justify-between">
-          <Tabs defaultValue="servicos" className="w-[400px]">
+          <Tabs
+            defaultValue="servicos"
+            value={activeTab}
+            onValueChange={(value) => {
+              setActiveTab(value);
+              setCurrentPage(1);
+            }}
+            className="w-[400px]"
+          >
             <TabsList>
               <TabsTrigger value="servicos">Serviços</TabsTrigger>
               <TabsTrigger value="externos">Serviços Externos</TabsTrigger>
             </TabsList>
           </Tabs>
+
           <div className="flex gap-2">
             <div className="w-[320px]">
               <SearchInput
@@ -121,7 +157,18 @@ export function ServicesPage() {
           </div>
         </div>
 
-        <ServicesList setServicos={setServices} servicos={currentData} />
+        {activeTab === 'servicos' ? (
+          <ServicesList
+            setServicos={setCartaDeServicos}
+            servicos={currentDataCartaDeServicos}
+          />
+        ) : (
+          <ServicosExternosList
+            setServicos={setServicosExternos}
+            servicos={servicosExternos}
+          />
+        )}
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600">Linhas por página:</span>

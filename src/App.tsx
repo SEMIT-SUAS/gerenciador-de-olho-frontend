@@ -15,16 +15,20 @@ import { AddAcao } from './components/SidePanel/Acao/AddAcao';
 import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
 import { ServicoDetalhes } from './components/Servicos/ServicoDetalhes';
 import ServicoEditarPage from './components/Servicos/ServicoEditar';
-import { PortaisList } from './pages/portais/PortaisList';
+import { ListaCategorias } from './pages/categoriasServicos/Categorialist';
 import ServicoNovo from './components/Servicos/ServicoNovo';
 import { ServicesPage } from './pages/ServicesPage';
-
 import { NotFoundPage } from './pages/404';
 import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
 import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
 import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
 import { CategoriasPage } from './pages/CategoriaServicoPage';
+import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
+import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
+import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/edit';
+import { PortaisPage } from './pages/PortaisPage';
+
 
 export function App() {
   return (
@@ -76,12 +80,19 @@ export function App() {
           <Route path=":id" element={<ServicoDetalhes />} />
           <Route path="editar/:id" element={<ServicoEditarPage />} />
         </Route>
-        <Route path="/portais" element={<PortaisList />} />
+
+        <Route path="/portais" element={<PortaisPage />} />
         <Route path="/banners" element={<BannersPage />} />
+
+        <Route path="/espacos-publicos">
+          <Route index element={<EspacosPublicosPage />} />
+          <Route path="add" element={<AddEspacoPublicoPage />} />
+          <Route path="edit/:id" element={<EditEspacoPublicoPage />} />
+        </Route>
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
-      {/* Notification systems */}
       <ToastContainer />
       <Toaster position="top-center" duration={3000} />
     </BrowserRouter>

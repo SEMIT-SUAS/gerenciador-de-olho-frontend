@@ -7,8 +7,11 @@ export const modules: Module[] = [
     title: 'Serviços',
     to: '/servicos',
     childs: [
+      { title: 'Carta de Serviços', to: '/servicos' },
+      { title: 'Serviços Externos', to: 'servicos-externos' },
       { title: 'Secretarias', to: '/secretarias' },
       { title: 'Personas', to: '/personas' },
+      { title: 'Categorias', to: '/categorias-servicos' },
     ],
   },
   { title: 'Banners', to: '/banners' },
