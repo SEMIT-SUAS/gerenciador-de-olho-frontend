@@ -27,6 +27,7 @@ import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
 import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
 import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/edit';
 import { PortaisPage } from './pages/PortaisPage';
+import { DenunciaCategoriasPage } from './pages/DenunciaCategoriasPage';
 
 export function App() {
   return (
@@ -87,6 +88,11 @@ export function App() {
           <Route path="add" element={<AddEspacoPublicoPage />} />
           <Route path="edit/:id" element={<EditEspacoPublicoPage />} />
         </Route>
+
+        <Route
+          path="/categorias-denuncia"
+          element={<DenunciaCategoriasPage />}
+        />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

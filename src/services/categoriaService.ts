@@ -1,89 +1,107 @@
-import type { CategoriaDenunciaModel } from '../types/CategoriaDenuncia';
+import { API_BASE_URL } from '@/config/api';
+import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
+import { getAPIFileURL } from '@/utils/getAPIFileURL';
 
-const acessibilidadeTipos = [
-  { id: 1, nome: 'Acessibilidade irregular' },
-  { id: 2, nome: 'Falta de acessibilidade' },
-];
+async function create(data: FormData): Promise<CategoriaDenunciaModel> {
+  const response = await fetch(`${API_BASE_URL}/categoria-denuncia/cadastrar`, {
+    method: 'POST',
+    body: data,
+  });
 
-const infraestruturaTipos = [
-  { id: 3, nome: 'Bueiro aberto' },
-  { id: 4, nome: 'Buraco na rua' },
-  { id: 5, nome: 'Capinacao' },
-  { id: 6, nome: 'Coleta de lixo' },
-  { id: 7, nome: 'Enchente' },
-  { id: 8, nome: 'Lampada queimada' },
-  { id: 9, nome: 'Limpeza de vias' },
-  { id: 10, nome: 'Manutencao praca publica' },
-  { id: 11, nome: 'Manutencao predio publico' },
-  { id: 12, nome: 'Manutencao quadra' },
-  { id: 13, nome: 'Podar arvores' },
-  { id: 14, nome: 'Sem asfalto' },
-];
+  if (response.status != 201) {
+    throw new Error('Não foi possível criar uma categoria');
+  }
 
-const meioAmbienteTipos = [
-  { id: 15, nome: 'Descarte ilegal' },
-  { id: 16, nome: 'Desmatamento ilegal' },
-  { id: 17, nome: 'Poluicao sonora' },
-];
+  const body = await response.json();
+  body.icone = getAPIFileURL(body.icone);
 
-const saudePublicaTipos = [
-  { id: 18, nome: 'Falta de medicamento' },
-  { id: 19, nome: 'Foco de dengue' },
-];
-
-const transitoETransporteTipos = [
-  { id: 20, nome: 'Estacionamento irregular' },
-  { id: 21, nome: 'Ma sinalizacao' },
-  { id: 22, nome: 'Semaforo quebrado' },
-];
-
-async function getAll(): Promise<CategoriaDenunciaModel[]> {
-  return [
-    {
-      id: 1,
-      nome: 'Acessibilidade',
-      cor: '#FF5733',
-      tipos: acessibilidadeTipos,
-    },
-    {
-      id: 2,
-      nome: 'Infraestrutura',
-      cor: '#333',
-      tipos: infraestruturaTipos,
-    },
-    {
-      id: 3,
-      nome: 'Meio Ambiente',
-      cor: '#33FF57',
-      tipos: meioAmbienteTipos,
-    },
-    {
-      id: 4,
-      nome: 'Saúde Pública',
-      cor: '#5733FF',
-      tipos: saudePublicaTipos,
-    },
-    {
-      id: 5,
-      nome: 'Trânsito e Transporte',
-      cor: '#A1FF33',
-      tipos: transitoETransporteTipos,
-    },
-  ];
+  return body;
 }
 
-async function getTipoById(tipoId: number) {
-  const allTipos = [
-    ...acessibilidadeTipos,
-    ...infraestruturaTipos,
-    ...meioAmbienteTipos,
-    ...saudePublicaTipos,
-    ...transitoETransporteTipos,
-  ];
-  return allTipos.find((tipo) => tipo.id === tipoId);
+async function getAll(): Promise<CategoriaDenunciaModel[]> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/categoria-denuncia/listar-ativos`,
+      {
+        method: 'GET',
+      },
+    );
+
+    if (response.status != 200) {
+      throw new Error('Não foi possível listar as categorias');
+    }
+
+    return await response.json();
+  } catch {
+    throw new Error('Serviço indisponível');
+  }
+}
+
+async function trash(categoryId: number): Promise<void> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/categoria-denuncia/atualizar/atividade`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: categoryId, ativo: false }),
+      },
+    );
+
+    if (response.status != 200) {
+      throw new Error('Não foi possível deletar a categoria');
+    }
+  } catch {
+    throw new Error('Serviço indisponível');
+  }
+}
+
+async function update(data: FormData): Promise<CategoriaDenunciaModel> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/categoria-denuncia/atualizar`,
+      {
+        method: 'PUT',
+        body: data,
+      },
+    );
+
+    if (response.status != 200) {
+      throw new Error('Não foi possível editar essa categoria');
+    }
+
+    const body = await response.json();
+    body.icone = getAPIFileURL(body.icone);
+
+    return body;
+  } catch {
+    throw new Error('Serviço indisponível');
+  }
+}
+
+async function toggleVisibility(categoryId: number, visibility: boolean) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/categoria-denuncia/atualizar/visibilidade`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: categoryId, visivel: visibility }),
+      },
+    );
+
+    if (response.status != 200) {
+      throw new Error('Não foi possível alterar a visibilidade da categoria');
+    }
+  } catch {
+    throw new Error('Serviço indisponível');
+  }
 }
 
 export default {
+  create,
   getAll,
-  getTipoById,
+  trash,
+  update,
+  toggleVisibility,
 };

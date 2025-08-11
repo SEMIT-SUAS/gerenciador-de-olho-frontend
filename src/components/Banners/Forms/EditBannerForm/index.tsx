@@ -68,10 +68,6 @@ export function EditBannerForm({
 
     try {
       setIsSubmitingEditBannerForm(true);
-      Array.from(formData.entries()).forEach(([key, value]) => {
-        console.log(key, value);
-      });
-
       const dataUpdated = await bannersService.update(formData);
 
       setBanners(
