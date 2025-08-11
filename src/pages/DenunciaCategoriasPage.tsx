@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
 import { Pagination } from '@/components/Pagination';
 import { CategoriasList } from '@/components/Categorias/CategoriasList';
+import { AddCategoriaModal } from '@/components/Categorias/Modals/AddCategoriaModal';
 
 export function DenunciaCategoriasPage() {
   const [categorias, setCategorias] = useState<CategoriaDenunciaModel[] | null>(
@@ -94,11 +95,11 @@ export function DenunciaCategoriasPage() {
         </div>
       </LayoutPage>
 
-      {/* <AddBannerModal
-        isOpen={isOpenAddBannerModal}
-        onClose={() => setIsOpenAddBannerModal(false)}
-        setBanners={setBanners}
-      /> */}
+      <AddCategoriaModal
+        isOpen={isOpenAddCategoriaModal}
+        onClose={() => setIsOpenAddCategoriaModal(false)}
+        setCategorias={setCategorias}
+      />
     </>
   );
 }

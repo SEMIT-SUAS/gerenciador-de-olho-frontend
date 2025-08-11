@@ -1,5 +1,8 @@
 export interface Module {
   title: string;
   to?: string;
-  childs?: Module[];
+  childs?: {
+    title: string;
+    to: string;
+  }[];
 }

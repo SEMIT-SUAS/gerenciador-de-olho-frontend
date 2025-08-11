@@ -1,13 +1,30 @@
 import type { Module } from './types';
 
 export const modules: Module[] = [
-  { title: 'Ocorrências', to: '/ocorrencias' },
+  {
+    title: 'Ocorrências',
+    to: '',
+    childs: [
+      {
+        title: 'Denúncias & Ações',
+        to: '/ocorrencias',
+      },
+      {
+        title: 'Categorias',
+        to: '/categorias-denuncia',
+      },
+      {
+        title: 'Tipos',
+        to: '/tipos-denuncia',
+      },
+    ],
+  },
   { title: 'Reserva', to: '/reserva' },
   {
     title: 'Serviços',
-    to: '/servicos',
+    to: '',
     childs: [
-      {title: 'Todos os Serviços', to: '/servicos'},
+      { title: 'Todos os Serviços', to: '/servicos' },
       { title: 'Secretarias', to: '/secretarias' },
       { title: 'Personas', to: '/personas' },
     ],

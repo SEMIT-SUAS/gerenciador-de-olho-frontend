@@ -1,7 +1,9 @@
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import { useState, type Dispatch, type SetStateAction } from 'react';
-import { Loading } from '../Loading/Loading';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
+import { Loader2 } from 'lucide-react';
+import categoriaService from '@/services/categoriaService';
+import { toast } from 'sonner';
 
 type CategoryVisibilityProps = {
   category: CategoriaDenunciaModel;
@@ -15,28 +17,28 @@ export function CategoryVisibility({
   const [isChangingVisibility, setIsChangingVisibility] = useState(false);
 
   async function handleOnClickButton() {
-    // try {
-    //   setIsChangingVisibility(true);
-    //   await categoriaService.toggleVisibility(banner.id, !banner.visivel);
-    //   setBanners(
-    //     (prev) =>
-    //       prev?.map((prevBanner) =>
-    //         prevBanner.id === banner.id
-    //           ? { ...prevBanner, visivel: !banner.visivel }
-    //           : prevBanner,
-    //       ) ?? null,
-    //   );
-    // } catch (error: any) {
-    //   toast.error(error.message);
-    // } finally {
-    //   setIsChangingVisibility(false);
-    // }
+    try {
+      setIsChangingVisibility(true);
+      await categoriaService.toggleVisibility(category.id, !category.visivel);
+      setCategories(
+        (prev) =>
+          prev?.map((prevCategory) =>
+            prevCategory.id === category.id
+              ? { ...prevCategory, visivel: !category.visivel }
+              : prevCategory,
+          ) ?? null,
+      );
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsChangingVisibility(false);
+    }
   }
 
   return (
     <button onClick={handleOnClickButton}>
       {isChangingVisibility ? (
-        <Loading className="size-[18px]" />
+        <Loader2 className="size-[18px]" />
       ) : category.visivel ? (
         <IconEye stroke={2.3} size={18} />
       ) : (

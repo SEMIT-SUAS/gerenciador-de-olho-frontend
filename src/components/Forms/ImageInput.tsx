@@ -10,6 +10,9 @@ type ImageInputProps = {
   onChange?: (file: File | undefined) => void;
   className?: string;
   initialImageUrl?: string;
+  width?: string | number; // Nova prop para largura
+  height?: string | number; // Nova prop para altura
+  aspectRatio?: string; // Nova prop para aspect ratio (ex: "16/9")
 };
 
 export function ImageInput({
@@ -17,6 +20,9 @@ export function ImageInput({
   onChange,
   className = '',
   initialImageUrl,
+  width = '100%', // Valor padrão
+  height = 'auto', // Valor padrão
+  aspectRatio, // Opcional
 }: ImageInputProps) {
   const [dragActive, setDragActive] = useState(false);
   const [isImageRemoved, setIsImageRemoved] = useState(false);
@@ -76,18 +82,29 @@ export function ImageInput({
     }
   }, [value]);
 
+  // Estilos dinâmicos baseados nas props
+  const containerStyle = {
+    width: typeof width === 'number' ? `${width}px` : width,
+    height: typeof height === 'number' ? `${height}px` : height,
+  };
+
+  const labelStyle = {
+    aspectRatio: aspectRatio ? aspectRatio : undefined,
+  };
+
   return (
-    <div className={cn('relative w-full', className)}>
+    <div className={cn('relative', className)} style={containerStyle}>
       <label
         htmlFor="single-image-upload"
         className={cn(
-          'group relative flex cursor-pointer aspect-video w-full items-center justify-center rounded-lg border-2 border-dashed transition-colors duration-300',
+          'group relative flex cursor-pointer w-full h-full items-center justify-center rounded-lg border-2 border-dashed transition-colors duration-300 overflow-hidden',
           {
             'border-blue-500 bg-slate-50 dark:bg-slate-800/80': dragActive,
             'border-slate-300 hover:border-blue-500 dark:border-slate-700 dark:hover:bg-slate-800/80':
               !dragActive,
           },
         )}
+        style={labelStyle}
         onDrop={handleDrop}
         onDragOver={(e) => handleDragEvents(e, true)}
         onDragLeave={(e) => handleDragEvents(e, false)}
@@ -97,9 +114,9 @@ export function ImageInput({
             <img
               src={previewUrl}
               alt="Preview"
-              className="h-full w-full rounded-lg object-cover"
+              className="h-full w-full object-cover"
             />
-            <div className="absolute inset-0 rounded-lg bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <button
               type="button"
               onClick={removeImage}
