@@ -7,8 +7,8 @@ import { SearchInput } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
 import { Pagination } from '@/components/Pagination';
-import { CategoriasList } from '@/components/Categorias/CategoriasList';
-import { AddCategoriaModal } from '@/components/Categorias/Modals/AddCategoriaModal';
+import { CategoriasList } from '@/components/DenunciaCategorias/CategoriasList';
+import { AddCategoriaModal } from '@/components/DenunciaCategorias/Modals/AddCategoriaModal';
 
 export function DenunciaCategoriasPage() {
   const [categorias, setCategorias] = useState<CategoriaDenunciaModel[] | null>(
