@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 /* Para navegadores Webkit (Chrome, Safari, Edge, etc.) */
 .custom-scrollbar-blue::-webkit-scrollbar {
   height: 8px; /* Altura da barra de rolagem */
