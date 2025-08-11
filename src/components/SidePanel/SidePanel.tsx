@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+/* import { useState, useEffect, useContext } from 'react';
 import type { Denuncia } from '../../types/Denuncia';
 import type { Acao } from '../../types/Acao';
 import { ItemDetailsView } from './ItemDetailsView';
@@ -184,3 +184,4 @@ export function SidePanel({
     </>
   );
 }
+ */

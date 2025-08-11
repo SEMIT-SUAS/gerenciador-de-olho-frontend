@@ -1,4 +1,4 @@
-import {
+/* import {
   useContext,
   useEffect,
   useState,
@@ -253,10 +253,10 @@ export function AddDenunciaForm({
                 </FormGroup>
               ))}
             </div>
-          </div>
+          </div> */
 
           {/* Categoria */}
-          <FormGroup>
+          /*{ <FormGroup>
             <Label htmlFor="categoryId">Categoria da denúncia</Label>
             <div className="relative">
               <select
@@ -283,9 +283,9 @@ export function AddDenunciaForm({
             </div>
             <FormInputError message={formErrors.categoryId?._errors?.[0]} />
           </FormGroup>
-
+ }*/
           {/* Tipo da denúncia */}
-          {formData.categoryId > 0 && (
+          /* {formData.categoryId > 0 && (
             <FormGroup>
               <Label htmlFor="categoryTipoId">Tipo da denúncia</Label>
               <div className="relative">
@@ -315,10 +315,10 @@ export function AddDenunciaForm({
                 message={formErrors.categoryTipoId?._errors?.[0]}
               />
             </FormGroup>
-          )}
+          )} */
 
           {/* Descrição */}
-          <FormGroup>
+          {/* <FormGroup>
             <Label htmlFor="description">Descrição da ocorrência</Label>
             <textarea
               id="description"
@@ -331,10 +331,10 @@ export function AddDenunciaForm({
               className="block w-full rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm p-3 border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
             />
             <FormInputError message={formErrors.description?._errors?.[0]} />
-          </FormGroup>
+          </FormGroup> */}
 
           {/* Upload de imagens */}
-          <FormGroup>
+          {/* <FormGroup>
             <Label htmlFor="files">Fotos ou Vídeos (até 5)</Label>
             <input
               type="file"
@@ -390,3 +390,4 @@ export function AddDenunciaForm({
     </>
   )
 }
+ */}

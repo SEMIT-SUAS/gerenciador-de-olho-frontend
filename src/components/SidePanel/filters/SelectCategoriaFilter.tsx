@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent } from "react"
+/* import { useEffect, useState, type ChangeEvent } from "react"
 import type { Categoria, Categorias } from "../../../types/CategoriaDenuncia"
 import categoriaService from "../../../services/categoriaDenunciaService"
 import { toast } from "react-toastify"
@@ -47,4 +47,4 @@ export function SelectCategoriaFilter({ onCategoriaChange }: SelectCategoriaFilt
             </div>
         </div>
     )
-}
+} */

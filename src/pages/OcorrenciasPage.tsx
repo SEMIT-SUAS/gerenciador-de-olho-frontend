@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+/* import { useMemo, useState } from 'react';
 import type { Acao } from '../types/Acao';
 import type { Denuncia } from '../types/Denuncia';
 import { SidePanel } from '../components/SidePanel/SidePanel';
@@ -130,3 +130,4 @@ export function OcorrenciasPage() {
     </div>
   );
 }
+ */

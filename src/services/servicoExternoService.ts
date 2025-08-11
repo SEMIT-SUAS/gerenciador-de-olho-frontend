@@ -47,6 +47,28 @@ export async function getAllServicoExterno(): Promise<ServiceExterno[]> {
   }
 }
 
+export async function getServicoExternoById(id: number): Promise<ServiceExterno> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/servico-externo/buscar/${id}`);
+
+    const contentType = response.headers.get("content-type");
+
+    if (!response.ok) {
+      if (contentType?.includes("application/json")) {
+        const errorJson = await response.json();
+        throw new Error(errorJson.message || "Erro ao buscar servico externo.");
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || "Erro ao buscar servico externo.");
+      }
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    throw new Error(error.message || "Erro desconhecido ao buscar espaço público.");
+  }
+}
+
 export async function changeServiceVisibility(id: number, visivel: boolean): Promise<ServiceExterno | { retorno: string }> {
   try {
     const response = await fetch(`${API_BASE_URL}/servico-externo/atualizar/visibilidade`, {
@@ -101,5 +123,35 @@ export async function changeServiceExternoAtivo(id: number, ativo: boolean): Pro
   }
 }
 
+export async function updateServicoExterno(formData: FormData): Promise<void | { retorno: string; }> {
+  try {
+  const response = await fetch(`${API_BASE_URL}/servico-externo/atualizar`, {
+    method: 'PUT',
+    body: formData,
+  });
 
+  const contentType = response.headers.get("content-type");
 
+    if (!response.ok) {
+      if (contentType?.includes("application/json")) {
+        const errorJson = await response.json();
+        console.error("Erro da API:", errorJson);
+        throw new Error(errorJson.message || "Erro ao alterar visibilidade do serviço.");
+      } else {
+        const errorText = await response.text();
+        console.error("Erro da API (texto):", errorText);
+        throw new Error(errorText || "Erro ao alterar visibilidade do serviço.");
+      }
+    }
+
+    if (contentType?.includes("application/json")) {
+      return await response.json();
+    } else {
+      const text = await response.text();
+      return { retorno: text };
+    }
+  } catch (error: any) {
+    console.error("Erro no catch do changeServiceVisibility:", error);
+    throw new Error(error.message || "Erro desconhecido ao alterar visibilidade do serviço.");
+  }
+}

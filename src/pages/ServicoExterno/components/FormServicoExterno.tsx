@@ -11,6 +11,7 @@ type Props = {
 export function FormServicoExterno({ onClose, onSuccess }: Props) {
   const [nome, setNome] = useState("");
   const [imagem, setImagem] = useState<File | null>(null);
+  const [link, setLink] = useState("");
   const [visivel, setVisivel] = useState(true);
   const [ativo, setAtivo] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -19,7 +20,8 @@ export function FormServicoExterno({ onClose, onSuccess }: Props) {
     e.preventDefault();
     setLoading(true);
 
-    const servicoData = { nome, visivel, ativo, imagem: imagem ?? undefined };
+    // Adicione `link` no objeto para validação do schema
+    const servicoData = { nome, link, visivel, ativo, imagem: imagem ?? undefined };
     const parsed = servicoSchema.safeParse(servicoData);
 
     if (!parsed.success) {
@@ -31,6 +33,7 @@ export function FormServicoExterno({ onClose, onSuccess }: Props) {
 
     const formData = new FormData();
     formData.append("nome", nome);
+    formData.append("link", link);  // aqui adiciona link no formData
     if (imagem) formData.append("imagem", imagem);
     formData.append("visivel", String(visivel));
     formData.append("ativo", String(ativo));
@@ -54,6 +57,11 @@ export function FormServicoExterno({ onClose, onSuccess }: Props) {
           <div>
             <label>Nome:</label>
             <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} required />
+          </div>
+
+          <div>
+            <label>Link:</label>
+            <input type="url" value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://exemplo.com" />
           </div>
 
           <div>

@@ -1,6 +1,6 @@
 // Navigator.tsx
 import { Routes, Route } from "react-router-dom";
-import { OcorrenciasPage } from "../pages/OcorrenciasPage";
+/* import { OcorrenciasPage } from "../pages/OcorrenciasPage"; */
 import { ListaCategorias } from "../pages/categoriasServicos/Categorialist";
 import { PortaisList } from "../pages/portais/PortaisList";
 import { BannerList } from "../pages/banner/Bannerlist";
@@ -18,7 +18,7 @@ import {ListaCategoriaDenuncia} from "../pages/categoriaDenuncias/PageCategoriaD
 export function Navigator() {
   return (
     <Routes>
-      <Route index element={<OcorrenciasPage />} />
+      {/* <Route index element={<OcorrenciasPage />} /> */}
       <Route path="/categorias" element={<ListaCategorias/>} />
       <Route path="/portais" element={<PortaisList/>} />
       <Route path="/banner" element={<BannerList/>} />
