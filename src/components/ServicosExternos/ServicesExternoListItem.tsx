@@ -1,11 +1,12 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'sonner';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { useNavigate } from 'react-router-dom';
 import { IconEdit, IconEye, IconEyeOff, IconTrash } from '@tabler/icons-react';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import type { ServicoExterno } from '@/types/ServicoExterno';
+
 import servicosExternosService from '@/services/servicosExternosService';
+import { FormServicoExterno } from './FormServicoExterno';
 
 interface ServiceListItemProps {
   servico: ServicoExterno;
@@ -18,8 +19,7 @@ export function ServicesExternoListItem({
 }: ServiceListItemProps) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenVisibleModal, setIsOpenVisibleModal] = useState(false);
-
-  const navigate = useNavigate();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   async function handleDeleteServico() {
     try {
@@ -66,10 +66,11 @@ export function ServicesExternoListItem({
           <div className="gap-6">
             <button
               className="text-black-600 mr-2"
-              onClick={() => navigate(`/servicos/editar/${servico.id}`)}
+              onClick={() => setIsEditModalOpen(true)}
             >
               <IconEdit size={18} stroke={2} className="text-black-600" />
             </button>
+
             <button
               onClick={() => setIsOpenDeleteModal(true)}
               className="text-black-600 mr-2"
@@ -89,6 +90,17 @@ export function ServicesExternoListItem({
           </div>
         </TableCell>
       </TableRow>
+      {isEditModalOpen && (
+        <FormServicoExterno
+          mode="edit"
+          defaultValues={servico} //mudar de file para string no FormServicoExterno ou ao contrario
+          onClose={() => setIsEditModalOpen(false)}
+          onSuccess={() => {
+            setIsEditModalOpen(false);
+            // TODO: atualizar a lista se necessário
+          }}
+        />
+      )}
 
       <ConfirmModal
         isOpen={isOpenDeleteModal}
