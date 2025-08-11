@@ -8,11 +8,7 @@ interface Props {
 }
 
 export function CategoriaItem({ cat, onToggleAtivo, onToggleVisivel, onEdit }: Props) {
-  const src = typeof cat.icone === "string"
-    ? cat.icone
-    : cat.icone instanceof File
-      ? URL.createObjectURL(cat.icone)
-      : "";
+  const src = typeof cat.icone === "string" ? cat.icone : cat.icone instanceof File ? URL.createObjectURL(cat.icone): "";
 
   return (
     <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>

@@ -8,7 +8,7 @@ import { ServicesList } from "../pages/services/ServicesList";
 import { ServicoDetalhes } from "../pages/services/ServicoDetalhes";
 import { ServicoNovo } from "../pages/services/ServicoNovo";
 import { ServicoEditar } from "../pages/services/ServicoEditar";
-import{ ServicoExternoList } from "../pages/ServicoExterno/ServicoExternoList"
+import { ServicoExternoList } from "../pages/ServicoExterno/ServicoExternoList"
 import { SecretariaPage } from "../pages/secretaria/SecretariaPage";
 import { EspacoPublicoForm } from "../pages/espacoPublico/EspacoPublicoCadastrar";
 import { EspacoPublicoList } from "../pages/espacoPublico/EspacoPublicoPage";
