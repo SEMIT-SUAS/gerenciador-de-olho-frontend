@@ -4,7 +4,6 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'sonner';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ServicoVisibility } from '@/components/Servicos/ServicoVisibility';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
@@ -19,8 +18,6 @@ export function ServicesListItem({
   setServicos,
 }: ServiceListItemProps) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-
-  const navigate = useNavigate();
 
   async function handleDeleteServico() {
     try {
@@ -40,6 +37,7 @@ export function ServicesListItem({
 
   return (
     <>
+
       <TableRow
         key={servico.id}
         // onClick={() => navigate(`/servicos/${servico.id}`)}
@@ -60,10 +58,7 @@ export function ServicesListItem({
         </TableCell>
         <TableCell>
           <div className="gap-6">
-            <button
-              className="text-black-600 mr-2"
-              onClick={() => navigate(`/servicos/editar/${servico.id}`)}
-            >
+            <button className="text-black-600 mr-2">
               <IconEdit size={18} stroke={2} className="text-black-600" />
             </button>
             <button
@@ -78,10 +73,12 @@ export function ServicesListItem({
           </div>
         </TableCell>
       </TableRow>
-
       <ConfirmModal
         isOpen={isOpenDeleteModal}
-        onConfirm={handleDeleteServico}
+        onConfirm={async () => {
+          await handleDeleteServico();
+          window.location.reload();
+        }}
         onCancel={() => setIsOpenDeleteModal(false)}
         title="Você deseja apagar o serviço?"
         message="Tem certeza de que quer apagar o serviço? Ao confirmar, todos os dados relacionados a ele serão permanentemente excluídos."

@@ -23,10 +23,12 @@ import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
 import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
 import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
+import { CategoriasPage } from './pages/CategoriaServicoPage';
 import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
 import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
 import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/edit';
 import { PortaisPage } from './pages/PortaisPage';
+
 
 export function App() {
   return (
@@ -73,7 +75,7 @@ export function App() {
 
         <Route path="/servicos">
           <Route index element={<ServicesPage />} />
-          <Route path="categorias" element={<ListaCategorias />} />
+          <Route path="categorias" element={<CategoriasPage />} />
           <Route path="novo" element={<ServicoNovo />} />
           <Route path=":id" element={<ServicoDetalhes />} />
           <Route path="editar/:id" element={<ServicoEditarPage />} />
