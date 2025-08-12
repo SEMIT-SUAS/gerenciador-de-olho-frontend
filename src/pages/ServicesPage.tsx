@@ -128,7 +128,6 @@ export function ServicesPage() {
             value={activeTab}
             onValueChange={(value) => {
               setActiveTab(value);
-              setCurrentPage(1);
             }}
             className="w-[400px]"
           >
@@ -150,13 +149,27 @@ export function ServicesPage() {
               />
             </div>
 
-            <Button
-              variant="outline"
-              onClick={() => setIsCreateModalOpen(true)}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Adicionar serviço
-            </Button>
+            {activeTab === 'servicos' ? (
+              <Button variant={'outline'} asChild>
+                <Link to={'/servicos/novo'}>
+                  <span className="flex items-center">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Adicionar serviço
+                  </span>
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                variant={'outline'}
+                onClick={() => setIsCreateModalOpen(true)}
+                asChild
+              >
+                <span className="flex items-center">
+                  <Plus className="h-4 w-4" />
+                  Adicionar serviço
+                </span>
+              </Button>
+            )}
           </div>
         </div>
 
@@ -168,7 +181,7 @@ export function ServicesPage() {
         ) : (
           <ServicosExternosList
             setServicos={setServicosExternos}
-            servicos={servicosExternos}
+            servicos={currentDataServicosExternos}
           />
         )}
 

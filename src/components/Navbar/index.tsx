@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
 import { modules } from './constants';
-import { IconChevronDown, IconDoorExit } from '@tabler/icons-react';
+import {
+  IconChevronDown,
+  IconCircleFilled,
+  IconDoorExit,
+} from '@tabler/icons-react';
 
 export function Navbar() {
   return (
@@ -20,18 +24,26 @@ export function Navbar() {
               {!module.childs || module.childs.length === 0 ? (
                 <Link
                   to={module.to || '#'}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                  className="relative flex items-center justify-start group-hover:justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-300 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-blue-500 after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center"
                 >
-                  {module.title}
+                  <IconCircleFilled
+                    size={'6px'}
+                    className="text-blue-500 w-auto group-hover:w-0 opacity-100 group-hover:opacity-0 transition-all duration-300"
+                  />
+                  <span className="transition-all duration-300 ">
+                    {module.title}
+                  </span>
                 </Link>
               ) : (
                 <>
-                  <button className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
-                    <span>{module.title}</span>
-                    <IconChevronDown
-                      size={16}
-                      className="ml-2 transition-transform duration-200 group-hover:rotate-180"
+                  <button className="relative flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-full after:bg-blue-500 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center">
+                    <IconCircleFilled
+                      size={'6px'}
+                      className="text-blue-500 opacity-100 w-auto group-hover:w-0 group-hover:opacity-0 transition-all duration-300"
                     />
+                    <span className="transition-all duration-300">
+                      {module.title}
+                    </span>
                   </button>
 
                   <ul className="absolute left-0 top-full mt-2 w-56 p-2 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform scale-95 group-hover:scale-100 origin-top z-10">

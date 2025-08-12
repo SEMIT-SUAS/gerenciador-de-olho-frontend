@@ -3,6 +3,16 @@
 
 @custom-variant dark (&:is(.dark *));
 
+:root {
+  --cor-azul: #39a6de;
+  --cor-ciano: #56b2b8;
+  --cor-verde-menta: #79c096;
+  --cor-verde-limao: #9ac670;
+  --cor-amarelo-esverdeado: #bbd050;
+  --cor-amarelo: #dadb32;
+  --cor-amarelo-vibrante: #faea25;
+}
+
 /* Para navegadores Webkit (Chrome, Safari, Edge, etc.) */
 .custom-scrollbar-blue::-webkit-scrollbar {
   height: 8px;
@@ -28,6 +38,41 @@
 
 .pulse-animation {
   animation: pulse 1s infinite ease-in-out;
+}
+
+.degrade-completo {
+  background-image: linear-gradient(
+    to right,
+    #39a6de,
+    /* Azul */ #56b2b8,
+    /* Ciano */ #79c096,
+    /* Verde Menta */ #9ac670,
+    /* Verde Limão */ #bbd050,
+    /* Amarelo Esverdeado */ #dadb32,
+    /* Amarelo */ #faea25 /* Amarelo Vibrante */
+  );
+}
+
+.borda-degrade-container {
+  /* O padding define a "grossura" da sua borda */
+  padding: 3px;
+  border-radius: 10px; /* Borda arredondada */
+
+  /* Aplicamos o degradê completo que criamos antes */
+  background-image: linear-gradient(
+    to right,
+    #39a6de,
+    /* Azul */ #56b2b8,
+    #79c096,
+    #9ac670,
+    #bbd050,
+    #dadb32,
+    #faea25 /* Amarelo Vibrante */
+  );
+
+  /* Adicional para o exemplo do botão */
+  border: none;
+  cursor: pointer;
 }
 
 @keyframes pulse {

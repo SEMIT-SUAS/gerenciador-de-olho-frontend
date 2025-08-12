@@ -25,8 +25,6 @@ export const modules: Module[] = [
     to: '',
     childs: [
       { title: 'Todos os Serviços', to: '/servicos' },
-      { title: 'Carta de Serviços', to: '/servicos' },
-      { title: 'Serviços Externos', to: 'servicos-externos' },
       { title: 'Secretarias', to: '/secretarias' },
       { title: 'Personas', to: '/personas' },
       { title: 'Categorias', to: '/categorias-servicos' },
