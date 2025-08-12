@@ -17,6 +17,60 @@ export async function getAllSecretarias(): Promise<Secretaria[]> {
   }
 }
 
+
+//funções sem fetch
+export async function getSecretariaById(id: number): Promise<Secretaria> {
+  alert(`id da secretaria: ${id}`);
+
+  try {
+    // Simulando resposta de teste:
+    const response: Secretaria = {
+      id,
+      nome: "Secretaria Teste",
+      sigla: "TEST",
+      ativo: true,
+      visivel: true,
+    };
+
+    return response;
+  } catch (error) {
+    throw new Error('Erro ao buscar secretaria. Tente novamente mais tarde.');
+  }
+}
+
+
+export async function deleteSecretaria(id: number): Promise<void> {
+  alert(`id da secretaria:  ${id} tem certeza que deseja deletar?`);
+  try {
+    const response = await fetch(`${API_BASE_URL}/secretaria/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Não foi possível deletar a secretaria.');
+    }
+  } catch (error) {
+    throw new Error('Erro ao deletar secretaria. Tente novamente mais tarde.');
+  }
+}
+export async function updateSecretaria(id: number): Promise<Secretaria> {
+  alert(`id da secretaria:  ${id} tem certeza que deseja atualizar?`);
+  try {
+    const response = await fetch(`${API_BASE_URL}/secretaria/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+      throw new Error('Não foi possível atualizar a secretaria.');
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw new Error('Erro ao atualizar secretaria. Tente novamente mais tarde.');
+  }
+}
+
 export async function uploadSecretaria(secretaria: createSecretaria): Promise<{ message: string }> {
   try{
     const response = await fetch(`${API_BASE_URL}/secretaria/cadastrar`, {

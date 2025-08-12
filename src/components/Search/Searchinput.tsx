@@ -16,10 +16,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(({
   return (
     <div className={`relative flex-1 ${className}`}>
       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-        {/* Espaço reservado para o ícone do Figma */}
         <div className="w-5 h-5 text-gray-400">
-          {/* Aqui você pode importar e usar o ícone do Figma */}
-          {/* Exemplo: <FigmaSearchIcon className="w-5 h-5" /> */}
         </div>
       </div>
       <input

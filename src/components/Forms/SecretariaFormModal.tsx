@@ -1,18 +1,21 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+"use client"
 
-import { secretariaSchema } from "../../schemas/secretariaSchema";
-import { uploadSecretaria } from "../../services/secretariaService";
-import type { createSecretaria } from "../../types/Secretaria";
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
+import { X, Loader2 } from "lucide-react"
+
+import { secretariaSchema } from "../../schemas/secretariaSchema"
+import { uploadSecretaria } from "../../services/secretariaService"
+import type { createSecretaria } from "../../types/Secretaria"
 
 interface SecretariaFormModalProps {
-  onClose: () => void;
-  onSuccess: () => void;
+  onClose: () => void
+  onSuccess: () => void
 }
 
 export function SecretariaFormModal({ onClose, onSuccess }: SecretariaFormModalProps) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const {
     register,
@@ -27,124 +30,119 @@ export function SecretariaFormModal({ onClose, onSuccess }: SecretariaFormModalP
       visivel: true,
       ativo: true,
     },
-  });
+  })
 
   const onSubmit = async (data: createSecretaria) => {
-    setLoading(true);
+    setLoading(true)
     try {
-      secretariaSchema.parse(data); // valida com Zod
-
-      await uploadSecretaria(data);
-
-      toast.success("Secretaria cadastrada com sucesso!");
-      reset();
-      onSuccess();
+      secretariaSchema.parse(data)
+      await uploadSecretaria(data)
+      toast.success("Secretaria cadastrada com sucesso!")
+      reset()
+      onSuccess()
     } catch (error: any) {
-      if (error.name === "ZodError") {
+      if (error?.name === "ZodError") {
         for (const err of error.errors) {
-          setError(err.path[0] as keyof createSecretaria, { message: err.message });
+          setError(err.path[0] as keyof createSecretaria, { message: err.message })
         }
-        toast.error(error.errors.map((e: any) => e.message).join("\n"));
+        toast.error(error.errors.map((e: any) => e.message).join("\n"))
       } else {
-        toast.error(error.message || "Erro ao cadastrar.");
+        toast.error(error?.message || "Erro ao cadastrar.")
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div style={styles.modalOverlay}>
-      <div style={styles.modalContent}>
-        <h2>Cadastrar Secretaria</h2>
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
+      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg outline-none">
+        <div className="mb-4 flex items-start justify-between">
+          <h2 className="text-xl font-semibold">Cadastrar Secretaria</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar modal"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100  focus:outline-none focus:ring-2 focus:ring-neutral-200"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input type="text" placeholder="Nome" {...register("nome")} />
-          {errors.nome && <p style={{ color: "red" }}>{errors.nome.message}</p>}
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+          <div className="grid gap-2">
+            <label htmlFor="nome" className="text-sm font-medium text-neutral-700">
+              Nome
+            </label>
+            <input
+              id="nome"
+              type="text"
+              placeholder="Nome"
+              className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-neutral-900 focus:ring-2 focus:ring-neutral-200"
+              {...register("nome")}
+            />
+            {errors.nome && <p className="text-sm text-red-600">{errors.nome.message}</p>}
+          </div>
 
-          <input type="text" placeholder="Sigla" {...register("sigla")} />
-          {errors.sigla && <p style={{ color: "red" }}>{errors.sigla.message}</p>}
+          <div className="grid gap-2">
+            <label htmlFor="sigla" className="text-sm font-medium text-neutral-700">
+              Sigla
+            </label>
+            <input
+              id="sigla"
+              type="text"
+              placeholder="Sigla"
+              className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-neutral-900 focus:ring-2 focus:ring-neutral-200"
+              {...register("sigla")}
+            />
+            {errors.sigla && <p className="text-sm text-red-600">{errors.sigla.message}</p>}
+          </div>
 
-          <label style={styles.checkboxLabel}>
-            <input type="checkbox" {...register("visivel")} />
-            Visível
-          </label>
+          <div className="grid gap-3">
+            <label htmlFor="visivel" className="flex cursor-pointer items-center gap-2">
+              <input id="visivel" type="checkbox" className="h-4 w-4 accent-neutral-900" {...register("visivel")} />
+              <span className="text-sm text-neutral-600">Visível</span>
+            </label>
 
-          <label style={styles.checkboxLabel}>
-            <input type="checkbox" {...register("ativo")} />
-            Ativo
-          </label>
+            <label htmlFor="ativo" className="flex cursor-pointer items-center gap-2">
+              <input id="ativo" type="checkbox" className="h-4 w-4 accent-neutral-900" {...register("ativo")} />
+              <span className="text-sm text-neutral-600">Ativo</span>
+            </label>
+          </div>
 
-          <div>
-            <button type="button" onClick={onClose}>Cancelar</button>
-            <button type="submit" disabled={loading}>
-              {loading ? "Salvando..." : "Cadastrar"}
+          <div className="mt-2 flex items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex items-center justify-center rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-200"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex items-center justify-center rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-200 disabled:opacity-50"
+            >
+              {loading ? (
+                <span className="inline-flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Salvando...
+                </span>
+              ) : (
+                "Cadastrar"
+              )}
             </button>
           </div>
         </form>
       </div>
     </div>
-  );
+  )
 }
 
-const styles: { [key: string]: React.CSSProperties } = {
-  modalOverlay: {
-    position: "fixed",
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000,
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    padding: "1.5rem",
-    borderRadius: "8px",
-    width: "320px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-  },
-  input: {
-    width: "100%",
-    padding: "8px 10px",
-    marginBottom: "0.5rem",
-    fontSize: "1rem",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
-    boxSizing: "border-box",
-  },
-  checkboxLabel: {
-    display: "flex",
-    alignItems: "center",
-    gap: "0.5rem",
-    marginBottom: "0.5rem",
-    fontSize: "0.9rem",
-  },
-  buttons: {
-    display: "flex",
-    justifyContent: "flex-end",
-    gap: "0.5rem",
-    marginTop: "1rem",
-  },
-  buttonCancel: {
-    padding: "8px 16px",
-    backgroundColor: "#eee",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
-  buttonSubmit: {
-    padding: "8px 16px",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
-  errorText: {
-    color: "red",
-    marginTop: "-0.4rem",
-    marginBottom: "0.5rem",
-    fontSize: "0.85rem",
-  },
-};
+export default function Component() {
+  return <SecretariaFormModal onClose={() => console.log("close")} onSuccess={() => console.log("success")} />
+}

@@ -1,11 +1,19 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import type { Secretaria } from '../../types/Secretaria';
-import { getAllSecretarias } from '../../services/secretariaService';
+import {
+  deleteSecretaria,
+  getAllSecretarias,
+  updateSecretaria,
+} from '../../services/secretariaService';
+import { getSecretariaById } from '../../services/secretariaService';
+// import {deleteSecretaria} from '../../services/secretariaService';
+// import {updateSecretaria} from '../../services/secretariaService';
 import { SecretariaList } from '../../components/Lists/SecretariaList';
 import { SecretariaFormModal } from '../../components/Forms/SecretariaFormModal';
 import { AddServiceButton } from '../../components/Buttons/AddServiceButton';
 import { SearchInput } from '../../components/Search/Searchinput';
+import { updateBanner } from '../../services/bannersService';
 export function SecretariaPage() {
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
   const [modalAberto, setModalAberto] = useState(false);
@@ -24,12 +32,36 @@ export function SecretariaPage() {
     }
   }
 
+
+  //funções sem consumo de enpoint:
+  async function handleView(id: string | number) {
+    try {
+      const secretaria = await getSecretariaById(Number(id));
+      return secretaria;
+    } catch (error) {}
+  }
+
+  
+  async function handleDelete(id: string | number) {
+    try {
+      const secretaria = await deleteSecretaria(Number(id));
+      return secretaria;
+    } catch (error) {}
+  }
+
+  async function handleUpdate(id: string | number) {
+    try {
+      const secretaria = await updateSecretaria(Number(id));
+      return secretaria;
+    } catch (error) {}
+  }
+
   const handleSucessoCadastro = () => {
     setModalAberto(false);
     carregarSecretarias();
   };
 
-  //style
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Conteúdo principal */}
@@ -61,7 +93,7 @@ export function SecretariaPage() {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           {/* Cabeçalho da tabela */}
-          <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 border-b border-gray-200">
+          <div className="grid grid-cols-16 gap-4 px-6 py-4 bg-gray-50 border-b border-gray-200">
             <div className="col-span-4 text-left">
               <span className="text-sm font-medium text-gray-700">Nome</span>
             </div>
@@ -69,13 +101,20 @@ export function SecretariaPage() {
               <span className="text-sm font-medium text-gray-700">Sigla</span>
             </div>
             <div className="col-span-4 text-left">
+              <span className="text-sm font-medium text-gray-700">Estado</span>
+            </div>
+            <div className="col-span-4 text-left">
               <span className="text-sm font-medium text-gray-700">Ações</span>
             </div>
           </div>
 
-          {/* Lista de secretarias - usando o componente existente com classes customizadas */}
           <div className="divide-y divide-gray-200">
-            <SecretariaList secretarias={secretarias} />
+            <SecretariaList
+              secretarias={secretarias}
+              onEdit={handleUpdate}
+              onView={handleView}
+              onDelete={handleDelete}
+            />
           </div>
 
           {/* Paginação */}
@@ -92,7 +131,7 @@ export function SecretariaPage() {
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-700">Página 1 de 7</span>
               <div className="flex items-center space-x-1">
-                {/* Botões de navegação da paginação */}
+                {/* Botões de navegação da paginação (ainda estáticos)*/}
                 <button
                   className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
                   disabled
