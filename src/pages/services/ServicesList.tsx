@@ -31,8 +31,7 @@ export function ServicesList() {
   }, []);
 
     function handleEdit(id: number) {
-    // Por exemplo, navegar para a página de edição
-    navigate(`/servico/editar/${id}`);
+      navigate(`/servico/editar/${id}`);
     }
 
   function handleToggleVisibility(id: number, visivel: boolean) {
@@ -74,7 +73,6 @@ export function ServicesList() {
     <div>
       <h2>Lista de Serviços</h2>
 
-      {/* Botão para adicionar serviço */}
       <div style={{ marginBottom: "1rem" }}>
         <Link to="/servico/novo" style={{
           padding: "0.5rem 1rem",
@@ -89,7 +87,7 @@ export function ServicesList() {
         </Link>
       </div>
 
-       <SearchInput value={searchTerm} onChange={setSearchTerm} />
+      <SearchInput value={searchTerm} onChange={setSearchTerm} />
 
       <ul style={{ listStyle: "none", padding: 0 }}>
         {filteredServices.map((service) => (

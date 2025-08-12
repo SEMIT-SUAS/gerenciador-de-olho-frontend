@@ -22,7 +22,7 @@ export function ListaCategorias() {
     try {
       const data = await getAllCategorias();
       setCategorias(data);
-      console.log(data);
+      //console.log(data);
     } catch (e) {
       setErro((e as Error).message);
     }

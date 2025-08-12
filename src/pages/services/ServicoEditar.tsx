@@ -11,10 +11,7 @@ import type { Persona } from "../../types/Persona";
 import { toast } from "react-toastify";
 
 function parseMultilineInput(text: string): string[] {
-  return text
-    .split(/\r?\n|,/)
-    .map((line) => line.trim())
-    .filter((line) => line !== "");
+  return text.split(/\r?\n|,/).map((line) => line.trim()).filter((line) => line !== "");
 }
 
 export function ServicoEditar() {

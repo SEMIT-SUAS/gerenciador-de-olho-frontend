@@ -21,7 +21,7 @@ export function ListaCategoriaDenuncia() {
   async function carregarCategorias() {
     try {
       const resultado = await getAll();
-      console.log(resultado);
+      //console.log(resultado);
       setCategorias(resultado);
     } catch (err: any) {
       setErro(err.message);
@@ -90,7 +90,7 @@ export function ListaCategoriaDenuncia() {
         style={{ marginBottom: '1rem', padding: '10px 20px' }}
         onClick={() => setModalAberto(true)}
       >
-        + Nova Categoria
+        Nova Categoria
       </button>
 
       <CategoriaDenunciaModal
