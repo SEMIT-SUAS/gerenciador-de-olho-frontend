@@ -1,11 +1,21 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'sonner';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { IconEdit, IconEye, IconEyeOff, IconTrash } from '@tabler/icons-react';
+import {
+  IconEdit,
+  IconEye,
+  IconEyeOff,
+  IconTrash,
+  IconCheck,
+} from '@tabler/icons-react';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import type { ServicoExterno } from '@/types/ServicoExterno';
 
-import servicosExternosService from '@/services/servicosExternosService';
+import {
+  changeServiceExternoAtivo,
+  changeServiceVisibility,
+} from '@/services/servicosExternosService';
+
 import { FormServicoExterno } from './FormServicoExterno';
 
 interface ServiceListItemProps {
@@ -20,66 +30,179 @@ export function ServicesExternoListItem({
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenVisibleModal, setIsOpenVisibleModal] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  async function handleDeleteServico() {
+  // Função para desativar ou ativar serviço
+  async function handleToggleAtivo() {
+    setIsProcessing(true);
     try {
-      await servicosExternosService.changeServiceAtivo(servico.id, false);
+      const novoStatus = !servico.ativo;
+      await changeServiceExternoAtivo(servico.id, novoStatus);
 
       setServicos((prev) =>
-        prev.map((s) => (s.id === servico.id ? { ...s, ativo: false } : s)),
+        prev.map((s) =>
+          s.id === servico.id ? { ...s, ativo: novoStatus } : s,
+        ),
       );
 
-      toast.success('Serviço desativado com sucesso!');
+      toast.success(
+        novoStatus
+          ? 'Serviço ativado com sucesso!'
+          : 'Serviço desativado com sucesso!',
+      );
     } catch (error: any) {
-      console.log(error);
+      console.error('Erro ao alterar status do serviço:', error);
+      toast.error('Erro ao alterar status do serviço');
+    } finally {
+      setIsProcessing(false);
+      setIsOpenDeleteModal(false);
     }
-
-    setIsOpenDeleteModal(false);
   }
 
-  async function handleVisibilityServico() {
+  // Função para alterar visibilidade
+  async function handleToggleVisibility() {
+    setIsProcessing(true);
     try {
-      await servicosExternosService.changeServiceVisibility(
-        servico.id,
-        !servico.ativo,
-      );
+      const novaVisibilidade = !servico.visivel;
+
+      await changeServiceVisibility(servico.id, novaVisibilidade);
 
       setServicos((prev) =>
-        prev.map((s) => (s.id === servico.id ? { ...s, visivel: false } : s)),
+        prev.map((s) =>
+          s.id === servico.id ? { ...s, visivel: novaVisibilidade } : s,
+        ),
       );
 
-      toast.success('Serviço ocultado do aplicativo!');
+      toast.success(
+        novaVisibilidade
+          ? 'Serviço agora está visível no aplicativo!'
+          : 'Serviço foi ocultado do aplicativo!',
+      );
     } catch (error: any) {
-      console.log(error);
+      console.error('Erro ao alterar visibilidade:', error);
+      toast.error('Erro ao alterar visibilidade do serviço');
+    } finally {
+      setIsProcessing(false);
+      setIsOpenVisibleModal(false);
     }
   }
+
+  // Callback para quando a edição for bem sucedida
+  const handleEditSuccess = (servicoAtualizado?: ServicoExterno) => {
+    if (servicoAtualizado) {
+      setServicos((prev) =>
+        prev.map((s) => (s.id === servico.id ? servicoAtualizado : s)),
+      );
+    }
+    setIsEditModalOpen(false);
+  };
 
   return (
     <>
-      <TableRow key={servico.id}>
+      <TableRow className={`${!servico.ativo ? 'opacity-60' : ''}`}>
         <TableCell>
-          <img src={servico.imagem} className="h-14 w-auto rounded-md" />
+          <div className="relative">
+            {servico.imagem ? (
+              <img
+                src={servico.imagem}
+                alt={servico.nome}
+                className="h-14 w-14 rounded-md object-cover border"
+                onError={(e) => {
+                  e.currentTarget.src =
+                    'https://via.placeholder.com/56?text=Erro';
+                }}
+              />
+            ) : (
+              <div className="h-14 w-14 rounded-md bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                Sem imagem
+              </div>
+            )}
+            {!servico.visivel && (
+              <div className="absolute -top-1 -right-1">
+                <IconEyeOff
+                  size={16}
+                  className="text-gray-500 bg-white rounded-full p-0.5"
+                />
+              </div>
+            )}
+          </div>
         </TableCell>
-        <TableCell>{servico.nome}</TableCell>
-        <TableCell>{servico.link}</TableCell>
+
         <TableCell>
-          <div className="gap-6">
-            <button
-              className="text-black-600 mr-2"
-              onClick={() => setIsEditModalOpen(true)}
+          <div className="flex flex-col">
+            <span className="font-medium">{servico.nome}</span>
+            <div className="flex gap-2 mt-1">
+              {!servico.ativo && (
+                <span className="text-xs bg-red-100 text-black px-2 py-0.5 rounded">
+                  Inativo
+                </span>
+              )}
+              {!servico.visivel && (
+                <span className="text-xs bg-gray-100 text-black px-2 py-0.5 rounded">
+                  Oculto
+                </span>
+              )}
+            </div>
+          </div>
+        </TableCell>
+
+        <TableCell>
+          {servico.link ? (
+            <a
+              href={servico.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-black underline text-sm"
             >
-              <IconEdit size={18} stroke={2} className="text-black-600" />
+              {servico.link.length > 30
+                ? `${servico.link.substring(0, 30)}...`
+                : servico.link}
+            </a>
+          ) : (
+            <span className="text-gray-400">-</span>
+          )}
+        </TableCell>
+
+        <TableCell>
+          <div className="flex gap-2">
+            {/* Botão Editar */}
+            <button
+              className="p-1.5 text-black hover:bg-blue-50 rounded transition-colors disabled:opacity-50"
+              onClick={() => setIsEditModalOpen(true)}
+              disabled={isProcessing}
+              title="Editar serviço"
+            >
+              <IconEdit size={18} stroke={2} />
             </button>
 
+            {/* Botão Ativar/Desativar */}
             <button
               onClick={() => setIsOpenDeleteModal(true)}
-              className="text-black-600 mr-2"
+              className={`p-1.5 rounded transition-colors disabled:opacity-50 ${
+                servico.ativo
+                  ? 'text-black hover:bg-red-50'
+                  : 'text-black hover:bg-green-50'
+              }`}
+              disabled={isProcessing}
+              title={servico.ativo ? 'Desativar serviço' : 'Ativar serviço'}
             >
-              <IconTrash size={18} stroke={2} className="text-black-600" />
+              {servico.ativo ? (
+                <IconTrash size={18} stroke={2} />
+              ) : (
+                <IconCheck size={18} stroke={2} />
+              )}
             </button>
+
+            {/* Botão Visibilidade */}
             <button
-              className="text-black-600 mr-2"
-              onClick={() => setIsOpenVisibleModal(false)}
+              className="p-1.5 text-black hover:bg-gray-50 rounded transition-colors disabled:opacity-50"
+              onClick={() => setIsOpenVisibleModal(true)}
+              disabled={isProcessing}
+              title={
+                servico.visivel
+                  ? 'Ocultar do aplicativo'
+                  : 'Mostrar no aplicativo'
+              }
             >
               {servico.visivel ? (
                 <IconEye stroke={2} size={18} />
@@ -90,32 +213,41 @@ export function ServicesExternoListItem({
           </div>
         </TableCell>
       </TableRow>
+
+      {/* Modal de Edição */}
       {isEditModalOpen && (
         <FormServicoExterno
           mode="edit"
-          defaultValues={servico} //mudar de file para string no FormServicoExterno ou ao contrario
+          defaultValues={servico}
           onClose={() => setIsEditModalOpen(false)}
-          onSuccess={() => {
-            setIsEditModalOpen(false);
-            // TODO: atualizar a lista se necessário
-          }}
+          onSuccess={handleEditSuccess}
         />
       )}
 
+      {/* Modal de Confirmação - Ativar/Desativar */}
       <ConfirmModal
         isOpen={isOpenDeleteModal}
-        onConfirm={handleDeleteServico}
+        onConfirm={handleToggleAtivo}
         onCancel={() => setIsOpenDeleteModal(false)}
-        title="Você deseja apagar o serviço?"
-        message="Tem certeza de que quer apagar o serviço? Ao confirmar, todos os dados relacionados a ele serão permanentemente excluídos."
+        title={servico.ativo ? 'Desativar serviço?' : 'Ativar serviço?'}
+        message={
+          servico.ativo
+            ? 'Tem certeza que deseja desativar este serviço? Ele não aparecerá mais na listagem, mas poderá ser reativado posteriormente.'
+            : 'Tem certeza que deseja ativar este serviço? Ele voltará a aparecer na listagem.'
+        }
       />
 
+      {/* Modal de Confirmação - Visibilidade */}
       <ConfirmModal
         isOpen={isOpenVisibleModal}
-        onConfirm={handleVisibilityServico}
+        onConfirm={handleToggleVisibility}
         onCancel={() => setIsOpenVisibleModal(false)}
-        title="Você deseja alterar a visibilidade do serviço?"
-        message="Tem certeza de que quer alterar a visibiliade do serviço? Ao confirmar, o serviço não ficará visível no aplicativo."
+        title="Alterar visibilidade do serviço?"
+        message={
+          servico.visivel
+            ? 'Tem certeza que deseja ocultar este serviço? Ele não ficará visível para os usuários no aplicativo.'
+            : 'Tem certeza que deseja tornar este serviço visível? Ele aparecerá para os usuários no aplicativo.'
+        }
       />
     </>
   );

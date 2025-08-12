@@ -23,8 +23,9 @@ import {
   IconChevronsRight,
 } from '@tabler/icons-react';
 import { getAllServicoExterno } from '@/services/servicosExternosService';
-import type { ServicoExterno } from '@/types/servicoExterno';
+import type { ServicoExterno } from '@/types/ServicoExterno';
 import { ServicosExternosList } from '@/components/ServicosExternos/ServicosExternosList';
+import { FormServicoExterno } from '@/components/ServicosExternos/FormServicoExterno';
 
 export function ServicesPage() {
   const [cartaDeServicos, setCartaDeServicos] = useState<ServicosListar[]>([]);
@@ -37,6 +38,7 @@ export function ServicesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const [activeTab, setActiveTab] = useState('servicos');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   async function fetchServices() {
     try {
@@ -148,11 +150,12 @@ export function ServicesPage() {
               />
             </div>
 
-            <Button variant={'outline'} asChild>
-              <Link to="/servicos/novo">
-                <Plus className="mr-2 h-4 w-4" />
-                Adicionar serviço
-              </Link>
+            <Button
+              variant="outline"
+              onClick={() => setIsCreateModalOpen(true)}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Adicionar serviço
             </Button>
           </div>
         </div>
@@ -240,6 +243,17 @@ export function ServicesPage() {
           </div>
         </div>
       </div>
+
+      {isCreateModalOpen && (
+        <FormServicoExterno
+          mode="create"
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={async () => {
+            setIsCreateModalOpen(false);
+            await fetchServices(); // recarrega toda lista do backend
+          }}
+        />
+      )}
     </LayoutPage>
   );
 }
