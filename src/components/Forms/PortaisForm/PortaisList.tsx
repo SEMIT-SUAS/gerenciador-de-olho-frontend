@@ -1,4 +1,4 @@
-  // src/components/portais/PortaisList.tsx
+// src/components/portais/PortaisList.tsx
 
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { Portais } from '@/types/Portais';
@@ -17,29 +17,29 @@ interface PortaisListProps {
   setPortais: Dispatch<SetStateAction<Portais[]>>;
 }
 
-
-
 export function PortaisList({ portais, setPortais }: PortaisListProps) {
   return (
     <div className="rounded-md border">
-      <Table className='table-fixed'>
+      <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className='w-[40%]'>Nome</TableHead>
-            <TableHead className='w-[30%]'>Link</TableHead>
-            <TableHead className='w-[20%]'>Destaque</TableHead>
-            <TableHead className='w-[10%]'>Ações</TableHead>
+            <TableHead>Nome</TableHead>
+            <TableHead>Link</TableHead>
+            <TableHead>Destaque</TableHead>
+            <TableHead className="w-[10%]">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {portais.length > 0 ? (
-            portais.filter(p => p.ativo).map((portal) => (
-              <PortaisListItem
-                key={portal.id}
-                portal={portal}
-                setPortais={setPortais}
-              />
-            ))
+            portais
+              .filter((p) => p.ativo)
+              .map((portal) => (
+                <PortaisListItem
+                  key={portal.id}
+                  portal={portal}
+                  setPortais={setPortais}
+                />
+              ))
           ) : (
             <TableRow>
               <TableCell colSpan={4} className="text-center">

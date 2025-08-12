@@ -67,7 +67,7 @@ export function BannersPage() {
             </p>
           </div>
 
-          <div className="flex items-center justify-end gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="relative w-[320px]">
               <SearchInput
                 placeholder="Pesquise pelo nome"
@@ -80,6 +80,7 @@ export function BannersPage() {
             </div>
 
             <Button
+              variant={'outline'}
               className="flex items-center gap-2"
               onClick={() => setIsOpenAddBannerModal(true)}
             >

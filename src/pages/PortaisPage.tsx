@@ -115,16 +115,15 @@ export function PortaisPage() {
           </p>
         </div>
         <div className="flex items-center justify-between">
-          <div className="flex-1"></div>{' '}
-          <div className="flex items-center gap-2">
-            <div className="w-[320px]">
-              <SearchInput
-                placeholder="Pesquise por nome do portal"
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-            </div>
-            <Button onClick={() => setIsFormOpen(true)}>
+          <div className="w-[320px]">
+            <SearchInput
+              placeholder="Pesquise por nome do portal"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </div>
+          <div>
+            <Button variant={'outline'} onClick={() => setIsFormOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Adicionar Portal
             </Button>

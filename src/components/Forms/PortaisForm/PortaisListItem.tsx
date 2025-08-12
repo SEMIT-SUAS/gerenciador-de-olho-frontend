@@ -70,9 +70,11 @@ export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
             href={portal.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
+            className="text-black underline text-sm"
           >
-            {portal.link}
+            {portal.link.length > 30
+              ? `${portal.link.substring(0, 30)}...`
+              : portal.link}
           </a>
         </TableCell>
 

@@ -13,7 +13,6 @@
   --cor-amarelo-vibrante: #faea25;
 }
 
-/* Para navegadores Webkit (Chrome, Safari, Edge, etc.) */
 .custom-scrollbar-blue::-webkit-scrollbar {
   height: 8px;
 }
@@ -28,7 +27,7 @@
 }
 
 .custom-scrollbar-blue::-webkit-scrollbar-thumb {
-  background-color: #3b82f6; /* Cor da barra (azul do Tailwind) */
+  background-color: #3b82f6;
   border-radius: 10px;
 }
 

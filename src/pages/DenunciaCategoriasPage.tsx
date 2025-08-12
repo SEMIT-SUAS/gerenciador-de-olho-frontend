@@ -57,7 +57,7 @@ export function DenunciaCategoriasPage() {
             </p>
           </div>
 
-          <div className="flex items-center justify-end gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="relative w-[320px]">
               <SearchInput
                 placeholder="Pesquise pelo nome"

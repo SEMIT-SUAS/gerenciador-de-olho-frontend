@@ -126,8 +126,8 @@ export function CategoriasPage() {
             Gerencie as categorias disponíveis com clareza e objetividade.
           </p>
         </div>
-        <div className="flex items-center justify-end">
-          <div className="flex gap-2">
+        <div className="flex items-center justify-between">
+          <div className="flex gap-2 justify-between">
             <div className="w-[320px]">
               <SearchInput
                 placeholder="Pesquise por nome"

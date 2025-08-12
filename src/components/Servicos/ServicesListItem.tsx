@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ServicoVisibility } from '@/components/Servicos/ServicoVisibility';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
+import { useNavigate } from 'react-router-dom';
 
 interface ServiceListItemProps {
   servico: ServicosListar;
@@ -34,14 +35,11 @@ export function ServicesListItem({
 
     setIsOpenDeleteModal(false);
   }
+  const navigate = useNavigate();
 
   return (
     <>
-
-      <TableRow
-        key={servico.id}
-        // onClick={() => navigate(`/servicos/${servico.id}`)}
-      >
+      <TableRow key={servico.id}>
         <TableCell>{servico.nome}</TableCell>
         <TableCell>{servico.nomeCategoria ?? '-'}</TableCell>
         <TableCell className="flex flex-wrap gap-2">
@@ -58,7 +56,10 @@ export function ServicesListItem({
         </TableCell>
         <TableCell>
           <div className="gap-6">
-            <button className="text-black-600 mr-2">
+            <button
+              className="text-black-600 mr-2"
+              onClick={() => navigate(`/servicos/editar/${servico.id}`)}
+            >
               <IconEdit size={18} stroke={2} className="text-black-600" />
             </button>
             <button

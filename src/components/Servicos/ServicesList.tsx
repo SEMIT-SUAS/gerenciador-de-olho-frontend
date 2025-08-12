@@ -16,14 +16,14 @@ interface ServicesListProps {
 
 export function ServicesList({ servicos, setServicos }: ServicesListProps) {
   return (
-    <>
-      <Table className="rounded-md overflow-hidden border-2 border-gray-500 shadow-lg">
+    <div className="rounded-md border">
+      <Table>
         <TableHeader>
           <TableRow>
-            <TableHead> Nome </TableHead>
+            <TableHead>Nome</TableHead>
             <TableHead>Categoria</TableHead>
             <TableHead>Persona</TableHead>
-            <TableHead>Ações</TableHead>
+            <TableHead className="w-[10%]">Ações</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -40,6 +40,6 @@ export function ServicesList({ servicos, setServicos }: ServicesListProps) {
               ))}
         </TableBody>
       </Table>
-    </>
+    </div>
   );
 }

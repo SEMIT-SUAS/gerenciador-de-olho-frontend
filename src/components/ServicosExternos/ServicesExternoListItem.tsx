@@ -32,7 +32,6 @@ export function ServicesExternoListItem({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Função para desativar ou ativar serviço
   async function handleToggleAtivo() {
     setIsProcessing(true);
     try {
