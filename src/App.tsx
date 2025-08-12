@@ -27,7 +27,7 @@ import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
 import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
 import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/edit';
 import { PortaisPage } from './pages/PortaisPage';
-import { DenunciaCategoriasPage } from './pages/DenunciaCategoriasPage';
+import {DenunciaCategoriasPage } from './pages/DenunciaCategoriasPage';
 
 export function App() {
   return (

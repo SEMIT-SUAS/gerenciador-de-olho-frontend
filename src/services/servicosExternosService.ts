@@ -56,6 +56,34 @@ export async function getAllServicoExterno(): Promise<ServicoExterno[]> {
   }
 }
 
+export async function getServicoExternoById(
+  id: number,
+): Promise<ServicoExterno> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/servico-externo/buscar/${id}`,
+    );
+
+    const contentType = response.headers.get('content-type');
+
+    if (!response.ok) {
+      if (contentType?.includes('application/json')) {
+        const errorJson = await response.json();
+        throw new Error(errorJson.message || 'Erro ao buscar servico externo.');
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Erro ao buscar servico externo.');
+      }
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    throw new Error(
+      error.message || 'Erro desconhecido ao buscar espaço público.',
+    );
+  }
+}
+
 export async function changeServiceVisibility(
   id: number,
   visivel: boolean,
@@ -102,10 +130,10 @@ export async function changeServiceVisibility(
   }
 }
 
-export async function changeServiceAtivo(
+export async function changeServiceExternoAtivo(
   id: number,
   ativo: boolean,
-): Promise<ServicoExterno | { message: string }> {
+): Promise<string> {
   try {
     const response = await fetch(
       `${API_BASE_URL}/servico-externo/atualizar/atividade`,
@@ -116,35 +144,65 @@ export async function changeServiceAtivo(
       },
     );
 
+    if (!response.ok) {
+      throw new Error(
+        `Erro ao alterar status de visibilidade: ${response.status} - ${response.statusText}`,
+      );
+    }
+
+    const mensagem = await response.text();
+    return mensagem;
+  } catch (error) {
+    console.error('Erro na requisição changeServiceExternoAtivo:', error);
+    throw error;
+  }
+}
+
+export async function updateServicoExterno(
+  formData: FormData,
+): Promise<void | { retorno: string }> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/servico-externo/atualizar`, {
+      method: 'PUT',
+      body: formData,
+    });
+
     const contentType = response.headers.get('content-type');
 
     if (!response.ok) {
-      // Tenta extrair mensagem de erro, se possível
       if (contentType?.includes('application/json')) {
         const errorJson = await response.json();
-        throw new Error(errorJson.message || 'Erro ao cadastrar banner.');
+        console.error('Erro da API:', errorJson);
+        throw new Error(
+          errorJson.message || 'Erro ao alterar visibilidade do serviço.',
+        );
       } else {
         const errorText = await response.text();
-        throw new Error(errorText || 'Erro ao cadastrar banner.');
+        console.error('Erro da API (texto):', errorText);
+        throw new Error(
+          errorText || 'Erro ao alterar visibilidade do serviço.',
+        );
       }
     }
 
-    // Se for JSON
     if (contentType?.includes('application/json')) {
       return await response.json();
     } else {
-      // Se for texto (caso do seu backend agora)
       const text = await response.text();
-      return { message: text };
+      return { retorno: text };
     }
   } catch (error: any) {
-    throw new Error(error.message || 'Erro desconhecido ao cadastrar banner.');
+    console.error('Erro no catch do changeServiceVisibility:', error);
+    throw new Error(
+      error.message || 'Erro desconhecido ao alterar visibilidade do serviço.',
+    );
   }
 }
 
 export default {
   uploadServicoExterno,
   getAllServicoExterno,
-  changeServiceAtivo,
   changeServiceVisibility,
+  changeServiceExternoAtivo,
+  updateServicoExterno,
 };
