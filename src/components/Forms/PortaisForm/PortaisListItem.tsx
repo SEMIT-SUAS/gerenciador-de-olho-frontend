@@ -1,19 +1,23 @@
-// src/components/portais/PortaisListItem.tsx
-
 import { useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
-import type { Portais } from '@/types/Portais'; // Ajuste o caminho se necessário
-import { toast } from 'sonner'; // Usando sonner como no seu exemplo
+import type { Portais } from '@/types/Portais';
+import { toast } from 'sonner';
 
-// Componentes da UI e Ícones (como no seu exemplo)
 import { TableCell, TableRow } from '@/components/ui/table';
-import { IconEdit, IconEye, IconEyeOff, IconStarFilled, IconTrash } from '@tabler/icons-react';
+import {
+  IconEdit,
+  IconEye,
+  IconEyeOff,
+  IconStarFilled,
+  IconTrash,
+} from '@tabler/icons-react';
 
-// Serviços
-import { toggleAtivo, changeServiceVisibility } from '@/services/PortaisService'; // Ajuste o caminho
+import {
+  toggleAtivo,
+  changeServiceVisibility,
+} from '@/services/PortaisService';
 
-// Supondo que você tenha um modal de confirmação como no exemplo
-import { ConfirmModal } from '@/components/Modals/ConfirmModal'; 
+import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { EditPortalModal } from './EditPortal';
 import { Badge } from '@/components/ui/badge';
 
@@ -27,14 +31,17 @@ export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
   const [isOpenModalEdit, setIsOpenModalEdit] = useState(false);
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
 
-
   async function handleToggleAtivo() {
     try {
       await toggleAtivo(portal.id!, !portal.ativo);
       setPortais((prev) =>
-        prev.map((p) => (p.id === portal.id ? { ...p, ativo: !portal.ativo } : p))
-      );    
-      toast.success(`Portal ${portal.ativo ? 'inativado' : 'ativado'} com sucesso!`);
+        prev.map((p) =>
+          p.id === portal.id ? { ...p, ativo: !portal.ativo } : p,
+        ),
+      );
+      toast.success(
+        `Portal ${portal.ativo ? 'inativado' : 'ativado'} com sucesso!`,
+      );
     } catch (error) {
       toast.error('Erro ao atualizar status de atividade.');
     }
@@ -44,7 +51,9 @@ export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
     try {
       await changeServiceVisibility(portal.id!, !portal.visivel);
       setPortais((prev) =>
-        prev.map((p) => (p.id === portal.id ? { ...p, visivel: !portal.visivel } : p))
+        prev.map((p) =>
+          p.id === portal.id ? { ...p, visivel: !portal.visivel } : p,
+        ),
       );
       toast.success(`Visibilidade do portal alterada com sucesso!`);
     } catch (error) {
@@ -52,35 +61,42 @@ export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
     }
   }
 
-
-
   return (
     <>
       <TableRow key={portal.id}>
         <TableCell className="font-medium">{portal.nome}</TableCell>
-        <TableCell className='truncate'>
-          <a href={portal.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+        <TableCell className="truncate">
+          <a
+            href={portal.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
             {portal.link}
           </a>
         </TableCell>
 
         <TableCell>
           {portal.destaque && (
-            <Badge variant="outline" className='gap-2'>
-              <IconStarFilled className='text-yellow-500' size={'12px'} />
-              Destacado</Badge>
+            <Badge variant="outline" className="gap-2">
+              <IconStarFilled className="text-yellow-500" size={'12px'} />
+              Destacado
+            </Badge>
           )}
         </TableCell>
-        
+
         <TableCell className="flex items-center gap-2">
           <button onClick={() => setIsOpenModalEdit(true)} title="Editar">
             <IconEdit size={18} />
           </button>
-          <button onClick={() => setIsOpenConfirmModal(true)} title={portal.visivel ? 'Ocultar' : 'Mostrar'}>
+          <button
+            onClick={() => setIsOpenConfirmModal(true)}
+            title={portal.visivel ? 'Ocultar' : 'Mostrar'}
+          >
             {portal.visivel ? <IconEye size={18} /> : <IconEyeOff size={18} />}
           </button>
           <button onClick={() => setIsDeleteModalOpen(true)} title="Excluir">
-            <IconTrash size={18}  />
+            <IconTrash size={18} />
           </button>
         </TableCell>
       </TableRow>
@@ -93,7 +109,16 @@ export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
         message={`Tem certeza que deseja excluir o portal "${portal.nome}"?`}
       />
 
-      <EditPortalModal open={isOpenModalEdit} onOpenChange={(isOpenModalEdit) => {if (!isOpenModalEdit) {setIsOpenModalEdit(false)}}} setPortais={setPortais} portal={portal}/>
+      <EditPortalModal
+        open={isOpenModalEdit}
+        onOpenChange={(isOpenModalEdit) => {
+          if (!isOpenModalEdit) {
+            setIsOpenModalEdit(false);
+          }
+        }}
+        setPortais={setPortais}
+        portal={portal}
+      />
       <ConfirmModal
         isOpen={isOpenConfirmModal}
         onConfirm={handleToggleVisibilidade}
