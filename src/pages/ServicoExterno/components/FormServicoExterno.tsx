@@ -20,7 +20,6 @@ export function FormServicoExterno({ onClose, onSuccess }: Props) {
     e.preventDefault();
     setLoading(true);
 
-    // Adicione `link` no objeto para validação do schema
     const servicoData = { nome, link, visivel, ativo, imagem: imagem ?? undefined };
     const parsed = servicoSchema.safeParse(servicoData);
 
@@ -33,7 +32,7 @@ export function FormServicoExterno({ onClose, onSuccess }: Props) {
 
     const formData = new FormData();
     formData.append("nome", nome);
-    formData.append("link", link);  // aqui adiciona link no formData
+    formData.append("link", link);
     if (imagem) formData.append("imagem", imagem);
     formData.append("visivel", String(visivel));
     formData.append("ativo", String(ativo));

@@ -20,7 +20,7 @@ export function ServicoExternoList() {
     try {
       const dados = await getAllServicoExterno();
       setServicos(dados);
-      console.log(dados);
+      //console.log(dados);
     } catch (error: any) {
       setMensagem(error.message || "Erro ao carregar serviços.");
     }

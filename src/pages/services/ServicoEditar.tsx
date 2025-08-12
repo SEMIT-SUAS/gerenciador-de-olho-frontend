@@ -33,7 +33,7 @@ export function ServicoEditar() {
 
   async function fetchDados() {
     try {
-      const serviceId = parseInt(id); // aqui id é string, garantido pelo if
+      const serviceId = parseInt(id!); // aqui id é string, garantido pelo if
 
       const [service, secretariasData, categoriasData, personaData] = await Promise.all([
         getServicoById(serviceId),
