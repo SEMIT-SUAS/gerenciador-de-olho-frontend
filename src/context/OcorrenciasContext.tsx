@@ -1,39 +1,37 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import type { Dispatch, FC, ReactNode, SetStateAction } from 'react';
-import type { DenunciaModel } from '../types/Denuncia';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import type { DenunciaBasicInfoModel } from '../types/Denuncia';
 import type { AcaoModel } from '../types/Acao';
-import denunciasService from '../services/denunciasService';
-import acoesService from '../services/acoesService';
 import type { SecretariaModel } from '../types/Secretaria';
-import categoriaService from '../services/categoriaService';
 import type { CategoriaDenunciaModel } from '../types/CategoriaDenuncia';
-import secretariaService from '../services/secretariaService';
+import { toast } from 'sonner';
+import { DenunciaService } from '../services/denunciasService';
+import acoesService from '@/services/acoesService';
 
 interface OcorrenciasContextType {
-  denuncias: DenunciaModel[];
-  setDenuncias: Dispatch<SetStateAction<DenunciaModel[]>>;
+  denuncias: DenunciaBasicInfoModel[];
+  setDenuncias: Dispatch<SetStateAction<DenunciaBasicInfoModel[]>>;
+
   acoes: AcaoModel[];
   setAcoes: Dispatch<SetStateAction<AcaoModel[]>>;
+
   categorias: CategoriaDenunciaModel[];
   secretarias: SecretariaModel[];
   loading: boolean;
-  error: string | null;
 }
 
 const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(
   undefined,
 );
 
-export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const [denuncias, setDenuncias] = useState<DenunciaModel[]>([]);
+export function OcorrenciasProvider({ children }: { children: ReactNode }) {
+  const [denuncias, setDenuncias] = useState<DenunciaBasicInfoModel[]>([]);
+
   const [acoes, setAcoes] = useState<AcaoModel[]>([]);
   const [categorias, setCategorias] = useState<CategoriaDenunciaModel[]>([]);
   const [secretarias, setSecretarias] = useState<SecretariaModel[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -41,18 +39,18 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
         setLoading(true);
         const [denunciasData, acoesData, categoriasData, secretariasData] =
           await Promise.all([
-            denunciasService.getAllDenuncias(),
+            DenunciaService.getAllBasicInfos(),
             acoesService.getAllAcoes(),
-            categoriaService.getAll(),
-            secretariaService.getAll(),
+            // categoriaService.getAll(),
+            // secretariaService.getAll(),
           ]);
 
         setDenuncias(denunciasData);
         setAcoes(acoesData);
-        setCategorias(categoriasData);
-        setSecretarias(secretariasData);
-      } catch (err: any) {
-        setError(err.message);
+        // setCategorias(categoriasData);
+        // setSecretarias(secretariasData);
+      } catch (error: any) {
+        toast.error(error.message);
       } finally {
         setLoading(false);
       }
@@ -67,7 +65,6 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
     acoes,
     setAcoes,
     loading,
-    error,
     secretarias,
     categorias,
   };
@@ -77,7 +74,7 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
       {children}
     </OcorrenciasContext.Provider>
   );
-};
+}
 
 export const useOcorrencias = () => {
   const context = useContext(OcorrenciasContext);

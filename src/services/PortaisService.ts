@@ -1,10 +1,10 @@
 import type { CreatePortal, Portais } from "../types/Portais";
-import { API_BASE_URL } from "../config/api";
+import { BASE_API_URL } from "../constants/baseApiURL";
 
 
 export async function getAllPortais(): Promise<Portais[]> {
   try{
-      const response = await fetch(`${API_BASE_URL}/portal/listar-ativos`, {
+      const response = await fetch(`${BASE_API_URL}/portal/listar-ativos`, {
           method: 'GET',
       })
 
@@ -20,7 +20,7 @@ export async function getAllPortais(): Promise<Portais[]> {
 
 export async function createPortal(portal: CreatePortal): Promise<Portais> {
   try {
-    const response = await fetch(`${API_BASE_URL}/portal/cadastrar`, {
+    const response = await fetch(`${BASE_API_URL}/portal/cadastrar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(portal),
@@ -38,7 +38,7 @@ export async function createPortal(portal: CreatePortal): Promise<Portais> {
 
 export async function toggleAtivo(id: number, ativo: boolean): Promise<void> {
   try {
-    const response = await fetch(`${API_BASE_URL}/portal/atualizar/atividade`, {
+    const response = await fetch(`${BASE_API_URL}/portal/atualizar/atividade`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, ativo }),
@@ -55,7 +55,7 @@ export async function toggleAtivo(id: number, ativo: boolean): Promise<void> {
 
 export async function changeServiceVisibility(id: number, visivel: boolean): Promise<void> {
   try {
-    const response = await fetch(`${API_BASE_URL}/portal/atualizar/visibilidade`, {
+    const response = await fetch(`${BASE_API_URL}/portal/atualizar/visibilidade`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, visivel }),
@@ -72,7 +72,7 @@ export async function changeServiceVisibility(id: number, visivel: boolean): Pro
 
 export async function updatePortal(portal: Portais): Promise<Portais> {
   try {
-    const response = await fetch(`${API_BASE_URL}/portal/atualizar`, {
+    const response = await fetch(`${BASE_API_URL}/portal/atualizar`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(portal)

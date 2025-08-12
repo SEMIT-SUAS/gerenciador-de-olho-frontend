@@ -1,14 +1,13 @@
 import { FaMapPin, FaTrash } from 'react-icons/fa';
 import { Tag } from '../Tag';
-import type { DenunciaModel } from '@/types/Denuncia';
-import { calcularDiasAtras } from '@/utils/data';
-import { getDenunciaStatus } from '@/utils/getDenunciaStatus';
-import { useMemo } from 'react';
+import type { DenunciaBasicInfoModel } from '@/types/Denuncia';
 import { Loading } from '@/components/Loading/Loading';
-import { useFiles } from '@/context/FilesContext';
+import { useEffect, useState } from 'react';
+import { calcularDiasAtras } from '@/utils/data';
+import { generateVideoThumbnailObjectUrl } from '@/utils/file';
 
 type DenunciaItemProps = {
-  denuncia: DenunciaModel;
+  denuncia: DenunciaBasicInfoModel;
   onClick: () => void;
   showDate: boolean;
   onTrashClick?: () => void;
@@ -26,19 +25,42 @@ export function DenunciaItem({
   onTrashClick,
   isSelected,
 }: DenunciaItemProps) {
-  const diasAtras = calcularDiasAtras(denuncia.criadaEm);
-  const denunciaStatus = getDenunciaStatus(denuncia);
-  const { getFileById, files } = useFiles();
+  const [thumbImageURL, setThumbImageURL] = useState<string | null>(null);
 
-  const thumbImageURL = useMemo(() => {
-    return getFileById(denuncia.files[0].id)?.thumbnailURL;
-  }, [files]);
+  useEffect(() => {
+    let objectUrl: string | null = null;
+
+    if (!denuncia.primeiroArquivo) {
+      setThumbImageURL('/image_fail_to_fetch.png');
+      return;
+    }
+
+    if (denuncia.primeiroArquivo.endsWith('.mp4')) {
+      generateVideoThumbnailObjectUrl(denuncia.primeiroArquivo)
+        .then((url) => {
+          objectUrl = url;
+          setThumbImageURL(url);
+          console.log(url);
+        })
+        .catch(() => {
+          setThumbImageURL('/image_fail_to_fetch.png');
+        });
+    } else {
+      setThumbImageURL(denuncia.primeiroArquivo);
+    }
+
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, []);
+
+  const criadaHa = calcularDiasAtras(denuncia.criadaEm);
 
   return (
     <div
       key={denuncia.id}
       className={`flex items-start gap-4 rounded-lg shadow-sm cursor-pointer ${
-        isSelected ? 'bg-gray-100' : 'bg-white hover:bg-gray-50' //
+        isSelected ? 'bg-gray-100' : 'bg-white hover:bg-gray-50'
       }`}
       onClick={onClick}
     >
@@ -58,13 +80,13 @@ export function DenunciaItem({
       <div className="flex flex-col flex-grow py-3 pr-3">
         <div className="flex justify-between items-center">
           <div>
-            {showDate && <p className="text-xs text-gray-500">{diasAtras}</p>}
+            {showDate && <p className="text-xs text-gray-500">{criadaHa}</p>}
             <h3 className="font-semibold text-md text-gray-700 line-clamp-1">
-              {denuncia.tipo}
+              {denuncia.nomeTipoDenuncia}
             </h3>
           </div>
 
-          {showTag && <Tag status={denunciaStatus} />}
+          {showTag && <Tag status={denuncia.status} />}
 
           {isDeletable && (
             <button
@@ -81,7 +103,7 @@ export function DenunciaItem({
             <FaMapPin />
           </span>
           <span className="line-clamp-1">
-            {`${denuncia.rua}, ${denuncia.bairro}`}
+            {`${denuncia.endereco.rua}, ${denuncia.endereco.bairro}`}
           </span>
         </p>
       </div>

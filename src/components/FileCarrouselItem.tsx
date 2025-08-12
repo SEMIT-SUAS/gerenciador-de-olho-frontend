@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { FaPlay } from 'react-icons/fa';
 import { Loading } from './Loading/Loading';
 import type { CarrouselFileProps } from './Modals/FileViewerModal';
-import { useFiles } from '@/context/FilesContext';
 
 type FileCarrouselItemProps = {
   file: DenunciaFile;
@@ -14,11 +13,7 @@ export function FileCarrouselItem({
   file: denunciaFile,
   onClickInItem,
 }: FileCarrouselItemProps) {
-  const { files, getFileById } = useFiles();
-
-  const cachedFile = useMemo(() => {
-    return getFileById(denunciaFile.id);
-  }, [files]);
+  return null;
 
   return (
     <button

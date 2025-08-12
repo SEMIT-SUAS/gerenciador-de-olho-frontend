@@ -50,7 +50,7 @@ const icons = [
     path: '/infraestrutura/manutencao-quadra.png',
   },
   {
-    name: 'Podar arvores',
+    name: 'Podar árvore',
     path: '/infraestrutura/podar-arvores.png',
   },
   {

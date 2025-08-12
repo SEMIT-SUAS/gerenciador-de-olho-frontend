@@ -1,10 +1,10 @@
+import { BASE_API_URL } from '@/constants/baseApiURL';
 import type { BannerModel } from '../types/Banner';
-import { API_BASE_URL } from '../config/api';
 import { getAPIFileURL } from '@/utils/getAPIFileURL';
 
 async function getAll(): Promise<BannerModel[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/banner/listar-ativos`, {
+    const response = await fetch(`${BASE_API_URL}/banner/listar-ativos`, {
       method: 'GET',
     });
 
@@ -22,7 +22,7 @@ async function getAll(): Promise<BannerModel[]> {
 
 async function upload(formData: FormData): Promise<BannerModel> {
   try {
-    const response = await fetch(`${API_BASE_URL}/banner/cadastrar`, {
+    const response = await fetch(`${BASE_API_URL}/banner/cadastrar`, {
       method: 'POST',
       body: formData,
     });
@@ -48,7 +48,7 @@ async function toggleVisibility(
 ): Promise<void> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/banner/atualizar/visibilidade`,
+      `${BASE_API_URL}/banner/atualizar/visibilidade`,
       {
         method: 'PUT',
         headers: {
@@ -73,7 +73,7 @@ async function toggleVisibility(
 
 async function trash(bannerId: number): Promise<void> {
   try {
-    const response = await fetch(`${API_BASE_URL}/banner/atualizar/atividade`, {
+    const response = await fetch(`${BASE_API_URL}/banner/atualizar/atividade`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ async function trash(bannerId: number): Promise<void> {
 
 async function update(formData: FormData): Promise<BannerModel> {
   try {
-    const response = await fetch(`${API_BASE_URL}/banner/atualizar`, {
+    const response = await fetch(`${BASE_API_URL}/banner/atualizar`, {
       method: 'PUT',
       body: formData,
     });

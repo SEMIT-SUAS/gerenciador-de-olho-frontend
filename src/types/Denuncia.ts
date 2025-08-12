@@ -1,6 +1,6 @@
 import type { AcaoModel } from './Acao';
 import type { AcaoStatusModelTypes } from './AcaoStatus';
-import type { DenunciaFile } from './DenunciaFile';
+import type { AddressModel } from './Address';
 import type { DenunciaIndeferidaModel } from './DenunciaIndeferidaModel';
 import type { TipoDenunciaModel } from './TipoDenuncia';
 import type { UsuarioModel } from './Usuario';
@@ -37,23 +37,15 @@ export interface DenunciaModel {
   dataFim: string;
   ativo: boolean;
   usuario: UsuarioModel | null;
-  // denunciaIndeferida: DenunciaIndeferidaModel | null;
+  denunciaIndeferida: DenunciaIndeferidaModel | null;
 }
 
-export interface DenunciaModelMap {
+export interface DenunciaBasicInfoModel {
   id: number;
   nomeTipoDenuncia: string;
-  acaoStatus: string | null;
-  latitude: number;
-  longitude: number;
+  idAcao: number | null;
+  status: 'aberto' | AcaoStatusModelTypes;
+  endereco: AddressModel;
   criadaEm: string;
-}
-
-export interface DenunciaModelList {
-  id: number;
-  nomeTipoDenuncia: string;
-  acaoStatus: string | null;
-  criadoEm: string;
-  endereco: string; // Junta rua e bairro Ex: Rua Dez, Cohama
-  firstFile: string;
+  primeiroArquivo: string;
 }

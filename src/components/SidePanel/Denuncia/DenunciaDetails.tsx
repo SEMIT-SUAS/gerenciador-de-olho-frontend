@@ -8,10 +8,6 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { BackButton } from '../../Buttons/Backbutton';
 import { useMapActions } from '../../../context/MapActions';
-import {
-  getDenunciaStatus,
-  getIndeferimentoData,
-} from '@/utils/getDenunciaStatus';
 import { Button } from '@/components/Buttons/BaseButton';
 import { IconProgressX } from '@tabler/icons-react';
 
@@ -34,11 +30,8 @@ export function DenunciaDetails() {
     });
   }
 
-  const denunciaStatus = getDenunciaStatus(denuncia);
-  const indeferimentoData = getIndeferimentoData(denuncia);
-
   const acaoVinculada = useMemo(() => {
-    return acoes.find((a) => a.id == denuncia.acao?.id);
+    return acoes.find((a) => a.id == denuncia.idAcao);
   }, [denuncias]);
 
   async function handleConfirmDesvincularDenunciaAcao() {
@@ -66,12 +59,14 @@ export function DenunciaDetails() {
 
   useEffect(() => {
     setZoomTo({
-      lat: denuncia.latitude,
-      lng: denuncia.longitude,
+      lat: denuncia.endereco.latitude,
+      lng: denuncia.endereco.longitude,
     });
 
     return () => setZoomTo(null);
   }, [denuncia, denunciaId]);
+
+  return null;
 
   return (
     <>

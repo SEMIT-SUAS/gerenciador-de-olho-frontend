@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@/config/api';
+import { BASE_API_URL } from '@/constants/baseApiURL';
 
 export function getAPIFileURL(filePath: string) {
   const fileName = filePath.split('uploads/').pop();
@@ -7,5 +7,5 @@ export function getAPIFileURL(filePath: string) {
     throw new Error('Invalid file path');
   }
 
-  return `${API_BASE_URL}/arquivo/upload/${fileName}`;
+  return `${BASE_API_URL}/arquivo/upload/${fileName}`;
 }

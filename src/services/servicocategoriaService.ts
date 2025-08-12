@@ -2,13 +2,13 @@ import type {
   createServicoCategoria,
   ServicoCategoria,
 } from '../types/CategoriaServico';
-import { API_BASE_URL } from '../config/api';
+import { BASE_API_URL } from '../constants/baseApiURL';
 import type { ServicoCategoriaEditar } from '../types/ServicoCategoriaEditar';
 
 export async function getAllCategorias(): Promise<ServicoCategoria[]> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/categoria-servico/listar-ativos`,
+      `${BASE_API_URL}/categoria-servico/listar-ativos`,
       {
         method: 'GET',
       },
@@ -37,7 +37,7 @@ export async function createCategoria(
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/categoria-servico/cadastrar`,
+      `${BASE_API_URL}/categoria-servico/cadastrar`,
       {
         method: 'POST',
         body: formData,
@@ -68,7 +68,7 @@ export async function editarCategoria(
     }
 
     const response = await fetch(
-      `${API_BASE_URL}/categoria-servico/atualizar/layout`,
+      `${BASE_API_URL}/categoria-servico/atualizar/layout`,
       {
         method: 'PUT',
         body: formData,
@@ -91,7 +91,7 @@ export async function editarCategoria(
 // Ativa/desativa a categoria (toggle)
 export async function toggleAtivo(id: number, ativo: boolean): Promise<void> {
   const response = await fetch(
-    `${API_BASE_URL}/categoria-servico/atualizar/atividade`,
+    `${BASE_API_URL}/categoria-servico/atualizar/atividade`,
     {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -107,7 +107,7 @@ export async function toggleVisivel(
   visivel: boolean,
 ): Promise<void> {
   const response = await fetch(
-    `${API_BASE_URL}/categoria-servico/atualizar/visibilidade`,
+    `${BASE_API_URL}/categoria-servico/atualizar/visibilidade`,
     {
       method: 'PUT',
       headers: {

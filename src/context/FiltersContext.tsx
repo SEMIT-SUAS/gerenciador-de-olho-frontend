@@ -9,21 +9,18 @@ import {
   useCallback,
 } from 'react';
 import { useOcorrencias } from './OcorrenciasContext';
-import type {
-  DenunciaModel,
-  DenunciaStatusModelTypes,
-} from '../types/Denuncia';
+import type { DenunciaStatusModelTypes } from '../types/Denuncia';
 import type { AcaoModel } from '../types/Acao';
 import type { AcaoStatusModelTypes } from '../types/AcaoStatus';
-import { getDenunciaStatus } from '../utils/getDenunciaStatus';
+import type { DenunciaBasicInfoModel } from '../types/Denuncia';
 
 type FilterState = {
   isVisibleDenunciasInMap: boolean;
   isVisibleAcoesInMap: boolean;
   filtroStatusDenuncia: 'todos' | DenunciaStatusModelTypes[];
   filtroStatusAcao: 'todos' | AcaoStatusModelTypes[];
-  filtroCategoria: 'todas' | string | null;
-  filtroSecretaria: 'todas' | string | null;
+  filtroCategoriaTipo: 'todos' | string;
+  filtroSecretaria: 'todas' | string;
   filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
   filtrarAcoesPorId: number[] | 'desabilitado';
 };
@@ -37,17 +34,15 @@ type FiltersContextProps = FilterState & {
   setFiltroStatusAcao: Dispatch<
     SetStateAction<'todos' | AcaoStatusModelTypes[]>
   >;
-  setFiltroCategoria: Dispatch<SetStateAction<'todas' | string | null>>;
-  setFiltroSecretaria: Dispatch<SetStateAction<'todas' | string | null>>;
-
+  setFiltroCategoriaTipo: Dispatch<SetStateAction<'todos' | string>>;
+  setFiltroSecretaria: Dispatch<SetStateAction<'todas' | string>>;
   setFiltroDenunciasComAcao: Dispatch<
     SetStateAction<'desabilitado' | 'com_acao' | 'sem_acao'>
   >;
-  denunciasFiltradas: DenunciaModel[];
+  denunciasFiltradas: DenunciaBasicInfoModel[];
   acoesFiltradas: AcaoModel[];
   cacheCurrentFilters: () => void;
   restoreCachedFilters: () => void;
-  filtrarAcoesPorId: number[] | 'desabilitado';
   setFiltrarAcoesPorId: Dispatch<SetStateAction<number[] | 'desabilitado'>>;
 };
 
@@ -56,7 +51,7 @@ const defaultFilters: FilterState = {
   isVisibleAcoesInMap: true,
   filtroStatusDenuncia: ['aberto'],
   filtroStatusAcao: 'todos',
-  filtroCategoria: 'todas',
+  filtroCategoriaTipo: 'todos',
   filtroSecretaria: 'todas',
   filtroDenunciasComAcao: 'desabilitado',
   filtrarAcoesPorId: 'desabilitado',
@@ -79,8 +74,8 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   const [filtroStatusAcao, setFiltroStatusAcao] = useState(
     defaultFilters.filtroStatusAcao,
   );
-  const [filtroCategoria, setFiltroCategoria] = useState(
-    defaultFilters.filtroCategoria,
+  const [filtroCategoriaTipo, setFiltroCategoriaTipo] = useState(
+    defaultFilters.filtroCategoriaTipo,
   );
   const [filtroSecretaria, setFiltroSecretaria] = useState(
     defaultFilters.filtroSecretaria,
@@ -88,10 +83,9 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   const [filtroDenunciasComAcao, setFiltroDenunciasComAcao] = useState(
     defaultFilters.filtroDenunciasComAcao,
   );
-
   const [filtrarAcoesPorId, setFiltrarAcoesPorId] = useState<
     number[] | 'desabilitado'
-  >('desabilitado');
+  >(defaultFilters.filtrarAcoesPorId);
 
   const { denuncias, acoes } = useOcorrencias();
 
@@ -101,7 +95,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       isVisibleAcoesInMap,
       filtroStatusDenuncia,
       filtroStatusAcao,
-      filtroCategoria,
+      filtroCategoriaTipo,
       filtroSecretaria,
       filtroDenunciasComAcao,
       filtrarAcoesPorId,
@@ -111,7 +105,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     isVisibleAcoesInMap,
     filtroStatusDenuncia,
     filtroStatusAcao,
-    filtroCategoria,
+    filtroCategoriaTipo,
     filtroSecretaria,
     filtroDenunciasComAcao,
     filtrarAcoesPorId,
@@ -124,7 +118,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     setIsVisibleAcoesInMap(filtersToRestore.isVisibleAcoesInMap);
     setFiltroStatusDenuncia(filtersToRestore.filtroStatusDenuncia);
     setFiltroStatusAcao(filtersToRestore.filtroStatusAcao);
-    setFiltroCategoria(filtersToRestore.filtroCategoria);
+    setFiltroCategoriaTipo(filtersToRestore.filtroCategoriaTipo);
     setFiltroSecretaria(filtersToRestore.filtroSecretaria);
     setFiltroDenunciasComAcao(filtersToRestore.filtroDenunciasComAcao);
     setFiltrarAcoesPorId(filtersToRestore.filtrarAcoesPorId);
@@ -135,61 +129,43 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   }, [cacheFilters]);
 
   const denunciasFiltradas = useMemo(() => {
-    // return denuncias.filter((d) => {
-    //   const denunciaStatus = getDenunciaStatus(d);
+    return denuncias.filter((d) => {
+      const passaStatus = true;
 
-    //   // console.log(denunciaStatus);
+      const passaCategoria =
+        filtroCategoriaTipo === 'todos' ||
+        d.nomeTipoDenuncia === filtroCategoriaTipo;
 
-    //   const passaStatus =
-    //     filtroStatusDenuncia === 'todos' ||
-    //     filtroStatusDenuncia.includes(denunciaStatus);
+      const passaFiltroAcao =
+        filtroDenunciasComAcao === 'desabilitado' ||
+        (filtroDenunciasComAcao === 'com_acao' && d.idAcao !== null) ||
+        (filtroDenunciasComAcao === 'sem_acao' && d.idAcao === null);
 
-    //   const passaCategoria =
-    //     filtroCategoria === 'todas' ||
-    //     d.tipo?.categoria?.nome === filtroCategoria;
-
-    //   const passaFiltroAcao =
-    //     filtroDenunciasComAcao === 'desabilitado' ||
-    //     (filtroDenunciasComAcao === 'com_acao' && d.acao) ||
-    //     (filtroDenunciasComAcao === 'sem_acao' && !d.acao);
-
-    //   return passaStatus && passaCategoria && passaFiltroAcao;
-    // });
-    console.log(denuncias);
-    return denuncias;
-  }, [
-    denuncias,
-    filtroStatusDenuncia,
-    filtroCategoria,
-    filtroDenunciasComAcao,
-    acoes,
-  ]);
+      return passaStatus && passaCategoria && passaFiltroAcao;
+    });
+  }, [denuncias, filtroCategoriaTipo, filtroDenunciasComAcao]);
 
   const acoesFiltradas = useMemo(() => {
+    let acoesTemp = acoes;
+
     if (filtrarAcoesPorId !== 'desabilitado') {
-      return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
+      return acoesTemp.filter((a) => filtrarAcoesPorId.includes(a.id));
     }
 
-    return acoes
-      .filter((a) => {
-        console.log(filtroSecretaria);
-        if (filtroSecretaria === 'todas') {
-          return a;
-        } else {
-          console.log(a.secretaria.sigla);
-          return a.secretaria.sigla === filtroSecretaria;
-        }
-      })
-      .filter((a) => {
-        const currentStatus = a.status?.[a.status.length - 1]?.status;
-        if (!currentStatus) return false;
+    if (filtroSecretaria !== 'todas') {
+      acoesTemp = acoesTemp.filter(
+        (a) => a.secretaria.sigla === filtroSecretaria,
+      );
+    }
 
-        if (filtroStatusAcao === 'todos') {
-          return a;
-        } else {
-          return filtroStatusAcao[0] === currentStatus;
-        }
+    if (filtroStatusAcao !== 'todos') {
+      acoesTemp = acoesTemp.filter((a) => {
+        const currentStatus = a.status?.[a.status.length - 1]?.status;
+        return currentStatus ? filtroStatusAcao.includes(currentStatus) : false;
       });
+    }
+
+    return acoesTemp;
   }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
 
   return (
@@ -197,24 +173,24 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       value={{
         isVisibleDenunciasInMap,
         isVisibleAcoesInMap,
-        setIsVisibleDenunciasInMap,
-        setIsVisibleAcoesInMap,
         filtroStatusDenuncia,
-        setFiltroStatusDenuncia,
         filtroStatusAcao,
-        setFiltroStatusAcao,
-        filtroCategoria,
-        setFiltroCategoria,
+        filtroCategoriaTipo,
         filtroSecretaria,
-        setFiltroSecretaria,
+        filtroDenunciasComAcao,
+        filtrarAcoesPorId,
         denunciasFiltradas,
         acoesFiltradas,
-        filtroDenunciasComAcao,
+        setIsVisibleDenunciasInMap,
+        setIsVisibleAcoesInMap,
+        setFiltroStatusDenuncia,
+        setFiltroStatusAcao,
+        setFiltroCategoriaTipo,
+        setFiltroSecretaria,
         setFiltroDenunciasComAcao,
+        setFiltrarAcoesPorId,
         cacheCurrentFilters,
         restoreCachedFilters,
-        filtrarAcoesPorId,
-        setFiltrarAcoesPorId,
       }}
     >
       {children}

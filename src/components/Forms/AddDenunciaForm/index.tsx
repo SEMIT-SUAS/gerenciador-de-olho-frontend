@@ -11,7 +11,6 @@ import { useFilters } from '../../../context/FiltersContext';
 import type { CreateDenunciaModel } from '../../../types/Denuncia';
 import { useNavigate } from 'react-router-dom';
 import { useAddDenunciaFormHook } from './addDenunciaFormHook';
-import denunciaService from '../../../services/denunciasService';
 import {
   Select,
   SelectContent,
@@ -55,23 +54,22 @@ export function AddDenunciaForm() {
   const navigate = useNavigate();
 
   async function loadAddress() {
-    try {
-      setIsLoadingAddressSearch(true);
-      const address = await denunciaService.getAddressByCoordinates(
-        newDenunciaCoordinates!.lat,
-        newDenunciaCoordinates!.lng,
-      );
-
-      setFormData((formData) => ({
-        ...formData,
-        bairro: address.bairro,
-        rua: address.rua,
-      }));
-    } catch (err: any) {
-      toast.warning(err.message);
-    } finally {
-      setIsLoadingAddressSearch(false);
-    }
+    // try {
+    //   setIsLoadingAddressSearch(true);
+    //   const address = await denunciaService.getAddressByCoordinates(
+    //     newDenunciaCoordinates!.lat,
+    //     newDenunciaCoordinates!.lng,
+    //   );
+    //   setFormData((formData) => ({
+    //     ...formData,
+    //     bairro: address.bairro,
+    //     rua: address.rua,
+    //   }));
+    // } catch (err: any) {
+    //   toast.warning(err.message);
+    // } finally {
+    //   setIsLoadingAddressSearch(false);
+    // }
   }
 
   useEffect(() => {
@@ -109,39 +107,35 @@ export function AddDenunciaForm() {
   }
 
   async function handleConfirmSubmit() {
-    try {
-      setIsSubmitingForm(true);
-
-      const createDenunciaData: CreateDenunciaModel = {
-        latitude: newDenunciaCoordinates!.lat,
-        longitude: newDenunciaCoordinates!.lng,
-        bairro: formData.bairro,
-        rua: formData.rua,
-        pontoDeReferencia: formData.pontoDeReferencia,
-        descricao: formData.descricao,
-        tipoId: formData.categoryTipoId,
-        files: formData.files,
-      };
-
-      const newDenunciaData = await denunciaService.createDenuncia(
-        createDenunciaData,
-      );
-
-      toast.success('Denúncia criada com sucesso!', {
-        icon: <IconCircleCheckFilled className="h-5 w-5 text-green-500" />,
-        description: 'Verifique os detalhes da denúncia criada.',
-      });
-
-      resetForm();
-      navigate(`/ocorrencias/denuncias/${newDenunciaData.id}`);
-    } catch (error: any) {
-      toast(error.message, {
-        type: 'error',
-      });
-    } finally {
-      setIsSubmitingForm(false);
-      setIsOpenConfirmationModal(false);
-    }
+    // try {
+    //   setIsSubmitingForm(true);
+    //   const createDenunciaData: CreateDenunciaModel = {
+    //     latitude: newDenunciaCoordinates!.lat,
+    //     longitude: newDenunciaCoordinates!.lng,
+    //     bairro: formData.bairro,
+    //     rua: formData.rua,
+    //     pontoDeReferencia: formData.pontoDeReferencia,
+    //     descricao: formData.descricao,
+    //     tipoId: formData.categoryTipoId,
+    //     files: formData.files,
+    //   };
+    //   const newDenunciaData = await denunciaService.createDenuncia(
+    //     createDenunciaData,
+    //   );
+    //   toast.success('Denúncia criada com sucesso!', {
+    //     icon: <IconCircleCheckFilled className="h-5 w-5 text-green-500" />,
+    //     description: 'Verifique os detalhes da denúncia criada.',
+    //   });
+    //   resetForm();
+    //   navigate(`/ocorrencias/denuncias/${newDenunciaData.id}`);
+    // } catch (error: any) {
+    //   toast(error.message, {
+    //     type: 'error',
+    //   });
+    // } finally {
+    //   setIsSubmitingForm(false);
+    //   setIsOpenConfirmationModal(false);
+    // }
   }
 
   const selectedCategory = categorias.find((c) => c.id === formData.categoryId);

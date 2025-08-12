@@ -27,7 +27,6 @@ import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
 import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
 import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/edit';
 import { PortaisPage } from './pages/PortaisPage';
-import { ServicoExternoForm } from './components/ServicosExternos/ServicoExternoForm';
 
 export function App() {
   return (

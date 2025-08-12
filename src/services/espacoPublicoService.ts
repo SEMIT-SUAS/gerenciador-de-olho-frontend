@@ -1,9 +1,9 @@
-import { API_BASE_URL } from '@/config/api';
+import { BASE_API_URL } from '@/constants/baseApiURL';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
 
 async function create(formData: FormData): Promise<void> {
   try {
-    const response = await fetch(`${API_BASE_URL}/espaco-publico/cadastrar`, {
+    const response = await fetch(`${BASE_API_URL}/espaco-publico/cadastrar`, {
       method: 'POST',
       body: formData,
     });
@@ -23,7 +23,7 @@ async function create(formData: FormData): Promise<void> {
 async function get(espacoPublicoId: number): Promise<EspacoPublicoModel> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/espaco-publico/buscar/${espacoPublicoId}`,
+      `${BASE_API_URL}/espaco-publico/buscar/${espacoPublicoId}`,
       {
         method: 'GET',
       },
@@ -46,7 +46,7 @@ async function get(espacoPublicoId: number): Promise<EspacoPublicoModel> {
 async function getAll(): Promise<EspacoPublicoModel[]> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/espaco-publico/listar-ativos`,
+      `${BASE_API_URL}/espaco-publico/listar-ativos`,
       {
         method: 'GET',
         headers: {
@@ -72,7 +72,7 @@ async function getAll(): Promise<EspacoPublicoModel[]> {
 async function toggleVisibility(id: number, visivel: boolean): Promise<void> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/espaco-publico/atualizar/visibilidade`,
+      `${BASE_API_URL}/espaco-publico/atualizar/visibilidade`,
       {
         method: 'PUT',
         headers: {
@@ -97,7 +97,7 @@ async function toggleVisibility(id: number, visivel: boolean): Promise<void> {
 async function trash(id: number): Promise<void> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/espaco-publico/atualizar/atividade`,
+      `${BASE_API_URL}/espaco-publico/atualizar/atividade`,
       {
         method: 'PUT',
         headers: {

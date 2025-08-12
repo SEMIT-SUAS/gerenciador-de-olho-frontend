@@ -2,7 +2,10 @@ import { Marker, useMap } from 'react-leaflet';
 import { useFilters } from '../../../context/FiltersContext';
 import { getDenunciaIconByTipo } from '../../../utils/getPinIcon';
 import { useMapActions } from '../../../context/MapActions';
-import type { DenunciaModel } from '../../../types/Denuncia';
+import type {
+  DenunciaBasicInfoModel,
+  DenunciaModel,
+} from '../../../types/Denuncia';
 import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
 import { getConvexHull } from '../../../utils/geometry';
 import { DenunciaTooltip } from './DenunciaTooltip';
@@ -64,23 +67,26 @@ export function DenunciaMapPins() {
     map,
   ]);
 
-  function handleOnDenunciaClick(currentDenuncia: DenunciaModel) {
-    if (salvarDenunciasOnclick) {
-      addDenunciaNaSelecao(currentDenuncia);
-    } else {
-      navigate(`/ocorrencias/denuncias/${currentDenuncia.id}`);
-    }
+  function handleOnDenunciaClick(currentDenuncia: DenunciaBasicInfoModel) {
+    // if (salvarDenunciasOnclick) {
+    //   addDenunciaNaSelecao(currentDenuncia);
+    // } else {
+    //   navigate(`/ocorrencias/denuncias/${currentDenuncia.id}`);
+    // }
   }
 
-  function handleGetIcon(denuncia: DenunciaModel) {
+  function handleGetIcon(denuncia: DenunciaBasicInfoModel) {
     const isSelected = !!denunciasSelecionas.find((d) => d.id === denuncia.id);
 
-    const baseIcon = getDenunciaIconByTipo(denuncia.tipo, isSelected);
+    const baseIcon = getDenunciaIconByTipo(
+      denuncia.nomeTipoDenuncia,
+      isSelected,
+    );
+
     const mainIconUrl = baseIcon.options.iconUrl;
     const iconSize = baseIcon.options.iconSize as [number, number];
 
     const statusValue = denuncia.acao?.status[0].status || 'default';
-
     const statusIconUrl = statusIconMap[statusValue] || statusIconMap.default;
 
     const iconHTML = `
@@ -104,17 +110,17 @@ export function DenunciaMapPins() {
 
   return (
     <>
-      {denunciasFiltradas.map((d) => {
+      {denunciasFiltradas.map((denuncia) => {
         return (
           <Marker
-            key={`d-${d.id}`}
-            position={[d.latitude, d.longitude]}
-            icon={handleGetIcon(d)}
+            key={`d-${denuncia.id}`}
+            position={[denuncia.endereco.latitude, denuncia.endereco.longitude]}
+            icon={handleGetIcon(denuncia)}
             eventHandlers={{
-              click: () => handleOnDenunciaClick(d),
+              click: () => handleOnDenunciaClick(denuncia),
             }}
           >
-            {!salvarDenunciasOnclick && <DenunciaTooltip denuncia={d} />}
+            {!salvarDenunciasOnclick && <DenunciaTooltip denuncia={denuncia} />}
           </Marker>
         );
       })}

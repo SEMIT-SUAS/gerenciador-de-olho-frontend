@@ -23,17 +23,9 @@ export interface AcaoModel {
 export interface AcaoModelMap {
   id: number;
   nome: string;
+  statusAtual: string;
+  nomeSecretaria: string;
   latitude: number;
   longitude: number;
-  nomeStatus: string;
   criadoEm: string;
-  nomeSecretaria: string;
-}
-
-export interface AcaoModelList {
-  id: number;
-  nome: string;
-  nomeStatus: string;
-  criadoEm: string;
-  nomeSecretaria: string;
 }

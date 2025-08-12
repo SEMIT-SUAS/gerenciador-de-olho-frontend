@@ -1,8 +1,8 @@
 import type { AcaoModel, CreateAcaoModel } from '../types/Acao';
-import { API_BASE_URL } from '../config/api';
 import { getPolygonoCenter } from '../utils/geometry';
 import type { SecretariaModel } from '../types/Secretaria';
 import { secretariasMock, userMock } from '../constants/mocks';
+import { BASE_API_URL } from '@/constants/baseApiURL';
 
 export const acoes: AcaoModel[] = [];
 
@@ -44,7 +44,7 @@ async function createAcao(createAcaoData: CreateAcaoModel): Promise<AcaoModel> {
 
 async function getAcaoById(id: number): Promise<AcaoModel> {
   try {
-    const response = await fetch(`${API_BASE_URL}/acoes/${id}`, {
+    const response = await fetch(`${BASE_API_URL}/acoes/${id}`, {
       method: 'GET',
     });
 
@@ -62,7 +62,7 @@ async function getAcaoById(id: number): Promise<AcaoModel> {
 
 async function updateAcao(acao: AcaoModel): Promise<AcaoModel> {
   try {
-    const response = await fetch(`${API_BASE_URL}/acoes/${acao.id}`, {
+    const response = await fetch(`${BASE_API_URL}/acoes/${acao.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

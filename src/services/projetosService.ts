@@ -1,9 +1,9 @@
 import type { Projetos } from '../types/Projetos';
-import { API_BASE_URL } from '../config/api';
+import { BASE_API_URL } from '../constants/baseApiURL';
 
 export async function getAllProjetos(): Promise<Projetos[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/projetos/listar`, {
+    const response = await fetch(`${BASE_API_URL}/projetos/listar`, {
       method: 'GET',
     })
 
@@ -19,7 +19,7 @@ export async function getAllProjetos(): Promise<Projetos[]> {
 
 export async function getProjetosVisiveis(): Promise<Projetos[]> {
     try{
-        const response = await fetch(`${API_BASE_URL}/projetos/visiveis`, {
+        const response = await fetch(`${BASE_API_URL}/projetos/visiveis`, {
             method:'GET',
         });
         
@@ -34,7 +34,7 @@ export async function getProjetosVisiveis(): Promise<Projetos[]> {
 
 export async function getProjetoById(id: number): Promise<Projetos> {
     try{
-        const response = await fetch(`${API_BASE_URL}/projetos/buscar/${id}`, {
+        const response = await fetch(`${BASE_API_URL}/projetos/buscar/${id}`, {
             method: 'GET',
         });
         
@@ -49,7 +49,7 @@ export async function getProjetoById(id: number): Promise<Projetos> {
 
 export async function uploadProjeto(formData: FormData): Promise<{ status: number; message: string; data: Projetos }> {
     try{
-        const response = await fetch(`${API_BASE_URL}/projetos/upload`, {
+        const response = await fetch(`${BASE_API_URL}/projetos/upload`, {
             method: 'POST',
             body: formData,
         });
@@ -65,7 +65,7 @@ export async function uploadProjeto(formData: FormData): Promise<{ status: numbe
 
 export async function updateProjeto(id: number, formData: FormData): Promise<Projetos> {
   try {
-    const response = await fetch(`${API_BASE_URL}/projetos/atualizar/${id}`, {
+    const response = await fetch(`${BASE_API_URL}/projetos/atualizar/${id}`, {
       method: 'PUT',
       body: formData,
     })
@@ -82,7 +82,7 @@ export async function updateProjeto(id: number, formData: FormData): Promise<Pro
 
 export async function changeProjetoVisibility(id: number, isVisible: boolean): Promise<Projetos>{
     try{
-        const response = await fetch(`${API_BASE_URL}/projetos/visibilidade/${id}?isVisible=${isVisible}`, {
+        const response = await fetch(`${BASE_API_URL}/projetos/visibilidade/${id}?isVisible=${isVisible}`, {
         method: 'PUT',
     });
 
@@ -97,7 +97,7 @@ export async function changeProjetoVisibility(id: number, isVisible: boolean): P
 
 export async function deleteProjeto(id: number): Promise<void> {
     try{
-        const response = await fetch(`${API_BASE_URL}/projetos/deletar/${id}`, { 
+        const response = await fetch(`${BASE_API_URL}/projetos/deletar/${id}`, { 
         method: 'DELETE', 
 
     });

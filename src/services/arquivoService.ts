@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@/config/api';
+import { BASE_API_URL } from '@/constants/baseApiURL';
 import type { DenunciaFile } from '@/types/DenunciaFile';
 
 async function getFilesByDenunciaId(
@@ -6,7 +6,7 @@ async function getFilesByDenunciaId(
 ): Promise<DenunciaFile[]> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/denuncia/arquivos/uploads/${idDenuncia}`,
+      `${BASE_API_URL}/denuncia/arquivos/uploads/${idDenuncia}`,
       { method: 'GET' },
     );
 

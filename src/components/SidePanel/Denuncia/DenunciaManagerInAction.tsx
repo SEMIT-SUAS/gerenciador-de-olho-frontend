@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { useState } from 'react';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
-import denunciasService from '../../../services/denunciasService';
 import { getPolygonoCenter } from '@/utils/geometry';
 
 type DenunciaManageInActionProps = {
@@ -25,36 +24,31 @@ export function DenunciaManageInAction({
   }
 
   async function handleDeleteDenunciaFromAction() {
-    try {
-      const updatedDenunciaData =
-        await denunciasService.desvincularDenunciaAcao(denuncia.id);
-
-      setDenuncias((prevDenuncias) => {
-        const newDenuncias = prevDenuncias.map((d) =>
-          d.id === denuncia.id ? updatedDenunciaData : d,
-        );
-
-        const updatedDenunciasVinculadas = newDenuncias.filter(
-          (d) => d.acao?.id === denuncia.acao?.id,
-        );
-
-        const actionCenter = getPolygonoCenter(
-          updatedDenunciasVinculadas.map((d) => [d.latitude, d.longitude]),
-        );
-
-        setAcoes((prevAcoes) =>
-          prevAcoes.map((a) =>
-            a.id === denuncia.acao?.id
-              ? { ...a, latitude: actionCenter[0], longitude: actionCenter[1] }
-              : a,
-          ),
-        );
-
-        return newDenuncias;
-      });
-    } catch (error) {
-      console.error('Erro ao desvincular denúncia:', error);
-    }
+    // try {
+    //   const updatedDenunciaData =
+    //     await denunciasService.desvincularDenunciaAcao(denuncia.id);
+    //   setDenuncias((prevDenuncias) => {
+    //     const newDenuncias = prevDenuncias.map((d) =>
+    //       d.id === denuncia.id ? updatedDenunciaData : d,
+    //     );
+    //     const updatedDenunciasVinculadas = newDenuncias.filter(
+    //       (d) => d.acao?.id === denuncia.acao?.id,
+    //     );
+    //     const actionCenter = getPolygonoCenter(
+    //       updatedDenunciasVinculadas.map((d) => [d.latitude, d.longitude]),
+    //     );
+    //     setAcoes((prevAcoes) =>
+    //       prevAcoes.map((a) =>
+    //         a.id === denuncia.acao?.id
+    //           ? { ...a, latitude: actionCenter[0], longitude: actionCenter[1] }
+    //           : a,
+    //       ),
+    //     );
+    //     return newDenuncias;
+    //   });
+    // } catch (error) {
+    //   console.error('Erro ao desvincular denúncia:', error);
+    // }
   }
 
   return (

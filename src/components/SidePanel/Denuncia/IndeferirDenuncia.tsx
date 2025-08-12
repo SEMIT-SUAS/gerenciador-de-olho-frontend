@@ -6,8 +6,6 @@ import { FaExclamationTriangle, FaCheck } from 'react-icons/fa';
 import { BackButton } from '../../Buttons/Backbutton';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { toast } from 'sonner';
-import { getDenunciaStatus } from '@/utils/getDenunciaStatus';
-import denunciasService from '@/services/denunciasService';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/Buttons/BaseButton';
 
@@ -28,33 +26,28 @@ export function IndeferirDenuncia() {
     return denuncias.find((d) => d.id == Number(denunciaId));
   }, [denuncias]);
 
-  const denunciaStatus = getDenunciaStatus(denuncia);
-
   if (
-    (!denuncia || !['aberto', 'em_andamento'].includes(denunciaStatus)) &&
+    (!denuncia || !['Aberto', 'Andamento'].includes(denuncia.status)) &&
     !isUpdatingDenuncia
   ) {
     return <Navigate to="/404" replace />;
   }
 
   async function handleOnConfirmIndeferirDenuncia() {
-    try {
-      setIsUpdatingDenuncia(true);
-
-      const denunciaDataUpdated = await denunciasService.indeferirDenuncia(
-        denuncia?.id!,
-        motivo,
-      );
-
-      setDenuncias((denuncias) =>
-        denuncias.map((d) => (d.id == denuncia?.id ? denunciaDataUpdated : d)),
-      );
-
-      toast.success('Denúncia indeferida com sucesso!');
-      navigate(`/ocorrencias/denuncias/${denunciaId}`);
-    } catch (error: any) {
-      toast.error(error.message);
-    }
+    // try {
+    //   setIsUpdatingDenuncia(true);
+    //   const denunciaDataUpdated = await denunciasService.indeferirDenuncia(
+    //     denuncia?.id!,
+    //     motivo,
+    //   );
+    //   setDenuncias((denuncias) =>
+    //     denuncias.map((d) => (d.id == denuncia?.id ? denunciaDataUpdated : d)),
+    //   );
+    //   toast.success('Denúncia indeferida com sucesso!');
+    //   navigate(`/ocorrencias/denuncias/${denunciaId}`);
+    // } catch (error: any) {
+    //   toast.error(error.message);
+    // }
   }
 
   return (

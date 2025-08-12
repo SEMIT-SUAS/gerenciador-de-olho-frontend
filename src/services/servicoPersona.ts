@@ -1,9 +1,9 @@
 import type { Persona } from '../types/Persona';
-import { API_BASE_URL } from '../config/api';
+import { BASE_API_URL } from '../constants/baseApiURL';
 
 export async function getAllPerosona(): Promise<Persona[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/persona-servico/listar-ativos`, {
+    const response = await fetch(`${BASE_API_URL}/persona-servico/listar-ativos`, {
       method: 'GET',
     })
 

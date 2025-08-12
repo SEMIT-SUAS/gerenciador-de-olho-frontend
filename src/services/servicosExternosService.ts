@@ -1,9 +1,9 @@
 import type { ServicoExterno } from '../types/ServicoExterno';
-import { API_BASE_URL } from '../config/api';
+import { BASE_API_URL } from '../constants/baseApiURL';
 
 export async function uploadServicoExterno(formData: FormData): Promise<any> {
   try {
-    const response = await fetch(`${API_BASE_URL}/servico-externo/cadastrar`, {
+    const response = await fetch(`${BASE_API_URL}/servico-externo/cadastrar`, {
       method: 'POST',
       body: formData,
     });
@@ -38,7 +38,7 @@ export async function uploadServicoExterno(formData: FormData): Promise<any> {
 export async function getAllServicoExterno(): Promise<ServicoExterno[]> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/servico-externo/listar-ativos`,
+      `${BASE_API_URL}/servico-externo/listar-ativos`,
       {
         method: 'GET',
       },
@@ -62,7 +62,7 @@ export async function changeServiceVisibility(
 ): Promise<ServicoExterno | { retorno: string }> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/servico-externo/atualizar/visibilidade`,
+      `${BASE_API_URL}/servico-externo/atualizar/visibilidade`,
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -108,7 +108,7 @@ export async function changeServiceAtivo(
 ): Promise<ServicoExterno | { message: string }> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/servico-externo/atualizar/atividade`,
+      `${BASE_API_URL}/servico-externo/atualizar/atividade`,
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

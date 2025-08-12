@@ -1,10 +1,10 @@
 import type { Servicos, UpdateServiceModel } from '../types/Servicos';
-import { API_BASE_URL } from '../config/api';
+import { BASE_API_URL } from '../constants/baseApiURL';
 import type { ServicosListar } from '@/types/ServicosListar';
 
 export async function getAllServices(): Promise<ServicosListar[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/servico/listar-ativos`, {
+    const response = await fetch(`${BASE_API_URL}/servico/listar-ativos`, {
       method: 'GET',
     });
 
@@ -22,7 +22,7 @@ export async function getAllServices(): Promise<ServicosListar[]> {
 
 export async function createService(servico: Servicos): Promise<Servicos> {
   try {
-    const response = await fetch(`${API_BASE_URL}/servico/cadastrar`, {
+    const response = await fetch(`${BASE_API_URL}/servico/cadastrar`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(servico),
@@ -44,7 +44,7 @@ export async function updateServico(
   servico: UpdateServiceModel,
 ): Promise<UpdateServiceModel> {
   try {
-    const response = await fetch(`${API_BASE_URL}/servico/atualizar`, {
+    const response = await fetch(`${BASE_API_URL}/servico/atualizar`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(servico),
@@ -63,7 +63,7 @@ export async function updateServico(
 
 export async function getVisibleServicos(): Promise<Servicos[]> {
   try {
-    const response = await fetch(`${API_BASE_URL}/servico/visiveis`, {
+    const response = await fetch(`${BASE_API_URL}/servico/visiveis`, {
       method: 'GET',
     });
 
@@ -80,7 +80,7 @@ export async function getVisibleServicos(): Promise<Servicos[]> {
 
 export async function getServicoById(id: number): Promise<Servicos> {
   try {
-    const response = await fetch(`${API_BASE_URL}/servico/buscar/${id}`, {
+    const response = await fetch(`${BASE_API_URL}/servico/buscar/${id}`, {
       method: 'GET',
     });
 
@@ -101,7 +101,7 @@ export async function changeServiceVisibility(
 ): Promise<ServicosListar> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/servico/atualizar/visibilidade`,
+      `${BASE_API_URL}/servico/atualizar/visibilidade`,
       {
         method: 'PUT',
         headers: {
@@ -129,7 +129,7 @@ export async function changeServiceAtivo(
 ): Promise<Servicos> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/servico/atualizar/atividade`,
+      `${BASE_API_URL}/servico/atualizar/atividade`,
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
