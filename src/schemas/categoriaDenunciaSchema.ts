@@ -13,4 +13,3 @@ export const categoriaDenunciaSchema = z.object({
       message: 'Ícone é obrigatório e deve ser um arquivo',
     }),
 });
-

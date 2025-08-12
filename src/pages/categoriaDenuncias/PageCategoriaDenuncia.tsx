@@ -90,7 +90,7 @@ export function ListaCategoriaDenuncia() {
         style={{ marginBottom: '1rem', padding: '10px 20px' }}
         onClick={() => setModalAberto(true)}
       >
-        Nova Categoria
+        + Nova Categoria
       </button>
 
       <CategoriaDenunciaModal
