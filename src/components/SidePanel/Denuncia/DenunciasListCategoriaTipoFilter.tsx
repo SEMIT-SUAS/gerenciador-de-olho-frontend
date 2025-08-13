@@ -8,36 +8,36 @@ import {
 import { useFilters } from '@/context/FiltersContext';
 import { useOcorrencias } from '@/context/OcorrenciasContext';
 
-export function DenunciasListCategoriaFilter() {
-  const { categorias } = useOcorrencias();
-  const { setFiltroCategoria } = useFilters();
+export function DenunciasListCategoriaTipoFilter() {
+  const { categoriaTipos } = useOcorrencias();
+  const { setFiltroCategoriaTipo } = useFilters();
 
   function handleOnValueSelected(value: string) {
-    setFiltroCategoria(value);
+    setFiltroCategoriaTipo(value);
   }
 
   return (
     <div>
       <label
-        htmlFor="categoria-select"
+        htmlFor="tipo-select"
         className="block text-sm font-medium text-gray-700 mb-1"
       >
-        Categoria
+        Tipos
       </label>
 
       <Select
         onValueChange={handleOnValueSelected}
-        defaultValue="todas"
-        disabled={!categorias}
+        defaultValue="all"
+        disabled={!categoriaTipos}
       >
-        <SelectTrigger id="categoria-select" className="w-full">
-          <SelectValue placeholder="Selecione uma categoria..." />
+        <SelectTrigger id="tipo-select" className="w-full">
+          <SelectValue placeholder="Selecione um tipo..." />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="todas">Todas</SelectItem>
-          {categorias?.map((categoria) => (
-            <SelectItem key={categoria.id} value={categoria.nome}>
-              {categoria.nome}
+          <SelectItem value="all">Todos</SelectItem>
+          {categoriaTipos?.map((tipo) => (
+            <SelectItem key={tipo.id} value={tipo.nome}>
+              {tipo.nome}
             </SelectItem>
           ))}
         </SelectContent>

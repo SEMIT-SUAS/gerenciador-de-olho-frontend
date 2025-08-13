@@ -1,5 +1,4 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import type { DenunciaFile } from '../types/DenunciaFile';
 import { FileCarrouselItem } from './FileCarrouselItem';
 import {
   FileViewerModal,
@@ -8,7 +7,7 @@ import {
 import { useState } from 'react';
 
 interface FilesCarrouselProps {
-  files: DenunciaFile[];
+  files: string[];
 }
 
 export function FilesCarrrousel({ files }: FilesCarrouselProps) {
@@ -22,11 +21,11 @@ export function FilesCarrrousel({ files }: FilesCarrouselProps) {
   return (
     <>
       <Swiper spaceBetween={16} slidesPerView="auto">
-        {files.map((file) => {
+        {files.map((fileURL, idx) => {
           return (
-            <SwiperSlide key={file.id} className="h-40! w-40!">
+            <SwiperSlide key={idx} className="h-40! w-40!">
               <FileCarrouselItem
-                file={file}
+                fileURL={fileURL}
                 onClickInItem={handleSelectedFile}
               />
             </SwiperSlide>

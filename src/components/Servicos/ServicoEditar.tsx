@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { getAll } from '@/services/secretariaService';
+import { SecretariaService } from '@/services/SecretariaService';
+
 import { getAllCategorias } from '@/services/servicocategoriaService';
 import { getAllPerosona } from '@/services/servicoPersona';
 import { getServicoById, updateServico } from '@/services/servicosServices';
@@ -42,7 +43,7 @@ function ServicoEditarPage() {
       try {
         const [secretariasData, categoriasData, personaData, servicoData] =
           await Promise.all([
-            getAll(),
+            SecretariaService.getAll(),
             getAllCategorias(),
             getAllPerosona(),
             getServicoById(Number(servicoId)),

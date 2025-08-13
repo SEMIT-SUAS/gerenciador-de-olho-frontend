@@ -1,5 +1,3 @@
-// Exemplo de uso em uma página
-import { getAll } from '@/services/secretariaService';
 import { ServicoForm } from '../Forms/ServicoForm/ServicoForm';
 import { type ServicoFormOutput } from '../Forms/ServicoForm/servicoSchema';
 import { useState, useEffect } from 'react';
@@ -11,6 +9,7 @@ import type { ServicoCategoria } from '@/types/CategoriaServico';
 import { createService } from '@/services/servicosServices';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPage } from '@/pages/LayoutPage';
+import { SecretariaService } from '@/services/secretariaService';
 
 function ServicoNovo() {
   const [secretarias, setSecretarias] = useState<SecretariaModel[]>([]);
@@ -24,7 +23,11 @@ function ServicoNovo() {
     async function fetchDados() {
       try {
         const [secretariasData, categoriasData, personaData] =
-          await Promise.all([getAll(), getAllCategorias(), getAllPerosona()]);
+          await Promise.all([
+            SecretariaService.getAll(),
+            getAllCategorias(),
+            getAllPerosona(),
+          ]);
         setSecretarias(secretariasData);
         setCategorias(categoriasData);
         setPersonas(personaData);

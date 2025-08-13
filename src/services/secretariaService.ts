@@ -1,22 +1,26 @@
 import type { SecretariaModel } from '../types/Secretaria';
-import { BASE_API_URL } from '../constants/baseApiURL';
+import { api } from '@/lib/axios';
 
-export async function getAll(): Promise<SecretariaModel[]> {
-  try {
-    const response = await fetch(`${BASE_API_URL}/secretaria/listar-todas`, {
-      method: 'GET',
-    });
+export class SecretariaService {
+  private static SERVICE_UNAVAILABLE_ERROR = new Error(
+    'Serviço de secretaria indisponível. Tente novamente mais tarde.',
+  );
 
-    if (!response.ok) {
-      throw new Error('Não foi possível listar as secretarias.');
+  public static async getAll(): Promise<SecretariaModel[]> {
+    try {
+      const response = await api.get('/secretaria/listar-todas', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status != 200) {
+        throw new Error('Não foi possível buscar as secretarias.');
+      }
+
+      return JSON.parse(response.data);
+    } catch (error) {
+      throw this.SERVICE_UNAVAILABLE_ERROR;
     }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error('Erro ao buscar secretarias. Tente novamente mais tarde.');
   }
 }
-
-export default {
-  getAll,
-};

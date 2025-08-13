@@ -1,5 +1,8 @@
 import { api } from '@/lib/axios.ts';
-import type { DenunciaBasicInfoModel } from '../types/Denuncia.ts';
+import type {
+  DenunciaBasicInfoModel,
+  DenunciaModel,
+} from '../types/Denuncia.ts';
 
 export class DenunciaService {
   private static SERVICE_UNAVAILABLE_ERROR = new Error(
@@ -23,46 +26,51 @@ export class DenunciaService {
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
   }
+
+  public static async getById(denunciaId: number): Promise<DenunciaModel> {
+    try {
+      const response = await api.get(
+        `/denuncia/gerenciador/buscar-denuncia/${denunciaId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      if (response.status != 200) {
+        throw new Error('Não foi possível buscar essa denúncia.');
+      }
+
+      return JSON.parse(response.data);
+    } catch (error) {
+      throw this.SERVICE_UNAVAILABLE_ERROR;
+    }
+  }
+
+  public static async getFilesByDenunciaId(
+    denunciaId: number,
+  ): Promise<string[]> {
+    try {
+      const response = await api.get(
+        `/denuncia/arquivos/uploads/${denunciaId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      if (response.status != 200) {
+        throw new Error('Não foi possível buscar os arquivos dessa denúncia.');
+      }
+
+      return JSON.parse(response.data);
+    } catch (error) {
+      throw this.SERVICE_UNAVAILABLE_ERROR;
+    }
+  }
 }
-
-// async function getAllBasicInfos(): Promise<DenunciaBasicInfoModel[]> {
-//   try {
-//     const response = await fetch(`${BASE_API_URL}/denuncia/listar-todas`, {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     });
-
-//     if (response.status !== 200) {
-//       throw new Error('Não foi possível buscar as denúncias.');
-//     }
-
-//     return await response.json();
-//   } catch (error) {
-//     throw new Error(
-//       'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-//     );
-//   }
-// }
-
-// async function getDenunciaById(id: number): Promise<DenunciaModel> {
-//   try {
-//     const response = await fetch(`${BASE_API_URL}/denuncias/${id}`, {
-//       method: 'GET',
-//     });
-
-//     if (response.status !== 200) {
-//       throw new Error('Não foi possível encontrar a denúncia.');
-//     }
-
-//     return await response.json();
-//   } catch (error) {
-//     throw new Error(
-//       'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-//     );
-//   }
-// }
 
 // async function createDenuncia(
 //   newDenuncia: CreateDenunciaModel,

@@ -1,54 +1,44 @@
 import { Tag } from './../Tag';
-import { useEffect, useMemo, useState } from 'react';
-import { useOcorrencias } from '../../../context/OcorrenciasContext';
+import { useEffect, useState } from 'react';
 import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { FaTrashAlt } from 'react-icons/fa';
 import { FilesCarrrousel } from '../../FilesCarrousel';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { BackButton } from '../../Buttons/Backbutton';
 import { useMapActions } from '../../../context/MapActions';
 import { Button } from '@/components/Buttons/BaseButton';
 import { IconProgressX } from '@tabler/icons-react';
+import type { DenunciaModel } from '@/types/Denuncia';
+import { DenunciaService } from '@/services/DenunciaService';
+import { SidePanelLoadingContent } from '@/components/Loading/SidePanelLoadingContent';
+import { getDenunciaStatus } from '@/utils/denuncia';
 
 export function DenunciaDetails() {
+  const [denuncia, setDenuncia] = useState<DenunciaModel | null>(null);
+  const [denunciaFiles, setDenunciaFiles] = useState<string[] | null>(null);
   const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
-  const { denuncias, acoes, setDenuncias } = useOcorrencias();
   const { setZoomTo } = useMapActions();
+
   const navigate = useNavigate();
-
   const params = useParams();
-  const denunciaId = params.denunciaId;
-  const denuncia = useMemo(() => {
-    return denuncias.find((d) => d.id == Number(denunciaId));
-  }, [denuncias, denunciaId]);
-
-  if (!denuncia) {
-    return Navigate({
-      to: '/404',
-      replace: true,
-    });
-  }
-
-  const acaoVinculada = useMemo(() => {
-    return acoes.find((a) => a.id == denuncia.idAcao);
-  }, [denuncias]);
+  const denunciaId = Number(params.denunciaId);
 
   async function handleConfirmDesvincularDenunciaAcao() {
     try {
       if (!denuncia) throw new Error('Denúncia não encontrada');
 
-      setDenuncias((current) =>
-        current.map((d) => {
-          if (d.id === denuncia.id) {
-            return {
-              ...d,
-              status: 'aberto',
-            };
-          }
-          return d;
-        }),
-      );
+      // setDenuncias((current) =>
+      //   current.map((d) => {
+      //     if (d.id === denuncia.id) {
+      //       return {
+      //         ...d,
+      //         status: 'aberto',
+      //       };
+      //     }
+      //     return d;
+      //   }),
+      // );
 
       setIsDesvincularModalOpen(false);
       toast.success('Denúncia desvinculada com sucesso!');
@@ -58,15 +48,37 @@ export function DenunciaDetails() {
   }
 
   useEffect(() => {
-    setZoomTo({
-      lat: denuncia.endereco.latitude,
-      lng: denuncia.endereco.longitude,
-    });
+    DenunciaService.getById(denunciaId)
+      .then((data) => {
+        setDenuncia(data);
+      })
+      .catch(() => {
+        navigate('/404');
+      });
+
+    DenunciaService.getFilesByDenunciaId(denunciaId)
+      .then((data) => {
+        setDenunciaFiles(data);
+      })
+      .catch((error: any) => toast.error(error.message));
+  }, []);
+
+  useEffect(() => {
+    if (denuncia) {
+      setZoomTo({
+        lat: denuncia.latitude,
+        lng: denuncia.longitude,
+      });
+    }
 
     return () => setZoomTo(null);
   }, [denuncia, denunciaId]);
 
-  return null;
+  if (!denuncia) {
+    return <SidePanelLoadingContent />;
+  }
+
+  const denunciaStatus = getDenunciaStatus(denuncia);
 
   return (
     <>
@@ -80,16 +92,17 @@ export function DenunciaDetails() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-semibold text-yellow-700">
-                {denuncia.tipo.categoria?.nome}
+                {denuncia.tipoDenuncia.categoria.nome}
               </p>
               <h2 className="text-xl font-bold text-gray-800">
-                {denuncia.tipo.nome}
+                {denuncia.tipoDenuncia.nome}
               </h2>
               <p className="text-sm text-gray-500">
                 Registrado em:{' '}
-                {new Date(denuncia.criadaEm).toLocaleString('pt-BR')}
+                {new Date(denuncia.criadoEm).toLocaleString('pt-BR')}
               </p>
             </div>
+
             <Tag status={denunciaStatus} />
           </div>
 
@@ -104,23 +117,25 @@ export function DenunciaDetails() {
               <p className="text-sm text-gray-600">
                 {denuncia.rua}, {denuncia.bairro}
               </p>
-              <p className="text-sm text-gray-600">
-                {denuncia.pontoDeReferencia}
-              </p>
+              {denuncia.pontoReferencia.length > 0 && (
+                <p className="text-sm text-gray-600">
+                  Ponto de Referência: {denuncia.pontoReferencia}
+                </p>
+              )}
             </div>
           </div>
 
-          {acaoVinculada && (
+          {denuncia.dadosAcaoParaDenuncia && (
             <div className="flex items-center px-4 py-3 justify-between bg-yellow-50 border border-yellow-200 rounded-xl">
               <div>
                 <p className="text-sm font-semibold text-yellow-700">
                   Ação Vinculada:
                 </p>
                 <p className="text-md font-bold text-yellow-900">
-                  {acaoVinculada.nome}
+                  {denuncia.dadosAcaoParaDenuncia.nome}
                 </p>
                 <p className="text-xs font-semibold text-yellow-800">
-                  {acaoVinculada.secretaria.nome}
+                  {denuncia.dadosAcaoParaDenuncia.secretaria}
                 </p>
               </div>
               <button
@@ -133,8 +148,8 @@ export function DenunciaDetails() {
             </div>
           )}
 
-          {!acaoVinculada &&
-            !['indeferido', 'concluido'].includes(denunciaStatus) && (
+          {!denuncia.dadosAcaoParaDenuncia &&
+            ['Indeferido', 'Concluído'].includes(denunciaStatus) && (
               <div className="py-3 px-4 rounded-xl border border-gray-200 text-center space-y-2">
                 <p className="text-sm font-semibold text-gray-800">
                   Nenhuma ação vinculada
@@ -150,24 +165,24 @@ export function DenunciaDetails() {
               </div>
             )}
 
-          {denuncia.files.length > 0 && (
+          {denunciaFiles && denunciaFiles.length > 0 && (
             <div>
               <h3 className="font-semibold text-gray-800 mb-2">Mídia:</h3>
               <div>
-                <FilesCarrrousel files={denuncia.files} />
+                <FilesCarrrousel files={denunciaFiles} />
               </div>
             </div>
           )}
 
-          {denunciaStatus === 'indeferido' && indeferimentoData && (
+          {denunciaStatus === 'Indeferido' && denuncia.denunciaIndeferida && (
             <div className="p-3 bg-red-50 border-l-4 border-red-400 text-red-700">
               <p className="font-bold">Motivo do Indeferimento:</p>
-              <p>{indeferimentoData.motivo}</p>
+              <p>{denuncia.denunciaIndeferida.motivo}</p>
             </div>
           )}
 
           <div className="flex justify-end">
-            {denunciaStatus === 'aberto' && (
+            {denunciaStatus === 'Aberto' && (
               <Button
                 variant="outline_danger"
                 size="sm"
@@ -185,7 +200,7 @@ export function DenunciaDetails() {
       <ConfirmModal
         isOpen={isDesvincularModalOpen}
         title={'Confirmar Desvinculo'}
-        message={`Deseja desvincular a denúncia "${denuncia.tipo}" da ação "${acaoVinculada?.nome}"?`}
+        message={`Deseja desvincular a denúncia "${denuncia.tipoDenuncia.nome}" da ação "${denuncia.dadosAcaoParaDenuncia?.nome}"?`}
         onCancel={() => setIsDesvincularModalOpen(false)}
         onConfirm={handleConfirmDesvincularDenunciaAcao}
       />

@@ -3,19 +3,19 @@ import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import type { DenunciaBasicInfoModel } from '../types/Denuncia';
 import type { AcaoModel } from '../types/Acao';
 import type { SecretariaModel } from '../types/Secretaria';
-import type { CategoriaDenunciaModel } from '../types/CategoriaDenuncia';
+import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import { toast } from 'sonner';
-import { DenunciaService } from '../services/denunciasService';
-import acoesService from '@/services/acoesService';
 
+import acoesService from '@/services/acoesService';
+import { DenunciaService } from '@/services/DenunciaService';
+import { CategoriaService } from '@/services/CategoriaService';
+import { SecretariaService } from '@/services/SecretariaService';
 interface OcorrenciasContextType {
   denuncias: DenunciaBasicInfoModel[];
   setDenuncias: Dispatch<SetStateAction<DenunciaBasicInfoModel[]>>;
-
   acoes: AcaoModel[];
   setAcoes: Dispatch<SetStateAction<AcaoModel[]>>;
-
-  categorias: CategoriaDenunciaModel[];
+  categoriaTipos: TipoDenunciaModel[];
   secretarias: SecretariaModel[];
   loading: boolean;
 }
@@ -26,9 +26,9 @@ const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(
 
 export function OcorrenciasProvider({ children }: { children: ReactNode }) {
   const [denuncias, setDenuncias] = useState<DenunciaBasicInfoModel[]>([]);
-
   const [acoes, setAcoes] = useState<AcaoModel[]>([]);
-  const [categorias, setCategorias] = useState<CategoriaDenunciaModel[]>([]);
+
+  const [categoriaTipos, setCategoriaTipos] = useState<TipoDenunciaModel[]>([]);
   const [secretarias, setSecretarias] = useState<SecretariaModel[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,18 +37,19 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
     async function loadData() {
       try {
         setLoading(true);
-        const [denunciasData, acoesData, categoriasData, secretariasData] =
+
+        const [denunciasData, acoesData, categoriaTiposData, secretariasData] =
           await Promise.all([
             DenunciaService.getAllBasicInfos(),
             acoesService.getAllAcoes(),
-            // categoriaService.getAll(),
-            // secretariaService.getAll(),
+            CategoriaService.getAllTipos(),
+            SecretariaService.getAll(),
           ]);
 
         setDenuncias(denunciasData);
         setAcoes(acoesData);
-        // setCategorias(categoriasData);
-        // setSecretarias(secretariasData);
+        setCategoriaTipos(categoriaTiposData);
+        setSecretarias(secretariasData);
       } catch (error: any) {
         toast.error(error.message);
       } finally {
@@ -66,7 +67,7 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
     setAcoes,
     loading,
     secretarias,
-    categorias,
+    categoriaTipos,
   };
 
   return (

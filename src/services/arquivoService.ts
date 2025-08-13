@@ -1,28 +1,22 @@
-import { BASE_API_URL } from '@/constants/baseApiURL';
-import type { DenunciaFile } from '@/types/DenunciaFile';
+import { api } from '@/lib/axios';
+export class ArquivoService {
+  private static SERVICE_UNAVAILABLE_ERROR = new Error(
+    'Serviço de arquivos indisponível. Tente novamente mais tarde.',
+  );
 
-async function getFilesByDenunciaId(
-  idDenuncia: number,
-): Promise<DenunciaFile[]> {
-  try {
-    const response = await fetch(
-      `${BASE_API_URL}/denuncia/arquivos/uploads/${idDenuncia}`,
-      { method: 'GET' },
-    );
+  public static async getFileBlobByURL(url: string): Promise<Blob> {
+    try {
+      const response = await api.get(url, {
+        responseType: 'blob',
+      });
 
-    if (!response.ok) {
-      throw new Error('Não foi possível encontrar os arquivos da denúncia.');
+      if (response.status !== 200) {
+        throw new Error('Não foi possível buscar esse arquivo.');
+      }
+
+      return response.data;
+    } catch (error) {
+      throw this.SERVICE_UNAVAILABLE_ERROR;
     }
-
-    // A resposta já contém a lista de arquivos com suas URLs
-    return await response.json();
-  } catch (error) {
-    console.error(`Erro ao buscar arquivos da denúncia ${idDenuncia}:`, error);
-    // Retorna um array vazio em caso de erro para não quebrar o fluxo
-    return [];
   }
 }
-
-export default {
-  getFilesByDenunciaId,
-};

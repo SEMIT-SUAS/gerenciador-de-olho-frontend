@@ -2,7 +2,7 @@ import { DenunciaItem } from './DenunciaItem';
 import { useFilters } from '@/context/FiltersContext';
 import { useNavigate } from 'react-router-dom';
 import { DenunciasListStatusFilter } from './DenunciasListStatusFilter';
-import { DenunciasListCategoriaFilter } from './DenunciasListCategoriaFilter';
+import { DenunciasListCategoriaTipoFilter } from './DenunciasListCategoriaTipoFilter';
 
 export function DenunciasList() {
   const { denunciasFiltradas: denuncias } = useFilters();
@@ -13,7 +13,7 @@ export function DenunciasList() {
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-2 gap-1">
         <DenunciasListStatusFilter />
-        <DenunciasListCategoriaFilter />
+        <DenunciasListCategoriaTipoFilter />
       </div>
 
       {denuncias.length === 0 ? (

@@ -16,27 +16,33 @@ export interface CreateDenunciaModel {
   latitude: number;
 }
 
-export type DenunciaStatusModelTypes = 'aberto' | AcaoStatusModelTypes;
+export type DenunciaStatusModelTypes = 'Aberto' | AcaoStatusModelTypes;
 
 export interface DenunciaModel {
   id: number;
   codigo: string;
   descricao: string;
-  tipo: TipoDenunciaModel;
-  acao: AcaoModel | null;
-
-  estado: string;
-  cidade: string;
+  tipoDenuncia: {
+    id: number;
+    nome: string;
+    categoria: {
+      id: number;
+      nome: string;
+      cor: string;
+    };
+  };
   bairro: string;
   rua: string;
-  pontoDeReferencia?: string | null;
-  longitude: number;
   latitude: number;
-
-  criadaEm: string;
-  dataFim: string;
-  ativo: boolean;
-  usuario: UsuarioModel | null;
+  longitude: number;
+  pontoReferencia: string;
+  criadoEm: string;
+  dadosAcaoParaDenuncia: {
+    id: number;
+    nome: string;
+    secretaria: string;
+    status: string;
+  } | null;
   denunciaIndeferida: DenunciaIndeferidaModel | null;
 }
 
@@ -44,7 +50,7 @@ export interface DenunciaBasicInfoModel {
   id: number;
   nomeTipoDenuncia: string;
   idAcao: number | null;
-  status: 'aberto' | AcaoStatusModelTypes;
+  status: 'Aberto' | AcaoStatusModelTypes;
   endereco: AddressModel;
   criadaEm: string;
   primeiroArquivo: string;

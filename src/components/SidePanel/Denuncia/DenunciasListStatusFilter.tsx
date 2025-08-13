@@ -9,19 +9,19 @@ import { useFilters } from '@/context/FiltersContext';
 import type { DenunciaStatusModelTypes } from '@/types/Denuncia';
 
 const statusOptions = [
-  { text: 'Todos', value: 'todos' },
-  { text: 'Aberto', value: 'aberto' },
-  { text: 'Em analise', value: 'em_analise' },
-  { text: 'Em andamento', value: 'em_andamento' },
-  { text: 'Indeferidas', value: 'indeferido' },
-  { text: 'Concluídas', value: 'concluido' },
+  { text: 'Todos', value: 'all' },
+  { text: 'Aberto', value: 'Aberto' },
+  { text: 'Análise', value: 'Análise' },
+  { text: 'Andamento', value: 'Andamento' },
+  { text: 'Indeferidas', value: 'Indeferidas' },
+  { text: 'Concluídas', value: 'Concluídas' },
 ];
 
 export function DenunciasListStatusFilter() {
   const { filtroStatusDenuncia, setFiltroStatusDenuncia } = useFilters();
 
-  function handleOnValueSelected(value: DenunciaStatusModelTypes | 'todos') {
-    setFiltroStatusDenuncia(value === 'todos' ? 'todos' : [value]);
+  function handleOnValueSelected(value: 'all' | DenunciaStatusModelTypes) {
+    setFiltroStatusDenuncia(value === 'all' ? 'all' : [value]);
   }
 
   return (
@@ -33,9 +33,7 @@ export function DenunciasListStatusFilter() {
         Status
       </label>
       <Select
-        value={
-          filtroStatusDenuncia === 'todos' ? 'todos' : filtroStatusDenuncia[0]
-        }
+        value={filtroStatusDenuncia === 'all' ? 'all' : filtroStatusDenuncia[0]}
         onValueChange={handleOnValueSelected}
       >
         <SelectTrigger id="select-denuncia-status-filter" className="w-full">

@@ -4,7 +4,9 @@ import type { DenunciaBasicInfoModel } from '@/types/Denuncia';
 import { Loading } from '@/components/Loading/Loading';
 import { useEffect, useState } from 'react';
 import { calcularDiasAtras } from '@/utils/data';
-import { generateVideoThumbnailObjectUrl } from '@/utils/file';
+import { VIDEO_EXTENSIONS } from '@/constants/videoExtensions';
+import { ArquivoService } from '@/services/arquivoService';
+import { generateThumbnailURL } from '@/utils/video';
 
 type DenunciaItemProps = {
   denuncia: DenunciaBasicInfoModel;
@@ -25,33 +27,20 @@ export function DenunciaItem({
   onTrashClick,
   isSelected,
 }: DenunciaItemProps) {
-  const [thumbImageURL, setThumbImageURL] = useState<string | null>(null);
+  const [thumbnailURL, setThumbnailURL] = useState<string | null>(null);
+  const fileType = denuncia.primeiroArquivo.split('.').pop();
+  const isVideo = fileType && VIDEO_EXTENSIONS.has(fileType);
 
   useEffect(() => {
-    let objectUrl: string | null = null;
-
-    if (!denuncia.primeiroArquivo) {
-      setThumbImageURL('/image_fail_to_fetch.png');
-      return;
-    }
-
-    if (denuncia.primeiroArquivo.endsWith('.mp4')) {
-      generateVideoThumbnailObjectUrl(denuncia.primeiroArquivo)
-        .then((url) => {
-          objectUrl = url;
-          setThumbImageURL(url);
-          console.log(url);
-        })
-        .catch(() => {
-          setThumbImageURL('/image_fail_to_fetch.png');
+    if (isVideo) {
+      ArquivoService.getFileBlobByURL(denuncia.primeiroArquivo).then((blob) => {
+        generateThumbnailURL(blob).then((URLGenerated) => {
+          setThumbnailURL(URLGenerated);
         });
-    } else {
-      setThumbImageURL(denuncia.primeiroArquivo);
+      });
     }
 
-    return () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
+    setThumbnailURL(denuncia.primeiroArquivo);
   }, []);
 
   const criadaHa = calcularDiasAtras(denuncia.criadaEm);
@@ -65,10 +54,10 @@ export function DenunciaItem({
       onClick={onClick}
     >
       <div className="flex w-21 h-21 items-center justify-center">
-        {thumbImageURL ? (
+        {thumbnailURL ? (
           <img
             className="w-full h-full rounded-l-md object-cover flex-shrink-0"
-            src={thumbImageURL}
+            src={thumbnailURL}
             loading="lazy"
             alt="Primeira imagem da denúncia"
           />

@@ -3,58 +3,21 @@ import {
   useContext,
   useMemo,
   useState,
-  type Dispatch,
   type ReactNode,
-  type SetStateAction,
   useCallback,
 } from 'react';
-import { useOcorrencias } from './OcorrenciasContext';
-import type { DenunciaStatusModelTypes } from '../types/Denuncia';
-import type { AcaoModel } from '../types/Acao';
-import type { AcaoStatusModelTypes } from '../types/AcaoStatus';
-import type { DenunciaBasicInfoModel } from '../types/Denuncia';
-
-type FilterState = {
-  isVisibleDenunciasInMap: boolean;
-  isVisibleAcoesInMap: boolean;
-  filtroStatusDenuncia: 'todos' | DenunciaStatusModelTypes[];
-  filtroStatusAcao: 'todos' | AcaoStatusModelTypes[];
-  filtroCategoriaTipo: 'todos' | string;
-  filtroSecretaria: 'todas' | string;
-  filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
-  filtrarAcoesPorId: number[] | 'desabilitado';
-};
-
-type FiltersContextProps = FilterState & {
-  setIsVisibleDenunciasInMap: Dispatch<SetStateAction<boolean>>;
-  setIsVisibleAcoesInMap: Dispatch<SetStateAction<boolean>>;
-  setFiltroStatusDenuncia: Dispatch<
-    SetStateAction<'todos' | DenunciaStatusModelTypes[]>
-  >;
-  setFiltroStatusAcao: Dispatch<
-    SetStateAction<'todos' | AcaoStatusModelTypes[]>
-  >;
-  setFiltroCategoriaTipo: Dispatch<SetStateAction<'todos' | string>>;
-  setFiltroSecretaria: Dispatch<SetStateAction<'todas' | string>>;
-  setFiltroDenunciasComAcao: Dispatch<
-    SetStateAction<'desabilitado' | 'com_acao' | 'sem_acao'>
-  >;
-  denunciasFiltradas: DenunciaBasicInfoModel[];
-  acoesFiltradas: AcaoModel[];
-  cacheCurrentFilters: () => void;
-  restoreCachedFilters: () => void;
-  setFiltrarAcoesPorId: Dispatch<SetStateAction<number[] | 'desabilitado'>>;
-};
+import { useOcorrencias } from '../OcorrenciasContext';
+import type { FiltersContextProps, FilterState } from './types';
 
 const defaultFilters: FilterState = {
   isVisibleDenunciasInMap: true,
   isVisibleAcoesInMap: true,
-  filtroStatusDenuncia: ['aberto'],
-  filtroStatusAcao: 'todos',
-  filtroCategoriaTipo: 'todos',
-  filtroSecretaria: 'todas',
-  filtroDenunciasComAcao: 'desabilitado',
-  filtrarAcoesPorId: 'desabilitado',
+  filtroStatusDenuncia: ['Aberto'],
+  filtroStatusAcao: 'all',
+  filtroCategoriaTipo: 'all',
+  filtroSecretaria: 'all',
+  filtroDenunciasComAcao: 'disabled',
+  filtrarAcoesPorId: 'disabled',
 };
 
 const FiltersContext = createContext({} as FiltersContextProps);
@@ -84,7 +47,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     defaultFilters.filtroDenunciasComAcao,
   );
   const [filtrarAcoesPorId, setFiltrarAcoesPorId] = useState<
-    number[] | 'desabilitado'
+    number[] | 'disabled'
   >(defaultFilters.filtrarAcoesPorId);
 
   const { denuncias, acoes } = useOcorrencias();
@@ -130,35 +93,34 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 
   const denunciasFiltradas = useMemo(() => {
     return denuncias.filter((d) => {
-      const passaStatus = true;
+      const passaStatus =
+        filtroStatusDenuncia === 'all'
+          ? true
+          : filtroStatusDenuncia.includes(d.status);
 
-      const passaCategoria =
-        filtroCategoriaTipo === 'todos' ||
-        d.nomeTipoDenuncia === filtroCategoriaTipo;
+      const passaCategoriaTpo =
+        filtroCategoriaTipo === 'all'
+          ? true
+          : d.nomeTipoDenuncia === filtroCategoriaTipo;
 
-      const passaFiltroAcao =
-        filtroDenunciasComAcao === 'desabilitado' ||
-        (filtroDenunciasComAcao === 'com_acao' && d.idAcao !== null) ||
-        (filtroDenunciasComAcao === 'sem_acao' && d.idAcao === null);
-
-      return passaStatus && passaCategoria && passaFiltroAcao;
+      return passaStatus && passaCategoriaTpo;
     });
-  }, [denuncias, filtroCategoriaTipo, filtroDenunciasComAcao]);
+  }, [denuncias, filtroStatusDenuncia, filtroCategoriaTipo]);
 
   const acoesFiltradas = useMemo(() => {
     let acoesTemp = acoes;
 
-    if (filtrarAcoesPorId !== 'desabilitado') {
+    if (filtrarAcoesPorId !== 'disabled') {
       return acoesTemp.filter((a) => filtrarAcoesPorId.includes(a.id));
     }
 
-    if (filtroSecretaria !== 'todas') {
+    if (filtroSecretaria !== 'all') {
       acoesTemp = acoesTemp.filter(
         (a) => a.secretaria.sigla === filtroSecretaria,
       );
     }
 
-    if (filtroStatusAcao !== 'todos') {
+    if (filtroStatusAcao !== 'all') {
       acoesTemp = acoesTemp.filter((a) => {
         const currentStatus = a.status?.[a.status.length - 1]?.status;
         return currentStatus ? filtroStatusAcao.includes(currentStatus) : false;
