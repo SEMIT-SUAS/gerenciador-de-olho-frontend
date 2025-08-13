@@ -19,7 +19,7 @@ export function Navigator() {
   return (
     <Routes>
       {/* <Route index element={<OcorrenciasPage />} /> */}
-      <Route path="/categorias" element={<ListaCategorias/>} />
+      <Route path="/categorias-servicos" element={<ListaCategorias/>} />
       <Route path="/portais" element={<PortaisList/>} />
       <Route path="/banner" element={<BannerList/>} />
       <Route path="/servicos" element={<ServicesList/>} />
