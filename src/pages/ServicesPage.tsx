@@ -26,7 +26,7 @@ import {
 import { getAllServicoExterno } from '@/services/servicosExternosService';
 import type { ServicoExterno } from '@/types/ServicoExterno';
 import { ServicosExternosList } from '@/components/ServicosExternos/ServicosExternosList';
-import { FormServicoExterno } from '@/components/ServicosExternos/FormServicoExterno';
+import { FormServicoExterno } from '@/components/ServicosExternos/ServicoExternoForm';
 
 export function ServicesPage() {
   const navigate = useNavigate();
@@ -259,7 +259,6 @@ export function ServicesPage() {
           onClose={() => setIsCreateModalOpen(false)}
           onSuccess={async () => {
             setIsCreateModalOpen(false);
-            await fetchServices(); // recarrega toda lista do backend
           }}
         />
       )}

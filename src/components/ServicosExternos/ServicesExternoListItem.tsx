@@ -16,7 +16,7 @@ import {
   changeServiceVisibility,
 } from '@/services/servicosExternosService';
 
-import { FormServicoExterno } from './FormServicoExterno';
+import { FormServicoExterno } from './ServicoExternoForm';
 
 interface ServiceListItemProps {
   servico: ServicoExterno;
@@ -59,7 +59,6 @@ export function ServicesExternoListItem({
     }
   }
 
-  // Função para alterar visibilidade
   async function handleToggleVisibility() {
     setIsProcessing(true);
     try {
@@ -87,7 +86,6 @@ export function ServicesExternoListItem({
     }
   }
 
-  // Callback para quando a edição for bem sucedida
   const handleEditSuccess = (servicoAtualizado?: ServicoExterno) => {
     if (servicoAtualizado) {
       setServicos((prev) =>
@@ -106,7 +104,7 @@ export function ServicesExternoListItem({
               <img
                 src={servico.imagem}
                 alt={servico.nome}
-                className="h-14 w-14 rounded-md object-cover border"
+                className="h-14 w-auto rounded-md object-cover"
                 onError={(e) => {
                   e.currentTarget.src =
                     'https://via.placeholder.com/56?text=Erro';

@@ -4,23 +4,12 @@ import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { BannerModel } from '@/types/Banner';
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-} from '@tabler/icons-react';
-import {
-  Select,
-  SelectItem,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import bannersService from '@/services/bannersService';
 import { toast } from 'react-toastify';
 import { AddBannerModal } from '@/components/Banners/Modals/AddBannerModal';
 import { BannersList } from '@/components/Banners/BannersList';
+import { Pagination } from '@/components/Pagination';
+
+import bannersService from '@/services/bannersService';
 
 export function BannersPage() {
   const [itemsPerPage, setItemsPerPage] = useState(8);
@@ -105,73 +94,14 @@ export function BannersPage() {
             setBanners={setBanners}
           />
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Linhas por página:</span>
-
-              <Select
-                value={itemsPerPage.toString()}
-                onValueChange={(value) => {
-                  setItemsPerPage(Number(value));
-                  setCurrentPage(1);
-                }}
-              >
-                <SelectTrigger className="w-20 h-8">
-                  <SelectValue placeholder={itemsPerPage} />
-                </SelectTrigger>
-                <SelectContent>
-                  {itemsPerPageOptions.map((option) => (
-                    <SelectItem key={option} value={option.toString()}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">
-                Página {currentPage} de {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-              >
-                <IconChevronsLeft stroke={2} />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                <IconChevronLeft stroke={2} />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages || totalPages === 0}
-              >
-                <IconChevronRight />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(totalPages)}
-                disabled={currentPage === totalPages || totalPages === 0}
-              >
-                <IconChevronsRight stroke={2} />
-              </Button>
-            </div>
-          </div>
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={setItemsPerPage}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPages}
+            itemsPerPageOptions={itemsPerPageOptions}
+          />
         </div>
       </LayoutPage>
 

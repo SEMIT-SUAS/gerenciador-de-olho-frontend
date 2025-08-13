@@ -43,13 +43,11 @@ export function FormServicoExterno({
 
   const form = useForm<ServicoSchema>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      nome: defaultValues?.nome || '',
-      visivel: defaultValues?.visivel ?? true,
-      ativo: defaultValues?.ativo ?? true,
-      ...(mode === 'edit' && defaultValues?.imagem
-        ? { imagem: defaultValues.imagem }
-        : {}),
+    defaultValues: defaultValues || {
+      nome: '',
+      visivel: true,
+      ativo: true,
+      imagem: '',
     },
   });
 
@@ -90,7 +88,7 @@ export function FormServicoExterno({
         onSuccess({
           ...defaultValues,
           ...data,
-          ativo: defaultValues.ativo, // mantém o valor original
+          ativo: defaultValues.ativo,
           imagem:
             data.imagem instanceof File ? previewUrl : defaultValues.imagem,
         });
@@ -249,29 +247,6 @@ export function FormServicoExterno({
                     <FormLabel className="text-base">Visível</FormLabel>
                     <div className="text-sm text-gray-500">
                       Aparece para os usuários no aplicativo
-                    </div>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={loading}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            {/* Ativo */}
-            <FormField
-              control={form.control}
-              name="ativo"
-              render={({ field }) => (
-                <FormItem className="flex items-center justify-between border p-3 rounded-md">
-                  <div>
-                    <FormLabel className="text-base">Ativo</FormLabel>
-                    <div className="text-sm text-gray-500">
-                      Se desativado, não aparecerá na listagem
                     </div>
                   </div>
                   <FormControl>
