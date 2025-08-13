@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LayoutPage } from './LayoutPage';
 import { getAllServices } from '@/services/servicosServices';
 import { toast } from 'sonner';
@@ -28,6 +29,7 @@ import { ServicosExternosList } from '@/components/ServicosExternos/ServicosExte
 import { FormServicoExterno } from '@/components/ServicosExternos/FormServicoExterno';
 
 export function ServicesPage() {
+  const navigate = useNavigate();
   const [cartaDeServicos, setCartaDeServicos] = useState<ServicosListar[]>([]);
   const [servicosExternos, setServicosExternos] = useState<ServicoExterno[]>(
     [],
@@ -59,6 +61,16 @@ export function ServicesPage() {
   useEffect(() => {
     fetchServices();
   }, []);
+
+  const handleAddService = () => {
+    if (activeTab === 'servicos') {
+      // Se estiver na aba de serviços, navega para a página de novo serviço
+      navigate('/servicos/novo');
+    } else {
+      // Se estiver na aba de serviços externos, abre o modal
+      setIsCreateModalOpen(true);
+    }
+  };
 
   const filteredCartaDeServicos = cartaDeServicos.filter((s) =>
     s.nome.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -150,10 +162,7 @@ export function ServicesPage() {
               />
             </div>
 
-            <Button
-              variant="outline"
-              onClick={() => setIsCreateModalOpen(true)}
-            >
+            <Button variant="outline" onClick={handleAddService}>
               <Plus className="mr-2 h-4 w-4" />
               Adicionar serviço
             </Button>
