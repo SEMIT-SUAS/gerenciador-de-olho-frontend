@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom';
 import { modules } from './constants';
-import { IconCircleFilled, IconDoorExit } from '@tabler/icons-react';
+import { IconCircleFilled } from '@tabler/icons-react';
 
 export function Navbar() {
   return (
     <nav className="w-full bg-white flex py-4 px-4 md:px-20 justify-between items-center border-b border-gray-200">
       <Link to="/" className="flex items-center">
         <img
-          src="/logo_slz_sem_fundo.png"
+          src="../public/saoluis-prefeitura.png"
           alt="Logo SLZ"
-          className="h-12 md:h-16"
+          className="h-12 md:h-12"
         />
       </Link>
 
@@ -24,9 +24,9 @@ export function Navbar() {
                 >
                   <IconCircleFilled
                     size={'6px'}
-                    className="text-blue-500 opacity-100 group-hover:opacity-0 transition-opacity duration-300"
+                    className="text-primary opacity-100 group-hover:opacity-0 transition-opacity duration-300"
                   />
-                  <span className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:h-[2px] after:w-full after:bg-blue-500 after:scale-x-0 group-hover:after:scale-x-150 after:transition-transform after:duration-300 after:origin-center">
+                  <span className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:h-[2px] after:w-full after:bg-primary after:scale-x-0 group-hover:after:scale-x-150 after:transition-transform after:duration-300 after:origin-center">
                     {module.title}
                   </span>
                 </Link>
@@ -35,9 +35,9 @@ export function Navbar() {
                   <button className="relative flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700">
                     <IconCircleFilled
                       size={'6px'}
-                      className="text-blue-500 opacity-100 group-hover:opacity-0 transition-opacity duration-300"
+                      className="text-primary opacity-100 group-hover:opacity-0 transition-opacity duration-300"
                     />
-                    <span className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:h-[2px] after:w-full after:bg-blue-500 after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center">
+                    <span className="relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:h-[2px] after:w-full after:bg-primary after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-center">
                       {module.title}
                     </span>
                   </button>

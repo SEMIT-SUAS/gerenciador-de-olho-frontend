@@ -19,15 +19,15 @@ export const modules: Module[] = [
       },
     ],
   },
-  { title: 'Reserva', to: '/reserva' },
+  { title: 'Espaços', to: '/espacos-publicos' },
   {
     title: 'Serviços',
     to: '',
     childs: [
       { title: 'Todos os Serviços', to: '/servicos' },
-      { title: 'Secretarias', to: '/secretarias' },
+      { title: 'Secretarias', to: '/servicos/secretarias' },
       { title: 'Personas', to: '/personas' },
-      { title: 'Categorias', to: '/categorias-servicos' },
+      { title: 'Categorias', to: '/servicos/categorias' },
     ],
   },
   { title: 'Banners', to: '/banners' },
