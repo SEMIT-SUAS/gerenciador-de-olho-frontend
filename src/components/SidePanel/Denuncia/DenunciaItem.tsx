@@ -2,11 +2,8 @@ import { FaMapPin, FaTrash } from 'react-icons/fa';
 import { Tag } from '../Tag';
 import type { DenunciaBasicInfoModel } from '@/types/Denuncia';
 import { Loading } from '@/components/Loading/Loading';
-import { useEffect, useState } from 'react';
 import { calcularDiasAtras } from '@/utils/data';
-import { VIDEO_EXTENSIONS } from '@/constants/videoExtensions';
-import { ArquivoService } from '@/services/arquivoService';
-import { generateThumbnailURL } from '@/utils/video';
+import { useThumbnail } from '@/hooks/useThumbnail';
 
 type DenunciaItemProps = {
   denuncia: DenunciaBasicInfoModel;
@@ -27,23 +24,14 @@ export function DenunciaItem({
   onTrashClick,
   isSelected,
 }: DenunciaItemProps) {
-  const [thumbnailURL, setThumbnailURL] = useState<string | null>(null);
-  const fileType = denuncia.primeiroArquivo.split('.').pop();
-  const isVideo = fileType && VIDEO_EXTENSIONS.has(fileType);
-
-  useEffect(() => {
-    if (isVideo) {
-      ArquivoService.getFileBlobByURL(denuncia.primeiroArquivo).then((blob) => {
-        generateThumbnailURL(blob).then((URLGenerated) => {
-          setThumbnailURL(URLGenerated);
-        });
-      });
-    }
-
-    setThumbnailURL(denuncia.primeiroArquivo);
-  }, []);
-
+  const { thumbnailData, isLoading } = useThumbnail(denuncia.primeiroArquivo);
   const criadaHa = calcularDiasAtras(denuncia.criadaEm);
+
+  let denunciaStatus = denuncia.status;
+
+  if (!denunciaStatus) {
+    denunciaStatus = 'Aberto';
+  }
 
   return (
     <div
@@ -54,15 +42,15 @@ export function DenunciaItem({
       onClick={onClick}
     >
       <div className="flex w-21 h-21 items-center justify-center">
-        {thumbnailURL ? (
+        {isLoading ? (
+          <Loading />
+        ) : (
           <img
             className="w-full h-full rounded-l-md object-cover flex-shrink-0"
-            src={thumbnailURL}
+            src={thumbnailData?.url}
             loading="lazy"
             alt="Primeira imagem da denúncia"
           />
-        ) : (
-          <Loading />
         )}
       </div>
 
@@ -75,7 +63,7 @@ export function DenunciaItem({
             </h3>
           </div>
 
-          {showTag && <Tag status={denuncia.status} />}
+          {showTag && <Tag status={denunciaStatus} />}
 
           {isDeletable && (
             <button

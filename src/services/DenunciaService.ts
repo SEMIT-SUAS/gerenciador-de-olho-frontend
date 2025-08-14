@@ -53,7 +53,7 @@ export class DenunciaService {
   ): Promise<string[]> {
     try {
       const response = await api.get(
-        `/denuncia/arquivos/uploads/${denunciaId}`,
+        '/denuncia/arquivos/gerenciador/uploads/' + denunciaId,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -67,6 +67,21 @@ export class DenunciaService {
 
       return JSON.parse(response.data);
     } catch (error) {
+      throw this.SERVICE_UNAVAILABLE_ERROR;
+    }
+  }
+
+  public static async desvincularAcao(denunciaId: number): Promise<void> {
+    try {
+      const response = await api.patch(
+        '/denuncia/denuncias/desvincular-acao/' + denunciaId,
+      );
+
+      if (response.status != 200) {
+        throw new Error('Não foi possível desvincular a ação da denúncia.');
+      }
+    } catch (error) {
+      console.error(error);
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
   }
@@ -166,26 +181,4 @@ export class DenunciaService {
 //   console.log(denunciaUpdatedData);
 //   updateDenunciasData(denunciasDataUpdated);
 //   return denunciaUpdatedData!;
-// }
-
-// async function desvincularDenunciaAcao(
-//   denunciaId: number,
-// ): Promise<DenunciaModel> {
-//   let denunciaDataUpdated;
-
-//   const updatedDenunciaData = denunciasData.map((d) => {
-//     if (d.id === denunciaId) {
-//       denunciaDataUpdated = {
-//         ...d,
-//         acao: null,
-//       };
-
-//       return denunciaDataUpdated;
-//     }
-
-//     return d;
-//   });
-
-//   denunciasData = updatedDenunciaData;
-//   return denunciaDataUpdated!;
 // }

@@ -1,48 +1,117 @@
-export async function generateThumbnailURL(file: Blob): Promise<string> {
-  try {
-    const fileType = file.type;
-    if (fileType.startsWith('video/')) {
-      // Cria elementos temporários no DOM
-      const video = document.createElement('video');
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
+export function generateVideoThumbnail(
+  videoUrl: string,
+): Promise<string | null> {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement('video');
 
-      if (!context) {
-        throw new Error('Canvas context não disponível');
+    video.preload = 'auto';
+    video.muted = true;
+    video.playsInline = true;
+    video.crossOrigin = 'anonymous';
+    video.src = videoUrl;
+
+    // Função auxiliar para criar um thumbnail preto
+    const generateBlackThumbnail = (
+      width: number,
+      height: number,
+    ): Promise<string> => {
+      return new Promise((res) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = width || 1280;
+        canvas.height = height || 720;
+
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = 'black';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        canvas.toBlob(
+          (blob) => {
+            res(blob ? URL.createObjectURL(blob) : '');
+          },
+          'image/jpeg',
+          0.8,
+        );
+      });
+    };
+
+    // Função para verificar se a imagem é toda preta
+    const isBlackFrame = (
+      ctx: CanvasRenderingContext2D,
+      width: number,
+      height: number,
+    ): boolean => {
+      const frame = ctx.getImageData(0, 0, width, height).data;
+      for (let i = 0; i < frame.length; i += 4) {
+        if (frame[i] !== 0 || frame[i + 1] !== 0 || frame[i + 2] !== 0) {
+          return false; // Encontrou pixel não preto
+        }
+      }
+      return true;
+    };
+
+    video.addEventListener('loadedmetadata', () => {
+      // Garantir que temos dimensões válidas
+      if (video.videoWidth === 0 || video.videoHeight === 0) {
+        setTimeout(() => {
+          if (video.videoWidth === 0 || video.videoHeight === 0) {
+            reject(new Error('Vídeo sem dimensões válidas'));
+            URL.revokeObjectURL(videoUrl);
+            return;
+          }
+          video.currentTime = Math.min(
+            video.duration / 2,
+            video.duration - 0.1,
+          );
+        }, 200);
+        return;
       }
 
-      // Configura o vídeo
-      const videoUrl = URL.createObjectURL(file);
-      video.src = videoUrl;
-      video.muted = true;
-      video.currentTime = 0.5; // Pega o frame em 0.5 segundos
+      // Vai para o meio do vídeo
+      video.currentTime = Math.min(video.duration / 2, video.duration - 0.1);
+    });
 
-      // Aguarda o vídeo estar pronto
-      await new Promise<void>((resolve, reject) => {
-        video.addEventListener('loadeddata', () => resolve());
-        video.addEventListener('error', () =>
-          reject(new Error('Erro ao carregar vídeo')),
-        );
-        video.addEventListener('seeked', () => resolve());
-      });
+    video.addEventListener('seeked', async () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
 
-      // Configura o canvas com as dimensões do vídeo
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas context não encontrado');
 
-      // Converte para URL de imagem
-      const thumbnailUrl = canvas.toDataURL('image/jpeg', 0.8);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Limpa a memória
+        // Verifica se frame é todo preto
+        if (isBlackFrame(ctx, canvas.width, canvas.height)) {
+          const blackThumb = await generateBlackThumbnail(
+            canvas.width,
+            canvas.height,
+          );
+          resolve(blackThumb);
+        } else {
+          canvas.toBlob(
+            (blob) => {
+              if (blob) resolve(URL.createObjectURL(blob));
+              else reject(new Error('Falha ao gerar thumbnail'));
+            },
+            'image/jpeg',
+            0.8,
+          );
+        }
+      } catch (err) {
+        reject(err);
+      } finally {
+        URL.revokeObjectURL(videoUrl);
+        video.remove();
+      }
+    });
+
+    video.addEventListener('error', () => {
+      reject(new Error('Erro ao carregar vídeo'));
       URL.revokeObjectURL(videoUrl);
-
-      return thumbnailUrl;
-    }
-
-    // Se for imagem, retorna URL normal
-    return URL.createObjectURL(file);
-  } catch (error) {
-    return '/image_fail_to_fetch.png';
-  }
+      video.remove();
+    });
+  });
 }

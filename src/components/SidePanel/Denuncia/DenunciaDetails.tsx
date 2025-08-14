@@ -25,25 +25,24 @@ export function DenunciaDetails() {
   const denunciaId = Number(params.denunciaId);
 
   async function handleConfirmDesvincularDenunciaAcao() {
-    try {
-      if (!denuncia) throw new Error('Denúncia não encontrada');
+    if (!denuncia) return;
 
-      // setDenuncias((current) =>
-      //   current.map((d) => {
-      //     if (d.id === denuncia.id) {
-      //       return {
-      //         ...d,
-      //         status: 'aberto',
-      //       };
-      //     }
-      //     return d;
-      //   }),
-      // );
+    try {
+      await DenunciaService.desvincularAcao(denuncia.id);
+
+      setDenuncia((prevDenuncia) => {
+        if (!prevDenuncia) return null;
+
+        return {
+          ...prevDenuncia,
+          dadosAcaoParaDenuncia: null,
+        };
+      });
 
       setIsDesvincularModalOpen(false);
-      toast.success('Denúncia desvinculada com sucesso!');
-    } catch (error) {
-      toast.error('Erro ao desvincular denúncia.');
+      toast.success('Acão desvinculada com sucesso!');
+    } catch (error: any) {
+      toast.error(error.message);
     }
   }
 
@@ -149,7 +148,7 @@ export function DenunciaDetails() {
           )}
 
           {!denuncia.dadosAcaoParaDenuncia &&
-            ['Indeferido', 'Concluído'].includes(denunciaStatus) && (
+            !['Indeferido', 'Concluído'].includes(denunciaStatus) && (
               <div className="py-3 px-4 rounded-xl border border-gray-200 text-center space-y-2">
                 <p className="text-sm font-semibold text-gray-800">
                   Nenhuma ação vinculada
@@ -165,7 +164,7 @@ export function DenunciaDetails() {
               </div>
             )}
 
-          {denunciaFiles && denunciaFiles.length > 0 && (
+          {denunciaFiles && (
             <div>
               <h3 className="font-semibold text-gray-800 mb-2">Mídia:</h3>
               <div>

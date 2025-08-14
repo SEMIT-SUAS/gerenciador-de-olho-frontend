@@ -3,7 +3,7 @@ import { FaTimes } from 'react-icons/fa';
 
 export type CarrouselFileProps = {
   name: string;
-  type: 'imagem' | 'video';
+  type: 'image' | 'video';
   url: string;
 };
 
@@ -44,7 +44,7 @@ export function FileViewerModal({ file, onClose }: ViewFileModalProps) {
         <FaTimes size={22} />
       </button>
 
-      {file.type === 'imagem' ? (
+      {file.type === 'image' ? (
         <img
           src={file.url}
           alt={file.name}

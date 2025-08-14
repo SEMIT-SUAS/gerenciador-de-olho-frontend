@@ -93,10 +93,16 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 
   const denunciasFiltradas = useMemo(() => {
     return denuncias.filter((d) => {
+      let denunciaStatus = d.status;
+
+      if (!denunciaStatus) {
+        denunciaStatus = 'Aberto';
+      }
+
       const passaStatus =
         filtroStatusDenuncia === 'all'
           ? true
-          : filtroStatusDenuncia.includes(d.status);
+          : filtroStatusDenuncia.includes(denunciaStatus);
 
       const passaCategoriaTpo =
         filtroCategoriaTipo === 'all'
