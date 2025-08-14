@@ -30,7 +30,6 @@ export function SecretariaPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
-  const [activeTab, setActiveTab] = useState('secretarias');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   async function fetchSecretarias() {
@@ -220,10 +219,10 @@ export function SecretariaPage() {
         </div>
       </div>
 
-      {/* Modal */}
       {isCreateModalOpen && (
         <SecretariaFormModal
-          onClose={() => setIsCreateModalOpen(false)}
+          isOpen={isCreateModalOpen}
+          setIsOpen={setIsCreateModalOpen}
           onSuccess={handleSuccess}
         />
       )}

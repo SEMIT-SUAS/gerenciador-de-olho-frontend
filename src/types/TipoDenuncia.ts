@@ -1,7 +1,12 @@
 import type { CategoriaDenunciaModel } from './CategoriaDenuncia';
+import type { Secretaria } from './Secretaria';
 
 export type TipoDenunciaModel = {
   id: number;
   nome: string;
-  categoria?: CategoriaDenunciaModel;
+  icone: string;
+  secretaria: string;
+  categoria: string;
+  visivel: boolean;
+  ativo: boolean;
 };

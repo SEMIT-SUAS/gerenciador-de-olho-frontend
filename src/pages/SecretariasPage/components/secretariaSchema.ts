@@ -7,3 +7,5 @@ export const secretariaSchema = z.object({
   visivel: z.boolean(),
   ativo: z.boolean(),
 });
+
+export type CreateSecretaria = z.infer<typeof secretariaSchema>;
