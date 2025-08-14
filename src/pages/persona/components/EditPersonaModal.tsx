@@ -67,7 +67,7 @@ export function EditPersonaModal({ persona, onClose, onSubmit }: EditPersonaModa
           </div>
 
           <div>
-            <label>Ícone (Imagem)</label>
+            <label>Ícone: </label>
             <div style={{ marginBottom: "0.5rem" }}>
               <img
                 src={

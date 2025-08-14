@@ -1,4 +1,3 @@
-// Navigator.tsx
 import { Routes, Route } from "react-router-dom";
 /* import { OcorrenciasPage } from "../pages/OcorrenciasPage"; */
 import { ListaCategorias } from "../pages/categoriasServicos/Categorialist";

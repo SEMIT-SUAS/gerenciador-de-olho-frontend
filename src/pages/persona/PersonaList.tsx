@@ -28,7 +28,7 @@ export function ListaPersonas() {
   async function handleToggleVisivel(persona: Persona) {
     try {
       await changePersonaVisibility(persona.id, !persona.visivel);
-      toast.success(`Visibilidade de "${persona.nome}" alterada!`);
+      toast.success(`Visibilidade de ${persona.nome} alterada!`);
       fetchPersonas();
     } catch {
       toast.error("Erro ao alterar visibilidade");
@@ -38,7 +38,7 @@ export function ListaPersonas() {
   async function handleToggleAtivo(persona: Persona) {
     try {
       await changePersonaAtivo(persona.id, !persona.ativo);
-      toast.success(`Status de atividade de "${persona.nome}" alterado!`);
+      toast.success(`Status de atividade de ${persona.nome} alterado!`);
       fetchPersonas();
     } catch {
       toast.error("Erro ao alterar status de atividade");
@@ -69,19 +69,37 @@ export function ListaPersonas() {
               </td>
               <td>{persona.nome}</td>
               <td>
-                <input
-                  type="checkbox"
-                  checked={persona.visivel}
-                  onChange={() => handleToggleVisivel(persona)}
-                />
+                    <button
+                        onClick={() => handleToggleVisivel(persona)}
+                        style={{
+                        backgroundColor: persona.visivel ? "green" : "gray",
+                        color: "white",
+                        border: "none",
+                        padding: "0.25rem 0.5rem",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        }}
+                    >
+                        {persona.visivel ? "Visível" : "Oculto"}
+                    </button>
               </td>
-              <td>
-                <input
-                  type="checkbox"
-                  checked={persona.ativo}
-                  onChange={() => handleToggleAtivo(persona)}
-                />
-              </td>
+
+                <td>
+                    <button
+                        onClick={() => handleToggleAtivo(persona)}
+                        style={{
+                        backgroundColor: persona.ativo ? "blue" : "gray",
+                        color: "white",
+                        border: "none",
+                        padding: "0.25rem 0.5rem",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        }}
+                    >
+                        {persona.ativo ? "Ativo" : "Inativo"}
+                    </button>
+                </td>
+
               <td>
                 <button
                   onClick={() => {
