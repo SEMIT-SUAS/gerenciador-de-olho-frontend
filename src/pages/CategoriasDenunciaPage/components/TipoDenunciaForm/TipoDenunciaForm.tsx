@@ -30,6 +30,7 @@ import {
   TipoDenunciaFormSchema,
   type TipoDenunciaFormValues,
 } from './tipoDenunciaSchema';
+import { ColorPicker } from '../ColorPicker';
 
 interface TipoDenunciaFormProps {
   onSubmit: (data: TipoDenunciaFormValues) => void;
@@ -50,6 +51,7 @@ export function TipoDenunciaForm({
       nome: '',
       secretariaId: undefined,
       categoriaId: undefined,
+      cor: '',
       icone: undefined,
       visivel: true,
     },
@@ -131,6 +133,19 @@ export function TipoDenunciaForm({
                 </SelectContent>
               </Select>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="cor"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Cor</FormLabel>
+              <FormControl>
+                <ColorPicker color={field.value} setColor={field.onChange} />
+              </FormControl>
             </FormItem>
           )}
         />
