@@ -24,12 +24,8 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/Buttons/BaseButton';
 import { BackButton } from '@/components/Buttons/Backbutton';
-
-import acoesService from '../../../services/acoesService';
-import {
-  IconCircleCheckFilled,
-  IconFileCheckFilled,
-} from '@tabler/icons-react';
+import { AcoesService } from '@/services/acoesService';
+import { IconCircleCheckFilled } from '@tabler/icons-react';
 
 export function AddAcaoForm() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
@@ -84,51 +80,43 @@ export function AddAcaoForm() {
 
   async function handleConfirmSubmitForm() {
     try {
-      setIsSubmitingForm(true);
-
-      const createAcaoData: CreateAcaoModel = {
-        nome: formData.title,
-        denuncias: denunciasSelecionas,
-        obs: formData.obs,
-        secretariaId: formData.secretariaId,
-      };
-
-      const newAcao = await acoesService.createAcao(createAcaoData);
-      const denunciasToUpdate = new Set(denunciasSelecionas.map((d) => d.id));
-
-      setDenuncias((currentDenuncias) =>
-        currentDenuncias.map((denuncia) => {
-          if (denunciasToUpdate.has(denuncia.id)) {
-            return {
-              ...denuncia,
-              acao: newAcao,
-            };
-          }
-
-          return denuncia;
-        }),
-      );
-
-      setAcoes((currentAcoes) => [...currentAcoes, newAcao]);
-
-      toast.success('Ação criada com sucesso!', {
-        icon: <IconCircleCheckFilled className="h-5 w-5 text-green-500" />,
-        description: 'Verifique as informações na página detalhes da ação.',
-      });
-
-      resetForm();
-      navigate(`/ocorrencias/acoes/${newAcao.id}`);
-
-      denunciasToUpdate.clear();
+      // setIsSubmitingForm(true);
+      // const createAcaoData: CreateAcaoModel = {
+      //   nome: formData.title,
+      //   denuncias: denunciasSelecionas,
+      //   obs: formData.obs,
+      //   secretariaId: formData.secretariaId,
+      // };
+      // const newAcao = await acoesService.createAcao(createAcaoData);
+      // const denunciasToUpdate = new Set(denunciasSelecionas.map((d) => d.id));
+      // setDenuncias((currentDenuncias) =>
+      //   currentDenuncias.map((denuncia) => {
+      //     if (denunciasToUpdate.has(denuncia.id)) {
+      //       return {
+      //         ...denuncia,
+      //         acao: newAcao,
+      //       };
+      //     }
+      //     return denuncia;
+      //   }),
+      // );
+      // setAcoes((currentAcoes) => [...currentAcoes, newAcao]);
+      // toast.success('Ação criada com sucesso!', {
+      //   icon: <IconCircleCheckFilled className="h-5 w-5 text-green-500" />,
+      //   description: 'Verifique as informações na página detalhes da ação.',
+      // });
+      // resetForm();
+      // navigate(`/ocorrencias/acoes/${newAcao.id}`);
+      // denunciasToUpdate.clear();
     } catch (error: any) {
-      toast(error.message, {
-        type: 'error',
-      });
+      toast.error(error.message);
     } finally {
       setIsSubmitingForm(false);
       setIsOpenConfirmationModal(false);
     }
   }
+
+  return null;
 
   return (
     <>

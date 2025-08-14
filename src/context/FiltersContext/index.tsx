@@ -114,26 +114,19 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   }, [denuncias, filtroStatusDenuncia, filtroCategoriaTipo]);
 
   const acoesFiltradas = useMemo(() => {
-    let acoesTemp = acoes;
+    return acoes.filter((acao) => {
+      const passaStatus =
+        filtroStatusAcao === 'all'
+          ? true
+          : filtroStatusAcao.includes(acao.status);
 
-    if (filtrarAcoesPorId !== 'disabled') {
-      return acoesTemp.filter((a) => filtrarAcoesPorId.includes(a.id));
-    }
+      const passaSecretaria =
+        filtroSecretaria === 'all'
+          ? true
+          : acao.siglaSecretaria === filtroSecretaria;
 
-    if (filtroSecretaria !== 'all') {
-      acoesTemp = acoesTemp.filter(
-        (a) => a.secretaria.sigla === filtroSecretaria,
-      );
-    }
-
-    if (filtroStatusAcao !== 'all') {
-      acoesTemp = acoesTemp.filter((a) => {
-        const currentStatus = a.status?.[a.status.length - 1]?.status;
-        return currentStatus ? filtroStatusAcao.includes(currentStatus) : false;
-      });
-    }
-
-    return acoesTemp;
+      return passaStatus && passaSecretaria;
+    });
   }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
 
   return (

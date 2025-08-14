@@ -1,4 +1,4 @@
-import type { AcaoStatusModel } from './AcaoStatus';
+import type { AcaoStatusModel, AcaoStatusModelTypes } from './AcaoStatus';
 import type { DenunciaModel } from './Denuncia';
 import type { SecretariaModel } from './Secretaria';
 
@@ -20,12 +20,13 @@ export interface AcaoModel {
   status: AcaoStatusModel[];
 }
 
-export interface AcaoModelMap {
+export interface AcaoBasicInfoModel {
   id: number;
   nome: string;
-  statusAtual: string;
-  nomeSecretaria: string;
+  status: AcaoStatusModelTypes;
   latitude: number;
   longitude: number;
   criadoEm: string;
+  nomeSecretaria: string;
+  siglaSecretaria: string;
 }

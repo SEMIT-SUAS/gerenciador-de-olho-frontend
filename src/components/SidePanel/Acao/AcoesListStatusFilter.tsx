@@ -9,18 +9,18 @@ import { useFilters } from '@/context/FiltersContext';
 import type { AcaoStatusModelTypes } from '@/types/AcaoStatus';
 
 const statusOptions = [
-  { text: 'Todos', value: 'todos' },
-  { text: 'Em analise', value: 'em_analise' },
-  { text: 'Em andamento', value: 'em_andamento' },
-  { text: 'Indeferidas', value: 'indeferido' },
-  { text: 'Concluídas', value: 'concluido' },
+  { text: 'Todas', value: 'all' },
+  { text: 'Análise', value: 'Análise' },
+  { text: 'Andamento', value: 'Andamento' },
+  { text: 'Indeferidas', value: 'Indeferido' },
+  { text: 'Concluídas', value: 'Concluído' },
 ];
 
 export function AcoesListStatusFilter() {
   const { setFiltroStatusAcao, filtroStatusAcao } = useFilters();
 
-  function handleOnValueSelected(value: AcaoStatusModelTypes | 'todos') {
-    setFiltroStatusAcao(value === 'todos' ? 'todos' : [value]);
+  function handleOnValueSelected(value: AcaoStatusModelTypes | 'all') {
+    setFiltroStatusAcao(value === 'all' ? 'all' : [value]);
   }
 
   return (
@@ -33,7 +33,7 @@ export function AcoesListStatusFilter() {
       </label>
 
       <Select
-        value={filtroStatusAcao === 'todos' ? 'todos' : filtroStatusAcao[0]}
+        value={filtroStatusAcao === 'all' ? 'all' : filtroStatusAcao[0]}
         onValueChange={handleOnValueSelected}
       >
         <SelectTrigger id="select-acao-status-filter" className="w-full">

@@ -7,7 +7,7 @@ import {
   type ReactNode,
   type SetStateAction,
 } from 'react';
-import type { AcaoModel } from '../types/Acao';
+import type { AcaoBasicInfoModel } from '../types/Acao';
 import { type DenunciaModel } from '../types/Denuncia';
 
 type SelectAcoesOuDenunciasProps = {
@@ -15,8 +15,8 @@ type SelectAcoesOuDenunciasProps = {
   setSalvarDenunciasOnClick: Dispatch<SetStateAction<boolean>>;
   salvarAcaoOnclick: boolean;
   setSalvarAcaoOnclick: Dispatch<SetStateAction<boolean>>;
-  acaoSelecionada: AcaoModel | null;
-  setAcaoSelecionada: Dispatch<SetStateAction<AcaoModel | null>>;
+  acaoSelecionada: AcaoBasicInfoModel | null;
+  setAcaoSelecionada: Dispatch<SetStateAction<AcaoBasicInfoModel | null>>;
   denunciasSelecionas: DenunciaModel[];
   setDenunciasSelecionadas: Dispatch<SetStateAction<DenunciaModel[]>>;
   disableMapFilters: boolean;
@@ -30,7 +30,7 @@ type SelectAcoesOuDenunciasProps = {
   setZoomTo: Dispatch<SetStateAction<Coordinates | null>>;
   newDenunciaCoordinates: Coordinates | null;
   setNewDenunciaCoordinates: Dispatch<SetStateAction<Coordinates | null>>;
-  toggleAcaoSelecionada: (acao: AcaoModel) => void;
+  toggleAcaoSelecionada: (acao: AcaoBasicInfoModel) => void;
 };
 
 type Coordinates = {
@@ -47,9 +47,8 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   const [salvarDenunciasOnclick, setSalvarDenunciasOnClick] = useState(false);
   const [salvarAcaoOnclick, setSalvarAcaoOnclick] = useState(false);
 
-  const [acaoSelecionada, setAcaoSelecionada] = useState<AcaoModel | null>(
-    null,
-  );
+  const [acaoSelecionada, setAcaoSelecionada] =
+    useState<AcaoBasicInfoModel | null>(null);
   const [denunciasSelecionas, setDenunciasSelecionadas] = useState<
     DenunciaModel[]
   >([]);
@@ -101,7 +100,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function toggleAcaoSelecionada(acao: AcaoModel) {
+  function toggleAcaoSelecionada(acao: AcaoBasicInfoModel) {
     if (acaoSelecionada?.id === acao.id) {
       setAcaoSelecionada(null);
     } else {

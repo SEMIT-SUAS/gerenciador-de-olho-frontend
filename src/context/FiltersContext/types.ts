@@ -1,4 +1,4 @@
-import type { AcaoModel } from '@/types/Acao';
+import type { AcaoBasicInfoModel } from '@/types/Acao';
 import type { AcaoStatusModelTypes } from '@/types/AcaoStatus';
 import type {
   DenunciaBasicInfoModel,
@@ -30,7 +30,7 @@ export type FiltersContextProps = FilterState & {
     SetStateAction<'disabled' | 'com_acao' | 'sem_acao'>
   >;
   denunciasFiltradas: DenunciaBasicInfoModel[];
-  acoesFiltradas: AcaoModel[];
+  acoesFiltradas: AcaoBasicInfoModel[];
   cacheCurrentFilters: () => void;
   restoreCachedFilters: () => void;
   setFiltrarAcoesPorId: Dispatch<SetStateAction<number[] | 'disabled'>>;

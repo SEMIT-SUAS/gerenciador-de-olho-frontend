@@ -26,7 +26,7 @@ export function SecretariaFilter() {
       </label>
 
       <Select
-        defaultValue="todas"
+        defaultValue="all"
         disabled={!secretarias}
         onValueChange={handleOnSelect}
       >
@@ -35,7 +35,7 @@ export function SecretariaFilter() {
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value="todas">Todas</SelectItem>
+          <SelectItem value="all">Todas</SelectItem>
 
           {secretarias.map((sec) => (
             <SelectItem key={sec.id} value={sec.sigla}>

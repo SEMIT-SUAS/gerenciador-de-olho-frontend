@@ -1,63 +1,55 @@
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
-import { useOcorrencias } from '../../../context/OcorrenciasContext';
+import { useEffect, useState } from 'react';
 import { DenunciaManageInAction } from '../Denuncia/DenunciaManagerInAction';
 import { BackButton } from '../../Buttons/Backbutton';
 import { FaInfoCircle } from 'react-icons/fa';
 import { useMapActions } from '../../../context/MapActions';
 import { Tag } from '../Tag';
-import type { AcaoStatusModelTypes } from '../../../types/AcaoStatus';
 import { useFilters } from '../../../context/FiltersContext';
 import { Button } from '@/components/Buttons/BaseButton';
 import { IconProgressX } from '@tabler/icons-react';
 import { FilesCarrrousel } from '@/components/FilesCarrousel';
 import { IoIosAdd } from 'react-icons/io';
 import { IconCircleCheckFilled } from '@tabler/icons-react';
-import { handleIniciarAcao } from './IniciarAcao';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
+import type { AcaoModel } from '@/types/Acao';
+import { AcoesService } from '@/services/acoesService';
 
 export function AcaoDetails() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { acoes, denuncias, setAcoes, setDenuncias } = useOcorrencias();
+  const [acao, setAcao] = useState<AcaoModel | null>(null);
   const { setZoomTo } = useMapActions();
   const { cacheCurrentFilters, restoreCachedFilters, setFiltroStatusDenuncia } =
     useFilters();
 
   const params = useParams();
   const navigate = useNavigate();
-  const acaoId = params.acaoId;
+  const acaoId = Number(params.acaoId);
 
-  const acao = useMemo(() => {
-    return acoes.find((ac) => ac.id === Number(acaoId));
-  }, [acaoId, acoes]);
+  // const onConfirmarInicio = () => {
+  //   handleIniciarAcao({
+  //     acao,
+  //     setAcoes,
+  //     setDenuncias,
+  //   });
+  //   setIsModalOpen(false); // Fecha o modal
+  // };
 
-  const currentAcaoStatus = useMemo((): AcaoStatusModelTypes | null => {
-    if (!acao) {
-      return null;
-    }
-
-    return acao.status[acao.status.length - 1]?.status;
-  }, [acao]);
-
-  const denunciasVinculadas = useMemo(() => {
-    if (!acao) return [];
-
-    return denuncias.filter((d) => d.acao?.id === acao.id);
-  }, [denuncias, acao]);
-
-  const onConfirmarInicio = () => {
-    handleIniciarAcao({
-      acao,
-      setAcoes,
-      setDenuncias,
-    });
-    setIsModalOpen(false); // Fecha o modal
-  };
+  function initFilters() {
+    cacheCurrentFilters();
+    setFiltroStatusDenuncia('all');
+  }
 
   useEffect(() => {
-    cacheCurrentFilters();
+    AcoesService.getById(acaoId)
+      .then((acao) => {
+        setAcao(acao);
+        initFilters();
+      })
+      .catch(() => {
+        navigate('/404');
+      });
 
-    setFiltroStatusDenuncia('todos');
     return () => {
       restoreCachedFilters();
     };
@@ -74,8 +66,8 @@ export function AcaoDetails() {
     return () => setZoomTo(null);
   }, [acao, setZoomTo]);
 
-  if (!acao || !currentAcaoStatus) {
-    return <Navigate to="/404" replace />;
+  if (!acao) {
+    return null;
   }
 
   return (
@@ -92,7 +84,7 @@ export function AcaoDetails() {
               Criada em: {new Date(acao.criadoEm).toLocaleString('pt-BR')}
             </p>
           </div>
-          <Tag status={currentAcaoStatus} />
+          <Tag status={acao.status} />
         </div>
       </div>
 
@@ -112,11 +104,12 @@ export function AcaoDetails() {
             <p className="text-sm text-gray-600">{acao.obs}</p>
           </div>
         )}
+
         {currentAcaoStatus === 'em_analise' && (
           <Button
             variant="primary"
             size="md"
-            onClick={() => setIsModalOpen(true)} // Abre o modal
+            onClick={() => setIsModalOpen(true)}
             className="w-full"
           >
             Iniciar ação

@@ -4,7 +4,7 @@ export type AcaoStatusModelTypes =
   | 'Análise'
   | 'Andamento'
   | 'Indeferido'
-  | 'Concluido';
+  | 'Concluído';
 
 export interface AcaoStatusModel {
   id: number;

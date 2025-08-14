@@ -5,21 +5,18 @@ import { ConfirmModal } from '../../Modals/ConfirmModal';
 import { FaMapPin } from 'react-icons/fa';
 import { useFilters } from '../../../context/FiltersContext';
 import { useMapActions } from '../../../context/MapActions';
-import { useOcorrencias } from '../../../context/OcorrenciasContext';
 import { toast } from 'sonner';
-// import denunciasService from '@/services/denunciasService';
-import { getPolygonoCenter } from '@/utils/geometry';
-import type { DenunciaModel } from '@/types/Denuncia';
 import { Button } from '@/components/Buttons/BaseButton';
+import type { DenunciaModel } from '@/types/Denuncia';
+import { DenunciaService } from '@/services/DenunciaService';
 
 export function VincularDenunciaAAcao() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const { setDenuncias, denuncias, setAcoes } = useOcorrencias();
   const {
     setIsVisibleDenunciasInMap,
     setIsVisibleAcoesInMap,
     setFiltroStatusAcao,
-    setFiltroCategoria,
+    setFiltroCategoriaTipo,
     cacheCurrentFilters,
     restoreCachedFilters,
     acoesFiltradas,
@@ -31,22 +28,33 @@ export function VincularDenunciaAAcao() {
     toggleAcaoSelecionada,
   } = useMapActions();
 
+  const [denuncia, setDenuncia] = useState<DenunciaModel | null>(null);
   const params = useParams();
-  const denunciaId = params.denunciaId;
+  const denunciaId = Number(params.denunciaId);
   const navigate = useNavigate();
 
-  const denuncia = useMemo(() => {
-    return denuncias.find((d) => d.id == Number(denunciaId));
-  }, [denuncias, denunciaId]);
-
-  useEffect(() => {
+  function initChangeFilters() {
     cacheCurrentFilters();
-
     setSalvarAcaoOnclick(true);
     setIsVisibleDenunciasInMap(false);
     setIsVisibleAcoesInMap(true);
-    setFiltroCategoria('todas');
-    setFiltroStatusAcao(['em_analise', 'em_andamento']);
+    setFiltroCategoriaTipo('todas');
+    setFiltroStatusAcao(['Análise', 'Andamento']);
+  }
+
+  useEffect(() => {
+    DenunciaService.getById(denunciaId)
+      .then((denuncia) => {
+        if (denuncia.dadosAcaoParaDenuncia) {
+          throw new Error('Denúncia já vinculada a uma ação');
+        }
+
+        setDenuncia(denuncia);
+        initChangeFilters();
+      })
+      .catch(() => {
+        navigate('/404');
+      });
 
     return () => {
       setSalvarAcaoOnclick(false);
@@ -55,10 +63,6 @@ export function VincularDenunciaAAcao() {
     };
   }, []);
 
-  if (!denuncia || denuncia.acao != null) {
-    return <Navigate to="404" replace />;
-  }
-
   async function handleVincularDenuncia() {
     try {
       // const denunciaUpdatedData = await denunciasService.vincularDenunciaToAcao(
@@ -66,44 +70,48 @@ export function VincularDenunciaAAcao() {
       //   acaoSelecionada?.id!,
       // );
 
-      const denunciaUpdatedData: DenunciaModel = {
-        ...denuncia!,
-        acao: acaoSelecionada!,
-      };
+      // const denunciaUpdatedData: DenunciaModel = {
+      //   ...denuncia!,
+      //   acao: acaoSelecionada!,
+      // };
 
-      setDenuncias((prevDenuncias) => {
-        const updatedDenuncias = prevDenuncias.map((d) =>
-          d.id === denuncia?.id ? denunciaUpdatedData : d,
-        );
+      // setDenuncias((prevDenuncias) => {
+      //   const updatedDenuncias = prevDenuncias.map((d) =>
+      //     d.id === denuncia?.id ? denunciaUpdatedData : d,
+      //   );
 
-        const denunciasVinculadas = updatedDenuncias.filter(
-          (d) => d.acao?.id === acaoSelecionada?.id,
-        );
+      //   const denunciasVinculadas = updatedDenuncias.filter(
+      //     (d) => d.acao?.id === acaoSelecionada?.id,
+      //   );
 
-        const centerAcao = getPolygonoCenter(
-          denunciasVinculadas.map((d) => [d.latitude, d.longitude]),
-        );
+      //   const centerAcao = getPolygonoCenter(
+      //     denunciasVinculadas.map((d) => [d.latitude, d.longitude]),
+      //   );
 
-        setAcoes((prevAcoes) =>
-          prevAcoes.map((acao) =>
-            acao.id === acaoSelecionada?.id
-              ? {
-                  ...acao,
-                  latitude: centerAcao[0],
-                  longitude: centerAcao[1],
-                }
-              : acao,
-          ),
-        );
+      //   setAcoes((prevAcoes) =>
+      //     prevAcoes.map((acao) =>
+      //       acao.id === acaoSelecionada?.id
+      //         ? {
+      //             ...acao,
+      //             latitude: centerAcao[0],
+      //             longitude: centerAcao[1],
+      //           }
+      //         : acao,
+      //     ),
+      //   );
 
-        return updatedDenuncias;
-      });
+      //   return updatedDenuncias;
+      // });
 
       navigate(`/ocorrencias/acoes/${acaoSelecionada?.id}`);
       toast.success('Denúncia vinculada com sucesso!');
     } catch (error: any) {
       toast.error(error.message);
     }
+  }
+
+  if (!denuncia) {
+    return null;
   }
 
   return (
@@ -116,7 +124,9 @@ export function VincularDenunciaAAcao() {
 
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Vinculando denúncia:</p>
-          <p className="font-bold text-blue-900">{denuncia.tipo.nome}</p>
+          <p className="font-bold text-blue-900">
+            {denuncia.tipoDenuncia.nome}
+          </p>
           <p className="flex text-xs text-blue-800 mt-1">
             <span className="mr-1">
               <FaMapPin />
@@ -161,7 +171,7 @@ export function VincularDenunciaAAcao() {
       <ConfirmModal
         isOpen={isOpenConfirmationModal}
         title="Vínculo de denúncia à ação"
-        message={`Você deseja vincular essa denúncia ${denuncia.tipo} à essa ação ${acaoSelecionada?.nome}?`}
+        message={`Você deseja vincular essa denúncia ${denuncia.tipoDenuncia.nome} à essa ação ${acaoSelecionada?.nome}?`}
         onCancel={() => setIsOpenConfirmationModal(false)}
         onConfirm={handleVincularDenuncia}
       />

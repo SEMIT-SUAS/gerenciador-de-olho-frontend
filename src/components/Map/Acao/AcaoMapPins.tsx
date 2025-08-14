@@ -1,6 +1,6 @@
 import { Marker } from 'react-leaflet';
 import { useFilters } from '../../../context/FiltersContext';
-import type { AcaoModel } from '../../../types/Acao';
+import type { AcaoBasicInfoModel } from '../../../types/Acao';
 import { AcaoPolygon } from './AcaoPolygon';
 import { useMapActions } from '../../../context/MapActions';
 import { useOcorrencias } from '../../../context/OcorrenciasContext';
@@ -18,7 +18,7 @@ export function AcaoMapPins() {
 
   const navigate = useNavigate();
 
-  function handleOnAcaoClick(acao: AcaoModel) {
+  function handleOnAcaoClick(acao: AcaoBasicInfoModel) {
     if (salvarAcaoOnclick) {
       toggleAcaoSelecionada(acao);
     } else {
@@ -30,7 +30,7 @@ export function AcaoMapPins() {
     return null;
   }
 
-  function handleGetActionIcon(acao: AcaoModel) {
+  function handleGetActionIcon(acao: AcaoBasicInfoModel) {
     const isSelected = acao.id === acaoSelecionada?.id;
     const iconSize = isSelected ? 36 : 32;
 
@@ -47,16 +47,19 @@ export function AcaoMapPins() {
   return (
     <>
       {acoesFiltradas.map((a) => {
-        const denunciasVinculadas = denuncias.filter(
-          (d) =>
-            d.acao?.id === a.id &&
-            denunciasFiltradas.find((df) => d.id === df.id),
-        );
+        const denunciasVinculadas = denuncias.filter((d) => {
+          if (
+            d.idAcao === a.id &&
+            denunciasFiltradas.find((df) => d.id === df.id)
+          ) {
+            return d;
+          }
+        });
 
         const acaoPolygonCoords = getConvexHull(
           denunciasVinculadas.map((d) => ({
-            lat: d.latitude,
-            lon: d.longitude,
+            lat: d.endereco.latitude,
+            lon: d.endereco.longitude,
           })),
         );
 

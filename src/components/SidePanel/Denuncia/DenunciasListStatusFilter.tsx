@@ -9,7 +9,7 @@ import { useFilters } from '@/context/FiltersContext';
 import type { DenunciaStatusModelTypes } from '@/types/Denuncia';
 
 const statusOptions = [
-  { text: 'Todos', value: 'all' },
+  { text: 'Todas', value: 'all' },
   { text: 'Aberto', value: 'Aberto' },
   { text: 'Análise', value: 'Análise' },
   { text: 'Andamento', value: 'Andamento' },

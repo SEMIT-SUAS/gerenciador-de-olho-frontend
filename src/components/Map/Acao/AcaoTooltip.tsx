@@ -1,9 +1,8 @@
 import { Tooltip } from 'react-leaflet';
-import type { AcaoModel } from '../../../types/Acao';
+import type { AcaoBasicInfoModel } from '../../../types/Acao';
 import { calcularDiasAtras } from '@/utils/data';
 
-export function AcaoTooltip({ acao }: { acao: AcaoModel }) {
-  const acaoStatus = acao.status[acao.status.length - 1]?.status;
+export function AcaoTooltip({ acao }: { acao: AcaoBasicInfoModel }) {
   const criadaHa = calcularDiasAtras(acao.criadoEm);
 
   return (
@@ -15,7 +14,7 @@ export function AcaoTooltip({ acao }: { acao: AcaoModel }) {
       <div className="space-y-1">
         <h3 className="text-base font-bold text-black">{acao.nome}</h3>
         <p>
-          <strong>Status:</strong> {acaoStatus.replace('_', ' ').toUpperCase()}
+          <strong>Status:</strong> {acao.status}
         </p>
         <p>
           <strong>Criada:</strong> {criadaHa}
