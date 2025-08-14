@@ -4,7 +4,7 @@ import { getServicoById, updateServico } from "../../services/servicosServices";
 import type { Services } from "../../types/Services";
 import { getAllCategorias } from "../../services/servicocategoriaService";
 import { getAllSecretarias } from "../../services/secretariaService";
-import { getAllPerosona } from "../../services/servicoPersona";
+import { getAllPersona } from "../../services/servicoPersona";
 import type { ServicoCategoria } from "../../types/CategoriaServico";
 import type { Secretaria } from "../../types/Secretaria";
 import type { Persona } from "../../types/Persona";
@@ -39,7 +39,7 @@ export function ServicoEditar() {
         getServicoById(serviceId),
         getAllSecretarias(),
         getAllCategorias(),
-        getAllPerosona(),
+        getAllPersona(),
       ]);
 
       const secretariaObj = secretariasData.find(s => s.nome === service.nomeOrgao);

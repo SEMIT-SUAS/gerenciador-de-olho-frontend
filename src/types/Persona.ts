@@ -5,3 +5,10 @@ export interface Persona  {
     visivel: boolean;
     ativo: boolean;
 };
+
+export interface CreatePersona{
+    nome: string;
+    icone: File;
+    visivel: boolean;
+    ativo: boolean;
+}

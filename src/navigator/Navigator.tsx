@@ -14,6 +14,7 @@ import { EspacoPublicoForm } from "../pages/espacoPublico/EspacoPublicoCadastrar
 import { EspacoPublicoList } from "../pages/espacoPublico/EspacoPublicoPage";
 import { EspacoPublicoEdit } from "../pages/espacoPublico/EspacoPublicoEdit";
 import {ListaCategoriaDenuncia} from "../pages/categoriaDenuncias/PageCategoriaDenuncia";
+import { ListaPersonas } from "../pages/persona/PersonaList";
 
 export function Navigator() {
   return (
@@ -31,7 +32,8 @@ export function Navigator() {
       <Route path="/espaco-publico-cadastrar" element={<EspacoPublicoForm/>}/>
       <Route path="/espaco-publico" element={<EspacoPublicoList/>}/>
       <Route path="/espaco-publico-editar/:id" element={<EspacoPublicoEdit/>} />
-      <Route path="/categorias-denuncias" element={<ListaCategoriaDenuncia/>}/> 
+      <Route path="/categorias-denuncias" element={<ListaCategoriaDenuncia/>}/>
+      <Route path="/persona" element={<ListaPersonas/>}/> 
     </Routes>
   );
 }

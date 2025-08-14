@@ -6,7 +6,7 @@ import { getAllSecretarias } from '../../services/secretariaService'; // ajuste 
 import type { Secretaria } from "../../types/Secretaria";
 import { getAllCategorias } from "../../services/servicocategoriaService";
 import type { ServicoCategoria } from "../../types/CategoriaServico";
-import { getAllPerosona } from "../../services/servicoPersona";
+import { getAllPersona } from "../../services/servicoPersona";
 import type { Persona } from "../../types/Persona";
 
 function parseMultilineInput(text: string): string[] {
@@ -59,7 +59,7 @@ export function ServicoNovo() {
         const [secretariasData, categoriasData, personaData] = await Promise.all([
           getAllSecretarias(),
           getAllCategorias(),
-          getAllPerosona()
+          getAllPersona()
         ]);
         setSecretarias(secretariasData);
         setCategorias(categoriasData);
