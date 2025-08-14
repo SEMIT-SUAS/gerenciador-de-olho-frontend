@@ -1,4 +1,3 @@
-// src/components/persona/AddPersonaModal.tsx
 import { useForm } from "react-hook-form";
 import { type PersonaFormData } from "../../../schemas/personaSchema";
 import { uploadPersona } from "../../../services/servicoPersona";

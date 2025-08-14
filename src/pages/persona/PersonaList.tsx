@@ -28,7 +28,7 @@ export function ListaPersonas() {
   async function handleToggleVisivel(persona: Persona) {
     try {
       await changePersonaVisibility(persona.id, !persona.visivel);
-      toast.success(`Visibilidade de ${persona.nome} alterada!`);
+      toast.success(`Visibilidade de "${persona.nome}" alterada!`);
       fetchPersonas();
     } catch {
       toast.error("Erro ao alterar visibilidade");
@@ -38,7 +38,7 @@ export function ListaPersonas() {
   async function handleToggleAtivo(persona: Persona) {
     try {
       await changePersonaAtivo(persona.id, !persona.ativo);
-      toast.success(`Status de atividade de ${persona.nome} alterado!`);
+      toast.success(`Status de atividade de "${persona.nome}" alterado!`);
       fetchPersonas();
     } catch {
       toast.error("Erro ao alterar status de atividade");
@@ -84,7 +84,7 @@ export function ListaPersonas() {
                     </button>
               </td>
 
-                <td>
+              <td>
                     <button
                         onClick={() => handleToggleAtivo(persona)}
                         style={{
@@ -98,7 +98,7 @@ export function ListaPersonas() {
                     >
                         {persona.ativo ? "Ativo" : "Inativo"}
                     </button>
-                </td>
+              </td>
 
               <td>
                 <button
