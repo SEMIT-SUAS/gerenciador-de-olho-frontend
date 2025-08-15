@@ -4,10 +4,10 @@ import type { DenunciaModel } from '../types/Denuncia';
 import type { AcaoModel } from '../types/Acao';
 import denunciasService from '../services/denunciasService';
 import acoesService from '../services/acoesService';
-import type { SecretariaModel } from '../types/Secretaria';
+import { type Secretaria } from '@/types/Secretaria';
 import categoriaService from '../services/categoriaService';
 import type { CategoriaDenunciaModel } from '../types/CategoriaDenuncia';
-import secretariaService from '../services/secretariaService';
+import secretariaService from '@/services/secretariaService';
 
 interface OcorrenciasContextType {
   denuncias: DenunciaModel[];
@@ -15,7 +15,7 @@ interface OcorrenciasContextType {
   acoes: AcaoModel[];
   setAcoes: Dispatch<SetStateAction<AcaoModel[]>>;
   categorias: CategoriaDenunciaModel[];
-  secretarias: SecretariaModel[];
+  secretarias: Secretaria[];
   loading: boolean;
   error: string | null;
 }
@@ -30,7 +30,7 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
   const [denuncias, setDenuncias] = useState<DenunciaModel[]>([]);
   const [acoes, setAcoes] = useState<AcaoModel[]>([]);
   const [categorias, setCategorias] = useState<CategoriaDenunciaModel[]>([]);
-  const [secretarias, setSecretarias] = useState<SecretariaModel[]>([]);
+  const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +44,7 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
             denunciasService.getAllDenuncias(),
             acoesService.getAllAcoes(),
             categoriaService.getAll(),
-            secretariaService.getAll(),
+            secretariaService.getAllSecretarias(),
           ]);
 
         setDenuncias(denunciasData);

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { LayoutPage } from '../LayoutPage';
+import { LayoutPage } from '../../components/LayoutPage';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
 import espaçoPublicoService from '@/services/espacoPublicoService';
-import { EspacosPublicosList } from '@/components/EspacosPublicos/EspacosPublicosList';
+import { EspacosPublicosList } from '@/pages/EspacosPublicosPage/components/EspacosPublicosList';
 import { SearchInput } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
@@ -52,10 +52,10 @@ export function EspacosPublicosPage() {
 
   return (
     <>
-      <LayoutPage additionalStyles="px-[39px]">
+      <LayoutPage>
         <div className="flex flex-col gap-6 py-8 px-36">
           <div className="w-[50%]">
-            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+            <h3 className="scroll-m-20 text-2xl font-bold tracking-tight">
               Espaços públicos
             </h3>
 
@@ -67,7 +67,7 @@ export function EspacosPublicosPage() {
             </p>
           </div>
 
-          <div className="flex items-center justify-end gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="relative w-[320px]">
               <SearchInput
                 placeholder="Pesquise pelo nome"

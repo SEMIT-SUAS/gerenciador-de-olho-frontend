@@ -1,4 +1,4 @@
-import { Button } from '@/components/Buttons/BaseButton';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 export function NotFoundPage() {
@@ -12,12 +12,7 @@ export function NotFoundPage() {
         <p className="mt-4 text-sm text-gray-500">
           A página que você está procurando não existe ou foi movida.
         </p>
-        <Button
-          variant="outline_primary"
-          size="sm"
-          className="mt-5"
-          onClick={() => navigate('/')}
-        >
+        <Button className="mt-5" onClick={() => navigate('/')}>
           Retorna para o início
         </Button>
       </div>

@@ -4,30 +4,32 @@ import { DashboardPage } from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
-import { DenunciasList } from './components/SidePanel/Denuncia/DenunciasList';
-import { DenunciaDetails } from './components/SidePanel/Denuncia/DenunciaDetails';
-import { AddDenuncia } from './components/SidePanel/Denuncia/AddDenuncia';
-import { IndeferirDenuncia } from './components/SidePanel/Denuncia/IndeferirDenuncia';
-import { VincularDenunciaAAcao } from './components/SidePanel/Denuncia/VincularDenunciaAAcao';
-import { AcoesList } from './components/SidePanel/Acao/AcoesList';
-import { AcaoDetails } from './components/SidePanel/Acao/AcaoDetails';
-import { AddAcao } from './components/SidePanel/Acao/AddAcao';
-import { VincularAcaoADenuncias } from './components/SidePanel/Acao/VincularAcaoADenuncias';
-import { ServicoDetalhes } from './components/Servicos/ServicoDetalhes';
-import ServicoEditarPage from './components/Servicos/ServicoEditar';
-import ServicoNovo from './components/Servicos/ServicoNovo';
-import { ServicesPage } from './pages/ServicesPage';
+import { DenunciasList } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciasList';
+import { DenunciaDetails } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciaDetails';
+import { AddDenuncia } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/AddDenuncia';
+import { IndeferirDenuncia } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/IndeferirDenuncia';
+import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/VincularDenunciaAAcao';
+import { AcoesList } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcoesList';
+import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcaoDetails';
+import { AddAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/AddAcao';
+import { VincularAcaoADenuncias } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoADenuncias';
+import { ServicoDetalhes } from './pages/ServicosPage/components/ServicoDetalhes';
+import ServicoEditarPage from './pages/ServicosPage/components/ServicoEditar';
+import ServicoNovo from './pages/ServicosPage/components/ServicoNovo';
+import { ServicesPage } from './pages/ServicosPage';
 import { NotFoundPage } from './pages/404';
-import { IndeferirAcao } from './components/SidePanel/Acao/IndefirirAcao';
-import { ConcluirAcao } from './components/SidePanel/Acao/ConcluirAcao';
+import { IndeferirAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/IndefirirAcao';
+import { ConcluirAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/ConcluirAcao';
 import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
 import { CategoriasPage } from './pages/CategoriaServicoPage';
 import { EspacosPublicosPage } from './pages/EspacosPublicosPage/index';
-import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/add';
-import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/edit';
+import { AddEspacoPublicoPage } from './pages/EspacosPublicosPage/components/AddEspacoPublicoModal';
+import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/components/EditEspacoPublicoModal';
 import { PortaisPage } from './pages/PortaisPage';
-import {DenunciaCategoriasPage } from './pages/DenunciaCategoriasPage';
+import { DenunciaCategoriasPage } from './pages/CategoriasDenunciaPage';
+import { SecretariaPage } from './pages/SecretariasPage';
+import { PersonasPage } from './pages/Personas';
 
 export function App() {
   return (
@@ -75,6 +77,7 @@ export function App() {
         <Route path="/servicos">
           <Route index element={<ServicesPage />} />
           <Route path="categorias" element={<CategoriasPage />} />
+          <Route path="secretarias" element={<SecretariaPage />} />
           <Route path="novo" element={<ServicoNovo />} />
           <Route path=":id" element={<ServicoDetalhes />} />
           <Route path="editar/:id" element={<ServicoEditarPage />} />
@@ -93,6 +96,8 @@ export function App() {
           path="/categorias-denuncia"
           element={<DenunciaCategoriasPage />}
         />
+
+        <Route path="/personas" element={<PersonasPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
