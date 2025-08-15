@@ -32,9 +32,7 @@ export class DenunciaService {
       const response = await api.get(
         `/denuncia/gerenciador/buscar-denuncia/${denunciaId}`,
         {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          responseType: "json"
         },
       );
 
@@ -55,9 +53,7 @@ export class DenunciaService {
       const response = await api.get(
         '/denuncia/arquivos/gerenciador/uploads/' + denunciaId,
         {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          responseType: "json"
         },
       );
 
@@ -85,100 +81,21 @@ export class DenunciaService {
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
   }
+
+  public static async indeferirDenuncia(data: { denunciaId: number, motivo: string }): Promise<void> {
+    try {
+      const response = await api.put(
+        '/denuncia/denuncias/indeferir',
+        data
+      );
+
+      if (response.status != 200) {
+        throw new Error('Não foi possível indeferir a denúncia.');
+      }
+    } catch (error) {
+      console.error(error);
+      throw this.SERVICE_UNAVAILABLE_ERROR;
+    }
+  }
+
 }
-
-// async function createDenuncia(
-//   newDenuncia: CreateDenunciaModel,
-// ): Promise<DenunciaModel> {
-//   const tipo = await categoriaService.getTipoById(newDenuncia.tipoId);
-
-//   const denunciaCreatedData: DenunciaModel = {
-//     id: Math.floor(Math.random() * 100000),
-//     descricao: newDenuncia.descricao,
-//     bairro: newDenuncia.bairro,
-//     rua: newDenuncia.rua,
-//     pontoDeReferencia: newDenuncia.pontoDeReferencia,
-//     latitude: newDenuncia.latitude,
-//     longitude: newDenuncia.longitude,
-//     tipo: tipo!,
-//     files: newDenuncia.files.map((f, idx) => ({
-//       id: idx,
-//       tipo: 'imagem',
-//       nome: f.name,
-//     })),
-//     acao: null,
-//     criadaEm: new Date().toISOString(),
-//     usuario: userMock,
-//     denunciaIndeferida: null,
-//   };
-
-//   denunciasData.push(denunciaCreatedData);
-
-//   return denunciaCreatedData;
-// }
-
-// async function updateDenuncia(denuncia: DenunciaModel): Promise<DenunciaModel> {
-//   try {
-//     const response = await fetch(`${BASE_API_URL}/denuncias/${denuncia.id}`, {
-//       method: 'PUT',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(denuncia),
-//     });
-
-//     if (response.status !== 200) {
-//       throw new Error('Não foi possível atualizar a denúncia.');
-//     }
-
-//     return await response.json();
-//   } catch (error) {
-//     throw new Error(
-//       'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-//     );
-//   }
-// }
-
-// async function indeferirDenuncia(
-//   denunciaId: number,
-//   motivo: string,
-// ): Promise<DenunciaModel> {
-//   try {
-//     const denuncia = denunciasData.find((d) => d.id == denunciaId)!;
-
-//     return {
-//       ...denuncia,
-//       denunciaIndeferida: {
-//         id: 1,
-//         motivo,
-//         indeferidaEm: new Date().toUTCString(),
-//         indeferidaPor: userMock,
-//       },
-//     };
-//   } catch (error) {
-//     throw error;
-//   }
-// }
-
-// async function vincularDenunciaToAcao(
-//   denunciaId: number,
-//   acaoId: number,
-// ): Promise<DenunciaModel> {
-//   let denunciaUpdatedData;
-//   const denunciasDataUpdated = denunciasData.map((d) => {
-//     if (d.id === denunciaId) {
-//       denunciaUpdatedData = {
-//         ...d,
-//         acao: acoes.find((a) => a.id === acaoId)!,
-//       };
-
-//       return denunciaUpdatedData;
-//     }
-
-//     return d;
-//   });
-
-//   console.log(denunciaUpdatedData);
-//   updateDenunciasData(denunciasDataUpdated);
-//   return denunciaUpdatedData!;
-// }
