@@ -36,7 +36,7 @@ interface TipoDenunciaFormProps {
   isSubmitting: boolean;
   secretarias: Secretaria[];
   categorias: CategoriaDenunciaModel[];
-  defaultValues?: TipoDenunciaFormValues
+  defaultValues?: Partial<TipoDenunciaFormValues>;
 }
 
 export function TipoDenunciaForm({
@@ -44,7 +44,7 @@ export function TipoDenunciaForm({
   categorias,
   onSubmit,
   isSubmitting,
-  defaultValues
+  defaultValues,
 }: TipoDenunciaFormProps) {
   const form = useForm<TipoDenunciaFormValues>({
     resolver: zodResolver(TipoDenunciaFormSchema),
@@ -93,8 +93,8 @@ export function TipoDenunciaForm({
             <FormItem>
               <FormLabel>Secretaria Responsável*</FormLabel>
               <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
-                  value={field.value ? String(field.value) : ''}
+                onValueChange={(value) => field.onChange(Number(value))}
+                value={field.value ? String(field.value) : ''}
               >
                 <FormControl className="w-full">
                   <SelectTrigger>
@@ -125,18 +125,17 @@ export function TipoDenunciaForm({
               <FormLabel>Categoria*</FormLabel>
               <Select
                 onValueChange={(value) => {
-                  field.onChange(value); 
-                    
+                  field.onChange(value);
+
                   const categoriaSelecionada = categorias.find(
-                    (c) => String(c.id) === value
+                    (c) => String(c.id) === value,
                   );
 
                   if (categoriaSelecionada?.cor) {
-                    form.setValue("cor", categoriaSelecionada.cor);
+                    form.setValue('cor', categoriaSelecionada.cor);
                   }
                 }}
                 value={String(field.value ?? '')}
-
               >
                 <FormControl className="w-full">
                   <SelectTrigger>
@@ -155,7 +154,6 @@ export function TipoDenunciaForm({
             </FormItem>
           )}
         />
-
 
         <FormField
           control={form.control}

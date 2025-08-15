@@ -5,7 +5,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
+import type {
+  TipoDenunciaListar,
+  TipoDenunciaModel,
+} from '@/types/TipoDenuncia';
 import type { Dispatch, SetStateAction } from 'react';
 import { TiposDenunciaListItem } from './TiposDenunciaListItem';
 

@@ -20,7 +20,6 @@ export function TiposDenunciaListItem({
 }: TiposDenunciaListItemProps) {
   const [isOpenDisableModal, setIsOpenDisableModal] = useState(false);
 
-  // Ação de desativar (renomeada para clareza)
   async function handleDeactivateTipoDenuncia() {
     try {
       await tiposDenunciaService.changeTipoAtivo(tipo.id, !tipo.ativo);
@@ -40,7 +39,6 @@ export function TiposDenunciaListItem({
 
   return (
     <>
-      {/* 4. Adiciona estilo para itens inativos (texto mais claro e semitransparente) */}
       <TableRow
         key={tipo.id}
         className={!tipo.ativo ? 'text-slate-500 opacity-70' : ''}
@@ -49,20 +47,18 @@ export function TiposDenunciaListItem({
           <img src={tipo.icone} alt="" className="w-8 h-8 object-contain" />
         </TableCell>
         <TableCell>{tipo.nome}</TableCell>
-        <TableCell>{tipo.categoria}</TableCell> {/* Assumindo que categoria é um objeto */}
+        <TableCell>{tipo.categoria}</TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
             <button
-            
-              onClick={() =>
-                onEdit(tipo)}
+              onClick={() => onEdit(tipo)}
               className="text-black-600"
               title="Editar"
+              disabled
             >
-              <IconEdit size={18} stroke={2} />
+              <IconEdit size={18} stroke={2} className="text-gray-300" />
             </button>
 
-            {/* Este botão só aparece se o item estiver ativo */}
             {tipo.ativo && (
               <button
                 onClick={() => setIsOpenDisableModal(true)}

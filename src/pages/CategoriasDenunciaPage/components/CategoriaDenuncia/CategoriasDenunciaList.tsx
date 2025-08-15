@@ -1,5 +1,5 @@
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
-import { Card, CardContent } from '../../../components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -7,11 +7,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../../components/ui/table';
-import { RenderIf } from '../../../components/RenderIf';
+} from '@/components/ui/table';
+import { RenderIf } from '@/components/RenderIf';
 import { IconCategoryFilled } from '@tabler/icons-react';
-import { ImageSkeleton } from '../../../components/Loading/ImageSkeleton';
-import { ListItemSkeleton } from '../../../components/Loading/ListItemSkeleton';
+import { ImageSkeleton } from '@/components/Loading/ImageSkeleton';
+import { ListItemSkeleton } from '@/components/Loading/ListItemSkeleton';
 import { CategoryDenunciaItem } from './CategoryDenunciaItem';
 import type { Dispatch, SetStateAction } from 'react';
 

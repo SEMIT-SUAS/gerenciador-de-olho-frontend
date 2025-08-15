@@ -1,13 +1,13 @@
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import { useState, type Dispatch, type SetStateAction } from 'react';
-import { TableCell, TableRow } from '../../../components/ui/table';
+import { TableCell, TableRow } from '@/components/ui/table';
 import { IconEdit, IconStarFilled, IconTrash } from '@tabler/icons-react';
 import { CategoryVisibility } from './CategoryDenunciaVisibility';
-import { ConfirmModal } from '../../../components/Modals/ConfirmModal';
+import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import categoriaService from '@/services/categoriaService';
 import { toast } from 'sonner';
 import { EditCategoriaModal } from './EditCategoriaModal';
-import { Badge } from '../../../components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 
 interface CategoryDenunciaItem {
   category: CategoriaDenunciaModel;

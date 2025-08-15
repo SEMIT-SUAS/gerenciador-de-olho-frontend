@@ -7,16 +7,16 @@ import { SearchInput } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
 import { Pagination } from '@/components/Pagination';
-import { AddCategoriaModal } from '@/pages/CategoriasDenunciaPage/components/AddCategoriaModal';
-import { CategoriasDenunciaList } from './components/CategoriasDenunciaList';
+import { CategoriasDenunciaList } from './components/CategoriaDenuncia/CategoriasDenunciaList';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import tiposDenunciaService from '@/services/tiposDenunciaService';
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
-import { TiposDenunciaList } from './components/TiposDenunciaList';
+import { TiposDenunciaList } from './components/TipoDenuncia/TiposDenunciaList';
 import secretariaService from '@/services/secretariaService';
 import type { Secretaria } from '@/types/Secretaria';
-import { AddTipoDenunciaModal } from './components/AddTipoDenunciaModal';
-import { EditTipoDenunciaModal } from './components/EditTipoDenunciaModal';
+import { AddTipoDenunciaModal } from './components/TipoDenuncia/AddTipoDenunciaModal';
+import { EditTipoDenunciaModal } from './components/TipoDenuncia/EditTipoDenunciaModal';
+import { AddCategoriaModal } from './components/CategoriaDenuncia/AddCategoriaModal';
 
 export function DenunciaCategoriasPage() {
   const [categorias, setCategorias] = useState<CategoriaDenunciaModel[] | null>(
@@ -32,24 +32,19 @@ export function DenunciaCategoriasPage() {
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
   const [IsOpenAddTipoModal, setIsOpenAddTipoModal] = useState(false);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
-   // --- ALTERAÇÕES AQUI ---
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
-  // 1. Crie um estado para armazenar o tipo que será editado
   const [tipoParaEditar, setTipoParaEditar] =
     useState<TipoDenunciaModel | null>(null);
 
-  // 2. Crie uma função para abrir o modal de edição
   const handleOpenEditModal = (tipo: TipoDenunciaModel) => {
-    setTipoParaEditar(tipo); // Guarda o tipo selecionado no estado
+    setTipoParaEditar(tipo);
     setIsOpenEditModal(true);
   };
 
   const handleCloseEditModal = () => {
     setIsOpenEditModal(false);
-    setTipoParaEditar(null); // Limpa o estado quando o modal fecha
+    setTipoParaEditar(null);
   };
-  // --- FIM DAS ALTERAÇÕES ---
-
 
   useEffect(() => {
     tiposDenunciaService
@@ -169,8 +164,11 @@ export function DenunciaCategoriasPage() {
               setCategories={setCategorias}
             />
           ) : (
-            <TiposDenunciaList tipos={currentTipos} setTipos={setTipos} onEdit={handleOpenEditModal} 
-/>
+            <TiposDenunciaList
+              tipos={currentTipos}
+              setTipos={setTipos}
+              onEdit={handleOpenEditModal}
+            />
           )}
 
           <Pagination
@@ -194,7 +192,7 @@ export function DenunciaCategoriasPage() {
         open={IsOpenAddTipoModal}
         onOpenChange={() => setIsOpenAddTipoModal(!open)}
         secretarias={secretarias}
-        categorias={categorias}
+        categorias={categorias!}
         setTipos={setTipos}
       />
 
@@ -203,7 +201,7 @@ export function DenunciaCategoriasPage() {
           open={isOpenEditModal}
           onOpenChange={handleCloseEditModal} // Use a função que limpa o estado
           secretarias={secretarias}
-          categorias={categorias}
+          categorias={categorias!}
           setTipos={setTipos}
           tipoParaEditar={tipoParaEditar} // <-- PROP NOVA COM OS DADOS
         />
