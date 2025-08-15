@@ -7,10 +7,7 @@ import {
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { TipoDenunciaForm } from './TipoDenunciaForm/TipoDenunciaForm';
-import {
-  type TipoDenunciaFormSchema,
-  type TipoDenunciaFormValues,
-} from './TipoDenunciaForm/tipoDenunciaSchema';
+import { type TipoDenunciaFormValues } from './TipoDenunciaForm/tipoDenunciaSchema';
 import tiposDenunciaService from '@/services/tiposDenunciaService';
 import { toast } from 'react-toastify';
 import type { Secretaria } from '@/types/Secretaria';
@@ -53,8 +50,8 @@ export function EditTipoDenunciaModal({
 
     return {
       nome: tipoParaEditar.nome,
-      secretariaId: secretariaEncontrada?.id,
-      categoriaId: categoriaEncontrada?.id,
+      secretariaId: secretariaEncontrada!.id,
+      categoriaId: categoriaEncontrada!.id,
       cor: tipoParaEditar.cor,
       icone: tipoParaEditar.icone,
       visivel: tipoParaEditar.visivel,

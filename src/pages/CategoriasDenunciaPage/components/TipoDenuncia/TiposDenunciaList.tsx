@@ -5,10 +5,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type {
-  TipoDenunciaListar,
-  TipoDenunciaModel,
-} from '@/types/TipoDenuncia';
+import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import type { Dispatch, SetStateAction } from 'react';
 import { TiposDenunciaListItem } from './TiposDenunciaListItem';
 
@@ -36,7 +33,6 @@ export function TiposDenunciaList({
         </TableHeader>
 
         <TableBody>
-          {/* O filtro foi removido daqui! Agora todos os itens são exibidos. */}
           {tipos.map((tipo) => (
             <TiposDenunciaListItem
               key={tipo.id}

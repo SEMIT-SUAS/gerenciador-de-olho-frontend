@@ -36,7 +36,7 @@ interface TipoDenunciaFormProps {
   isSubmitting: boolean;
   secretarias: Secretaria[];
   categorias: CategoriaDenunciaModel[];
-  defaultValues?: Partial<TipoDenunciaFormValues>;
+  defaultValues?: TipoDenunciaFormValues;
 }
 
 export function TipoDenunciaForm({
