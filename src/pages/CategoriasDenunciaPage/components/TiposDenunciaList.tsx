@@ -12,9 +12,14 @@ import { TiposDenunciaListItem } from './TiposDenunciaListItem';
 interface TiposDenunciaListProps {
   tipos: TipoDenunciaModel[];
   setTipos: Dispatch<SetStateAction<TipoDenunciaModel[]>>;
+  onEdit: (tipo: TipoDenunciaModel) => void;
 }
 
-export function TiposDenunciaList({ tipos, setTipos }: TiposDenunciaListProps) {
+export function TiposDenunciaList({
+  tipos,
+  setTipos,
+  onEdit,
+}: TiposDenunciaListProps) {
   return (
     <div className="rounded-md border">
       <Table>
@@ -28,15 +33,15 @@ export function TiposDenunciaList({ tipos, setTipos }: TiposDenunciaListProps) {
         </TableHeader>
 
         <TableBody>
-          {tipos
-            .filter((t) => t.ativo)
-            .map((tipo) => (
-              <TiposDenunciaListItem
-                key={tipo.id}
-                tipo={tipo}
-                setTipos={setTipos}
-              />
-            ))}
+          {/* O filtro foi removido daqui! Agora todos os itens são exibidos. */}
+          {tipos.map((tipo) => (
+            <TiposDenunciaListItem
+              key={tipo.id}
+              tipo={tipo}
+              setTipos={setTipos}
+              onEdit={onEdit}
+            />
+          ))}
         </TableBody>
       </Table>
     </div>

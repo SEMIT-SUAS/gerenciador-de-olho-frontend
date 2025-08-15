@@ -20,23 +20,23 @@ import { Input } from '@/components/ui/input';
 import { ImageInput } from '@/components/Forms/ImageInput';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
 // Importe os tipos e o serviço corretos
 import type { Secretaria } from '@/types/Secretaria';
-import type { ServicoCategoria } from '@/types/CategoriaServico';
 import {
   TipoDenunciaFormSchema,
   type TipoDenunciaFormValues,
 } from './tipoDenunciaSchema';
-import { ColorPicker } from '../ColorPicker';
+import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
+import { useEffect } from 'react';
 
 interface TipoDenunciaFormProps {
   onSubmit: (data: TipoDenunciaFormValues) => void;
   isSubmitting: boolean;
   secretarias: Secretaria[];
-  categorias: ServicoCategoria[];
+  categorias: CategoriaDenunciaModel[];
+  defaultValues?: TipoDenunciaFormValues
 }
 
 export function TipoDenunciaForm({
@@ -44,18 +44,26 @@ export function TipoDenunciaForm({
   categorias,
   onSubmit,
   isSubmitting,
+  defaultValues
 }: TipoDenunciaFormProps) {
   const form = useForm<TipoDenunciaFormValues>({
     resolver: zodResolver(TipoDenunciaFormSchema),
-    defaultValues: {
+    defaultValues: defaultValues || {
       nome: '',
       secretariaId: undefined,
       categoriaId: undefined,
       cor: '',
       icone: undefined,
       visivel: true,
+      ativo: true,
     },
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      form.reset(defaultValues);
+    }
+  }, [defaultValues, form]);
 
   return (
     <Form {...form}>
@@ -85,8 +93,8 @@ export function TipoDenunciaForm({
             <FormItem>
               <FormLabel>Secretaria Responsável*</FormLabel>
               <Select
-                onValueChange={field.onChange}
-                defaultValue={String(field.value)}
+                  onValueChange={(value) => field.onChange(Number(value))}
+                  value={field.value ? String(field.value) : ''}
               >
                 <FormControl className="w-full">
                   <SelectTrigger>
@@ -116,8 +124,19 @@ export function TipoDenunciaForm({
             <FormItem>
               <FormLabel>Categoria*</FormLabel>
               <Select
-                onValueChange={field.onChange}
-                defaultValue={String(field.value)}
+                onValueChange={(value) => {
+                  field.onChange(value); 
+                    
+                  const categoriaSelecionada = categorias.find(
+                    (c) => String(c.id) === value
+                  );
+
+                  if (categoriaSelecionada?.cor) {
+                    form.setValue("cor", categoriaSelecionada.cor);
+                  }
+                }}
+                value={String(field.value ?? '')}
+
               >
                 <FormControl className="w-full">
                   <SelectTrigger>
@@ -137,18 +156,6 @@ export function TipoDenunciaForm({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="cor"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cor</FormLabel>
-              <FormControl>
-                <ColorPicker color={field.value} setColor={field.onChange} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
 
         <FormField
           control={form.control}

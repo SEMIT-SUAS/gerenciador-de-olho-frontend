@@ -7,6 +7,7 @@ export const TipoDenunciaFormSchema = z.object({
   icone: z.instanceof(File, { message: 'É necessário enviar um ícone.' }),
   cor: z.string(),
   visivel: z.boolean(),
+  ativo: z.boolean()
 });
 
 export type TipoDenunciaFormValues = z.infer<typeof TipoDenunciaFormSchema>;

@@ -16,6 +16,7 @@ import { TiposDenunciaList } from './components/TiposDenunciaList';
 import secretariaService from '@/services/secretariaService';
 import type { Secretaria } from '@/types/Secretaria';
 import { AddTipoDenunciaModal } from './components/AddTipoDenunciaModal';
+import { EditTipoDenunciaModal } from './components/EditTipoDenunciaModal';
 
 export function DenunciaCategoriasPage() {
   const [categorias, setCategorias] = useState<CategoriaDenunciaModel[] | null>(
@@ -31,6 +32,24 @@ export function DenunciaCategoriasPage() {
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
   const [IsOpenAddTipoModal, setIsOpenAddTipoModal] = useState(false);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
+   // --- ALTERAÇÕES AQUI ---
+  const [isOpenEditModal, setIsOpenEditModal] = useState(false);
+  // 1. Crie um estado para armazenar o tipo que será editado
+  const [tipoParaEditar, setTipoParaEditar] =
+    useState<TipoDenunciaModel | null>(null);
+
+  // 2. Crie uma função para abrir o modal de edição
+  const handleOpenEditModal = (tipo: TipoDenunciaModel) => {
+    setTipoParaEditar(tipo); // Guarda o tipo selecionado no estado
+    setIsOpenEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsOpenEditModal(false);
+    setTipoParaEditar(null); // Limpa o estado quando o modal fecha
+  };
+  // --- FIM DAS ALTERAÇÕES ---
+
 
   useEffect(() => {
     tiposDenunciaService
@@ -85,7 +104,7 @@ export function DenunciaCategoriasPage() {
       <LayoutPage>
         <div className="flex flex-col gap-6 py-8 px-36">
           <div className="w-[50%]">
-            {activeTab === 'categoria' ? (
+            {activeTab === 'categorias' ? (
               <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                 Categorias de denúncia
               </h3>
@@ -150,7 +169,8 @@ export function DenunciaCategoriasPage() {
               setCategories={setCategorias}
             />
           ) : (
-            <TiposDenunciaList tipos={currentTipos} setTipos={setTipos} />
+            <TiposDenunciaList tipos={currentTipos} setTipos={setTipos} onEdit={handleOpenEditModal} 
+/>
           )}
 
           <Pagination
@@ -172,11 +192,22 @@ export function DenunciaCategoriasPage() {
 
       <AddTipoDenunciaModal
         open={IsOpenAddTipoModal}
-        onOpenChange={() => setIsOpenAddTipoModal(false)}
+        onOpenChange={() => setIsOpenAddTipoModal(!open)}
         secretarias={secretarias}
         categorias={categorias}
         setTipos={setTipos}
       />
+
+      {tipoParaEditar && (
+        <EditTipoDenunciaModal
+          open={isOpenEditModal}
+          onOpenChange={handleCloseEditModal} // Use a função que limpa o estado
+          secretarias={secretarias}
+          categorias={categorias}
+          setTipos={setTipos}
+          tipoParaEditar={tipoParaEditar} // <-- PROP NOVA COM OS DADOS
+        />
+      )}
     </>
   );
 }

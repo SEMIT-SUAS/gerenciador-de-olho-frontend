@@ -14,11 +14,11 @@ import {
 import tiposDenunciaService from '@/services/tiposDenunciaService';
 import { toast } from 'react-toastify';
 import type { Secretaria } from '@/types/Secretaria';
-import type { ServicoCategoria } from '@/types/CategoriaServico';
+import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 
 interface AddTipoDenunciaModalProps {
   secretarias: Secretaria[];
-  categorias: ServicoCategoria[];
+  categorias: CategoriaDenunciaModel[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
   setTipos: Dispatch<SetStateAction<TipoDenunciaModel[]>>;
@@ -41,12 +41,17 @@ export function AddTipoDenunciaModal({
 
       formData.append('nome', data.nome);
 
-      formData.append('secretariaId', String(data.secretariaId));
-      formData.append('categoriaId', String(data.categoriaId));
+      formData.append('secretaria_id', String(data.secretariaId));
+      formData.append('categoria_denuncia_id', String(data.categoriaId));
+      formData.append('cor', data.cor)
 
       formData.append('icone', data.icone);
 
       formData.append('visivel', String(data.visivel));
+
+      formData.append('ativo', String(data.ativo))
+
+      console.log(Object.fromEntries(formData.entries()));
 
       const newTipo = await tiposDenunciaService.createTipoDenuncia(formData);
 
@@ -62,6 +67,7 @@ export function AddTipoDenunciaModal({
       setIsSubmitting(false);
     }
   }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
