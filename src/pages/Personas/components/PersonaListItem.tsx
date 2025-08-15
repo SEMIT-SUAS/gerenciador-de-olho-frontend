@@ -50,7 +50,7 @@ export function PersonaListItem({
             <img
               src={persona.icone}
               alt={persona.nome}
-              className="h-10 w-10 rounded-full object-cover border-2 border-gray-200"
+              className="h-10 w-auto rounded-md object-cover"
               onError={(e) => {
                 e.currentTarget.src = 'https://via.placeholder.com/40?text=?';
               }}

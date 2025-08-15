@@ -185,7 +185,7 @@ export function FormPersona({
                             <img
                               src={previewUrl}
                               alt="Preview"
-                              className="h-20 w-20 rounded-full border-2 border-gray-200 object-cover"
+                              className="h-14 w-auto rounded-md object-cover"
                               onError={(e) => {
                                 e.currentTarget.src =
                                   'https://via.placeholder.com/80?text=Erro+ao+carregar';
