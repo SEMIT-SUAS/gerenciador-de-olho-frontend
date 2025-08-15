@@ -1,10 +1,9 @@
-// Exemplo de uso em uma página
 import { getAllSecretarias } from '@/services/secretariaService';
 import { ServicoForm } from './ServicoForm/ServicoForm';
 import { type ServicoFormOutput } from './ServicoForm/servicoSchema';
 import { useState, useEffect } from 'react';
 import { getAllCategorias } from '@/services/servicocategoriaService';
-import { getAllPerosona } from '@/services/servicoPersona';
+import { getAllPersona } from '@/services/servicoPersona';
 import type { Secretaria } from '@/types/Secretaria';
 import type { Persona } from '@/types/Persona';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
@@ -27,7 +26,7 @@ function ServicoNovo() {
           await Promise.all([
             getAllSecretarias(),
             getAllCategorias(),
-            getAllPerosona(),
+            getAllPersona(),
           ]);
         setSecretarias(secretariasData);
         setCategorias(categoriasData);
