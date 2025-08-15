@@ -45,10 +45,12 @@ export async function deleteSecretaria(id: number): Promise<void> {
     });
 
     if (!response.ok) {
-      throw new Error('Não foi possível deletar a secretaria.');
+      throw new Error('Não foi possível desativar a secretaria.');
     }
   } catch (error) {
-    throw new Error('Erro ao deletar secretaria. Tente novamente mais tarde.');
+    throw new Error(
+      'Erro ao desativar secretaria. Tente novamente mais tarde.',
+    );
   }
 }
 export async function updateSecretaria(id: number): Promise<Secretaria> {

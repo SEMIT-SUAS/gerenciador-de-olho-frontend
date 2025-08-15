@@ -29,6 +29,7 @@ import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/components/Ed
 import { PortaisPage } from './pages/PortaisPage';
 import { DenunciaCategoriasPage } from './pages/CategoriasDenunciaPage';
 import { SecretariaPage } from './pages/SecretariasPage';
+import { PersonasPage } from './pages/Personas';
 
 export function App() {
   return (
@@ -95,6 +96,8 @@ export function App() {
           path="/categorias-denuncia"
           element={<DenunciaCategoriasPage />}
         />
+
+        <Route path="/personas" element={<PersonasPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

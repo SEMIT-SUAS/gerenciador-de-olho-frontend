@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { getAllCategorias } from '@/services/servicocategoriaService';
-import { getAllPerosona } from '@/services/servicoPersona';
+import { getAllPersona } from '@/services/servicoPersona';
 import { getServicoById, updateServico } from '@/services/servicosServices';
 import type {
   ServicoFormInput,
@@ -44,7 +44,7 @@ function ServicoEditarPage() {
           await Promise.all([
             getAllSecretarias(),
             getAllCategorias(),
-            getAllPerosona(),
+            getAllPersona(),
             getServicoById(Number(servicoId)),
           ]);
 
