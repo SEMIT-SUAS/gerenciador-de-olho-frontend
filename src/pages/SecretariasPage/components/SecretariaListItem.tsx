@@ -2,7 +2,6 @@ import { TableRow, TableCell } from '@/components/ui/table';
 import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
 import type { Secretaria } from '@/types/Secretaria'; // ajuste para o caminho correto
 import type { Dispatch, SetStateAction } from 'react';
 import secretariasService from '@/services/secretariaService'; // você precisa ter isso
@@ -17,7 +16,6 @@ export function SecretariaListItem({
   setSecretarias,
 }: SecretariaListItemProps) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-  // const navigate = useNavigate();
 
   async function handleDeleteSecretaria() {
     try {
@@ -39,19 +37,16 @@ export function SecretariaListItem({
         <TableCell>{secretaria.sigla}</TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
-            <button
-              aria-label={`Editar ${secretaria.nome}`}
-              // onClick={() => navigate(`/secretarias/editar/${secretaria.id}`)}
-            >
-              <IconEdit size={18} stroke={2} className="text-black-600 mr-2" />
-            </button>
+            {/* <button
+              className="p-1.5 text-black hover:bg-blue-50 rounded transition-colors disabled:opacity-50"
+              onClick={() => setIsEditModalOpen(true)}
+              disabled={isProcessing}
+              title="Editar serviço"
+            > */}
+            <IconEdit size={18} stroke={2} className="text-black-600 mr-2" />
+            {/* </button> */}
 
-            <button
-              aria-label={`Visualizar ${secretaria.nome}`}
-              // onClick={() =>
-              //   navigate(`/secretarias/visualizar/${secretaria.id}`)
-              // }
-            >
+            <button>
               <IconEye size={18} stroke={2} className="text-black-600 mr-2" />
             </button>
 
