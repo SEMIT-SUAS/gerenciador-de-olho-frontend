@@ -30,12 +30,12 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import type { SecretariaModel } from '@/types/Secretaria';
+import type { Secretaria } from '@/types/Secretaria';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
 import type { Persona } from '@/types/Persona';
 
 interface ServicoFormProps {
-  secretarias: SecretariaModel[];
+  secretarias: Secretaria[];
   categorias: ServicoCategoria[];
   personas: Persona[];
   onSubmit: (data: ServicoFormOutput) => void;
