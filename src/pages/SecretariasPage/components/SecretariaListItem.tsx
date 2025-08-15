@@ -43,11 +43,11 @@ export function SecretariaListItem({
               disabled={isProcessing}
               title="Editar serviço"
             > */}
-            <IconEdit size={18} stroke={2} className="text-black-600 mr-2" />
+            <IconEdit size={18} stroke={2} className="text-gray-400 mr-2" />
             {/* </button> */}
 
             <button>
-              <IconEye size={18} stroke={2} className="text-black-600 mr-2" />
+              <IconEye size={18} stroke={2} className="text-gray-500 mr-2" />
             </button>
 
             <button
