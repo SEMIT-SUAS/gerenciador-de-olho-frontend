@@ -1,7 +1,6 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'react-toastify';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import type { Persona } from '@/types/Persona';
