@@ -223,7 +223,6 @@ export function CategoriasPage() {
         </div>
       </div>
 
-      {/* Modal de Criar */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
@@ -236,7 +235,6 @@ export function CategoriasPage() {
         </div>
       )}
 
-      {/* Modal de Editar */}
       {editCategoria && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[60vh] overflow-y-auto">
