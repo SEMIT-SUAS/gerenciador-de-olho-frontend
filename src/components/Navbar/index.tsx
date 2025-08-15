@@ -25,7 +25,7 @@ export function Navbar() {
         className={({ isActive }) =>
           `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-muted ${
             isActive
-              ? 'bg-muted font-semibold text-primary' // Estilo ATIVO
+              ? 'bg-muted text-primary' // Estilo ATIVO
               : 'text-muted-foreground' // Estilo NORMAL
           }`
         }
@@ -114,16 +114,14 @@ export function Navbar() {
               </div>
 
               <div className="flex-1">
-                <nav className="grid items-start gap-1 text-md font-medium text-gray-700">
+                <nav className="grid items-start gap-1 text-md text-gray-700">
                   {modules.map((module) =>
                     !module.childs || module.childs.length === 0 ? (
                       renderMobileLink(module)
                     ) : (
                       <div key={module.title} className="text-gray-700">
                         <div className="flex items-center gap-3 px-3 py-2">
-                          <span className="font-semibold text-md">
-                            {module.title}
-                          </span>
+                          <span className="text-md">{module.title}</span>
                         </div>
                         <div className="ml-5 flex flex-col border-l pl-3">
                           {module.childs.map((child) =>
