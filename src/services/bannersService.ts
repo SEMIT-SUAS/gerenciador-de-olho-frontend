@@ -1,125 +1,139 @@
 import type { BannerModel } from '../types/Banner';
-import { API_BASE_URL } from '../config/api';
 import { getAPIFileURL } from '@/utils/getAPIFileURL';
+import { BaseServiceClass } from './BaseServiceClass';
+import { api } from '@/lib/axios';
 
-async function getAll(): Promise<BannerModel[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/banner/listar-ativos`, {
-      method: 'GET',
-    });
+export class BannerService extends BaseServiceClass {
+  protected readonly serviceUnavailableError = new Error(
+    'Serviço de banners indisponível. Tente novamente em instantes',
+  );
 
-    if (response.status != 200) {
-      throw new Error('Não foi possível listar os banners.');
+  protected readonly notFoundError = new Error('Banner não encontrado.');
+  protected readonly createError = new Error('Não foi possível criar o banner.');
+  protected readonly updateError = new Error('Não foi possível atualizar o banner.');
+  protected readonly visibilityError = new Error('Não foi possível alterar a visibilidade do banner.');
+  protected readonly deleteError = new Error('Não foi possível deletar esse banner.');
+  protected readonly serverError = new Error('Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde');
+
+  public async getAll(): Promise<BannerModel[]> {
+    try {
+      const response = await api.get('/banner/listar-ativos', {
+        responseType: "json"
+      });
+
+      if (response.status === 404) {
+        throw this.notFoundError;
+      }
+
+      if (response.status !== 200) {
+        throw new Error("Ocorreu um erro na busca desse Banner");
+      }
+
+      return JSON.parse(response.data) as BannerModel[];
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw this.serviceUnavailableError;
     }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
   }
-}
 
-async function upload(formData: FormData): Promise<BannerModel> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/banner/cadastrar`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (response.status != 201) {
-      throw new Error('Não foi possível criar o banner.');
-    }
-
-    const newBanner: BannerModel = await response.json();
-    newBanner.imagem = getAPIFileURL(newBanner.imagem);
-
-    return newBanner;
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
-  }
-}
-
-async function toggleVisibility(
-  bannerId: number,
-  visible: boolean,
-): Promise<void> {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/banner/atualizar/visibilidade`,
-      {
-        method: 'PUT',
+  public async upload(formData: FormData): Promise<BannerModel> {
+    try {
+      const response = await api.post('/banner/cadastrar', formData, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "multipart/form-data"
         },
-        body: JSON.stringify({
-          id: bannerId,
-          visivel: visible,
-        }),
-      },
-    );
+        responseType: "json"
+      });
 
-    if (response.status !== 200) {
-      throw new Error('Não foi possível alterar a visibilidade do banner.');
+      if (response.status !== 201) {
+        throw this.createError;
+      }
+
+      const newBanner: BannerModel = JSON.parse(response.data);
+      newBanner.imagem = getAPIFileURL(newBanner.imagem);
+
+      return newBanner;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw this.serverError;
     }
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
   }
-}
 
-async function trash(bannerId: number): Promise<void> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/banner/atualizar/atividade`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+  public async toggleVisibility(bannerId: number, visible: boolean): Promise<void> {
+    try {
+      const body = JSON.stringify({
+        id: bannerId,
+        visivel: visible,
+      })
+
+      const response = await api.put('/banner/atualizar/visibilidade', body, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        responseType: "json"
+      });
+
+      if (response.status !== 200) {
+        throw this.visibilityError;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw this.serverError;
+    }
+  }
+
+  public async trash(bannerId: number): Promise<void> {
+    try {
+      const body = JSON.stringify({
         id: bannerId,
         ativo: false,
-      }),
-    });
+      })
 
-    if (response.status !== 200) {
-      throw new Error('Não foi possível deletar esse banner.');
+      const response = await api.put('/banner/atualizar/atividade', body, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+      });
+
+      if (response.status !== 200) {
+        throw this.deleteError;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw this.serverError;
     }
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
+  }
+
+  public async update(formData: FormData): Promise<BannerModel> {
+    try {
+      const response = await api.put('/banner/atualizar', formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        responseType: "json"
+      });
+
+      if (response.status !== 200) {
+        throw this.updateError;
+      }
+
+      const updatedBanner: BannerModel = JSON.parse(response.data);
+      updatedBanner.imagem = getAPIFileURL(updatedBanner.imagem);
+
+      return updatedBanner;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw this.serverError;
+    }
   }
 }
-
-async function update(formData: FormData): Promise<BannerModel> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/banner/atualizar`, {
-      method: 'PUT',
-      body: formData,
-    });
-
-    if (response.status !== 200) {
-      throw new Error('Não foi possível atualizar o banner.');
-    }
-
-    const data = await response.json();
-    data.imagem = getAPIFileURL(data.imagem);
-
-    return data;
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
-  }
-}
-
-export default {
-  getAll,
-  upload,
-  toggleVisibility,
-  trash,
-  update,
-};

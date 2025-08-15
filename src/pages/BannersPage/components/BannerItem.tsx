@@ -5,7 +5,7 @@ import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { toast } from 'sonner';
-import bannersService from '@/services/bannersService';
+import { BannerService } from '@/services/bannersService';
 import { EditBannerModal } from '@/pages/BannersPage/components/EditBannerModal';
 import { textAliases } from '@/utils/textAliases';
 
@@ -20,7 +20,7 @@ export function BannerItem({ banner, setBanners }: BannerItemProps) {
 
   async function handleDeleteBanner() {
     try {
-      await bannersService.trash(banner.id);
+      await new BannerService().trash(banner.id);
 
       setBanners(
         (prev) =>
