@@ -2,7 +2,7 @@ import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { Loader2 } from 'lucide-react';
-import categoriaService from '@/services/categoriaService';
+import categoriaService from '@/services/CategoriaDenunciaService';
 import { toast } from 'sonner';
 
 type CategoryVisibilityProps = {

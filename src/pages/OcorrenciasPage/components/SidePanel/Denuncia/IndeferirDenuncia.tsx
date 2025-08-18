@@ -7,7 +7,7 @@ import { BackButton } from '../../../../../components/ui/Backbutton';
 import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
 import { toast } from 'sonner';
 import { getDenunciaStatus } from '@/utils/getDenunciaStatus';
-import denunciasService from '@/services/denunciasService';
+import denunciasService from '@/services/DenunciaService';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 

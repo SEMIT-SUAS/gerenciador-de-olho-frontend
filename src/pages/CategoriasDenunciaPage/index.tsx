@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { type CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
-import categoriaService from '@/services/categoriaService';
+import categoriaService from '@/services/CategoriaDenunciaService';
 import { toast } from 'sonner';
 import { LayoutPage } from '../../components/LayoutPage';
 import { SearchInput } from '@/components/ui/input';

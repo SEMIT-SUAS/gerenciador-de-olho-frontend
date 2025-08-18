@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
 import { useState } from 'react';
 import { useOcorrencias } from '../../../../../context/OcorrenciasContext';
-import denunciasService from '../../../../../services/denunciasService';
+import denunciasService from '../../../../../services/DenunciaService';
 import { getPolygonoCenter } from '@/utils/geometry';
 
 type DenunciaManageInActionProps = {

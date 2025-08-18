@@ -4,22 +4,22 @@ import { DashboardPage } from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
-import { DenunciasList } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciasList';
-import { DenunciaDetails } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciaDetails';
-import { AddDenuncia } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/AddDenuncia';
-import { IndeferirDenuncia } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/IndeferirDenuncia';
-import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/VincularDenunciaAAcao';
-import { AcoesList } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcoesList';
-import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcaoDetails';
-import { AddAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/AddAcao';
-import { VincularAcaoADenuncias } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoADenuncias';
+// import { DenunciasList } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciasList';
+// import { DenunciaDetails } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciaDetails';
+// import { AddDenuncia } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/AddDenuncia';
+// import { IndeferirDenuncia } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/IndeferirDenuncia';
+// import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/VincularDenunciaAAcao';
+// import { AcoesList } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcoesList';
+// import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcaoDetails';
+// import { AddAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/AddAcao';
+// import { VincularAcaoADenuncias } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoADenuncias';
 import { ServicoDetalhes } from './pages/ServicosPage/components/ServicoDetalhes';
 import ServicoEditarPage from './pages/ServicosPage/components/ServicoEditar';
 import ServicoNovo from './pages/ServicosPage/components/ServicoNovo';
 import { ServicesPage } from './pages/ServicosPage';
 import { NotFoundPage } from './pages/404';
-import { IndeferirAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/IndefirirAcao';
-import { ConcluirAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/ConcluirAcao';
+// import { IndeferirAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/IndefirirAcao';
+// import { ConcluirAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/ConcluirAcao';
 import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
 import { CategoriasPage } from './pages/CategoriaServicoPage';
@@ -46,7 +46,7 @@ export function App() {
             </OcorrenciasProvider>
           }
         >
-          <Route index element={<Navigate to="denuncias" replace />} />
+          {/* <Route index element={<Navigate to="denuncias" replace />} />
           <Route path="denuncias">
             <Route index element={<DenunciasList />} />
             <Route path=":denunciaId" element={<DenunciaDetails />} />
@@ -59,9 +59,9 @@ export function App() {
               path=":denunciaId/vincular-acao"
               element={<VincularDenunciaAAcao />}
             />
-          </Route>
+          </Route> */}
 
-          <Route path="acoes">
+          {/* <Route path="acoes">
             <Route index element={<AcoesList />} />
             <Route path=":acaoId" element={<AcaoDetails />} />
             <Route path="add" element={<AddAcao />} />
@@ -71,7 +71,7 @@ export function App() {
               element={<VincularAcaoADenuncias />}
             />
             <Route path=":acaoId/concluir" element={<ConcluirAcao />} />
-          </Route>
+          </Route> */}
         </Route>
 
         <Route path="/servicos">

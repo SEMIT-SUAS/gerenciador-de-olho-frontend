@@ -11,7 +11,7 @@ import { useFilters } from '@/context/FiltersContext';
 import type { CreateDenunciaModel } from '@/types/Denuncia';
 import { useNavigate } from 'react-router-dom';
 import { useAddDenunciaFormHook } from './addDenunciaFormHook';
-import denunciaService from '@/services/denunciasService';
+import denunciaService from '@/services/DenunciaService';
 import {
   Select,
   SelectContent,

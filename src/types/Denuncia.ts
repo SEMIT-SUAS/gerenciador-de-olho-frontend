@@ -16,7 +16,7 @@ export interface CreateDenunciaModel {
   latitude: number;
 }
 
-export type DenunciaStatusModelTypes = 'aberto' | AcaoStatusModelTypes;
+export type DenunciaStatusModelTypes = 'Aberto' | AcaoStatusModelTypes;
 
 export interface DenunciaModel {
   id: number;

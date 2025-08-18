@@ -21,7 +21,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import categoriaService from '@/services/categoriaService';
+import categoriaService from '@/services/CategoriaDenunciaService';
 
 interface EditCategoriaFormProps {
   onSuccess: () => void;

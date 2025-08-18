@@ -19,7 +19,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { SelectLocationInMap } from '../../../../components/SelectLocationInMap';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import denunciasService from '@/services/denunciasService';
+import denunciasService from '@/services/DenunciaService';
 import espacoPublicoService from '@/services/espacoPublicoService';
 
 interface AddEspacoPublicoFormProps {

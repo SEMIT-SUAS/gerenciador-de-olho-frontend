@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { SelectLocationInMap } from '../../../../components/SelectLocationInMap';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import denunciasService from '@/services/denunciasService';
+import denunciasService from '@/services/DenunciaService';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
 import {
   EditEspacoPublicoFormSchema,
