@@ -107,15 +107,15 @@ export function PortaisPage() {
 
   return (
     <LayoutPage>
-      <div className="flex flex-col gap-6 py-8 px-36">
+      <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
         <div className="max-w-[640px]">
           <h2 className="text-3xl font-bold tracking-tight">Portais</h2>
-          <p className="text-slate-600 text-xs mt-1">
+          <p className="text-slate-600 text-xs sm:text-xs mt-1">
             Gerencie os portais de serviços disponíveis na plataforma.
           </p>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="w-[320px]">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
+          <div className="w-full sm:w-[280px] md:w-[320px]">
             <SearchInput
               placeholder="Pesquise por nome do portal"
               value={searchTerm}
@@ -123,8 +123,11 @@ export function PortaisPage() {
             />
           </div>
           <div>
-            <Button onClick={() => setIsFormOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
+            <Button
+              className="w-full sm:w-auto"
+              onClick={() => setIsFormOpen(true)}
+            >
+              <Plus className="h-4 w-4" />
               Adicionar Portal
             </Button>
           </div>

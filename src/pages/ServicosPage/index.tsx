@@ -70,9 +70,9 @@ export function ServicesPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <p className="text-red-600">Erro: {error}</p>
+      <div className="flex items-center justify-center min-h-[200px] md:min-h-[400px]">
+        <div className="text-center px-4">
+          <p className="text-red-600 text-sm md:text-base">Erro: {error}</p>
           <Button onClick={fetchServices} variant="outline" className="mt-4">
             Tentar novamente
           </Button>
@@ -83,8 +83,10 @@ export function ServicesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-600">Carregando serviços...</p>
+      <div className="flex items-center justify-center min-h-[200px] md:min-h-[400px]">
+        <p className="text-gray-600 text-sm md:text-base px-4 text-center">
+          Carregando serviços...
+        </p>
       </div>
     );
   }
@@ -110,35 +112,47 @@ export function ServicesPage() {
 
   return (
     <LayoutPage>
-      <div className="flex flex-col gap-6 py-8 px-36">
-        <div className="max-w-[640px]">
-          <h2 className="text-3xl font-bold tracking-tight">
+      <div className="flex flex-col gap-6 py-4 px-4 md:py-6 md:px-8 lg:py-8 lg:px-36">
+        {/* Header Section - Responsivo */}
+        <div className="w-full max-w-full lg:max-w-[640px]">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
             {activeTab === 'servicos'
               ? 'Carta de Serviços'
               : 'Serviços Externos'}
           </h2>
-          <p className="text-slate-600 text-xs mt-1">
+          <p className="text-slate-600 text-xs md:text-sm mt-1">
             Gerencie os serviços disponíveis com clareza e objetividade.
           </p>
         </div>
 
-        <div className="flex items-center justify-between">
-          <Tabs
-            defaultValue="servicos"
-            value={activeTab}
-            onValueChange={(value) => {
-              setActiveTab(value);
-            }}
-            className="w-[400px]"
-          >
-            <TabsList>
-              <TabsTrigger value="servicos">Serviços</TabsTrigger>
-              <TabsTrigger value="externos">Serviços Externos</TabsTrigger>
-            </TabsList>
-          </Tabs>
+        {/* Controls Section - Layout Responsivo */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          {/* Tabs - Largura responsiva */}
+          <div className="w-full md:w-auto">
+            <Tabs
+              defaultValue="servicos"
+              value={activeTab}
+              onValueChange={(value) => {
+                setActiveTab(value);
+                setCurrentPage(1);
+              }}
+              className="w-full md:w-[400px]"
+            >
+              <TabsList className="w-full md:w-auto">
+                <TabsTrigger value="servicos" className="flex-1 md:flex-none">
+                  Serviços
+                </TabsTrigger>
+                <TabsTrigger value="externos" className="flex-1 md:flex-none">
+                  Serviços Externos
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
 
-          <div className="flex gap-2">
-            <div className="w-[320px]">
+          {/* Search and Actions - Layout responsivo */}
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            {/* Search Input - Largura responsiva */}
+            <div className="w-full sm:w-[280px] md:w-[320px]">
               <SearchInput
                 placeholder="Pesquise por nome"
                 value={searchTerm}
@@ -146,44 +160,58 @@ export function ServicesPage() {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
+                className="w-full"
               />
             </div>
 
+            {/* Add Button */}
             {activeTab === 'servicos' ? (
-              <Button asChild>
+              <Button asChild className="w-full sm:w-auto">
                 <Link to={'/servicos/novo'}>
-                  <span className="flex items-center">
+                  <span className="flex items-center justify-center">
                     <Plus className="mr-2 h-4 w-4" />
-                    Adicionar serviço
+                    <span className="hidden sm:inline">Adicionar serviço</span>
+                    <span className="sm:hidden">Adicionar</span>
                   </span>
                 </Link>
               </Button>
             ) : (
-              <Button onClick={() => setIsCreateModalOpen(true)} asChild>
-                <span className="flex items-center">
-                  <Plus className="h-4 w-4" />
-                  Adicionar serviço
+              <Button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="w-full sm:w-auto"
+              >
+                <span className="flex items-center justify-center">
+                  <Plus className="mr-2 h-4 w-4" />
+                  <span className="hidden sm:inline">Adicionar serviço</span>
+                  <span className="sm:hidden">Adicionar</span>
                 </span>
               </Button>
             )}
           </div>
         </div>
 
-        {activeTab === 'servicos' ? (
-          <ServicesList
-            setServicos={setCartaDeServicos}
-            servicos={currentDataCartaDeServicos}
-          />
-        ) : (
-          <ServicosExternosList
-            setServicos={setServicosExternos}
-            servicos={currentDataServicosExternos}
-          />
-        )}
+        {/* Services List - Grid responsivo será aplicado dentro dos componentes */}
+        <div className="w-full">
+          {activeTab === 'servicos' ? (
+            <ServicesList
+              setServicos={setCartaDeServicos}
+              servicos={currentDataCartaDeServicos}
+            />
+          ) : (
+            <ServicosExternosList
+              setServicos={setServicosExternos}
+              servicos={currentDataServicosExternos}
+            />
+          )}
+        </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Linhas por página:</span>
+        {/* Pagination Section - Layout responsivo */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Items per page - Centralizado no mobile */}
+          <div className="flex items-center gap-2 justify-center sm:justify-start">
+            <span className="text-sm text-gray-600 whitespace-nowrap">
+              Linhas por página:
+            </span>
 
             <Select
               value={itemsPerPage.toString()}
@@ -205,19 +233,23 @@ export function ServicesPage() {
             </Select>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">
+          {/* Pagination controls - Layout responsivo */}
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+            {/* Page info */}
+            <span className="text-sm text-gray-600 text-center sm:text-left whitespace-nowrap">
               Página {currentPage} de {totalPages}
             </span>
 
-            <div className="flex gap-2">
+            {/* Navigation buttons */}
+            <div className="flex gap-1 justify-center">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setCurrentPage(1)}
                 disabled={currentPage === 1}
+                className="p-2"
               >
-                <IconChevronsLeft stroke={2} />
+                <IconChevronsLeft stroke={2} className="h-4 w-4" />
               </Button>
 
               <Button
@@ -225,8 +257,9 @@ export function ServicesPage() {
                 size="sm"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
+                className="p-2"
               >
-                <IconChevronLeft stroke={2} />
+                <IconChevronLeft stroke={2} className="h-4 w-4" />
               </Button>
 
               <Button
@@ -236,8 +269,9 @@ export function ServicesPage() {
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
                 disabled={currentPage === totalPages || totalPages === 0}
+                className="p-2"
               >
-                <IconChevronRight />
+                <IconChevronRight className="h-4 w-4" />
               </Button>
 
               <Button
@@ -245,20 +279,23 @@ export function ServicesPage() {
                 size="sm"
                 onClick={() => setCurrentPage(totalPages)}
                 disabled={currentPage === totalPages || totalPages === 0}
+                className="p-2"
               >
-                <IconChevronsRight stroke={2} />
+                <IconChevronsRight stroke={2} className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Modal - Responsivo */}
       {isCreateModalOpen && (
         <FormServicoExterno
           mode="create"
           onClose={() => setIsCreateModalOpen(false)}
           onSuccess={async () => {
             setIsCreateModalOpen(false);
+            await fetchServices();
           }}
         />
       )}
