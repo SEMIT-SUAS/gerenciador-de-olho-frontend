@@ -36,7 +36,7 @@ export function Navbar() {
   );
 
   return (
-    <nav className="relative w-full border-b border-gray-200 bg-white px-4 py-4 md:px-20">
+    <nav className="relative w-full border-b border-gray-200 bg-white px-3 py-3 sm:px-4 sm:py-4 md:px-8 lg:px-12 xl:px-20">
       <div className="mx-auto flex w-full items-center justify-between">
         <Link to="/" className="flex items-center">
           <img src="/saoluis-prefeitura.png" alt="Logo SLZ" className="h-12" />
@@ -108,7 +108,7 @@ export function Navbar() {
                   <img
                     src="/saoluis-prefeitura.png"
                     alt="Logo SLZ"
-                    className="h-10"
+                    className="h-8 sm:h-10"
                   />
                 </NavLink>
               </div>
