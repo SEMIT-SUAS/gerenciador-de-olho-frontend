@@ -1,4 +1,3 @@
-// components/ModalCadastroBanner.tsx
 import React from "react";
 
 interface ModalCadastroBannerProps {

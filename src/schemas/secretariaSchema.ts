@@ -1,4 +1,3 @@
-// schemas/secretariaSchema.ts
 import { z } from "zod";
 
 export const secretariaSchema = z.object({

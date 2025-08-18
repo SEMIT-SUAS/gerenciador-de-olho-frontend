@@ -1,4 +1,3 @@
-// schemas/categoriaSchema.ts
 import { z } from 'zod';
 
 export const categoriaServicoSchema = z.object({

@@ -1,4 +1,3 @@
-// BannerGrid.tsx
 import type { Banner } from "../../../types/Banners";
 import { BannerCard } from "./BannerCard";
 

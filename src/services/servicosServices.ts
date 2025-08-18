@@ -28,6 +28,7 @@ export async function createService(servico: Services): Promise<Services> {
         if (!response.ok){
             throw new Error('Não foi possível salvar serviço')
         }
+
         return await response.json()
     } catch (error){
         throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente')
@@ -45,6 +46,7 @@ export async function updateServico(servico: Services): Promise<Services> {
         if (!response.ok) {
             throw new Error('Não foi possível atualizar serviço')
         }
+
         return await response.json()
     } catch (error){
         throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente')
@@ -60,6 +62,7 @@ export async function getVisibleServicos(): Promise<Services[]> {
         if (!response.ok) {
             throw new Error('Não foi possível buscar serviços visiveis')
         }
+
         return await response.json()
     } catch (error) {
         throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde')
@@ -75,6 +78,7 @@ export async function getServicoById(id: number): Promise<Services> {
         if (!response.ok){
             throw new Error('Não foi possível buscar serviço')
         }
+        
         return await response.json()
     } catch (error){
         throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente')

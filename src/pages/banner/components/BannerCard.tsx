@@ -1,4 +1,3 @@
-// BannerCard.tsx
 import type { Banner } from "../../../types/Banners";
 import { changeBannerVisibility } from "../../../services/bannersService";
 import { toast } from "react-toastify";
