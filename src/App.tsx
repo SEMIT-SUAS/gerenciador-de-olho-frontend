@@ -30,76 +30,80 @@ import { PortaisPage } from './pages/PortaisPage';
 import { DenunciaCategoriasPage } from './pages/CategoriasDenunciaPage';
 import { SecretariaPage } from './pages/SecretariasPage';
 import { PersonasPage } from './pages/Personas';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<DashboardPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route index path="/login" element={<LoginPage />} />
 
-        <Route
-          path="/ocorrencias"
-          element={
-            <OcorrenciasProvider>
-              <OcorrenciasPage />
-            </OcorrenciasProvider>
-          }
-        >
-          <Route index element={<Navigate to="denuncias" replace />} />
-          <Route path="denuncias">
-            <Route index element={<DenunciasList />} />
-            <Route path=":denunciaId" element={<DenunciaDetails />} />
-            <Route path="add" element={<AddDenuncia />} />
-            <Route
-              path=":denunciaId/indeferir"
-              element={<IndeferirDenuncia />}
-            />
-            <Route
-              path=":denunciaId/vincular-acao"
-              element={<VincularDenunciaAAcao />}
-            />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+
+          <Route
+            path="/ocorrencias"
+            element={
+              <OcorrenciasProvider>
+                <OcorrenciasPage />
+              </OcorrenciasProvider>
+            }
+          >
+            <Route index element={<Navigate to="denuncias" replace />} />
+            <Route path="denuncias">
+              <Route index element={<DenunciasList />} />
+              <Route path=":denunciaId" element={<DenunciaDetails />} />
+              <Route path="add" element={<AddDenuncia />} />
+              <Route
+                path=":denunciaId/indeferir"
+                element={<IndeferirDenuncia />}
+              />
+              <Route
+                path=":denunciaId/vincular-acao"
+                element={<VincularDenunciaAAcao />}
+              />
+            </Route>
+
+            <Route path="acoes">
+              <Route index element={<AcoesList />} />
+              <Route path=":acaoId" element={<AcaoDetails />} />
+              <Route path="add" element={<AddAcao />} />
+              <Route path=":acaoId/indeferir" element={<IndeferirAcao />} />
+              <Route
+                path=":acaoId/vincular-denuncias"
+                element={<VincularAcaoADenuncias />}
+              />
+              <Route path=":acaoId/concluir" element={<ConcluirAcao />} />
+            </Route>
           </Route>
 
-          <Route path="acoes">
-            <Route index element={<AcoesList />} />
-            <Route path=":acaoId" element={<AcaoDetails />} />
-            <Route path="add" element={<AddAcao />} />
-            <Route path=":acaoId/indeferir" element={<IndeferirAcao />} />
-            <Route
-              path=":acaoId/vincular-denuncias"
-              element={<VincularAcaoADenuncias />}
-            />
-            <Route path=":acaoId/concluir" element={<ConcluirAcao />} />
+          <Route path="/servicos">
+            <Route index element={<ServicesPage />} />
+            <Route path="categorias" element={<CategoriasPage />} />
+            <Route path="secretarias" element={<SecretariaPage />} />
+            <Route path="novo" element={<ServicoNovo />} />
+            <Route path=":id" element={<ServicoDetalhes />} />
+            <Route path="editar/:id" element={<ServicoEditarPage />} />
           </Route>
+
+          <Route path="/portais" element={<PortaisPage />} />
+          <Route path="/banners" element={<BannersPage />} />
+
+          <Route path="/espacos-publicos">
+            <Route index element={<EspacosPublicosPage />} />
+            <Route path="add" element={<AddEspacoPublicoPage />} />
+            <Route path="edit/:id" element={<EditEspacoPublicoPage />} />
+          </Route>
+
+          <Route
+            path="/categorias-denuncia"
+            element={<DenunciaCategoriasPage />}
+          />
+
+          <Route path="/personas" element={<PersonasPage />} />
+
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
-
-        <Route path="/servicos">
-          <Route index element={<ServicesPage />} />
-          <Route path="categorias" element={<CategoriasPage />} />
-          <Route path="secretarias" element={<SecretariaPage />} />
-          <Route path="novo" element={<ServicoNovo />} />
-          <Route path=":id" element={<ServicoDetalhes />} />
-          <Route path="editar/:id" element={<ServicoEditarPage />} />
-        </Route>
-
-        <Route path="/portais" element={<PortaisPage />} />
-        <Route path="/banners" element={<BannersPage />} />
-
-        <Route path="/espacos-publicos">
-          <Route index element={<EspacosPublicosPage />} />
-          <Route path="add" element={<AddEspacoPublicoPage />} />
-          <Route path="edit/:id" element={<EditEspacoPublicoPage />} />
-        </Route>
-
-        <Route
-          path="/categorias-denuncia"
-          element={<DenunciaCategoriasPage />}
-        />
-
-        <Route path="/personas" element={<PersonasPage />} />
-
-        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
       <ToastContainer />

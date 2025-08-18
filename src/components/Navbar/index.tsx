@@ -15,8 +15,15 @@ import {
 import { Button } from '../ui/button';
 import { Separator } from '@radix-ui/react-select';
 import type { Module } from './types';
+import { useAuth } from '@/context/AuthContext';
 
 export function Navbar() {
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
+
   const renderMobileLink = (module: Module) => (
     <SheetClose asChild key={module.title}>
       <NavLink
@@ -88,7 +95,8 @@ export function Navbar() {
             ))}
           </ul>
           <Link
-            to="/sair"
+            to="/login"
+            onClick={handleLogout}
             className="ml-3 inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-50"
           >
             <span>Sair</span>
@@ -104,7 +112,7 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="right" className="flex flex-col p-4">
               <div className="mb-4 border-b pb-4">
-                <NavLink to="/" className="flex items-center gap-3">
+                <NavLink to="/dashboard" className="flex items-center gap-3">
                   <img
                     src="/saoluis-prefeitura.png"
                     alt="Logo SLZ"
@@ -138,7 +146,8 @@ export function Navbar() {
                 <Separator className="my-4" />
                 <SheetClose asChild>
                   <NavLink
-                    to="/sair"
+                    to="/login"
+                    onClick={handleLogout}
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-muted"
                   >
                     <IconLogout className="h-5 w-5" />

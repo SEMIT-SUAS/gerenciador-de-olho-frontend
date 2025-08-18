@@ -1,5 +1,5 @@
 import type { PerfilModel } from './Perfil';
-import type { SecretariaModel } from './Secretaria';
+import type { Secretaria } from './Secretaria';
 
 export interface UsuarioModel {
   id: number;
@@ -8,8 +8,15 @@ export interface UsuarioModel {
   telefone: string;
   email: string;
   senha: string;
-  secretaria: SecretariaModel;
+  secretaria: Secretaria;
   perfil: PerfilModel;
   criadoEm: string;
   criadoPor?: UsuarioModel | null;
+}
+
+export interface UsuarioLogin {
+  id: number;
+  nome: string;
+  idSecretaria: number;
+  perfil: string;
 }
