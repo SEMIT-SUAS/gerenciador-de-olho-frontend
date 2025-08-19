@@ -15,15 +15,10 @@ import { UsuariosListItem } from './UsuarioListItem';
 
 interface UsuariosListProps {
   usuarios: UsuarioLogin[];
-  secretarias: Secretaria[];
   setUsuarios: Dispatch<SetStateAction<UsuarioLogin[]>>;
 }
 
-export function UsuariosList({
-  usuarios,
-  secretarias,
-  setUsuarios,
-}: UsuariosListProps) {
+export function UsuariosList({ usuarios, setUsuarios }: UsuariosListProps) {
   return (
     <div className="rounded-md border">
       <Table>
@@ -41,7 +36,6 @@ export function UsuariosList({
               <UsuariosListItem
                 key={usuario.id}
                 usuario={usuario}
-                secretarias={secretarias}
                 setUsuarios={setUsuarios}
               />
             ))

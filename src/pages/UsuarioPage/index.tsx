@@ -25,7 +25,7 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
 } from '@tabler/icons-react';
-import { RegisterForm } from './components/RegistrarForm';
+import { AddUsuarioModal } from './components/AddUsuarioModal';
 
 export function UsuariosPage() {
   const [usuarios, setUsuarios] = useState<UsuarioLogin[]>([]);
@@ -43,7 +43,6 @@ export function UsuariosPage() {
     try {
       setLoading(true);
 
-      // Buscar usuários e secretarias em paralelo
       const [usuariosData, secretariasData] = await Promise.all([
         usuarioService.getAllUsuarios(),
         getAllSecretarias(),
@@ -149,11 +148,7 @@ export function UsuariosPage() {
           </div>
         </div>
 
-        <UsuariosList
-          usuarios={currentData}
-          setUsuarios={setUsuarios}
-          secretarias={secretarias}
-        />
+        <UsuariosList usuarios={currentData} setUsuarios={setUsuarios} />
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -216,14 +211,11 @@ export function UsuariosPage() {
         </div>
       </div>
 
-      <RegisterForm
+      <AddUsuarioModal
+        onOpenChange={() => setIsFormOpen(!isFormOpen)}
         open={isFormOpen}
-        onOpenChange={(isFormOpen) => {
-          if (!isFormOpen) {
-            setIsFormOpen(false);
-          }
-        }}
         setUsuarios={setUsuarios}
+        secretarias={secretarias}
       />
     </LayoutPage>
   );

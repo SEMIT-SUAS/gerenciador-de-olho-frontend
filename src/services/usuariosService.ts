@@ -137,14 +137,14 @@ const getAllUsuarios = async (): Promise<UsuarioLogin[]> => {
 //nome gerenciador igual da api
 const cadastrarGerenciador = async (
   dados: DadosCadastroGerenciador,
-): Promise<UsuarioLogin> => {
+): Promise<UsuarioModel> => {
   const token = getAuthToken();
   if (!token) {
     throw new Error('Usuário não autenticado.');
   }
 
   try {
-    const response = await api.post<UsuarioLogin>(
+    const response = await api.post<UsuarioModel>(
       '/gerenciador/cadastrar',
       dados,
     );

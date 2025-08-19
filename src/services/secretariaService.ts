@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '../config/api';
+import { api, API_BASE_URL } from '../config/api';
 import type { createSecretaria, Secretaria } from '../types/Secretaria'; // Ajuste o caminho conforme necessário
 
 export async function getAllSecretarias(): Promise<Secretaria[]> {
@@ -17,22 +17,14 @@ export async function getAllSecretarias(): Promise<Secretaria[]> {
   }
 }
 
-//funções sem fetch
 export async function getSecretariaById(id: number): Promise<Secretaria> {
-  alert(`id da secretaria: ${id}`);
-
   try {
-    // Simulando resposta de teste:
-    const response: Secretaria = {
-      id,
-      nome: 'Secretaria Teste',
-      sigla: 'TEST',
-      ativo: true,
-      visivel: true,
-    };
+    const response = await api.get<Secretaria>(`secretaria/buscar/${id}`);
 
-    return response;
+    return response.data;
   } catch (error) {
+    console.error('Erro detalhado ao buscar secretaria:', error);
+
     throw new Error('Erro ao buscar secretaria. Tente novamente mais tarde.');
   }
 }

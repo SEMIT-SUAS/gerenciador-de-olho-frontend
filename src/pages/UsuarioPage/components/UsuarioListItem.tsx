@@ -1,6 +1,6 @@
 // src/pages/UsuariosPage/components/UsuariosListItem.tsx
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import type { UsuarioLogin } from '@/types/Usuario';
 import type { Secretaria } from '@/types/Secretaria';
@@ -12,28 +12,51 @@ import { IconEdit, IconTrash, IconUser } from '@tabler/icons-react';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 // import { EditUsuarioModal } from './EditUsuarioModal';
 import { Badge } from '@/components/ui/badge';
+import secretariaService from '@/services/secretariaService';
+import { EditUsuarioModal } from './EditUsuarioModal';
 
 interface UsuariosListItemProps {
   usuario: UsuarioLogin;
-  secretarias: Secretaria[];
   setUsuarios: Dispatch<SetStateAction<UsuarioLogin[]>>;
 }
 
 export function UsuariosListItem({
   usuario,
-  secretarias,
   setUsuarios,
 }: UsuariosListItemProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [secretaria, setSecretaria] = useState<Secretaria | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Buscar a secretaria pelo ID
-  const secretaria = secretarias.find((s) => s.id === usuario.idSecretaria);
+  useEffect(() => {
+    const fetchSecretaria = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  // Implementar quando tiver os métodos no service
+        const data = await secretariaService.getSecretariaById(
+          usuario.idSecretaria,
+        );
+
+        setSecretaria(data);
+      } catch (err) {
+        setError('Falha ao carregar a secretaria.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (usuario.idSecretaria) {
+      fetchSecretaria();
+    } else {
+      setLoading(false);
+    }
+  }, [usuario.idSecretaria]);
+
   async function handleDelete() {
     try {
-      // await usuarioService.excluirUsuario(usuario.id!);
       setUsuarios((prev) => prev.filter((u) => u.id !== usuario.id));
       toast.success('Usuário excluído com sucesso!');
     } catch (error) {
@@ -80,7 +103,6 @@ export function UsuariosListItem({
         </TableCell>
       </TableRow>
 
-      {/* Modal de confirmação para excluir */}
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         onConfirm={handleDelete}
@@ -89,7 +111,6 @@ export function UsuariosListItem({
         message={`Tem certeza que deseja excluir o usuário "${usuario.nome}"? Esta ação não pode ser desfeita.`}
       />
 
-      {/* Modal de edição - descomente quando implementar
       <EditUsuarioModal
         open={isEditModalOpen}
         onOpenChange={(isOpen) => {
@@ -100,7 +121,6 @@ export function UsuariosListItem({
         setUsuarios={setUsuarios}
         usuario={usuario}
       />
-      */}
     </>
   );
 }
