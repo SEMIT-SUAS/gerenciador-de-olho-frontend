@@ -30,6 +30,7 @@ import { PortaisPage } from './pages/PortaisPage';
 import { DenunciaCategoriasPage } from './pages/CategoriasDenunciaPage';
 import { SecretariaPage } from './pages/SecretariasPage';
 import { PersonasPage } from './pages/Personas';
+import { UsuariosPage } from './pages/UsuarioPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export function App() {
@@ -101,6 +102,7 @@ export function App() {
           />
 
           <Route path="/personas" element={<PersonasPage />} />
+          <Route path="/usuarios" element={<UsuariosPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Route>
