@@ -5,7 +5,7 @@ import {
   useEffect,
   type ReactNode,
 } from 'react';
-import usuarioService from '@/services/usuariosServices';
+import usuarioService from '@/services/usuariosService';
 import type { LoginFormValues } from '@/pages/LoginPage/components/loginSchema';
 import { type UsuarioLogin } from '@/types/Usuario';
 

@@ -1,4 +1,4 @@
-import type { UsuarioLogin } from '@/types/Usuario';
+import type { UsuarioLogin, UsuarioModel } from '@/types/Usuario';
 import { api } from '../config/api';
 import { type LoginFormValues } from '@/pages/LoginPage/components/loginSchema';
 import { AxiosError } from 'axios';
@@ -78,6 +78,15 @@ const logout = () => {
 
 const getAuthToken = (): string | null => {
   return localStorage.getItem('authToken');
+};
+
+const getAllUsuarios = async (): Promise<UsuarioModel> => {
+  const token = getAuthToken();
+  if (token) {
+    try {
+      const response = await api.get<UsuarioModel>('/gerenciador/listar-todas');
+    } catch (error) {}
+  }
 };
 
 const usuarioService = {
