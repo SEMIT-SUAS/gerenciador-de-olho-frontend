@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { DashboardPage } from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
@@ -30,6 +30,7 @@ import { PortaisPage } from './pages/PortaisPage';
 import { DenunciaCategoriasPage } from './pages/CategoriasDenunciaPage';
 import { SecretariaPage } from './pages/SecretariasPage';
 import { PersonasPage } from './pages/PersonasPage';
+import { DenunciaDetails } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciaDetails';
 
 export function App() {
   return (
@@ -46,11 +47,10 @@ export function App() {
             </OcorrenciasProvider>
           }
         >
-          {/* <Route index element={<Navigate to="denuncias" replace />} />
           <Route path="denuncias">
-            <Route index element={<DenunciasList />} />
-            <Route path=":denunciaId" element={<DenunciaDetails />} />
-            <Route path="add" element={<AddDenuncia />} />
+            {/* <Route index element={<DenunciasList />} /> */}
+            <Route path=":id" element={<DenunciaDetails />} />
+            {/* <Route path="add" element={<AddDenuncia />} />
             <Route
               path=":denunciaId/indeferir"
               element={<IndeferirDenuncia />}
@@ -58,8 +58,8 @@ export function App() {
             <Route
               path=":denunciaId/vincular-acao"
               element={<VincularDenunciaAAcao />}
-            />
-          </Route> */}
+            /> */}
+          </Route>
 
           {/* <Route path="acoes">
             <Route index element={<AcoesList />} />

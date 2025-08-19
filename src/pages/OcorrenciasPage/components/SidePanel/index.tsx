@@ -1,49 +1,57 @@
-import { type ReactNode } from 'react';
-import { useFilters } from '../../../../context/FiltersContext';
-import { useLocation } from 'react-router-dom';
-import { TabButtons } from './TabButtons';
-import { useOcorrencias } from '../../../../context/OcorrenciasContext';
-import { AddButton } from '../../../../components/ui/AddButton';
+import { type ReactNode, useState } from 'react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 interface SidePanelProps {
   children: ReactNode;
 }
 
 export function SidePanel({ children }: SidePanelProps) {
-  const { denunciasFiltradas, acoesFiltradas } = useFilters();
-  const { loading } = useOcorrencias();
-  const location = useLocation();
-
-  const showTabs = ['/ocorrencias/denuncias', '/ocorrencias/acoes'].includes(
-    location.pathname,
-  );
+  const [isMinimized, setIsMinimized] = useState(false);
 
   return (
-    <aside className="w-full md:w-[450px] shadow-lg flex flex-col flex-shrink-0 overflow-hidden">
-      <div className="flex items-center justify-between p-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            Painel de Ocorrências
-          </h1>
-
-          <span className="text-blue-500 text-md font-bold">
-            De olho na cidade
-          </span>
-        </div>
-
-        {!loading && <AddButton />}
-      </div>
-
-      {!loading && showTabs && (
-        <TabButtons
-          acoesAmount={acoesFiltradas.length}
-          denunciasAmount={denunciasFiltradas.length}
-        />
+    <Card
+      className={cn(
+        'absolute left-0 top-0 z-30 h-full bg-white shadow-xl border-l border-gray-200 transition-all duration-300 rounded-l-none',
+        isMinimized ? 'w-[18px]' : 'w-[400px]',
       )}
+    >
+      <Button
+        variant="secondary"
+        size="icon"
+        className="absolute -right-4 top-[50%] z-40 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-50 w-8 h-8"
+        onClick={() => setIsMinimized(!isMinimized)}
+      >
+        {isMinimized ? (
+          <IconChevronRight size={22} color="#000" />
+        ) : (
+          <IconChevronLeft size={22} color="#000" />
+        )}
+      </Button>
 
-      <div className="overflow-y-auto custom-scrollbar-blue">
-        <div className="p-4">{children}</div>
+      <div
+        className={cn(
+          'h-full transition-opacity duration-300',
+          isMinimized ? 'opacity-0 pointer-events-none' : 'opacity-100',
+        )}
+      >
+        <CardHeader className="border-b">
+          <h1 className="text-lg font-semibold">Gerenciador DONC</h1>
+        </CardHeader>
+
+        <CardContent className={cn('p-4 overflow-y-auto h-[calc(100%-80px)]')}>
+          {children}
+        </CardContent>
       </div>
-    </aside>
+
+      <div
+        className={cn(
+          'absolute inset-0 h-full flex items-center justify-center transition-opacity duration-300',
+          isMinimized ? 'opacity-100' : 'opacity-0 pointer-events-none',
+        )}
+      />
+    </Card>
   );
 }

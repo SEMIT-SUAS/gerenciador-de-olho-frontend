@@ -10,8 +10,16 @@ import { FilterDenunciaStatusSelect } from './FilterDenunciaStatusSelect';
 
 import AcaoIcon from '/public/icons/acao.png';
 import DenunciaIcon from '/public/icons/denuncia.png';
+import { IconX } from '@tabler/icons-react';
+import { useMapActions } from '@/context/MapActions';
 
 export function MapFilters() {
+  const { currentBairroId } = useMapActions();
+
+  if (!currentBairroId) {
+    return null;
+  }
+
   return (
     <>
       <div className="absolute z-20 top-9 left-12">
@@ -22,6 +30,13 @@ export function MapFilters() {
             <FilterDenunciaByCategoriaSelect />
             <FilterDenunciaByCategoriaTipoSelect />
             <FilterDenunciaStatusSelect />
+          </div>
+
+          <div className="flex gap-3">
+            <Button>Filtrar</Button>
+            <Button variant="outline" className="text-gray-600">
+              <IconX /> Limpar Filtros
+            </Button>
           </div>
         </div>
       </div>
@@ -48,12 +63,14 @@ export function MapFilters() {
           <CardContent
             className={`flex items-center justify-between ${cn('px-3')}`}
           >
-            <img
-              src={DenunciaIcon}
-              alt="Icone de denúncia"
-              className="h-6 w-6"
-            />
-            <Switch />
+            <label htmlFor="denuncia-switch">
+              <img
+                src={DenunciaIcon}
+                alt="Icone de denúncia"
+                className="h-6 w-6"
+              />
+            </label>
+            <Switch id="denuncia-switch" />
           </CardContent>
         </Card>
 
@@ -61,8 +78,10 @@ export function MapFilters() {
           <CardContent
             className={`flex items-center justify-between ${cn('px-3')}`}
           >
-            <img src={AcaoIcon} alt="Icone de ação" className="h-6 w-6" />
-            <Switch />
+            <label htmlFor="acao-switch">
+              <img src={AcaoIcon} alt="Icone de ação" className="h-6 w-6" />
+            </label>
+            <Switch id="acao-switch" />
           </CardContent>
         </Card>
       </div>

@@ -93,7 +93,9 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     number[] | 'desabilitado'
   >('desabilitado');
 
-  const { denuncias, acoes } = useOcorrencias();
+  // const {} = useOcorrencias();
+  const denuncias = [];
+  const acoes = [];
 
   const cacheCurrentFilters = useCallback(() => {
     setCacheFilters({

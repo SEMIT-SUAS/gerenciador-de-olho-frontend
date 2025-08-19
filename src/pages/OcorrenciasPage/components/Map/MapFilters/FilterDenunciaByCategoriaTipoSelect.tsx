@@ -17,8 +17,6 @@ export function FilterDenunciaByCategoriaTipoSelect() {
       </SelectTrigger>
 
       <SelectContent>
-        <SelectItem value="disabled">Tipo de denúncia</SelectItem>
-
         {categoriaTipos.map((tipo) => (
           <SelectItem key={tipo.id} value={tipo.nome}>
             {tipo.nome}

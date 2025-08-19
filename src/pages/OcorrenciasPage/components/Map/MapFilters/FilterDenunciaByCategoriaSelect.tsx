@@ -17,7 +17,6 @@ export function FilterDenunciaByCategoriaSelect() {
       </SelectTrigger>
 
       <SelectContent>
-        <SelectItem value="default">Categoria da denúncia</SelectItem>
         {categorias.map((categoria) => (
           <SelectItem key={categoria.id} value={categoria.nome}>
             {categoria.nome}

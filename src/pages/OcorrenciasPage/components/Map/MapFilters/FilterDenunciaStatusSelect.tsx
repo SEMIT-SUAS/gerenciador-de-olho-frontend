@@ -37,8 +37,6 @@ export function FilterDenunciaStatusSelect() {
       </SelectTrigger>
 
       <SelectContent>
-        <SelectItem value="disabled">Status da denúncia</SelectItem>
-
         {avaliableStatus.map((status, idx) => (
           <SelectItem key={idx} value={status.value}>
             {status.name}

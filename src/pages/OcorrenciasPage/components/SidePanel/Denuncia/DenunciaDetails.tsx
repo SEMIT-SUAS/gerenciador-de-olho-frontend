@@ -1,68 +1,53 @@
-import { Tag } from './../Tag';
-import { useEffect, useMemo, useState } from 'react';
-import { useOcorrencias } from '../../../../../context/OcorrenciasContext';
-import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
-import { FaTrashAlt } from 'react-icons/fa';
-import { FilesCarrrousel } from '../../../../../components/FilesCarrousel';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'sonner';
-import { BackButton } from '../../../../../components/ui/Backbutton';
-import { useMapActions } from '../../../../../context/MapActions';
-import {
-  getDenunciaStatus,
-  getIndeferimentoData,
-} from '@/utils/getDenunciaStatus';
-import { Button } from '@/components/ui/button';
-import { IconProgressX } from '@tabler/icons-react';
-
 export function DenunciaDetails() {
-  const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
-  const { denuncias, acoes, setDenuncias } = useOcorrencias();
-  const { setZoomTo } = useMapActions();
-  const navigate = useNavigate();
+  // const [isDesvincularModalOpen, setIsDesvincularModalOpen] = useState(false);
+  // const { denuncias, acoes, setDenuncias } = useOcorrencias();
+  // const { setZoomTo } = useMapActions();
+  // const navigate = useNavigate();
 
-  const params = useParams();
-  const denunciaId = params.denunciaId;
-  const denuncia = useMemo(() => {
-    return denuncias.find((d) => d.id == Number(denunciaId));
-  }, [denuncias, denunciaId]);
+  // const params = useParams();
+  // const denunciaId = params.denunciaId;
+  // const denuncia = useMemo(() => {
+  //   return denuncias.find((d) => d.id == Number(denunciaId));
+  // }, [denuncias, denunciaId]);
 
-  if (!denuncia) {
-    return Navigate({
-      to: '/404',
-      replace: true,
-    });
-  }
+  // if (!denuncia) {
+  //   return Navigate({
+  //     to: '/404',
+  //     replace: true,
+  //   });
+  // }
 
-  const denunciaStatus = getDenunciaStatus(denuncia);
-  const indeferimentoData = getIndeferimentoData(denuncia);
+  // const denunciaStatus = getDenunciaStatus(denuncia);
+  // const indeferimentoData = getIndeferimentoData(denuncia);
 
-  const acaoVinculada = useMemo(() => {
-    return acoes.find((a) => a.id == denuncia.acao?.id);
-  }, [denuncias]);
+  // const acaoVinculada = useMemo(() => {
+  //   return acoes.find((a) => a.id == denuncia.acao?.id);
+  // }, [denuncias]);
 
-  async function handleConfirmDesvincularDenunciaAcao() {
-    try {
-      if (!denuncia) throw new Error('Denúncia não encontrada');
+  // async function handleConfirmDesvincularDenunciaAcao() {
+  //   try {
+  //     if (!denuncia) throw new Error('Denúncia não encontrada');
 
-      setDenuncias((current) =>
-        current.map((d) => {
-          if (d.id === denuncia.id) {
-            return {
-              ...d,
-              status: 'aberto',
-            };
-          }
-          return d;
-        }),
-      );
+  //     setDenuncias((current) =>
+  //       current.map((d) => {
+  //         if (d.id === denuncia.id) {
+  //           return {
+  //             ...d,
+  //             status: 'aberto',
+  //           };
+  //         }
+  //         return d;
+  //       }),
+  //     );
 
-      setIsDesvincularModalOpen(false);
-      toast.success('Denúncia desvinculada com sucesso!');
-    } catch (error) {
-      toast.error('Erro ao desvincular denúncia.');
-    }
-  }
+  //     setIsDesvincularModalOpen(false);
+  //     toast.success('Denúncia desvinculada com sucesso!');
+  //   } catch (error) {
+  //     toast.error('Erro ao desvincular denúncia.');
+  //   }
+  // }
+
+  return null;
 
   useEffect(() => {
     setZoomTo({

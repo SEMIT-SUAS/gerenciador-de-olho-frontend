@@ -17,7 +17,6 @@ export function FilterAcaoSecretariaSelect() {
       </SelectTrigger>
 
       <SelectContent>
-        <SelectItem value="default">Secretaria da ação</SelectItem>
         {secretarias.map((sc) => (
           <SelectItem key={sc.id} value={sc.sigla}>
             {sc.sigla}

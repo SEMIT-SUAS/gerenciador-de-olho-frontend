@@ -1,6 +1,9 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { MapFilters } from './MapFilters';
+import { BairroPolygons } from './BairroPolygons';
+
 import 'leaflet/dist/leaflet.css';
+import { MapZoom } from './MapZoom';
 
 export function OcorrenciasMap() {
   return (
@@ -20,6 +23,9 @@ export function OcorrenciasMap() {
           tileSize={512}
           zoomOffset={-1}
         />
+
+        <MapZoom />
+        <BairroPolygons />
       </MapContainer>
     </div>
   );

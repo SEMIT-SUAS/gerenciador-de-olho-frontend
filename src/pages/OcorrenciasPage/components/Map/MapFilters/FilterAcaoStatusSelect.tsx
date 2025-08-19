@@ -33,8 +33,6 @@ export function FilterAcaoStatusSelect() {
       </SelectTrigger>
 
       <SelectContent>
-        <SelectItem value="disabled">Status da ação</SelectItem>
-
         {avaliableStatus.map((status, idx) => (
           <SelectItem key={idx} value={status.value}>
             {status.name}

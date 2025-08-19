@@ -31,6 +31,8 @@ type SelectAcoesOuDenunciasProps = {
   newDenunciaCoordinates: Coordinates | null;
   setNewDenunciaCoordinates: Dispatch<SetStateAction<Coordinates | null>>;
   toggleAcaoSelecionada: (acao: AcaoModel) => void;
+  currentBairroId: number | null;
+  setCurrentBairroId: Dispatch<SetStateAction<number | null>>;
 };
 
 type Coordinates = {
@@ -43,6 +45,8 @@ const MapActionsContext = createContext<
 >(undefined);
 
 export function MapActionsProvider({ children }: { children: ReactNode }) {
+  const [currentBairroId, setCurrentBairroId] = useState<null | number>(null);
+
   const [disableMapFilters, setDisableMapFilters] = useState(false);
   const [salvarDenunciasOnclick, setSalvarDenunciasOnClick] = useState(false);
   const [salvarAcaoOnclick, setSalvarAcaoOnclick] = useState(false);
@@ -83,6 +87,9 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     newDenunciaCoordinates,
     setNewDenunciaCoordinates,
     toggleAcaoSelecionada,
+
+    currentBairroId,
+    setCurrentBairroId,
   };
 
   useEffect(() => {
