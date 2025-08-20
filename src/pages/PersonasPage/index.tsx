@@ -91,40 +91,35 @@ export function PersonasPage() {
 
   return (
     <LayoutPage>
-      <div className="flex flex-col gap-6 py-8 px-36">
+      <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
         <div className="max-w-[640px]">
           <h2 className="text-3xl font-bold tracking-tight">Personas</h2>
-          <p className="text-slate-600 text-xs mt-1">
+          <p className="text-slate-600 text-xs sm:text-xs mt-1">
             Gerencie com precisão todas as Personas para serviços da prefeitura.
             Tenha controle total para adicionar, visualizar, editar e remover
             cada órgão, garantindo informações sempre atualizadas e acessíveis.
           </p>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="w-[400px]">
-            {/* Espaço reservado para manter layout consistente */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
+          <div className="w-full sm:w-[280px] md:w-[320px]">
+            <SearchInput
+              placeholder="Pesquise por nome"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
           </div>
 
-          <div className="flex gap-2">
-            <div className="w-[320px]">
-              <SearchInput
-                placeholder="Pesquise por nome"
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
-              />
-            </div>
-
-            <Button onClick={() => setIsCreateModalOpen(true)} asChild>
-              <span className="flex items-center">
-                <Plus className="h-4 w-4" />
-                Adicionar persona
-              </span>
-            </Button>
-          </div>
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Adicionar persona
+          </Button>
         </div>
 
         <PersonasList
@@ -135,7 +130,9 @@ export function PersonasPage() {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Linhas por página:</span>
+            <span className="hidden sm:inline-flex text-sm text-gray-600">
+              Linhas por página:
+            </span>
 
             <Select
               value={itemsPerPage.toString()}

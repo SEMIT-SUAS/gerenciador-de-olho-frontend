@@ -97,8 +97,16 @@ export function DenunciaCategoriasPage() {
   return (
     <>
       <LayoutPage>
-        <div className="flex flex-col gap-6 py-8 px-36">
-          <div className="w-[50%]">
+        {/*
+          ANTES: <div className="flex flex-col gap-6 py-8 px-36">
+          DEPOIS: Adicionamos padding para mobile e o original para telas grandes.
+        */}
+        <div className="flex flex-col gap-6 px-4 py-8 lg:px-36">
+          {/*
+            ANTES: <div className="w-[50%]">
+            DEPOIS: Largura total no mobile, 50% em telas grandes.
+          */}
+          <div className="w-full lg:w-[50%]">
             {activeTab === 'categorias' ? (
               <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                 Categorias de denúncia
@@ -108,32 +116,33 @@ export function DenunciaCategoriasPage() {
                 Tipos de denúncia
               </h3>
             )}
-
             <p className="text-slate-600 text-xs">
               Gerencie com precisão todas as categorias de uma denúncia.
             </p>
           </div>
 
-          <div className="flex items-center justify-between gap-4">
-            <div className="relative w-[320px]">
+          {/*
+            ANTES: <div className="flex items-center justify-between gap-4">
+            DEPOIS: Empilhado no mobile, horizontal a partir de telas médias.
+          */}
+          <div className="flex flex-col items-stretch gap-6 md:flex-row md:items-center md:justify-between">
+            {/* O conteúdo aqui não precisa mudar, apenas o container pai */}
+            <div className="relative w-full md:w-auto">
               <Tabs
-                defaultValue=""
                 value={activeTab}
-                onValueChange={(value) => {
-                  setActiveTab(value);
-                }}
-                className="w-[400px]"
+                onValueChange={(value) => setActiveTab(value)}
+                className="w-full md:w-[400px]"
               >
-                <TabsList>
+                <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="categorias">Categorias</TabsTrigger>
                   <TabsTrigger value="tipos">Tipos</TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <SearchInput
-                className="max-w-[320px]"
+                className="w-full"
                 placeholder="Pesquise pelo nome"
                 value={searchTerm}
                 onChange={(e) => {
@@ -142,7 +151,7 @@ export function DenunciaCategoriasPage() {
                 }}
               />
               <Button
-                className="flex items-center gap-2"
+                className="flex items-center justify-center gap-2" // Adicionado justify-center
                 onClick={() => {
                   activeTab === 'categorias'
                     ? setIsOpenAddCategoriaModal(true)
@@ -157,6 +166,7 @@ export function DenunciaCategoriasPage() {
             </div>
           </div>
 
+          {/* O restante do seu código permanece o mesmo */}
           {activeTab === 'categorias' ? (
             <CategoriasDenunciaList
               itemsPerPage={itemsPerPage}
@@ -187,23 +197,21 @@ export function DenunciaCategoriasPage() {
         onClose={() => setIsOpenAddCategoriaModal(false)}
         setCategorias={setCategorias}
       />
-
       <AddTipoDenunciaModal
         open={IsOpenAddTipoModal}
-        onOpenChange={() => setIsOpenAddTipoModal(!open)}
+        onOpenChange={setIsOpenAddTipoModal}
         secretarias={secretarias}
         categorias={categorias!}
         setTipos={setTipos}
       />
-
       {tipoParaEditar && (
         <EditTipoDenunciaModal
           open={isOpenEditModal}
-          onOpenChange={handleCloseEditModal} // Use a função que limpa o estado
+          onOpenChange={handleCloseEditModal}
           secretarias={secretarias}
           categorias={categorias!}
           setTipos={setTipos}
-          tipoParaEditar={tipoParaEditar} // <-- PROP NOVA COM OS DADOS
+          tipoParaEditar={tipoParaEditar}
         />
       )}
     </>

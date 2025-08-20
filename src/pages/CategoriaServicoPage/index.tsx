@@ -119,15 +119,15 @@ export function CategoriasPage() {
 
   return (
     <LayoutPage>
-      <div className="flex flex-col gap-6 py-8 px-36">
+      <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
         <div className="max-w-[640px]">
           <h2 className="text-3xl font-bold tracking-tight">Categorias</h2>
-          <p className="text-slate-600 text-xs mt-1">
+          <p className="text-slate-600 text-sm sm:text-xs mt-1">
             Gerencie as categorias disponíveis com clareza e objetividade.
           </p>
         </div>
-        <div className="flex items-center justify-end gap-2">
-          <div className="w-[320px]">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
+          <div className="w-full sm:w-[280px] md:w-[320px]">
             <SearchInput
               placeholder="Pesquise por nome"
               value={searchTerm}
@@ -138,7 +138,10 @@ export function CategoriasPage() {
             />
           </div>
           <div>
-            <Button onClick={() => setShowCreateModal(true)}>
+            <Button
+              className="w-full sm:w-auto"
+              onClick={() => setShowCreateModal(true)}
+            >
               <Plus className="mr-2 h-4 w-4" />
               Adicionar categoria
             </Button>
@@ -153,7 +156,9 @@ export function CategoriasPage() {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Linhas por página:</span>
+            <span className="hidden sm:inline-flex text-sm text-gray-600">
+              Linhas por página:
+            </span>
 
             <Select
               value={itemsPerPage.toString()}
@@ -223,7 +228,6 @@ export function CategoriasPage() {
         </div>
       </div>
 
-      {/* Modal de Criar */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
@@ -236,7 +240,6 @@ export function CategoriasPage() {
         </div>
       )}
 
-      {/* Modal de Editar */}
       {editCategoria && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[60vh] overflow-y-auto">

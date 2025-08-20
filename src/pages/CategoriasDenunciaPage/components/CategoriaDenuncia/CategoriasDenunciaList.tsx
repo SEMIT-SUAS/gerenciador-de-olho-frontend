@@ -35,9 +35,11 @@ export function CategoriasDenunciaList({
               <TableRow>
                 <TableHead className="w-[150px]">Icone</TableHead>
                 <TableHead>Nome</TableHead>
-                <TableHead>Descrição</TableHead>
-                <TableHead>Cor</TableHead>
-                <TableHead>Destaque</TableHead>
+                <TableHead className="hidden md:table-cell">
+                  Descrição
+                </TableHead>
+                <TableHead className="hidden md:table-cell">Cor</TableHead>
+                <TableHead className="hidden md:table-cell">Destaque</TableHead>
                 <TableHead className="w-[10%]">Ações</TableHead>
               </TableRow>
             </TableHeader>

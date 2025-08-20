@@ -51,13 +51,13 @@ export function CategoryDenunciaItem({
           {category.nome}
         </TableCell>
 
-        <TableCell className="p-3 text-slate-600 text-sm max-w-[200px] truncate">
+        <TableCell className="p-3 text-slate-600 text-sm max-w-[200px] truncate hidden md:table-cell">
           {category.descricao}
         </TableCell>
 
         <TableCell className="p-3">
           <span
-            className="inline-block rounded-full px-3 py-1 text-xs font-medium"
+            className="rounded-full px-3 py-1 text-xs font-medium hidden md:table-cell"
             style={{
               backgroundColor: `${category.cor}20`,
               color: category.cor,
@@ -70,7 +70,7 @@ export function CategoryDenunciaItem({
 
         <TableCell className="p-3">
           {category.destaque && (
-            <Badge variant="outline" className="gap-2">
+            <Badge variant="outline" className="hidden gap-2 md:table-cell">
               <IconStarFilled className="text-yellow-300" size={'12px'} />
               Destacado
             </Badge>

@@ -54,12 +54,12 @@ export function BannersPage() {
   return (
     <>
       <LayoutPage additionalStyles="px-[39px]">
-        <div className="flex flex-col gap-6 py-8 px-36">
-          <div className="w-[50%]">
+        <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
+          <div className="max-w-[640px]">
             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
               Banners
             </h3>
-            <p className="text-slate-600 text-xs">
+            <p className="text-slate-600 text-xs sm:text-xs mt-1">
               Gerencie com precisão todas as Personas para serviços da
               prefeitura. Tenha controle total para adicionar, visualizar,
               editar e remover cada órgão, garantindo informações sempre
@@ -67,8 +67,8 @@ export function BannersPage() {
             </p>
           </div>
 
-          <div className="flex items-center justify-between gap-4">
-            <div className="relative w-[320px]">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
+            <div className="w-full sm:w-[280px] md:w-[320px]">
               <SearchInput
                 placeholder="Pesquise pelo nome"
                 value={searchTerm}
