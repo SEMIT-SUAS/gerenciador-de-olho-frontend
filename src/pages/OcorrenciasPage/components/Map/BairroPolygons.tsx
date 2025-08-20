@@ -20,38 +20,36 @@ export function BairroPolygons() {
 
   return (
     <>
-      {bairros
-        .filter((bairro) => bairro.id !== currentBairroId)
-        .map((bairro) => {
-          const countIcon = L.divIcon({
-            html: `<span>${bairro.totalDeDenuncias}</span>`,
-            className: 'bairro-denuncia-count-icon',
-            iconSize: [30, 30],
-          });
+      {bairros.map((bairro) => {
+        const countIcon = L.divIcon({
+          html: `<span>${bairro.totalDeDenuncias}</span>`,
+          className: 'bairro-denuncia-count-icon',
+          iconSize: [30, 30],
+        });
 
-          return (
-            <div key={`bairro-container-${bairro.id}`}>
-              <Polygon
-                positions={bairro.coordenadas as any}
-                pathOptions={{
-                  color: 'blue',
-                  fillColor: 'lightblue',
-                  fillOpacity: 0.4,
-                }}
-                eventHandlers={{
-                  click: () => handleOnClickAtBairro(bairro),
-                }}
+        return (
+          <div key={`bairro-container-${bairro.id}`}>
+            <Polygon
+              positions={bairro.coordenadas as any}
+              pathOptions={{
+                color: bairro.id === currentBairroId ? '#9ac670' : '#39a6de',
+                fillColor: bairro.id === currentBairroId ? '' : 'lightblue',
+                fillOpacity: 0.2,
+              }}
+              eventHandlers={{
+                click: () => handleOnClickAtBairro(bairro),
+              }}
+            />
+            {bairro.totalDeDenuncias > 0 && !currentBairroId && (
+              <Marker
+                position={[bairro.centerLatitude, bairro.centerLongitude]}
+                icon={countIcon}
+                interactive={false}
               />
-              {bairro.totalDeDenuncias > 0 && (
-                <Marker
-                  position={[bairro.centerLatitude, bairro.centerLongitude]}
-                  icon={countIcon}
-                  interactive={false}
-                />
-              )}
-            </div>
-          );
-        })}
+            )}
+          </div>
+        );
+      })}
     </>
   );
 }

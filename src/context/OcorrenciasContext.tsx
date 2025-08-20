@@ -34,6 +34,7 @@ const OcorrenciasContext = createContext<OcorrenciasContextProps | undefined>(
 );
 
 export function OcorrenciasProvider({ children }: { children: ReactNode }) {
+  const { currentBairroId } = useMapActions();
   const [APIError, setAPIError] = useState<null | string>(null);
   const [isLoadingInitialContent, setIsLoadingInitialContent] =
     useState<boolean>(true);
@@ -56,7 +57,7 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
           CategoriaDenunciaService.getAll(),
           tiposDenunciaService.getAllTiposDenuncia(),
           secretariaService.getAllSecretarias(),
-          new DenunciaService().getNumberDenunciasInMap(
+          DenunciaService.getNumberDenunciasInMap(
             'Aberto',
             user?.idSecretaria!,
           ),
@@ -104,6 +105,8 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
 
     loadData();
   }, []);
+
+  useEffect(() => {}, [currentBairroId]);
 
   const value: OcorrenciasContextProps = {
     isLoadingInitialContent,

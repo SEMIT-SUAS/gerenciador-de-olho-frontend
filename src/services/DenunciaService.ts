@@ -67,16 +67,17 @@ export class DenunciaService {
     secretaria: number,
   ): Promise<NumeroDeDenunciasPorBairro[]> {
     try {
-      const response = await api.get<NumeroDeDenunciasPorBairro[]>(
+      const response = await api.get(
         '/denuncia/gerenciador/contador-denuncias-bairro',
         {
           params: {
             status,
             secretaria,
           },
+          responseType: 'json',
         },
       );
-      return response.data;
+      return JSON.parse(response.data) as NumeroDeDenunciasPorBairro[];
     } catch (error) {
       console.error('Falha ao buscar o número de denúncias no mapa:', error);
       throw this.SERVICE_UNAVAILABLE_ERROR;
@@ -106,4 +107,11 @@ export class DenunciaService {
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
   }
+
+  // public static async getDenunciaPorBairro(data: {
+  //   status: string;
+  //   secretaria: number;
+  //   bairro: string;
+  //   tipoDenuncia: string;
+  // });
 }

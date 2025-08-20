@@ -114,6 +114,38 @@
   height: 2px;
 }
 
+/* Primeiro, resetamos o container que o Leaflet cria para remover estilos padrão */
+.bairro-denuncia-count-icon {
+  background: transparent;
+  border: none;
+}
+
+/* Agora, estilizamos o <span> que está dentro do nosso HTML para ser o círculo */
+.bairro-denuncia-count-icon span {
+  /* Tamanho e Forma */
+  width: 30px; /* Mesmo valor do iconSize[0] */
+  height: 30px; /* Mesmo valor do iconSize[1] */
+  border-radius: 50%; /* Isso cria o círculo perfeito */
+
+  /* Cores (sinta-se à vontade para alterar) */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Um vermelho escuro, bom para alertas */
+  color: #2563eb; /* Cor do número */
+
+  /* Centralização do número (a forma moderna e garantida) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Estilo da fonte */
+  font-size: 14px;
+  font-weight: bold;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
