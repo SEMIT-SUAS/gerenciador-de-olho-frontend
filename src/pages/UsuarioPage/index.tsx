@@ -1,7 +1,7 @@
 // src/pages/UsuariosPage.tsx
 
 import { useEffect, useState, useMemo } from 'react';
-import type { UsuarioLogin } from '@/types/Usuario';
+import type { UsuarioModel, UsuarioPorId } from '@/types/Usuario';
 import type { Secretaria } from '@/types/Secretaria';
 import usuarioService from '@/services/usuariosService';
 import { getAllSecretarias } from '@/services/secretariaService';
@@ -26,9 +26,10 @@ import {
   IconChevronsRight,
 } from '@tabler/icons-react';
 import { AddUsuarioModal } from './components/AddUsuarioModal';
+import { EditUsuarioModal } from './components/EditUsuarioModal';
 
 export function UsuariosPage() {
-  const [usuarios, setUsuarios] = useState<UsuarioLogin[]>([]);
+  const [usuarios, setUsuarios] = useState<UsuarioModel[]>([]);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +39,46 @@ export function UsuariosPage() {
   const [itemsPerPage, setItemsPerPage] = useState(8);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<UsuarioPorId | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userToFetch, setUserToFetch] = useState<UsuarioModel | null>(null); // Estado para acionar a busca
+  const [fetchedUser, setFetchedUser] = useState<UsuarioPorId | null>(null); // Estado para o usuário buscado
+
+  // A função que será chamada pelo componente filho (UsuarioListItem)
+  const handleEdit = (usuario: UsuarioModel) => {
+    setIsEditModalOpen(true); // Abre o modal imediatamente
+    setUserToFetch(usuario); 
+  };
+  
+  useEffect(() => {
+    if (userToFetch) {
+      const fetchUserData = async () => {
+        setIsLoading(true);
+        try {
+          const fetchedData = await usuarioService.buscarUsuarioPorId(userToFetch.id);
+          setFetchedUser(fetchedData); // ATUALIZA O NOVO ESTADO COM OS DADOS FINAIS
+        } catch (error) {
+          console.error('Falha ao buscar dados do usuário:', error);
+          toast.error('Falha ao carregar os dados do usuário para edição.');
+          setIsEditModalOpen(false); // Fecha o modal em caso de erro
+          setFetchedUser(null);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchUserData();
+    }
+  }, [userToFetch]); // O efeito depende APENAS do userToFetch
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setUserToFetch(null); // Limpa o estado para a próxima edição
+    setFetchedUser(null); // Limpa o usuário buscado
+  };
+
 
   async function fetchData() {
     try {
@@ -148,7 +189,7 @@ export function UsuariosPage() {
           </div>
         </div>
 
-        <UsuariosList usuarios={currentData} setUsuarios={setUsuarios} />
+        <UsuariosList usuarios={currentData} setUsuarios={setUsuarios} onEdit={handleEdit} />
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -217,6 +258,15 @@ export function UsuariosPage() {
         setUsuarios={setUsuarios}
         secretarias={secretarias}
       />
+
+      {isEditModalOpen && fetchedUser && (
+        <EditUsuarioModal
+          open={isEditModalOpen}
+          onOpenChange={handleCloseEditModal}
+          secretarias={secretarias} // Passe suas secretarias aqui
+          usuario={fetchedUser} // Passa o usuário já buscado
+        />
+      )}
     </LayoutPage>
   );
 }

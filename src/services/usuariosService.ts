@@ -1,4 +1,4 @@
-import type { UsuarioLogin, UsuarioModel } from '@/types/Usuario';
+import type { UsuarioLogin, UsuarioModel, UsuarioPorId, UsuarioUpdate } from '@/types/Usuario';
 import { api } from '../config/api';
 import { type LoginFormValues } from '@/pages/LoginPage/components/loginSchema';
 import { AxiosError } from 'axios';
@@ -25,19 +25,6 @@ interface DadosCadastroGerenciador {
 //   senha?: string;
 // }
 
-interface GerenciadorDTO {
-  // ta incompleto
-  id: number;
-  nome: string;
-  email: string;
-  ativo: boolean;
-}
-
-interface AtualizarResponse {
-  mensagem: string;
-  usuario: GerenciadorDTO;
-}
-
 const login = async (credentials: LoginFormValues): Promise<LoginResponse> => {
   try {
     const response = await api.post<LoginResponse>(
@@ -60,7 +47,7 @@ const login = async (credentials: LoginFormValues): Promise<LoginResponse> => {
   }
 };
 
-const getProfile = async (loginIdentifier?: string): Promise<UsuarioLogin> => {
+const getProfile = async (loginIdentifier?: string): Promise<UsuarioModel> => {
   let email = loginIdentifier;
 
   if (!email) {
@@ -81,7 +68,7 @@ const getProfile = async (loginIdentifier?: string): Promise<UsuarioLogin> => {
   }
 
   try {
-    const response = await api.get<UsuarioLogin>(
+    const response = await api.get<UsuarioModel>(
       `/gerenciador/pegar-dados-login`,
       {
         params: {
@@ -107,7 +94,7 @@ const getAuthToken = (): string | null => {
   return localStorage.getItem('authToken');
 };
 
-const getAllUsuarios = async (): Promise<UsuarioLogin[]> => {
+const getAllUsuarios = async (): Promise<UsuarioModel[]> => {
   const token = getAuthToken();
 
   if (!token) {
@@ -115,7 +102,7 @@ const getAllUsuarios = async (): Promise<UsuarioLogin[]> => {
   }
 
   try {
-    const response = await api.get<UsuarioLogin[]>('/gerenciador/listar-todos');
+    const response = await api.get<UsuarioModel[]>('/gerenciador/listar-todos');
 
     return response.data;
   } catch (error) {
@@ -131,6 +118,19 @@ const getAllUsuarios = async (): Promise<UsuarioLogin[]> => {
     }
 
     throw new Error('Não foi possível carregar todos os usuários.');
+  }
+};
+
+export const updateUsuario = async (usuario: UsuarioUpdate): Promise<UsuarioModel> => {
+  try {
+    const response = await api.put<UsuarioModel>(`
+        /gerenciador/atualizar`,
+      usuario
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao atualizar usuário:', error);
+    throw error;
   }
 };
 
@@ -163,14 +163,14 @@ const cadastrarGerenciador = async (
   }
 };
 
-const listarUsuariosAtivos = async (): Promise<UsuarioLogin[]> => {
+const listarUsuariosAtivos = async (): Promise<UsuarioModel[]> => {
   const token = getAuthToken();
   if (!token) {
     throw new Error('Usuário não autenticado.');
   }
 
   try {
-    const response = await api.get<UsuarioLogin[]>('/gerenciador/listar-todos');
+    const response = await api.get<UsuarioModel[]>('/gerenciador/listar-todos');
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
@@ -187,32 +187,32 @@ const listarUsuariosAtivos = async (): Promise<UsuarioLogin[]> => {
 };
 
 // buscar usuário por ID - GET /gerenciador/buscar/{id}
-// const buscarUsuarioPorId = async (id: number): Promise<GerenciadorDTO> => {
-//   const token = getAuthToken();
-//   if (!token) {
-//     throw new Error('Usuário não autenticado.');
-//   }
+const buscarUsuarioPorId = async (id: number): Promise<UsuarioPorId> => {
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error('Usuário não autenticado.');
+  }
 
-//   try {
-//     const response = await api.get<GerenciadorDTO>(`/gerenciador/buscar/${id}`);
-//     return response.data;
-//   } catch (error) {
-//     if (error instanceof AxiosError && error.response?.status === 401) {
-//       logout();
-//       throw new Error('Sessão expirada. Por favor, faça login novamente.');
-//     }
+  try {
+    const response = await api.get<UsuarioPorId>(`/gerenciador/buscar/${id}`);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.status === 401) {
+      logout();
+      throw new Error('Sessão expirada. Por favor, faça login novamente.');
+    }
 
-//     if (error instanceof AxiosError && error.response?.status === 404) {
-//       throw new Error('Usuário não encontrado.');
-//     }
+    if (error instanceof AxiosError && error.response?.status === 404) {
+      throw new Error('Usuário não encontrado.');
+    }
 
-//     if (error instanceof AxiosError && error.response?.data?.message) {
-//       throw new Error(error.response.data.message);
-//     }
+    if (error instanceof AxiosError && error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
 
-//     throw new Error('Não foi possível carregar os dados do usuário.');
-//   }
-// };
+    throw new Error('Não foi possível carregar os dados do usuário.');
+  }
+};
 
 // // 4. Atualizar usuário - PUT /gerenciador/atualizar
 // const atualizarUsuario = async (
@@ -243,33 +243,32 @@ const listarUsuariosAtivos = async (): Promise<UsuarioLogin[]> => {
 //   }
 // };
 
-// // 5. Excluir usuário - DELETE /gerenciador/{id}
-// const excluirUsuario = async (id: number): Promise<string> => {
-//   const token = getAuthToken();
-//   if (!token) {
-//     throw new Error('Usuário não autenticado.');
-//   }
+const excluirUsuario = async (id: number): Promise<string> => {
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error('Usuário não autenticado.');
+  }
 
-//   try {
-//     const response = await api.delete<string>(`/gerenciador/${id}`);
-//     return response.data;
-//   } catch (error) {
-//     if (error instanceof AxiosError && error.response?.status === 401) {
-//       logout();
-//       throw new Error('Sessão expirada. Por favor, faça login novamente.');
-//     }
+  try {
+    const response = await api.delete<string>(`/gerenciador/deletar/${id}`);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.status === 401) {
+      logout();
+      throw new Error('Sessão expirada. Por favor, faça login novamente.');
+    }
 
-//     if (error instanceof AxiosError && error.response?.status === 404) {
-//       throw new Error('Usuário não encontrado.');
-//     }
+    if (error instanceof AxiosError && error.response?.status === 404) {
+      throw new Error('Usuário não encontrado.');
+    }
 
-//     if (error instanceof AxiosError && error.response?.data?.message) {
-//       throw new Error(error.response.data.message);
-//     }
+    if (error instanceof AxiosError && error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
 
-//     throw new Error('Não foi possível excluir o usuário.');
-//   }
-// };
+    throw new Error('Não foi possível excluir o usuário.');
+  }
+};
 
 const usuarioService = {
   login,
@@ -279,6 +278,9 @@ const usuarioService = {
   getAllUsuarios,
   listarUsuariosAtivos,
   cadastrarGerenciador,
+  updateUsuario,
+  buscarUsuarioPorId,
+  excluirUsuario
   // buscarUsuarioPorId,
   // atualizarUsuario,
   // excluirUsuario,

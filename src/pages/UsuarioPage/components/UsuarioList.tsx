@@ -1,8 +1,7 @@
 // src/pages/UsuariosPage/components/UsuariosList.tsx
 
 import { type Dispatch, type SetStateAction } from 'react';
-import type { UsuarioLogin } from '@/types/Usuario';
-import type { Secretaria } from '@/types/Secretaria';
+import type { UsuarioModel } from '@/types/Usuario';
 import {
   Table,
   TableBody,
@@ -14,11 +13,13 @@ import {
 import { UsuariosListItem } from './UsuarioListItem';
 
 interface UsuariosListProps {
-  usuarios: UsuarioLogin[];
-  setUsuarios: Dispatch<SetStateAction<UsuarioLogin[]>>;
+  usuarios: UsuarioModel[];
+  setUsuarios: Dispatch<SetStateAction<UsuarioModel[]>>;
+  onEdit: (usuario: UsuarioModel) => void; // Recebe a função do pai
+
 }
 
-export function UsuariosList({ usuarios, setUsuarios }: UsuariosListProps) {
+export function UsuariosList({ usuarios, setUsuarios, onEdit }: UsuariosListProps) {
   return (
     <div className="rounded-md border">
       <Table>
@@ -37,6 +38,7 @@ export function UsuariosList({ usuarios, setUsuarios }: UsuariosListProps) {
                 key={usuario.id}
                 usuario={usuario}
                 setUsuarios={setUsuarios}
+                onEdit={onEdit} // Passa a função para o componente filho
               />
             ))
           ) : (

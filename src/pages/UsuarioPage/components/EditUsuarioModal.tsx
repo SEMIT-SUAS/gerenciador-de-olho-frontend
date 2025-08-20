@@ -1,70 +1,77 @@
+// src/pages/UsuariosPage/components/EditModal.tsx
+
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Plus } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import type { usuarioFormValues } from './usuarioForm/usuarioSchema';
-import usuarioService from '@/services/usuariosService';
-import type { UsuarioModel } from '@/types/Usuario';
-import { useState, type Dispatch, type SetStateAction } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { UsuarioForm } from './usuarioForm/usuarioForm';
 import type { Secretaria } from '@/types/Secretaria';
+import type { UsuarioModel, UsuarioPorId } from '@/types/Usuario';
+import usuarioService from '@/services/usuariosService';
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  setUsuarios: Dispatch<SetStateAction<UsuarioModel[]>>;
   secretarias: Secretaria[];
-  usuario: UsuarioModel;
+  usuario: UsuarioPorId; 
 }
 
 export function EditUsuarioModal({
   open,
   onOpenChange,
-  setUsuarios,
   secretarias,
   usuario,
-}: Props) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+}: Props) {  
+
+  const secretariaDoUsuario = secretarias.find(
+    (s) => s.nome.trim().toLowerCase() === usuario.secretaria.trim().toLowerCase()
+  );
+
+  const defaultValues = usuario ? {
+    nome: usuario.nome,
+    cpf: usuario.cpf,
+    contato: usuario.contato,
+    email: usuario.email,
+    senha: '',
+    ativo: usuario.ativo,
+    secretaria: secretariaDoUsuario!.id,
+    perfil: usuario.perfil as "ADMINISTRADOR" | "COMUM", 
+  } : undefined;
 
   async function onSubmit(data: usuarioFormValues) {
+    if (!usuario?.id) {
+      toast.error('ID do usuário não fornecido para edição.');
+      return;
+    }
+
     try {
-      console.log('Dados enviados:', data);
-      const novoUsuario = await usuarioService.cadastrarGerenciador(data);
-
-      setUsuarios((prev) => [...prev, novoUsuario]);
-      toast.success('Usuário cadastrado com sucesso!');
-
+      await usuarioService.updateUsuario({ ...data, id: usuario.id });
+      toast.success('Usuário atualizado com sucesso!');
       onOpenChange(false);
-    } catch (error: any) {
-      console.error('Erro ao cadastrar usuário:', error);
-      toast.error(error.message || 'Erro ao cadastrar usuário');
-    } finally {
-      setIsSubmitting(false);
+    } catch (error) {
+      toast.error('Erro ao atualizar usuário.');
     }
   }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            Editar Usuário
+          <DialogTitle>
+            <Pencil /> Editar Usuário
           </DialogTitle>
-          <DialogDescription>
-            Cadastre um novo usuário no sistema. Preencha todos os campos.
-          </DialogDescription>
         </DialogHeader>
         <UsuarioForm
           onSubmit={onSubmit}
           openChange={onOpenChange}
           secretarias={secretarias}
-          isSubmitting={isSubmitting}
-          defaultValues={usuario}
+          isSubmitting={false}
+          defaultValues={defaultValues}
         />
       </DialogContent>
     </Dialog>
