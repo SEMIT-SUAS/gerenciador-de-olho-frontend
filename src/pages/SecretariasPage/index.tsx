@@ -137,7 +137,9 @@ export function SecretariaPage() {
         {/* Paginação */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Linhas por página:</span>
+            <span className="hidden sm:inline-flex text-sm text-gray-600">
+              Linhas por página:
+            </span>
 
             <Select
               value={itemsPerPage.toString()}

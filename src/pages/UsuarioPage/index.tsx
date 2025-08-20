@@ -27,6 +27,7 @@ import {
 } from '@tabler/icons-react';
 import { AddUsuarioModal } from './components/AddUsuarioModal';
 import { EditUsuarioModal } from './components/EditUsuarioModal';
+import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 export function UsuariosPage() {
   const [usuarios, setUsuarios] = useState<UsuarioModel[]>([]);
@@ -41,23 +42,42 @@ export function UsuariosPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<UsuarioPorId | null>(null);
+  const [editingUser, setEditingUser] = useState<UsuarioPorId | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [userToFetch, setUserToFetch] = useState<UsuarioModel | null>(null); // Estado para acionar a busca
   const [fetchedUser, setFetchedUser] = useState<UsuarioPorId | null>(null); // Estado para o usuário buscado
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Estado para o modal de exclusão
+  const [usuario, setUsuario] = useState<UsuarioModel | null>(null); // Usuário a ser excluído
 
   // A função que será chamada pelo componente filho (UsuarioListItem)
   const handleEdit = (usuario: UsuarioModel) => {
     setIsEditModalOpen(true); // Abre o modal imediatamente
-    setUserToFetch(usuario); 
+    setUserToFetch(usuario);
   };
-  
+  async function handleDelete() {
+    if (!usuario) return;
+
+    try {
+      await usuarioService.excluirUsuario(usuario.id);
+      setUsuarios((prev) => prev.filter((u) => u.id !== usuario.id));
+      toast.success('Usuário excluído com sucesso!');
+    } catch (error) {
+      console.error('Erro ao excluir usuário:', error);
+      toast.error('Erro ao excluir usuário.');
+    } finally {
+      setIsDeleteModalOpen(false);
+      setUsuario(null); // Limpa o usuário após exclusão
+    }
+  }
+
   useEffect(() => {
     if (userToFetch) {
       const fetchUserData = async () => {
         setIsLoading(true);
         try {
-          const fetchedData = await usuarioService.buscarUsuarioPorId(userToFetch.id);
+          const fetchedData = await usuarioService.buscarUsuarioPorId(
+            userToFetch.id,
+          );
           setFetchedUser(fetchedData); // ATUALIZA O NOVO ESTADO COM OS DADOS FINAIS
         } catch (error) {
           console.error('Falha ao buscar dados do usuário:', error);
@@ -68,7 +88,7 @@ export function UsuariosPage() {
           setIsLoading(false);
         }
       };
-      
+
       fetchUserData();
     }
   }, [userToFetch]); // O efeito depende APENAS do userToFetch
@@ -79,6 +99,10 @@ export function UsuariosPage() {
     setFetchedUser(null); // Limpa o usuário buscado
   };
 
+  const handleDeleteClick = (usuario: UsuarioModel) => {
+    setUsuario(usuario); // Define o usuário a ser deletado
+    setIsDeleteModalOpen(true); // Abre o modal de confirmação
+  };
 
   async function fetchData() {
     try {
@@ -189,11 +213,18 @@ export function UsuariosPage() {
           </div>
         </div>
 
-        <UsuariosList usuarios={currentData} setUsuarios={setUsuarios} onEdit={handleEdit} />
+        <UsuariosList
+          usuarios={currentData}
+          setUsuarios={setUsuarios}
+          onEdit={handleEdit}
+          onDelete={handleDeleteClick}
+        />
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Linhas por página:</span>
+            <span className="hidden sm:inline-flex text-sm text-gray-600">
+              Linhas por página:
+            </span>
             <Select
               value={itemsPerPage.toString()}
               onValueChange={handleItemsPerPageChange}
@@ -216,6 +247,7 @@ export function UsuariosPage() {
             </span>
             <div className="flex gap-2">
               <Button
+                className="hidden sm:inline-flex"
                 variant="outline"
                 size="sm"
                 onClick={() => setCurrentPage(1)}
@@ -240,6 +272,7 @@ export function UsuariosPage() {
                 <IconChevronRight />
               </Button>
               <Button
+                className="hidden sm:inline-flex"
                 variant="outline"
                 size="sm"
                 onClick={() => setCurrentPage(totalPages)}
@@ -267,6 +300,17 @@ export function UsuariosPage() {
           usuario={fetchedUser} // Passa o usuário já buscado
         />
       )}
+      {
+        <ConfirmModal
+          isOpen={isDeleteModalOpen}
+          onConfirm={handleDelete}
+          onCancel={() => setIsDeleteModalOpen(false)}
+          title="Confirmar Exclusão"
+          message={`Tem certeza que deseja excluir o usuário "${
+            usuario?.nome ?? ''
+          }"? Esta ação não pode ser desfeita.`}
+        />
+      }
     </LayoutPage>
   );
 }

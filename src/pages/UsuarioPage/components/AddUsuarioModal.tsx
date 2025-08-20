@@ -31,7 +31,6 @@ export function AddUsuarioModal({
 
   async function onSubmit(data: usuarioFormValues) {
     try {
-      console.log('Dados enviados:', data);
       const novoUsuario = await usuarioService.cadastrarGerenciador(data);
 
       setUsuarios((prev) => [...prev, novoUsuario]);

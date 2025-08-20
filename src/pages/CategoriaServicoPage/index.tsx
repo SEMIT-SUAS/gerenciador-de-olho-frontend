@@ -154,9 +154,11 @@ export function CategoriasPage() {
           onEdit={setEditCategoria}
         />
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Linhas por página:</span>
+            <span className="hidden sm:inline-flex text-sm text-gray-600">
+              Linhas por página:
+            </span>
 
             <Select
               value={itemsPerPage.toString()}
@@ -165,7 +167,7 @@ export function CategoriasPage() {
                 setCurrentPage(1);
               }}
             >
-              <SelectTrigger className="w-16 sm:w-20 h-9 sm:h-8">
+              <SelectTrigger className="w-20 h-8">
                 <SelectValue placeholder={itemsPerPage} />
               </SelectTrigger>
               <SelectContent>

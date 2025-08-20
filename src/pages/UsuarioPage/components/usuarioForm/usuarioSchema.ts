@@ -9,7 +9,7 @@ export const usuarioSchema = z.object({
     .string()
     .min(14, { message: 'CPF deve ter 11 dígitos.' })
     .max(14, { message: 'CPF inválido.' }), // Ex: 000.000.000-00
-  contato: z.string().min(14, { message: 'O contato é obrigatório.' }), // Ex: (99) 99999-9999
+  contato: z.string().min(10, { message: 'O contato é obrigatório.' }), // Ex: (99) 99999-9999
   email: z.string().email({ message: 'Por favor, insira um email válido.' }),
   senha: z
     .string()

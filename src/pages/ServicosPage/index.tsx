@@ -206,10 +206,10 @@ export function ServicesPage() {
         </div>
 
         {/* Pagination Section - Layout responsivo */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center justify-between">
           {/* Items per page - Centralizado no mobile */}
-          <div className="flex items-center gap-2 justify-center sm:justify-start">
-            <span className="text-sm text-gray-600 whitespace-nowrap">
+          <div className="flex items-center gap-2">
+            <span className="hidden sm:inline-flex text-sm text-gray-600">
               Linhas por página:
             </span>
 
@@ -234,14 +234,14 @@ export function ServicesPage() {
           </div>
 
           {/* Pagination controls - Layout responsivo */}
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <div className="flex items-center gap-2">
             {/* Page info */}
-            <span className="text-sm text-gray-600 text-center sm:text-left whitespace-nowrap">
+            <span className="text-sm text-gray-600">
               Página {currentPage} de {totalPages}
             </span>
 
             {/* Navigation buttons */}
-            <div className="flex gap-1 justify-center">
+            <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"

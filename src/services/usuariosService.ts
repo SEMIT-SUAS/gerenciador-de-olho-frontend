@@ -1,4 +1,9 @@
-import type { UsuarioLogin, UsuarioModel, UsuarioPorId, UsuarioUpdate } from '@/types/Usuario';
+import type {
+  UsuarioLogin,
+  UsuarioModel,
+  UsuarioPorId,
+  UsuarioUpdate,
+} from '@/types/Usuario';
 import { api } from '../config/api';
 import { type LoginFormValues } from '@/pages/LoginPage/components/loginSchema';
 import { AxiosError } from 'axios';
@@ -121,11 +126,14 @@ const getAllUsuarios = async (): Promise<UsuarioModel[]> => {
   }
 };
 
-export const updateUsuario = async (usuario: UsuarioUpdate): Promise<UsuarioModel> => {
+export const updateUsuario = async (
+  usuario: UsuarioUpdate,
+): Promise<UsuarioModel> => {
   try {
-    const response = await api.put<UsuarioModel>(`
+    const response = await api.put<UsuarioModel>(
+      `
         /gerenciador/atualizar`,
-      usuario
+      usuario,
     );
     return response.data;
   } catch (error) {
@@ -214,35 +222,6 @@ const buscarUsuarioPorId = async (id: number): Promise<UsuarioPorId> => {
   }
 };
 
-// // 4. Atualizar usuário - PUT /gerenciador/atualizar
-// const atualizarUsuario = async (
-//   dados: DadosAtualizarGerenciador,
-// ): Promise<AtualizarResponse> => {
-//   const token = getAuthToken();
-//   if (!token) {
-//     throw new Error('Usuário não autenticado.');
-//   }
-
-//   try {
-//     const response = await api.put<AtualizarResponse>(
-//       '/gerenciador/atualizar',
-//       dados,
-//     );
-//     return response.data;
-//   } catch (error) {
-//     if (error instanceof AxiosError && error.response?.status === 401) {
-//       logout();
-//       throw new Error('Sessão expirada. Por favor, faça login novamente.');
-//     }
-
-//     if (error instanceof AxiosError && error.response?.data?.message) {
-//       throw new Error(error.response.data.message);
-//     }
-
-//     throw new Error('Não foi possível atualizar os dados do usuário.');
-//   }
-// };
-
 const excluirUsuario = async (id: number): Promise<string> => {
   const token = getAuthToken();
   if (!token) {
@@ -280,10 +259,7 @@ const usuarioService = {
   cadastrarGerenciador,
   updateUsuario,
   buscarUsuarioPorId,
-  excluirUsuario
-  // buscarUsuarioPorId,
-  // atualizarUsuario,
-  // excluirUsuario,
+  excluirUsuario,
 };
 
 export default usuarioService;

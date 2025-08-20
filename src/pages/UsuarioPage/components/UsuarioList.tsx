@@ -15,11 +15,16 @@ import { UsuariosListItem } from './UsuarioListItem';
 interface UsuariosListProps {
   usuarios: UsuarioModel[];
   setUsuarios: Dispatch<SetStateAction<UsuarioModel[]>>;
-  onEdit: (usuario: UsuarioModel) => void; // Recebe a função do pai
-
+  onEdit: (usuario: UsuarioModel) => void;
+  onDelete: (usuario: UsuarioModel) => void; // Recebe a função do pai
 }
 
-export function UsuariosList({ usuarios, setUsuarios, onEdit }: UsuariosListProps) {
+export function UsuariosList({
+  usuarios,
+  setUsuarios,
+  onEdit,
+  onDelete,
+}: UsuariosListProps) {
   return (
     <div className="rounded-md border">
       <Table>
@@ -38,7 +43,8 @@ export function UsuariosList({ usuarios, setUsuarios, onEdit }: UsuariosListProp
                 key={usuario.id}
                 usuario={usuario}
                 setUsuarios={setUsuarios}
-                onEdit={onEdit} // Passa a função para o componente filho
+                onEdit={onEdit}
+                onDelete={onDelete} // Passa a função para o componente filho
               />
             ))
           ) : (
