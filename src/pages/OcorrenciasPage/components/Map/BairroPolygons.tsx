@@ -1,7 +1,9 @@
 import { useMapActions } from '@/context/MapActions';
 import { useOcorrencias } from '@/context/OcorrenciasContext';
 import type { Bairro } from '@/types/Bairro';
-import { Polygon } from 'react-leaflet';
+import { Polygon, Marker } from 'react-leaflet';
+
+import L from 'leaflet';
 
 export function BairroPolygons() {
   const { bairros } = useOcorrencias();
@@ -12,6 +14,7 @@ export function BairroPolygons() {
     setZoomTo({
       lat: bairro.centerLatitude,
       lng: bairro.centerLongitude,
+      level: 16,
     });
   }
 
@@ -19,15 +22,36 @@ export function BairroPolygons() {
     <>
       {bairros
         .filter((bairro) => bairro.id !== currentBairroId)
-        .map((bairro) => (
-          <Polygon
-            key={`bairro-${bairro.id}`}
-            positions={bairro.coordenadas as any}
-            eventHandlers={{
-              click: () => handleOnClickAtBairro(bairro),
-            }}
-          />
-        ))}
+        .map((bairro) => {
+          const countIcon = L.divIcon({
+            html: `<span>${bairro.totalDeDenuncias}</span>`,
+            className: 'bairro-denuncia-count-icon',
+            iconSize: [30, 30],
+          });
+
+          return (
+            <div key={`bairro-container-${bairro.id}`}>
+              <Polygon
+                positions={bairro.coordenadas as any}
+                pathOptions={{
+                  color: 'blue',
+                  fillColor: 'lightblue',
+                  fillOpacity: 0.4,
+                }}
+                eventHandlers={{
+                  click: () => handleOnClickAtBairro(bairro),
+                }}
+              />
+              {bairro.totalDeDenuncias > 0 && (
+                <Marker
+                  position={[bairro.centerLatitude, bairro.centerLongitude]}
+                  icon={countIcon}
+                  interactive={false}
+                />
+              )}
+            </div>
+          );
+        })}
     </>
   );
 }

@@ -9,6 +9,7 @@ import {
 } from 'react';
 import type { AcaoModel } from '../types/Acao';
 import { type DenunciaModel } from '../types/Denuncia';
+import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 
 type SelectAcoesOuDenunciasProps = {
   salvarDenunciasOnclick: boolean;
@@ -33,11 +34,14 @@ type SelectAcoesOuDenunciasProps = {
   toggleAcaoSelecionada: (acao: AcaoModel) => void;
   currentBairroId: number | null;
   setCurrentBairroId: Dispatch<SetStateAction<number | null>>;
+  numberDenunciasInMap: NumeroDeDenunciasPorBairro[];
+  setNumberDenunciasInMap: Dispatch<SetStateAction<NumeroDeDenunciasPorBairro[]>>;
 };
 
 type Coordinates = {
   lat: number;
   lng: number;
+  level: number;
 };
 
 const MapActionsContext = createContext<
@@ -66,6 +70,8 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   const [newDenunciaCoordinates, setNewDenunciaCoordinates] =
     useState<null | Coordinates>(null);
 
+  const [numberDenunciasInMap, setNumberDenunciasInMap] = useState<NumeroDeDenunciasPorBairro[]>([])
+
   const value: SelectAcoesOuDenunciasProps = {
     salvarDenunciasOnclick,
     setSalvarDenunciasOnClick,
@@ -87,9 +93,10 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     newDenunciaCoordinates,
     setNewDenunciaCoordinates,
     toggleAcaoSelecionada,
-
     currentBairroId,
     setCurrentBairroId,
+    numberDenunciasInMap,
+    setNumberDenunciasInMap
   };
 
   useEffect(() => {

@@ -14,10 +14,15 @@ import { IconX } from '@tabler/icons-react';
 import { useMapActions } from '@/context/MapActions';
 
 export function MapFilters() {
-  const { currentBairroId } = useMapActions();
+  const { setCurrentBairroId, currentBairroId, setZoomTo } = useMapActions();
 
   if (!currentBairroId) {
     return null;
+  }
+
+  const handleZoomOut = () => {
+    setCurrentBairroId(null)
+    setZoomTo({lat: -2.51, lng: -44.28, level: 13})
   }
 
   return (
@@ -27,7 +32,7 @@ export function MapFilters() {
           <h2 className="text-sm font-bold">Filtros da denúncia</h2>
 
           <div className="flex gap-3">
-            <FilterDenunciaByCategoriaSelect />
+            {/* <FilterDenunciaByCategoriaSelect /> */}
             <FilterDenunciaByCategoriaTipoSelect />
             <FilterDenunciaStatusSelect />
           </div>
@@ -48,6 +53,7 @@ export function MapFilters() {
             <FilterAcaoStatusSelect />
             <FilterAcaoSecretariaSelect />
           </div>
+
         </div>
       </div>
 
@@ -55,6 +61,10 @@ export function MapFilters() {
         <Button className="w-56">
           Criar ação
           <img src={AcaoIcon} alt="Icone de denúncia" className="h-6 w-6" />
+        </Button>
+        <Button  className="inline-flex ml-3" variant={'outline'} onClick={handleZoomOut}>
+          <IconX/>
+          Limpar seleção
         </Button>
       </div>
 

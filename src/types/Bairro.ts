@@ -9,4 +9,10 @@ export interface Bairro {
   centerLatitude: number;
   centerLongitude: number;
   coordenadas: BairroCoordenadas;
+  totalDeDenuncias: number;
+}
+
+export interface NumeroDeDenunciasPorBairro {
+  bairro: string
+  quantidade: number
 }

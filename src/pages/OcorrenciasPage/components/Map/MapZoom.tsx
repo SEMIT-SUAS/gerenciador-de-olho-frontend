@@ -9,14 +9,14 @@ export function MapZoom() {
 
   useEffect(() => {
     if (zoomTo) {
-      const { lat, lng } = zoomTo;
+      const { lat, lng, level } = zoomTo;
 
       map.flyTo(
         {
           lat,
           lng,
         },
-        16,
+        level,
       );
     }
   }, [zoomTo]);
