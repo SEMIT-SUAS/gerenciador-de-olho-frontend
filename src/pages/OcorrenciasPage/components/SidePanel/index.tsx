@@ -15,7 +15,7 @@ export function SidePanel({ children }: SidePanelProps) {
     <Card
       className={cn(
         'absolute left-0 top-0 z-30 h-full bg-white shadow-xl border-l border-gray-200 transition-all duration-300 rounded-l-none',
-        isMinimized ? 'w-[18px]' : 'w-[400px]',
+        isMinimized ? 'w-[18px]' : 'w-[480px]',
       )}
     >
       <Button
@@ -41,7 +41,7 @@ export function SidePanel({ children }: SidePanelProps) {
           <h1 className="text-lg font-semibold">Gerenciador DONC</h1>
         </CardHeader>
 
-        <CardContent className={cn('p-4 overflow-y-auto h-[calc(100%-80px)]')}>
+        <CardContent className={cn('p-8 overflow-y-auto h-[calc(100%-80px)]')}>
           {children}
         </CardContent>
       </div>

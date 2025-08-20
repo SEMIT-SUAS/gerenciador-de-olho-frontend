@@ -12,21 +12,21 @@ export function OcorrenciasPage() {
 
   return (
     <div className="h-screen w-full relative">
-      {outletContent && (
-        <SidePanel>
-          <Outlet />
-        </SidePanel>
-      )}
+      <MapActionsProvider>
+        {outletContent && (
+          <SidePanel>
+            <Outlet />
+          </SidePanel>
+        )}
 
-      {isLoadingInitialContent ? (
-        <MapLoading />
-      ) : (
-        <FiltersProvider>
-          <MapActionsProvider>
+        {isLoadingInitialContent ? (
+          <MapLoading />
+        ) : (
+          <FiltersProvider>
             <OcorrenciasMap />
-          </MapActionsProvider>
-        </FiltersProvider>
-      )}
+          </FiltersProvider>
+        )}
+      </MapActionsProvider>
     </div>
   );
 }
