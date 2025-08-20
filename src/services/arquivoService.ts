@@ -1,3 +1,5 @@
+import { api } from '@/lib/axios';
+
 async function getByName(fileName: string): Promise<Blob> {
   try {
     let response;
@@ -23,3 +25,27 @@ async function getByName(fileName: string): Promise<Blob> {
 export default {
   getByName,
 };
+
+export class ArquivoService {
+  static async getBlobByURL(url: string) {
+    console.log(url);
+    try {
+      const response = await api.request({
+        url,
+        method: 'GET',
+        responseType: 'blob',
+      });
+
+      if (response.status != 200) {
+        throw new Error('Não foi possível buscar por esse arquivo');
+      }
+
+      return response.data as Blob;
+    } catch (error) {
+      console.error(error);
+      throw new Error(
+        'Serviço de arquivo fora do ar. Tente novamente mais tarde',
+      );
+    }
+  }
+}

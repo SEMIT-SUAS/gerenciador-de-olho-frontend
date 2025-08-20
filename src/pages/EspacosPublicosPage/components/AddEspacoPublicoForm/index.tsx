@@ -19,7 +19,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { SelectLocationInMap } from '../../../../components/SelectLocationInMap';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import denunciasService from '@/services/DenunciaService';
+import { AddressService } from '@/services/AddressService';
 import espacoPublicoService from '@/services/espacoPublicoService';
 
 interface AddEspacoPublicoFormProps {
@@ -36,7 +36,7 @@ export function AddEspacoPublicoForm({ onSuccess }: AddEspacoPublicoFormProps) {
       name: '',
       addressRua: '',
       addressBairro: '',
-      maxCapacity: '',
+      maxCapacity: 0,
       startHour: '',
       endHour: '',
       visivel: true,
@@ -46,8 +46,7 @@ export function AddEspacoPublicoForm({ onSuccess }: AddEspacoPublicoFormProps) {
 
   useEffect(() => {
     if (position) {
-      denunciasService
-        .getAddressByCoordinates(position[0], position[1])
+      AddressService.getAddressByCoordinates(position[0], position[1])
         .then((addressData) => {
           form.setValue('addressRua', addressData.rua);
           form.setValue('addressBairro', addressData.bairro);
