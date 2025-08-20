@@ -11,14 +11,14 @@ import type { usuarioFormValues } from './usuarioForm/usuarioSchema';
 import { toast } from 'sonner';
 import { UsuarioForm } from './usuarioForm/usuarioForm';
 import type { Secretaria } from '@/types/Secretaria';
-import type { UsuarioModel, UsuarioPorId } from '@/types/Usuario';
+import type { UsuarioPorId } from '@/types/Usuario';
 import usuarioService from '@/services/usuariosService';
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   secretarias: Secretaria[];
-  usuario: UsuarioPorId; 
+  usuario: UsuarioPorId;
 }
 
 export function EditUsuarioModal({
@@ -26,22 +26,24 @@ export function EditUsuarioModal({
   onOpenChange,
   secretarias,
   usuario,
-}: Props) {  
-
+}: Props) {
   const secretariaDoUsuario = secretarias.find(
-    (s) => s.nome.trim().toLowerCase() === usuario.secretaria.trim().toLowerCase()
+    (s) =>
+      s.nome.trim().toLowerCase() === usuario.secretaria.trim().toLowerCase(),
   );
 
-  const defaultValues = usuario ? {
-    nome: usuario.nome,
-    cpf: usuario.cpf,
-    contato: usuario.contato,
-    email: usuario.email,
-    senha: '',
-    ativo: usuario.ativo,
-    secretaria: secretariaDoUsuario!.id,
-    perfil: usuario.perfil as "ADMINISTRADOR" | "COMUM", 
-  } : undefined;
+  const defaultValues = usuario
+    ? {
+        nome: usuario.nome,
+        cpf: usuario.cpf,
+        contato: usuario.contato,
+        email: usuario.email,
+        senha: '',
+        ativo: usuario.ativo,
+        secretaria: secretariaDoUsuario!.id,
+        perfil: usuario.perfil as 'ADMINISTRADOR' | 'COMUM',
+      }
+    : undefined;
 
   async function onSubmit(data: usuarioFormValues) {
     if (!usuario?.id) {

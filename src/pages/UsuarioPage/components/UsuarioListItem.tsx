@@ -4,12 +4,9 @@ import { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import type { UsuarioModel } from '@/types/Usuario';
 import type { Secretaria } from '@/types/Secretaria';
-import { toast } from 'sonner';
-
 import { TableCell, TableRow } from '@/components/ui/table';
 import { IconEdit, IconTrash, IconUser } from '@tabler/icons-react';
 
-import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { Badge } from '@/components/ui/badge';
 import secretariaService from '@/services/secretariaService';
 
