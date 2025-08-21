@@ -32,7 +32,7 @@ export function CategoriaListItem({
 
       toast.success('Categoria desativada com sucesso!');
     } catch (error: any) {
-      console.log(error);
+      toast.error(error.message);
     }
 
     setIsOpenDeleteModal(false);

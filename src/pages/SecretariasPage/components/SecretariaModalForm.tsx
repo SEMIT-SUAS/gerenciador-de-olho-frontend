@@ -30,7 +30,6 @@ import { secretariaSchema, type CreateSecretaria } from './secretariaSchema';
 import { toast } from 'sonner';
 
 const uploadSecretaria = async (data: CreateSecretaria) => {
-  console.log('Enviando dados para a API:', data);
   await new Promise((resolve) => setTimeout(resolve, 1500));
   if (data.nome.toLowerCase() === 'erro') {
     throw new Error('Erro simulado na API ao tentar cadastrar.');

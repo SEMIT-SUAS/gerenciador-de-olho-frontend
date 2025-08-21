@@ -1,15 +1,14 @@
 import { api } from '@/lib/axios.ts';
-import { AxiosError } from 'axios'; // Importar AxiosError para um tratamento mais robusto
+import { AxiosError } from 'axios';
 
 import type {
   DenunciaBasicInfoModel,
   DenunciaInMap,
   DenunciaModel,
-  DenunciaStatusModelTypes,
 } from '../types/Denuncia.ts';
-import type { Bairro, NumeroDeDenunciasPorBairro } from '@/types/Bairro';
+import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia.ts';
-import type { Secretaria } from '@/types/Secretaria.ts';
+import type { DenunciaIndeferidaModel } from '@/types/DenunciaIndeferidaModel.ts';
 
 export class DenunciaService {
   private static SERVICE_UNAVAILABLE_ERROR = new Error(
@@ -104,14 +103,41 @@ export class DenunciaService {
     }
   }
 
-  public static async indeferirDenuncia(data: {
+  public static async indeferirDenuncia({
+    denunciaId,
+    userId,
+    motivo,
+  }: {
     denunciaId: number;
+    userId: number;
     motivo: string;
-  }): Promise<void> {
+  }): Promise<DenunciaIndeferidaModel> {
     try {
-      await api.put('/denuncia/denuncias/indeferir', data);
+      const response = await api.post(
+        '/denuncia-indeferida/cadastrar/' + denunciaId,
+        JSON.stringify({
+          motivo,
+          denuncia: denunciaId,
+          gerenciador: userId,
+          ativo: true,
+        }),
+        {
+          headers: {
+            'Content-Type': 'Application/json',
+          },
+        },
+      );
+
+      if (response.status != 201) {
+        throw new Error('Não foi possível indeferir essa denuncia');
+      }
+
+      const responseData = JSON.parse(response.data);
+      const indeferimentoData = responseData.denuncia
+        .denunciaIndeferida as DenunciaIndeferidaModel;
+
+      return indeferimentoData;
     } catch (error) {
-      console.error(`Falha ao indeferir denúncia ${data.denunciaId}:`, error);
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
   }

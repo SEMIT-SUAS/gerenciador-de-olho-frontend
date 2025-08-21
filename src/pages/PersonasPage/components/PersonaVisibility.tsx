@@ -30,7 +30,6 @@ export function PersonaVisibility({
         `Persona "${persona.nome}" ${!persona.visivel ? 'visível' : 'oculta'}!`,
       );
     } catch (error: any) {
-      console.log(error);
       toast.error('Erro ao alterar visibilidade da persona');
     }
 

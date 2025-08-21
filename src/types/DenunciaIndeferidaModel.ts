@@ -1,8 +1,6 @@
-import type { UsuarioModel } from './Usuario';
-
 export interface DenunciaIndeferidaModel {
   id: number;
-  indeferidaEm: string;
+  gerenciador: string;
   motivo: string;
-  indeferidaPor: UsuarioModel | null;
+  indeferidaEm: string;
 }

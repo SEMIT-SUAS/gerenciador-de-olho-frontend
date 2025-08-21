@@ -31,7 +31,6 @@ export function TiposDenunciaListItem({
       toast.success('Tipo de denúncia desativado com sucesso!');
     } catch (error: any) {
       toast.error('Erro ao desativar o tipo de denúncia.');
-      console.log(error);
     } finally {
       setIsOpenDisableModal(false);
     }

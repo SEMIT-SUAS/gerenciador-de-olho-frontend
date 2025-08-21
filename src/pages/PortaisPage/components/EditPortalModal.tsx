@@ -35,8 +35,6 @@ export function EditPortalModal({
         id: Number(portal!.id),
       };
 
-      console.log(payload);
-
       const newPortal = await PortaisService.updatePortal(payload);
 
       if (setPortais) {

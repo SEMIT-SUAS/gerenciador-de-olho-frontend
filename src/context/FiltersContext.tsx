@@ -205,20 +205,10 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       try {
         const denunciaParams = {
           bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-
           status: filtroStatusDenuncia,
-
           secretaria: user!.idSecretaria,
 
           'tipo-denuncia': filtroTipoDenuncia,
-        };
-
-        const acaoParams = {
-          bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-
-          status: filtroStatusAcao,
-
-          secretaria: user!.idSecretaria,
         };
 
         const denuncias = await DenunciaService.getDenunciaPorBairro(
@@ -244,32 +234,35 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     filtroTipoDenuncia,
   ]);
 
-  // const acoesFiltradas = useMemo(() => {
-  //   if (filtrarAcoesPorId !== 'desabilitado') {
-  //     return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
-  //   }
+  console.log('Denuncias do bairro:', denunciasDoBairro);
 
-  //   return acoes
-  //     .filter((a) => {
-  //       console.log(filtroSecretaria);
-  //       if (filtroSecretaria === 'todas') {
-  //         return a;
-  //       } else {
-  //         console.log(a.secretaria.sigla);
-  //         return a.secretaria.sigla === filtroSecretaria;
-  //       }
-  //     })
-  //     .filter((a) => {
-  //       const currentStatus = a.status?.[a.status.length - 1]?.status;
-  //       if (!currentStatus) return false;
+  const acoesFiltradas = useMemo(() => {
+    if (filtrarAcoesPorId !== 'desabilitado') {
+      return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
+    }
 
-  //       if (filtroStatusAcao === 'todos') {
-  //         return a;
-  //       } else {
-  //         return filtroStatusAcao[0] === currentStatus;
-  //       }
-  //     });
-  // }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
+    return acoes
+      .filter((a) => {
+        console.log(filtroSecretaria);
+        if (filtroSecretaria === 'todas') {
+          return a;
+        } else {
+          console.log(a.secretaria.sigla);
+          return a.secretaria.sigla === filtroSecretaria;
+        }
+      })
+      .filter((a) => {
+        const currentStatus = a.status?.[a.status.length - 1]?.status;
+        if (!currentStatus) return false;
+
+        if (filtroStatusAcao === 'todos') {
+          return a;
+        } else {
+          return filtroStatusAcao[0] === currentStatus;
+        }
+      });
+  }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
+  console.log(filtroStatusDenuncia);
   return (
     <FiltersContext.Provider
       value={{

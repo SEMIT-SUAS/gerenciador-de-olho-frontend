@@ -50,7 +50,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const userData = await usuarioService.getProfile(credentials.login);
     setUser(userData);
-    console.log(userData);
   };
 
   const logout = () => {

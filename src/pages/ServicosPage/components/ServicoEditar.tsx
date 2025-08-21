@@ -121,8 +121,6 @@ function ServicoEditarPage() {
       personas: data.personaIds,
     };
 
-    console.log('Payload enviado:', JSON.stringify(payload, null, 2));
-
     try {
       await updateServico(payload);
       navigate(`/servicos/${servicoId}`);

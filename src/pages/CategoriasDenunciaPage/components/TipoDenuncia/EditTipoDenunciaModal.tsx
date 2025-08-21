@@ -45,9 +45,6 @@ export function EditTipoDenunciaModal({
       (c) => c.nome === tipoParaEditar.categoria,
     );
 
-    console.log('Secretaria Encontrada:', secretariaEncontrada);
-    console.log('Categoria Encontrada:', categoriaEncontrada);
-
     return {
       nome: tipoParaEditar.nome,
       secretariaId: secretariaEncontrada!.id,
@@ -64,20 +61,13 @@ export function EditTipoDenunciaModal({
       setIsSubmitting(true);
 
       const formData = new FormData();
-
       formData.append('nome', data.nome);
-
       formData.append('secretaria_id', String(data.secretariaId));
       formData.append('categoria_denuncia_id', String(data.categoriaId));
       formData.append('cor', data.cor);
-
       formData.append('icone', data.icone);
-
       formData.append('visivel', String(data.visivel));
-
       formData.append('ativo', String(data.ativo));
-
-      console.log(Object.fromEntries(formData.entries()));
 
       const newTipo = await tiposDenunciaService.updateTipoDenuncia(formData);
 
