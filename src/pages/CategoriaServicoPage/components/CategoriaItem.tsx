@@ -10,9 +10,9 @@ import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 interface CategoriaListItemProps {
   categoria: ServicoCategoria & { id: number };
   setCategorias: Dispatch<
-    SetStateAction<(ServicoCategoria & { id: number })[]>
-  >;
-  onEdit: (categoria: ServicoCategoria & { id: number }) => void; // ← adicionar esta linha
+    SetStateAction<(ServicoCategoria & { id: number })[] | null>
+  >; // ← ATUALIZADO: Adicionado | null
+  onEdit: (categoria: ServicoCategoria & { id: number }) => void;
 }
 
 export function CategoriaListItem({
@@ -26,13 +26,19 @@ export function CategoriaListItem({
     try {
       await toggleAtivo(categoria.id, false);
 
-      setCategorias((prev: (ServicoCategoria & { id: number })[]) =>
-        prev.map((c) => (c.id === categoria.id ? { ...c, ativo: false } : c)),
-      );
+      setCategorias((prev) => {
+        // ← ATUALIZADO: Tratamento para null
+        if (!prev) return prev; // Se for null, mantém null
+
+        return prev.map((c) =>
+          c.id === categoria.id ? { ...c, ativo: false } : c,
+        );
+      });
 
       toast.success('Categoria desativada com sucesso!');
     } catch (error: any) {
       console.log(error);
+      toast.error('Erro ao desativar categoria');
     }
 
     setIsOpenDeleteModal(false);
@@ -57,33 +63,38 @@ export function CategoriaListItem({
         </TableCell>
         <TableCell>{categoria.nome}</TableCell>
         <TableCell>
-          <div className="gap-6">
+          <div className="flex gap-2 items-center">
+            {' '}
+            {/* ← MELHORADO: flex para alinhamento */}
             <button
-              className="text-black-600 mr-2"
+              className="text-black-600"
               onClick={() => onEdit(categoria)}
+              title="Editar categoria"
             >
               <IconEdit size={18} stroke={2} className="text-black-600" />
             </button>
             <button
               onClick={() => setIsOpenDeleteModal(true)}
-              className="text-black-600 mr-2"
+              className="text-black-600"
+              title="Excluir categoria"
             >
               <IconTrash size={18} stroke={2} className="text-black-600" />
             </button>
-            <button className="text-black-600 mr-2">
+            <div className="text-black-600">
               <CategoriaVisibility
                 categoria={categoria}
                 setCategorias={setCategorias}
               />
-            </button>
+            </div>
           </div>
         </TableCell>
       </TableRow>
+
       <ConfirmModal
         isOpen={isOpenDeleteModal}
         onConfirm={async () => {
           await handleDeleteCategoria();
-          window.location.reload();
+          window.location.reload(); // ← CONSIDERE: Remover reload e usar estado
         }}
         onCancel={() => setIsOpenDeleteModal(false)}
         title="Você deseja apagar a categoria?"

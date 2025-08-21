@@ -33,89 +33,76 @@ import { AddCategoriaForm } from '@/pages/CategoriaServicoPage/components/Catego
 
 export function CategoriasPage() {
   const [categorias, setCategorias] = useState<
-    (ServicoCategoria & { id: number })[]
-  >([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+    (ServicoCategoria & { id: number })[] | null
+  >(null);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
 
-  // Estados do modal
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editCategoria, setEditCategoria] = useState<
     (ServicoCategoria & { id: number }) | null
   >(null);
 
-  async function fetchCategorias() {
+  async function getAllCategoriasData() {
     try {
-      setLoading(true);
-      const data = await getAllCategorias();
-      setCategorias(data);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao buscar as categorias.');
-      toast.error(err.message || 'Erro ao buscar as categorias.');
-    } finally {
-      setLoading(false);
+      return await getAllCategorias();
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao buscar as categorias.');
     }
   }
 
   useEffect(() => {
-    fetchCategorias();
+    getAllCategoriasData().then((categoriasData) => {
+      if (categoriasData) {
+        setCategorias(categoriasData);
+      }
+    });
+
+    return () => {
+      setCategorias(null);
+    };
   }, []);
 
   const handleSubmitCategoria = async (
     data: createServicoCategoria | (ServicoCategoriaEditar & { id: number }),
   ) => {
     try {
-      // Se tem id, é edição
       if ('id' in data && data.id) {
         await editarCategoria(data as ServicoCategoriaEditar & { id: number });
         toast.success('Categoria editada com sucesso!');
         setEditCategoria(null);
       } else {
-        // Se não tem id, é criação
         await createCategoria(data as createServicoCategoria);
         toast.success('Categoria criada com sucesso!');
         setShowCreateModal(false);
       }
-      fetchCategorias();
+
+      const newData = await getAllCategoriasData();
+      if (newData) {
+        setCategorias(newData);
+      }
     } catch (error: any) {
       toast.error(error.message || 'Erro ao salvar categoria');
     }
   };
 
-  const filtered = categorias.filter((c) =>
-    c.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredCategorias = categorias?.filter((categoria) =>
+    categoria.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <p className="text-red-600">Erro: {error}</p>
-          <Button onClick={fetchCategorias} variant="outline" className="mt-4">
-            Tentar novamente
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const totalPages = Math.ceil(
+    (filteredCategorias?.length ?? 0) / itemsPerPage,
+  );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-600">Carregando categorias...</p>
-      </div>
-    );
-  }
+  const currentCategorias =
+    filteredCategorias?.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage,
+    ) || [];
 
   const itemsPerPageOptions = [8, 16, 24];
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
-  const currentData = filtered.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
 
   return (
     <LayoutPage>
@@ -126,6 +113,7 @@ export function CategoriasPage() {
             Gerencie as categorias disponíveis com clareza e objetividade.
           </p>
         </div>
+
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
           <div className="w-full sm:w-[280px] md:w-[320px]">
             <SearchInput
@@ -149,8 +137,9 @@ export function CategoriasPage() {
         </div>
 
         <CategoriasServicosList
+          itemsPerPage={itemsPerPage}
+          categorias={currentCategorias}
           setCategorias={setCategorias}
-          categorias={currentData}
           onEdit={setEditCategoria}
         />
 
@@ -185,7 +174,7 @@ export function CategoriasPage() {
               Página {currentPage} de {totalPages}
             </span>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <Button
                 variant="outline"
                 size="sm"
