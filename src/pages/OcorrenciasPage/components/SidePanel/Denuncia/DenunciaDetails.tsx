@@ -72,7 +72,7 @@ export function DenunciaDetails() {
               </p>
             </div>
 
-            <Tag status={denuncia.dadosAcaoParaDenuncia.status} />
+            <Tag status={denuncia.dadosAcaoParaDenuncia?.status ?? 'Aberto'} />
           </div>
           <div>
             <h3 className="font-semibold text-sm text-gray-800">Descrição:</h3>

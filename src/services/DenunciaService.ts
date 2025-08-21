@@ -35,9 +35,12 @@ export class DenunciaService {
 
   public static async getById(denunciaId: number): Promise<DenunciaModel> {
     try {
-      const response = await api.get(`/denuncia/buscar/${denunciaId}`, {
-        responseType: 'json',
-      });
+      const response = await api.get(
+        `/denuncia/gerenciador/buscar-denuncia/${denunciaId}`,
+        {
+          responseType: 'json',
+        },
+      );
 
       if (response.status != 200) {
         throw new Error('Não foi possível buscar essa denúncia.');
