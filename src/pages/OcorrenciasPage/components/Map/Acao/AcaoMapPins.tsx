@@ -9,7 +9,7 @@ import { AcaoTooltip } from './AcaoTooltip';
 import { Icon } from 'leaflet';
 
 export function AcaoMapPins() {
-  const { isVisibleAcoesInMap, acoesFiltradas, denunciasDoBairro } =
+  const { isVisibleAcoesInMap, denunciasDoBairro, acoesDoBairro } =
     useFilters();
   const { salvarAcaoOnclick, toggleAcaoSelecionada, acaoSelecionada } =
     useMapActions();
@@ -44,11 +44,10 @@ export function AcaoMapPins() {
 
   return (
     <>
-      {acoesFiltradas.map((a) => {
+      {acoesDoBairro.map((a) => {
         const denunciasVinculadas = denunciasDoBairro.filter(
           (d) =>
-            d.acao?.id === a.id &&
-            denunciasDoBairro.find((df) => d.id === df.id),
+            d.idAcao === a.id && denunciasDoBairro.find((df) => d.id === df.id),
         );
 
         const acaoPolygonCoords = getConvexHull(
@@ -68,7 +67,7 @@ export function AcaoMapPins() {
                 click: () => handleOnAcaoClick(a),
               }}
             >
-              {!salvarAcaoOnclick && <AcaoTooltip acao={a} />}
+              {/* {!salvarAcaoOnclick && <AcaoTooltip acao={a} />} */}
             </Marker>
 
             {denunciasVinculadas.length > 0 && (

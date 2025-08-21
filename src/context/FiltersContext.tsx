@@ -29,7 +29,7 @@ type FilterState = {
   isVisibleDenunciasInMap: boolean;
   isVisibleAcoesInMap: boolean;
   filtroStatusDenuncia: DenunciaStatusModelTypes;
-  filtroStatusAcao: string | AcaoStatusModelTypes[];
+  filtroStatusAcao: string | AcaoStatusModelTypes;
   filtroCategoria: 'todas' | string | null;
   filtroSecretaria: 'todas' | string | null;
   filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
@@ -211,6 +211,12 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
           'tipo-denuncia': filtroTipoDenuncia,
         };
 
+        const acaoParams = {
+          bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
+          status: filtroStatusDenuncia,
+          secretaria: user!.idSecretaria,
+        };
+
         const denuncias = await DenunciaService.getDenunciaPorBairro(
           denunciaParams,
         );
@@ -219,6 +225,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 
         setAcoesDoBairro(acoes);
         setDenunciasDoBairro(denuncias);
+        console.log('ações do bairro:', acoes);
       } catch (err) {
         console.error('Falha ao buscar denúncias:', err);
       } finally {
@@ -236,33 +243,33 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 
   console.log('Denuncias do bairro:', denunciasDoBairro);
 
-  const acoesFiltradas = useMemo(() => {
-    if (filtrarAcoesPorId !== 'desabilitado') {
-      return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
-    }
+  // const acoesFiltradas = useMemo(() => {
+  //   if (filtrarAcoesPorId !== 'desabilitado') {
+  //     return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
+  //   }
 
-    return acoes
-      .filter((a) => {
-        console.log(filtroSecretaria);
-        if (filtroSecretaria === 'todas') {
-          return a;
-        } else {
-          console.log(a.secretaria.sigla);
-          return a.secretaria.sigla === filtroSecretaria;
-        }
-      })
-      .filter((a) => {
-        const currentStatus = a.status?.[a.status.length - 1]?.status;
-        if (!currentStatus) return false;
+  //   return acoes
+  //     .filter((a) => {
+  //       console.log(filtroSecretaria);
+  //       if (filtroSecretaria === 'todas') {
+  //         return a;
+  //       } else {
+  //         console.log(a.secretaria.sigla);
+  //         return a.secretaria.sigla === filtroSecretaria;
+  //       }
+  //     })
+  //     .filter((a) => {
+  //       const currentStatus = a.status?.[a.status.length - 1]?.status;
+  //       if (!currentStatus) return false;
 
-        if (filtroStatusAcao === 'todos') {
-          return a;
-        } else {
-          return filtroStatusAcao[0] === currentStatus;
-        }
-      });
-  }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
-  console.log(filtroStatusDenuncia);
+  //       if (filtroStatusAcao === 'todos') {
+  //         return a;
+  //       } else {
+  //         return filtroStatusAcao[0] === currentStatus;
+  //       }
+  //     });
+  // }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
+  // console.log(filtroStatusDenuncia);
   return (
     <FiltersContext.Provider
       value={{
@@ -280,6 +287,8 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         setFiltroSecretaria,
         denunciasDoBairro,
         setDenunciasDoBairro,
+        acoesDoBairro,
+        setAcoesDoBairro,
         // acoesFiltradas,
         filtroDenunciasComAcao,
         setFiltroDenunciasComAcao,

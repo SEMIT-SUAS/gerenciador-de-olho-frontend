@@ -5,6 +5,7 @@ import { BairroPolygons } from './BairroPolygons';
 import 'leaflet/dist/leaflet.css';
 import { MapZoom } from './MapZoom';
 import { DenunciaMapPins } from './Denuncia/DenunciaMapPins';
+import { AcaoMapPins } from './Acao/AcaoMapPins';
 
 export function OcorrenciasMap() {
   return (
@@ -27,6 +28,7 @@ export function OcorrenciasMap() {
 
         <MapZoom />
         <DenunciaMapPins />
+        <AcaoMapPins />
         <BairroPolygons />
       </MapContainer>
     </div>

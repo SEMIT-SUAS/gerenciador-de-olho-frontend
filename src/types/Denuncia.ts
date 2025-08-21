@@ -59,6 +59,7 @@ export interface DenunciaInMap {
   id: number;
   nomeTipoDenuncia: string;
   acaoStatus: string;
+  idAcao: number | null;
   latitude: number;
   longitude: number;
   criadoEm: string;

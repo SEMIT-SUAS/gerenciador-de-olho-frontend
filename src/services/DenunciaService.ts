@@ -148,6 +148,7 @@ export class DenunciaService {
     bairro: string;
     'tipo-denuncia': string;
   }): Promise<DenunciaInMap[]> {
+    console.log('Fetching denuncias por bairro with params:', data);
     try {
       const response = await api.get(`/denuncia/gerenciador/filtro-denuncias`, {
         params: data,

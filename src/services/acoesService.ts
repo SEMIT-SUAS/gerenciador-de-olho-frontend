@@ -12,14 +12,15 @@ export default class AcoesService {
     secretaria: number;
     bairro: string;
   }): Promise<AcaoInMap[]> {
+    console.log('Buscando ações filtradas com os dados:', data);
     try {
-      const response = await api.get(`/acao/gerenciador/filtro-acao`, {
+      const response = await api.get('/acao/gerenciador/filtro-acao', {
         params: {
-          params: data,
+          status: data.status,
+          secretaria: data.secretaria,
+          bairro: data.bairro,
         },
       });
-
-      console.log('Ações filtradas:', response);
 
       if (response.status !== 200) {
         throw new Error('Não foi possível buscar as ações por bairro.');

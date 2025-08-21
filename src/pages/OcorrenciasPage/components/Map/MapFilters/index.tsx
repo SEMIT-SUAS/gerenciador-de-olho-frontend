@@ -20,7 +20,14 @@ import AcoesService from '@/services/acoesService';
 
 export function MapFilters() {
   const { setCurrentBairroId, currentBairroId, setZoomTo } = useMapActions();
-  const { setDenunciasDoBairro } = useFilters();
+  const {
+    setDenunciasDoBairro,
+    setAcoesDoBairro,
+    setFiltrarTipoDenuncia,
+    setFiltroStatusDenuncia,
+    filtroTipoDenuncia,
+    filtroStatusDenuncia,
+  } = useFilters();
   const { user } = useAuth();
 
   if (!currentBairroId) {
@@ -40,7 +47,7 @@ export function MapFilters() {
   });
 
   const handleStatusChange = (value: string) => {
-    setTempFilters((prev) => ({ ...prev, status: value }));
+    setTempFilters((prev) => ({ ...prev, denunciaStatus: value }));
   };
 
   const handleTipoDenunciaChange = (value: string) => {
@@ -62,7 +69,7 @@ export function MapFilters() {
       const acaoParams = {
         bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
 
-        status: tempFilters.acaoStatus,
+        status: tempFilters.denunciaStatus,
 
         secretaria: user!.idSecretaria,
       };
@@ -71,9 +78,9 @@ export function MapFilters() {
         denunciaParams,
       );
 
-      // const acaoFiltradas = await AcoesService.getFilteredAcoes(acaoParams);
+      const acaoFiltradas = await AcoesService.getFilteredAcoes(acaoParams);
 
-      // setAcoesDoBairro(acaoFiltradas);
+      setAcoesDoBairro(acaoFiltradas);
       setDenunciasDoBairro(denunciaFiltradas);
     } catch (error) {
       console.error('Error applying filters:', error);
@@ -84,7 +91,7 @@ export function MapFilters() {
     <>
       <div className="absolute z-20 top-9 left-12">
         <div className="flex flex-col gap-3">
-          <h2 className="text-sm font-bold">Filtros da denúncia</h2>
+          <h2 className="text-sm font-bold">Filtros</h2>
 
           <div className="flex gap-3">
             <FilterDenunciaByCategoriaTipoSelect
@@ -98,16 +105,6 @@ export function MapFilters() {
             <Button variant="outline" className="text-gray-600">
               <IconX /> Limpar Filtros
             </Button>
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute z-20 top-9 right-12">
-        <div className="flex flex-col gap-3">
-          <h2 className="text-sm font-bold text-end">Filtros da ação</h2>
-          <div className="flex gap-3">
-            <FilterAcaoStatusSelect />
-            <FilterAcaoSecretariaSelect />
           </div>
         </div>
       </div>
