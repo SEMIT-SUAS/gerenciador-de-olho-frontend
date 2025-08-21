@@ -2,13 +2,15 @@ import { Marker, useMap } from 'react-leaflet';
 import { useFilters } from '@/context/FiltersContext';
 import { getDenunciaIconByTipo } from '@/utils/getPinIcon';
 import { useMapActions } from '@/context/MapActions';
-import type { DenunciaModel } from '@/types/Denuncia';
+import type { DenunciaInMap, DenunciaModel } from '@/types/Denuncia';
 import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
 import { getConvexHull } from '@/utils/geometry';
 import { DenunciaTooltip } from './DenunciaTooltip';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { type LeafletMouseEvent, divIcon } from 'leaflet';
+import { DenunciaService } from '@/services/DenunciaService';
+import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
 
 const statusIconMap: Record<string, string> = {
   indeferido: '../../../public/status/indeferido.png',
@@ -20,7 +22,9 @@ const statusIconMap: Record<string, string> = {
 };
 
 export function DenunciaMapPins() {
-  const { denunciasFiltradas, isVisibleDenunciasInMap } = useFilters();
+  const { denunciasDoBairro } = useFilters();
+
+  const { isVisibleDenunciasInMap } = useFilters();
 
   const {
     salvarDenunciasOnclick,
@@ -35,6 +39,8 @@ export function DenunciaMapPins() {
 
   const navigate = useNavigate();
   const map = useMap();
+
+  console.log('Denuncias do bairro:', denunciasDoBairro);
 
   const denunciaPolygonCoordinates = useMemo(() => {
     return getConvexHull(
@@ -64,7 +70,7 @@ export function DenunciaMapPins() {
     map,
   ]);
 
-  function handleOnDenunciaClick(currentDenuncia: DenunciaModel) {
+  function handleOnDenunciaClick(currentDenuncia: DenunciaInMap) {
     if (salvarDenunciasOnclick) {
       addDenunciaNaSelecao(currentDenuncia);
     } else {
@@ -72,14 +78,17 @@ export function DenunciaMapPins() {
     }
   }
 
-  function handleGetIcon(denuncia: DenunciaModel) {
+  function handleGetIcon(denuncia: DenunciaInMap) {
     const isSelected = !!denunciasSelecionas.find((d) => d.id === denuncia.id);
 
-    const baseIcon = getDenunciaIconByTipo(denuncia.tipo.nome, isSelected);
+    const baseIcon = getDenunciaIconByTipo(
+      denuncia.nomeTipoDenuncia,
+      isSelected,
+    );
     const mainIconUrl = baseIcon.options.iconUrl;
     const iconSize = baseIcon.options.iconSize as [number, number];
 
-    const statusValue = denuncia.acao?.status[0].status || 'default';
+    const statusValue = denuncia.acaoStatus || 'default';
 
     const statusIconUrl = statusIconMap[statusValue] || statusIconMap.default;
 
@@ -104,7 +113,7 @@ export function DenunciaMapPins() {
 
   return (
     <>
-      {denunciasFiltradas.map((d) => {
+      {denunciasDoBairro.map((d) => {
         return (
           <Marker
             key={`d-${d.id}`}

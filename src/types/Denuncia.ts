@@ -53,3 +53,12 @@ export interface DenunciaBasicInfoModel {
   criadaEm: string;
   primeiroArquivo: string;
 }
+
+export interface DenunciaInMap {
+  id: number;
+  nomeTipoDenuncia: string;
+  acaoStatus: string;
+  latitude: number;
+  longitude: number;
+  criadoEm: string;
+}

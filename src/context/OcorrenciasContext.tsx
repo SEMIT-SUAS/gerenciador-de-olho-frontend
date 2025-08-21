@@ -19,6 +19,8 @@ import { useMapActions } from './MapActions';
 import { DenunciaService } from '@/services/DenunciaService';
 import { FilterDenunciaStatusSelect } from '@/pages/OcorrenciasPage/components/Map/MapFilters/FilterDenunciaStatusSelect';
 import { useAuth } from './AuthContext';
+import { useFilters } from './FiltersContext';
+import type { DenunciaInMap } from '@/types/Denuncia';
 
 type OcorrenciasContextProps = {
   isLoadingInitialContent: boolean;
@@ -27,6 +29,7 @@ type OcorrenciasContextProps = {
   categorias: CategoriaDenunciaModel[];
   categoriaTipos: TipoDenunciaModel[];
   secretarias: Secretaria[];
+  denunciasDoBairro: DenunciaInMap[];
 };
 
 const OcorrenciasContext = createContext<OcorrenciasContextProps | undefined>(
@@ -34,7 +37,6 @@ const OcorrenciasContext = createContext<OcorrenciasContextProps | undefined>(
 );
 
 export function OcorrenciasProvider({ children }: { children: ReactNode }) {
-  const { currentBairroId } = useMapActions();
   const [APIError, setAPIError] = useState<null | string>(null);
   const [isLoadingInitialContent, setIsLoadingInitialContent] =
     useState<boolean>(true);
@@ -42,11 +44,17 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
   const [categorias, setCategorias] = useState<CategoriaDenunciaModel[]>([]);
   const [categoriaTipos, setCategoriaTipos] = useState<TipoDenunciaModel[]>([]);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
+  const [denunciasDoBairro, setDenunciasDoBairro] = useState<DenunciaInMap[]>(
+    [],
+  );
+
+  const { filtroStatusDenuncia } = useFilters();
 
   const { user } = useAuth();
 
   useEffect(() => {
     async function loadData() {
+      console.log;
       try {
         const [
           categoriasData,
@@ -58,7 +66,7 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
           tiposDenunciaService.getAllTiposDenuncia(),
           secretariaService.getAllSecretarias(),
           DenunciaService.getNumberDenunciasInMap(
-            'Aberto',
+            filtroStatusDenuncia,
             user?.idSecretaria!,
           ),
         ]);
@@ -67,25 +75,19 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
         setCategoriaTipos(categoriaTiposData);
         setSecretarias(secretariasData);
 
-        console.log(dataDenunciasInMap);
-
         const bairroPromises = DADOS_BAIRROS.map((bairro) => {
-          // Criamos uma Promise para cada iteração.
-          // O setTimeout(..., 0) é um truque para liberar a thread principal
-          // e evitar que a UI congele em processamentos muito longos.
           return new Promise((resolve) => {
             setTimeout(() => {
               const totalDeDenuncias =
                 dataDenunciasInMap.find(
                   (dInMap) => dInMap.bairro === bairro.nome,
-                )?.quantidade || 0; // Usei 0 em vez de 1, parece mais seguro.
+                )?.quantidade || 0;
 
               const bairroFormatado = {
                 ...bairro,
                 totalDeDenuncias,
               };
 
-              // 4. Resolve a Promise com o resultado do item
               resolve(bairroFormatado);
             }, 0);
           });
@@ -106,7 +108,61 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
     loadData();
   }, []);
 
-  useEffect(() => {}, [currentBairroId]);
+  // useEffect(() => {
+  //   const fetchDenunciasFiltradas = async () => {
+  //     if (!currentBairroId) {
+  //       setDenunciasDoBairro([]);
+  //       return;
+  //     }
+
+  //     setIsLoading(true);
+  //     setError(null);
+
+  //     try {
+  //       const params = {
+  //         bairro: String(currentBairroId),
+
+  //         status:
+  //           filtroStatusDenuncia === 'todos'
+  //             ? ''
+  //             : filtroStatusDenuncia.join(','),
+
+  //         secretaria:
+  //           filtroSecretaria === 'todas' || filtroSecretaria === null
+  //             ? 0
+  //             : Number(filtroSecretaria),
+
+  //         tipoDenuncia:
+  //           filtroTipoDenuncia === 'todos' || filtroTipoDenuncia === null
+  //             ? ''
+  //             : filtroTipoDenuncia,
+  //       };
+
+  //       const denuncias = await DenunciaService.getDenunciaPorBairro(params);
+  //       setDenunciasDoBairro(denuncias);
+  //     } catch (err) {
+  //       console.error('Falha ao buscar denúncias:', err);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   fetchDenunciasFiltradas();
+  // }, [
+  //   currentBairroId,
+  //   filtroStatusDenuncia,
+  //   filtroSecretaria,
+  //   filtroTipoDenuncia,
+  // ]);
+
+  // Exemplo de como usar os estados no seu JSX
+  // if (isLoading) {
+  //   return <div>Carregando denúncias...</div>;
+  // }
+
+  // if (error) {
+  //   return <div>Erro: {error}</div>;
+  // }
 
   const value: OcorrenciasContextProps = {
     isLoadingInitialContent,
@@ -115,6 +171,7 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
     categorias,
     categoriaTipos,
     secretarias,
+    denunciasDoBairro,
   };
 
   return (

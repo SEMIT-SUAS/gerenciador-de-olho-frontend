@@ -7,33 +7,39 @@ import {
   type ReactNode,
   type SetStateAction,
   useCallback,
+  useEffect,
 } from 'react';
 import { useOcorrencias } from './OcorrenciasContext';
 import type {
+  DenunciaInMap,
   DenunciaModel,
   DenunciaStatusModelTypes,
 } from '../types/Denuncia';
 import type { AcaoModel } from '../types/Acao';
 import type { AcaoStatusModelTypes } from '../types/AcaoStatus';
 import { getDenunciaStatus } from '../utils/getDenunciaStatus';
+import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
+import { useMapActions } from './MapActions';
+import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
+import { useAuth } from './AuthContext';
+import { DenunciaService } from '@/services/DenunciaService';
 
 type FilterState = {
   isVisibleDenunciasInMap: boolean;
   isVisibleAcoesInMap: boolean;
-  filtroStatusDenuncia: 'todos' | DenunciaStatusModelTypes[];
+  filtroStatusDenuncia: DenunciaStatusModelTypes;
   filtroStatusAcao: 'todos' | AcaoStatusModelTypes[];
   filtroCategoria: 'todas' | string | null;
   filtroSecretaria: 'todas' | string | null;
   filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
   filtrarAcoesPorId: number[] | 'desabilitado';
+  filtroTipoDenuncia: TipoDenunciaModel | '';
 };
 
 type FiltersContextProps = FilterState & {
   setIsVisibleDenunciasInMap: Dispatch<SetStateAction<boolean>>;
   setIsVisibleAcoesInMap: Dispatch<SetStateAction<boolean>>;
-  setFiltroStatusDenuncia: Dispatch<
-    SetStateAction<'todos' | DenunciaStatusModelTypes[]>
-  >;
+  setFiltroStatusDenuncia: Dispatch<SetStateAction<DenunciaStatusModelTypes>>;
   setFiltroStatusAcao: Dispatch<
     SetStateAction<'todos' | AcaoStatusModelTypes[]>
   >;
@@ -43,10 +49,16 @@ type FiltersContextProps = FilterState & {
   setFiltroDenunciasComAcao: Dispatch<
     SetStateAction<'desabilitado' | 'com_acao' | 'sem_acao'>
   >;
-  denunciasFiltradas: DenunciaModel[];
+
+  setFiltrorTipoDenuncia: Dispatch<
+    SetStateAction<'Aberto' | TipoDenunciaModel[]>
+  >;
+  denunciasDoBairro: DenunciaInMap[];
+  // denunciasFiltradas: DenunciaModel[];
+  filtroStatusDenuncia: DenunciaStatusModelTypes;
   acoesFiltradas: AcaoModel[];
-  cacheCurrentFilters: () => void;
-  restoreCachedFilters: () => void;
+  // cacheCurrentFilters: () => void;
+  // restoreCachedFilters: () => void;
   filtrarAcoesPorId: number[] | 'desabilitado';
   setFiltrarAcoesPorId: Dispatch<SetStateAction<number[] | 'desabilitado'>>;
 };
@@ -54,7 +66,8 @@ type FiltersContextProps = FilterState & {
 const defaultFilters: FilterState = {
   isVisibleDenunciasInMap: true,
   isVisibleAcoesInMap: true,
-  filtroStatusDenuncia: ['aberto'],
+  filtroStatusDenuncia: 'Aberto',
+  filtrarTipoDenuncia: '',
   filtroStatusAcao: 'todos',
   filtroCategoria: 'todas',
   filtroSecretaria: 'todas',
@@ -65,6 +78,13 @@ const defaultFilters: FilterState = {
 const FiltersContext = createContext({} as FiltersContextProps);
 
 export function FiltersProvider({ children }: { children: ReactNode }) {
+  const { currentBairroId } = useMapActions();
+  const { user } = useAuth();
+
+  const [denunciasDoBairro, setDenunciasDoBairro] = useState<DenunciaInMap[]>(
+    [],
+  );
+
   const [cacheFilters, setCacheFilters] = useState<FilterState | null>(null);
 
   const [isVisibleDenunciasInMap, setIsVisibleDenunciasInMap] = useState(
@@ -89,6 +109,10 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     defaultFilters.filtroDenunciasComAcao,
   );
 
+  const [filtroTipoDenuncia, setFiltrorTipoDenuncia] = useState(
+    defaultFilters.filtroTipoDenuncia,
+  );
+
   const [filtrarAcoesPorId, setFiltrarAcoesPorId] = useState<
     number[] | 'desabilitado'
   >('desabilitado');
@@ -97,73 +121,120 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   const denuncias = [];
   const acoes = [];
 
-  const cacheCurrentFilters = useCallback(() => {
-    setCacheFilters({
-      isVisibleDenunciasInMap,
-      isVisibleAcoesInMap,
-      filtroStatusDenuncia,
-      filtroStatusAcao,
-      filtroCategoria,
-      filtroSecretaria,
-      filtroDenunciasComAcao,
-      filtrarAcoesPorId,
-    });
+  // const cacheCurrentFilters = useCallback(() => {
+  //   setCacheFilters({
+  //     isVisibleDenunciasInMap,
+  //     isVisibleAcoesInMap,
+  //     filtroStatusDenuncia,
+  //     filtroStatusAcao,
+  //     filtroCategoria,
+  //     filtroSecretaria,
+  //     filtroDenunciasComAcao,
+  //     filtrarAcoesPorId,
+  //     filtroTipoDenuncia,
+  //   });
+  // }, [
+  //   isVisibleDenunciasInMap,
+  //   isVisibleAcoesInMap,
+  //   filtroStatusDenuncia,
+  //   filtroStatusAcao,
+  //   filtroCategoria,
+  //   filtroSecretaria,
+  //   filtroDenunciasComAcao,
+  //   filtrarAcoesPorId,
+  //   filtroTipoDenuncia,
+  // ]);
+
+  // const restoreCachedFilters = useCallback(() => {
+  //   const filtersToRestore = cacheFilters || defaultFilters;
+
+  //   setIsVisibleDenunciasInMap(filtersToRestore.isVisibleDenunciasInMap);
+  //   setIsVisibleAcoesInMap(filtersToRestore.isVisibleAcoesInMap);
+  //   setFiltroStatusDenuncia(filtersToRestore.filtroStatusDenuncia);
+  //   setFiltroStatusAcao(filtersToRestore.filtroStatusAcao);
+  //   setFiltroCategoria(filtersToRestore.filtroCategoria);
+  //   setFiltroSecretaria(filtersToRestore.filtroSecretaria);
+  //   setFiltroDenunciasComAcao(filtersToRestore.filtroDenunciasComAcao);
+  //   setFiltrarAcoesPorId(filtersToRestore.filtrarAcoesPorId);
+  //   setFiltrorTipoDenuncia(filtersToRestore.filtroTipoDenuncia);
+
+  //   if (cacheFilters) {
+  //     setCacheFilters(null);
+  //   }
+  // }, [cacheFilters]);
+
+  // const denunciasFiltradas = useMemo(() => {
+  //   return denuncias.filter((d) => {
+  //     const denunciaStatus = getDenunciaStatus(d);
+
+  //     // console.log(denunciaStatus);
+
+  //     const passaStatus =
+  //       filtroStatusDenuncia === 'todos' ||
+  //       filtroStatusDenuncia.includes(denunciaStatus);
+
+  //     const passaCategoria =
+  //       filtroCategoria === 'todas' ||
+  //       d.tipo?.categoria?.nome === filtroCategoria;
+
+  //     const passaFiltroAcao =
+  //       filtroDenunciasComAcao === 'desabilitado' ||
+  //       (filtroDenunciasComAcao === 'com_acao' && d.acao) ||
+  //       (filtroDenunciasComAcao === 'sem_acao' && !d.acao);
+
+  //     return passaStatus && passaCategoria && passaFiltroAcao;
+  //   });
+  // }, [
+  //   denuncias,
+  //   filtroStatusDenuncia,
+  //   filtroCategoria,
+  //   filtroDenunciasComAcao,
+  //   acoes,
+  // ]);
+
+  useEffect(() => {
+    const fetchDenunciasFiltradas = async () => {
+      if (!currentBairroId) {
+        setDenunciasDoBairro([]);
+        return;
+      }
+
+      // setIsLoading(true);
+      // setError(null);
+
+      try {
+        const params = {
+          bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
+
+          status: filtroStatusDenuncia,
+
+          secretaria: user!.idSecretaria,
+
+          tipoDenuncia: filtroTipoDenuncia,
+        };
+        console.log(params.bairro);
+        console.log(params.status);
+        console.log(params.secretaria);
+        console.log(params.tipoDenuncia);
+
+        const denuncias = await DenunciaService.getDenunciaPorBairro(params);
+        setDenunciasDoBairro(denuncias);
+      } catch (err) {
+        console.error('Falha ao buscar denúncias:', err);
+      } finally {
+        // setIsLoading(false);
+      }
+    };
+
+    fetchDenunciasFiltradas();
   }, [
-    isVisibleDenunciasInMap,
-    isVisibleAcoesInMap,
+    currentBairroId,
     filtroStatusDenuncia,
-    filtroStatusAcao,
-    filtroCategoria,
     filtroSecretaria,
-    filtroDenunciasComAcao,
-    filtrarAcoesPorId,
+    filtroTipoDenuncia,
   ]);
 
-  const restoreCachedFilters = useCallback(() => {
-    const filtersToRestore = cacheFilters || defaultFilters;
-
-    setIsVisibleDenunciasInMap(filtersToRestore.isVisibleDenunciasInMap);
-    setIsVisibleAcoesInMap(filtersToRestore.isVisibleAcoesInMap);
-    setFiltroStatusDenuncia(filtersToRestore.filtroStatusDenuncia);
-    setFiltroStatusAcao(filtersToRestore.filtroStatusAcao);
-    setFiltroCategoria(filtersToRestore.filtroCategoria);
-    setFiltroSecretaria(filtersToRestore.filtroSecretaria);
-    setFiltroDenunciasComAcao(filtersToRestore.filtroDenunciasComAcao);
-    setFiltrarAcoesPorId(filtersToRestore.filtrarAcoesPorId);
-
-    if (cacheFilters) {
-      setCacheFilters(null);
-    }
-  }, [cacheFilters]);
-
-  const denunciasFiltradas = useMemo(() => {
-    return denuncias.filter((d) => {
-      const denunciaStatus = getDenunciaStatus(d);
-
-      // console.log(denunciaStatus);
-
-      const passaStatus =
-        filtroStatusDenuncia === 'todos' ||
-        filtroStatusDenuncia.includes(denunciaStatus);
-
-      const passaCategoria =
-        filtroCategoria === 'todas' ||
-        d.tipo?.categoria?.nome === filtroCategoria;
-
-      const passaFiltroAcao =
-        filtroDenunciasComAcao === 'desabilitado' ||
-        (filtroDenunciasComAcao === 'com_acao' && d.acao) ||
-        (filtroDenunciasComAcao === 'sem_acao' && !d.acao);
-
-      return passaStatus && passaCategoria && passaFiltroAcao;
-    });
-  }, [
-    denuncias,
-    filtroStatusDenuncia,
-    filtroCategoria,
-    filtroDenunciasComAcao,
-    acoes,
-  ]);
+  console.log('Denuncias do bairro:', denunciasDoBairro);
 
   const acoesFiltradas = useMemo(() => {
     if (filtrarAcoesPorId !== 'desabilitado') {
@@ -191,7 +262,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         }
       });
   }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
-
+  console.log(filtroStatusDenuncia);
   return (
     <FiltersContext.Provider
       value={{
@@ -207,14 +278,18 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         setFiltroCategoria,
         filtroSecretaria,
         setFiltroSecretaria,
-        denunciasFiltradas,
+        denunciasDoBairro,
+        // denunciasFiltradas,
         acoesFiltradas,
         filtroDenunciasComAcao,
         setFiltroDenunciasComAcao,
-        cacheCurrentFilters,
-        restoreCachedFilters,
+        // cacheCurrentFilters,
+        // restoreCachedFilters,
         filtrarAcoesPorId,
         setFiltrarAcoesPorId,
+        filtroTipoDenuncia,
+        //
+        setFiltrorTipoDenuncia,
       }}
     >
       {children}

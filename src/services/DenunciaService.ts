@@ -3,9 +3,13 @@ import { AxiosError } from 'axios'; // Importar AxiosError para um tratamento ma
 
 import type {
   DenunciaBasicInfoModel,
+  DenunciaInMap,
   DenunciaModel,
+  DenunciaStatusModelTypes,
 } from '../types/Denuncia.ts';
-import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
+import type { Bairro, NumeroDeDenunciasPorBairro } from '@/types/Bairro';
+import type { TipoDenunciaModel } from '@/types/TipoDenuncia.ts';
+import type { Secretaria } from '@/types/Secretaria.ts';
 
 export class DenunciaService {
   private static SERVICE_UNAVAILABLE_ERROR = new Error(
@@ -77,6 +81,7 @@ export class DenunciaService {
           responseType: 'json',
         },
       );
+
       return JSON.parse(response.data) as NumeroDeDenunciasPorBairro[];
     } catch (error) {
       console.error('Falha ao buscar o número de denúncias no mapa:', error);
@@ -108,10 +113,29 @@ export class DenunciaService {
     }
   }
 
-  // public static async getDenunciaPorBairro(data: {
-  //   status: string;
-  //   secretaria: number;
-  //   bairro: string;
-  //   tipoDenuncia: string;
-  // });
+  public static async getDenunciaPorBairro(data: {
+    status: string;
+    secretaria: number;
+    bairro: string;
+    tipoDenuncia: TipoDenunciaModel | string;
+  }): Promise<DenunciaInMap[]> {
+    try {
+      const response = await api.get(`/denuncia/gerenciador/filtro-denuncias`, {
+        params: data,
+        responseType: 'json',
+      });
+
+      if (response.status !== 200) {
+        throw new Error('Não foi possível buscar as denúncias por bairro.');
+      }
+
+      return JSON.parse(response.data) as DenunciaInMap[];
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.status === 404) {
+        return [];
+      }
+      console.error('Erro ao buscar denúncias por bairro:', error);
+      throw this.SERVICE_UNAVAILABLE_ERROR;
+    }
+  }
 }

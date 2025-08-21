@@ -22,20 +22,25 @@ import { DenunciaDetails } from './pages/OcorrenciasPage/components/SidePanel/De
 import { PersonasPage } from './pages/PersonasPage';
 import { UsuariosPage } from './pages/UsuarioPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { FiltersProvider } from './context/FiltersContext';
+import { MapActionsProvider } from './context/MapActions';
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route index path="/" element={<LoginPage />} />
-
         <Route element={<ProtectedRoute />}>
           <Route
             path="/ocorrencias"
             element={
-              <OcorrenciasProvider>
-                <OcorrenciasPage />
-              </OcorrenciasProvider>
+              <MapActionsProvider>
+                <FiltersProvider>
+                  <OcorrenciasProvider>
+                    <OcorrenciasPage />
+                  </OcorrenciasProvider>
+                </FiltersProvider>
+              </MapActionsProvider>
             }
           >
             <Route path="denuncias">
@@ -43,9 +48,8 @@ export function App() {
             </Route>
 
             {/* As rotas de "acoes" também ficariam aqui dentro se estivessem ativas */}
-            
-          </Route> {/* <--- CORREÇÃO: A rota /ocorrencias é fechada AQUI */}
-
+          </Route>{' '}
+          {/* <--- CORREÇÃO: A rota /ocorrencias é fechada AQUI */}
           {/* Agora, /servicos e as outras são rotas irmãs de /ocorrencias */}
           <Route path="/servicos">
             <Route index element={<ServicesPage />} />
@@ -55,28 +59,23 @@ export function App() {
             <Route path=":id" element={<ServicoDetalhes />} />
             <Route path="editar/:id" element={<ServicoEditarPage />} />
           </Route>
-
           <Route path="/portais" element={<PortaisPage />} />
           <Route path="/banners" element={<BannersPage />} />
-
           <Route path="/espacos-publicos">
             <Route index element={<EspacosPublicosPage />} />
             <Route path="add" element={<AddEspacoPublicoPage />} />
             <Route path="edit/:id" element={<EditEspacoPublicoPage />} />
           </Route>
-
           <Route
             path="/categorias-denuncia"
             element={<DenunciaCategoriasPage />}
           />
-
           <Route path="/personas" element={<PersonasPage />} />
           <Route path="/usuarios" element={<UsuariosPage />} />
-
           {/* O NotFoundPage deve ser irmão dos outros para pegar qualquer rota inválida */}
-          <Route path="*" element={<NotFoundPage />} /> 
-
-        </Route> {/* <- Fechamento do ProtectedRoute */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>{' '}
+        {/* <- Fechamento do ProtectedRoute */}
       </Routes>
 
       <ToastContainer />

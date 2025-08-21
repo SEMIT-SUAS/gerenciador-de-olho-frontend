@@ -35,7 +35,9 @@ type SelectAcoesOuDenunciasProps = {
   currentBairroId: number | null;
   setCurrentBairroId: Dispatch<SetStateAction<number | null>>;
   numberDenunciasInMap: NumeroDeDenunciasPorBairro[];
-  setNumberDenunciasInMap: Dispatch<SetStateAction<NumeroDeDenunciasPorBairro[]>>;
+  setNumberDenunciasInMap: Dispatch<
+    SetStateAction<NumeroDeDenunciasPorBairro[]>
+  >;
 };
 
 type Coordinates = {
@@ -70,7 +72,9 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   const [newDenunciaCoordinates, setNewDenunciaCoordinates] =
     useState<null | Coordinates>(null);
 
-  const [numberDenunciasInMap, setNumberDenunciasInMap] = useState<NumeroDeDenunciasPorBairro[]>([])
+  const [numberDenunciasInMap, setNumberDenunciasInMap] = useState<
+    NumeroDeDenunciasPorBairro[]
+  >([]);
 
   const value: SelectAcoesOuDenunciasProps = {
     salvarDenunciasOnclick,
@@ -96,7 +100,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     currentBairroId,
     setCurrentBairroId,
     numberDenunciasInMap,
-    setNumberDenunciasInMap
+    setNumberDenunciasInMap,
   };
 
   useEffect(() => {
@@ -130,6 +134,52 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// useEffect(() => {
+//   const fetchDenunciasFiltradas = async () => {
+//     if (!currentBairroId) {
+//       setDenunciasDoBairro([]);
+//       return;
+//     }
+
+//     setIsLoading(true);
+//     setError(null);
+
+//     try {
+//       const params = {
+//         bairro: String(currentBairroId),
+
+//         status:
+//           filtroStatusDenuncia === 'todos'
+//             ? ''
+//             : filtroStatusDenuncia.join(','),
+
+//         secretaria:
+//           filtroSecretaria === 'todas' || filtroSecretaria === null
+//             ? 0
+//             : Number(filtroSecretaria),
+
+//         tipoDenuncia:
+//           filtroTipoDenuncia === 'todos' || filtroTipoDenuncia === null
+//             ? ''
+//             : filtroTipoDenuncia,
+//       };
+
+//       const denuncias = await DenunciaService.getDenunciaPorBairro(params);
+//       setDenunciasDoBairro(denuncias);
+//     } catch (err) {
+//       console.error('Falha ao buscar denúncias:', err);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   fetchDenunciasFiltradas();
+// }, [
+//   currentBairroId,
+//   filtroStatusDenuncia,
+//   filtroSecretaria,
+//   filtroTipoDenuncia,
+// ]);
 export function useMapActions() {
   const context = useContext(MapActionsContext);
 
