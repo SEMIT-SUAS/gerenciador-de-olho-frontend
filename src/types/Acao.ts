@@ -1,6 +1,5 @@
 import type { AcaoStatusModel } from './AcaoStatus';
-import type { DenunciaModel } from './Denuncia';
-import type { SecretariaModel } from './Secretaria';
+import type { DenunciaBasicInfoModel, DenunciaModel } from './Denuncia';
 
 export interface CreateAcaoModel {
   nome: string;
@@ -12,12 +11,15 @@ export interface CreateAcaoModel {
 export interface AcaoModel {
   id: number;
   nome: string;
+  descricao: string;
   latitude: number;
   longitude: number;
-  obs: string | null;
   criadoEm: string;
-  secretaria: SecretariaModel;
-  status: AcaoStatusModel[];
+  nomeSecretaria: string;
+  siglaSecretaria: string;
+  bairro: string;
+  acaoStatus: AcaoStatusModel;
+  denuncias: DenunciaBasicInfoModel[];
 }
 
 export interface AcaoInMap {

@@ -234,35 +234,34 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     filtroTipoDenuncia,
   ]);
 
-  console.log('Denuncias do bairro:', denunciasDoBairro);
+  // console.log('Denuncias do bairro:', denunciasDoBairro);
 
   const acoesFiltradas = useMemo(() => {
-    if (filtrarAcoesPorId !== 'desabilitado') {
-      return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
-    }
-
-    return acoes
-      .filter((a) => {
-        console.log(filtroSecretaria);
-        if (filtroSecretaria === 'todas') {
-          return a;
-        } else {
-          console.log(a.secretaria.sigla);
-          return a.secretaria.sigla === filtroSecretaria;
-        }
-      })
-      .filter((a) => {
-        const currentStatus = a.status?.[a.status.length - 1]?.status;
-        if (!currentStatus) return false;
-
-        if (filtroStatusAcao === 'todos') {
-          return a;
-        } else {
-          return filtroStatusAcao[0] === currentStatus;
-        }
-      });
-  }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
-  console.log(filtroStatusDenuncia);
+    // if (filtrarAcoesPorId !== 'desabilitado') {
+    //   return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
+    // }
+    // return acoes
+    //   .filter((a) => {
+    //     console.log(filtroSecretaria);
+    //     if (filtroSecretaria === 'todas') {
+    //       return a;
+    //     } else {
+    //       console.log(a.secretaria.sigla);
+    //       return a.secretaria.sigla === filtroSecretaria;
+    //     }
+    //   })
+    //   .filter((a) => {
+    //     const currentStatus = a.status?.[a.status.length - 1]?.status;
+    //     if (!currentStatus) return false;
+    //     if (filtroStatusAcao === 'todos') {
+    //       return a;
+    //     } else {
+    //       return filtroStatusAcao[0] === currentStatus;
+    //     }
+    //   });
+    return [];
+  }, [filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
+  // console.log(filtroStatusDenuncia);
   return (
     <FiltersContext.Provider
       value={{

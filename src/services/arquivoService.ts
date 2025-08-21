@@ -35,6 +35,9 @@ export class ArquivoService {
         responseType: 'blob',
       });
 
+      console.log(url);
+      console.log(response);
+
       if (response.status != 200) {
         throw new Error('Não foi possível buscar por esse arquivo');
       }

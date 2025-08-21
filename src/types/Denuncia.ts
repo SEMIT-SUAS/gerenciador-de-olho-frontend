@@ -52,7 +52,7 @@ export interface DenunciaBasicInfoModel {
   status: 'Aberto' | AcaoStatusModelTypes;
   endereco: EnderecoModel;
   criadaEm: string;
-  primeiroArquivo: string;
+  urls: string[];
 }
 
 export interface DenunciaInMap {
