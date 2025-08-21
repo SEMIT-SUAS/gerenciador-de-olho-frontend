@@ -23,7 +23,7 @@ import { Badge } from '@/components/ui/badge';
 
 interface PortaisListItemProps {
   portal: Portais;
-  setPortais: Dispatch<SetStateAction<Portais[]>>;
+  setPortais: Dispatch<SetStateAction<Portais[] | null>>;
 }
 
 export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
@@ -34,11 +34,15 @@ export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
   async function handleToggleAtivo() {
     try {
       await toggleAtivo(portal.id!, !portal.ativo);
-      setPortais((prev) =>
-        prev.map((p) =>
+
+      setPortais((prev) => {
+        if (!prev) return prev;
+
+        return prev.map((p) =>
           p.id === portal.id ? { ...p, ativo: !portal.ativo } : p,
-        ),
-      );
+        );
+      });
+
       toast.success(
         `Portal ${portal.ativo ? 'inativado' : 'ativado'} com sucesso!`,
       );
@@ -50,11 +54,15 @@ export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
   async function handleToggleVisibilidade() {
     try {
       await changeServiceVisibility(portal.id!, !portal.visivel);
-      setPortais((prev) =>
-        prev.map((p) =>
+
+      setPortais((prev) => {
+        if (!prev) return prev;
+
+        return prev.map((p) =>
           p.id === portal.id ? { ...p, visivel: !portal.visivel } : p,
-        ),
-      );
+        );
+      });
+
       toast.success(`Visibilidade do portal alterada com sucesso!`);
     } catch (error) {
       toast.error('Erro ao atualizar visibilidade.');
@@ -121,6 +129,7 @@ export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
         setPortais={setPortais}
         portal={portal}
       />
+
       <ConfirmModal
         isOpen={isOpenConfirmModal}
         onConfirm={handleToggleVisibilidade}

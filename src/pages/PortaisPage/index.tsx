@@ -1,8 +1,6 @@
-// src/pages/PortaisPage.tsx
-
-import { useEffect, useState, useMemo } from 'react';
-import type { Portais } from '@/types/Portais'; // Ajuste o caminho se necessário
-import { getAllPortais } from '@/services/PortaisService'; // Ajuste o caminho se necessário
+import { useEffect, useState } from 'react';
+import type { Portais } from '@/types/Portais';
+import { getAllPortais } from '@/services/PortaisService';
 import { toast } from 'sonner';
 
 import { PortaisList } from '@/pages/PortaisPage/components/PortaisList';
@@ -26,51 +24,44 @@ import {
 import { AddPortalModal } from '@/pages/PortaisPage/components/AddPortalModal';
 
 export function PortaisPage() {
-  const [portais, setPortais] = useState<Portais[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+  const [portais, setPortais] = useState<Portais[] | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
-
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingPortal, setEditingPortal] = useState<Portais | undefined>(
-    undefined,
-  );
 
-  async function fetchPortais() {
+  async function getAllPortaisData() {
     try {
-      setLoading(true);
-      const data = await getAllPortais();
-      setPortais(data);
-    } catch (err: any) {
-      const errorMessage = err.message || 'Erro ao buscar os portais.';
-      setError(errorMessage);
-      toast.error(errorMessage);
-    } finally {
-      setLoading(false);
+      return await getAllPortais();
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao buscar os portais.');
     }
   }
 
   useEffect(() => {
-    fetchPortais();
+    getAllPortaisData().then((portaisData) => {
+      if (portaisData) {
+        setPortais(portaisData);
+      }
+    });
+
+    return () => {
+      setPortais(null);
+    };
   }, []);
 
-  const filteredPortais = useMemo(() => {
-    return portais.filter((p) =>
-      p.nome.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-  }, [portais, searchTerm]);
+  const filteredPortais = portais?.filter((portal) =>
+    portal.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
-  const totalPages = Math.ceil(filteredPortais.length / itemsPerPage);
+  const totalPages = Math.ceil((filteredPortais?.length ?? 0) / itemsPerPage);
 
-  const currentData = useMemo(() => {
-    return filteredPortais.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage,
-    );
-  }, [filteredPortais, currentPage, itemsPerPage]);
+  const currentPortais = portais
+    ? filteredPortais?.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+      ) || []
+    : [];
 
   function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(e.target.value);
@@ -82,29 +73,6 @@ export function PortaisPage() {
     setCurrentPage(1);
   }
 
-  if (loading) {
-    return (
-      <LayoutPage>
-        <div className="flex items-center justify-center min-h-[400px]">
-          Carregando...
-        </div>
-      </LayoutPage>
-    );
-  }
-
-  if (error) {
-    return (
-      <LayoutPage>
-        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-          <p className="text-red-600">Erro: {error}</p>
-          <Button onClick={fetchPortais} variant="outline">
-            Tentar novamente
-          </Button>
-        </div>
-      </LayoutPage>
-    );
-  }
-
   return (
     <LayoutPage>
       <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
@@ -114,6 +82,7 @@ export function PortaisPage() {
             Gerencie os portais de serviços disponíveis na plataforma.
           </p>
         </div>
+
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
           <div className="w-full sm:w-[280px] md:w-[320px]">
             <SearchInput
@@ -133,7 +102,11 @@ export function PortaisPage() {
           </div>
         </div>
 
-        <PortaisList portais={currentData} setPortais={setPortais} />
+        <PortaisList
+          itemsPerPage={itemsPerPage}
+          portais={currentPortais}
+          setPortais={setPortais}
+        />
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -156,6 +129,7 @@ export function PortaisPage() {
               </SelectContent>
             </Select>
           </div>
+
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600">
               Página {totalPages > 0 ? currentPage : 0} de {totalPages}

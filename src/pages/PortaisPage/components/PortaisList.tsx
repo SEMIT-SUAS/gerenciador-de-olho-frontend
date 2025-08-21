@@ -1,6 +1,4 @@
-// src/components/portais/PortaisList.tsx
-
-import { useState, type Dispatch, type SetStateAction } from 'react';
+import { type Dispatch, type SetStateAction } from 'react';
 import type { Portais } from '@/types/Portais';
 import {
   Table,
@@ -11,13 +9,22 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { PortaisListItem } from './PortaisListItem';
+import { ImageSkeleton } from '@/components/Loading/ImageSkeleton';
+import { ListItemSkeleton } from '@/components/Loading/ListItemSkeleton';
+import { IconWorld } from '@tabler/icons-react';
+import { RenderIf } from '@/components/RenderIf';
 
 interface PortaisListProps {
-  portais: Portais[];
-  setPortais: Dispatch<SetStateAction<Portais[]>>;
+  portais: Portais[] | null;
+  setPortais: Dispatch<SetStateAction<Portais[] | null>>;
+  itemsPerPage: number;
 }
 
-export function PortaisList({ portais, setPortais }: PortaisListProps) {
+export function PortaisList({
+  portais,
+  setPortais,
+  itemsPerPage,
+}: PortaisListProps) {
   return (
     <div className="rounded-md border">
       <Table>
@@ -30,22 +37,71 @@ export function PortaisList({ portais, setPortais }: PortaisListProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {portais.length > 0 ? (
-            portais
-              .filter((p) => p.ativo)
-              .map((portal) => (
-                <PortaisListItem
-                  key={portal.id}
-                  portal={portal}
-                  setPortais={setPortais}
-                />
-              ))
+          {portais ? (
+            <RenderIf
+              condition={portais.length > 0}
+              ifRender={portais
+                .filter((p) => p.ativo)
+                .map((portal) => (
+                  <PortaisListItem
+                    key={portal.id}
+                    portal={portal}
+                    setPortais={setPortais}
+                  />
+                ))}
+              elseRender={
+                <TableRow>
+                  <TableCell colSpan={4} className="py-8 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <IconWorld className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto" />
+                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        Nenhum portal encontrado
+                      </h3>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              }
+            />
           ) : (
-            <TableRow>
-              <TableCell colSpan={4} className="text-center">
-                Nenhum portal encontrado.
-              </TableCell>
-            </TableRow>
+            Array.from({ length: itemsPerPage }).map((_, idx) => (
+              <TableRow key={`skeleton-${idx}`}>
+                <TableCell className="border-r">
+                  <ListItemSkeleton titleWidth="3/4" className="p-0 border-0" />
+                </TableCell>
+
+                <TableCell className="border-r">
+                  <ListItemSkeleton titleWidth="1/2" className="p-0 border-0" />
+                </TableCell>
+
+                <TableCell className="border-r">
+                  <ImageSkeleton
+                    height={20}
+                    width={60}
+                    className="rounded-full"
+                  />
+                </TableCell>
+
+                <TableCell>
+                  <div className="flex gap-2">
+                    <ImageSkeleton
+                      height={18}
+                      width={18}
+                      className="rounded-full"
+                    />
+                    <ImageSkeleton
+                      height={18}
+                      width={18}
+                      className="rounded-full"
+                    />
+                    <ImageSkeleton
+                      height={18}
+                      width={18}
+                      className="rounded-full"
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
           )}
         </TableBody>
       </Table>
