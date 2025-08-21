@@ -28,7 +28,6 @@ export default {
 
 export class ArquivoService {
   static async getBlobByURL(url: string) {
-    console.log(url);
     try {
       const response = await api.request({
         url,

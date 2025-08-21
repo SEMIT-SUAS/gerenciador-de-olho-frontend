@@ -54,7 +54,6 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function loadData() {
-      console.log;
       try {
         const [
           categoriasData,

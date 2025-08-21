@@ -43,15 +43,10 @@ export function AddTipoDenunciaModal({
 
       formData.append('secretaria_id', String(data.secretariaId));
       formData.append('categoria_denuncia_id', String(data.categoriaId));
-      formData.append('cor', data.cor)
-
+      formData.append('cor', data.cor);
       formData.append('icone', data.icone);
-
       formData.append('visivel', String(data.visivel));
-
-      formData.append('ativo', String(data.ativo))
-
-      console.log(Object.fromEntries(formData.entries()));
+      formData.append('ativo', String(data.ativo));
 
       const newTipo = await tiposDenunciaService.createTipoDenuncia(formData);
 

@@ -116,10 +116,8 @@ export function VincularAcaoADenuncias() {
     setIsVisibleAcoesInMap(false);
     setIsVisibleDenunciasInMap(true);
     setFiltroDenunciasComAcao('sem_acao');
-    setFiltroStatusDenuncia(['aberto']);
+    setFiltroStatusDenuncia(['Aberto']);
     setDenunciasJaVinculadas(denunciasDaAcao);
-
-    console.log(denunciasFiltradas);
 
     return () => resetFiltersAndMapActions();
   }, []);

@@ -205,17 +205,10 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       try {
         const params = {
           bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-
           status: filtroStatusDenuncia,
-
           secretaria: user!.idSecretaria,
-
           tipoDenuncia: filtroTipoDenuncia,
         };
-        console.log(params.bairro);
-        console.log(params.status);
-        console.log(params.secretaria);
-        console.log(params.tipoDenuncia);
 
         const denuncias = await DenunciaService.getDenunciaPorBairro(params);
         setDenunciasDoBairro(denuncias);
@@ -234,8 +227,6 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     filtroTipoDenuncia,
   ]);
 
-  console.log('Denuncias do bairro:', denunciasDoBairro);
-
   const acoesFiltradas = useMemo(() => {
     if (filtrarAcoesPorId !== 'desabilitado') {
       return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
@@ -243,11 +234,9 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 
     return acoes
       .filter((a) => {
-        console.log(filtroSecretaria);
         if (filtroSecretaria === 'todas') {
           return a;
         } else {
-          console.log(a.secretaria.sigla);
           return a.secretaria.sigla === filtroSecretaria;
         }
       })
@@ -262,7 +251,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         }
       });
   }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
-  console.log(filtroStatusDenuncia);
+
   return (
     <FiltersContext.Provider
       value={{

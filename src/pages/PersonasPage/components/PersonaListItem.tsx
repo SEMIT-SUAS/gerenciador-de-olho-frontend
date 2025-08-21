@@ -34,7 +34,6 @@ export function PersonaListItem({
 
       toast.success('Persona desativada com sucesso!');
     } catch (error: any) {
-      console.log(error);
       toast.error('Erro ao desativar persona');
     }
 

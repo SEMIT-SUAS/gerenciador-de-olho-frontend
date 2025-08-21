@@ -1,10 +1,10 @@
 import type { UsuarioModel } from './Usuario';
 
 export type AcaoStatusModelTypes =
-  | 'em_analise'
-  | 'em_andamento'
-  | 'indeferido'
-  | 'concluido';
+  | 'Análise'
+  | 'Andamento'
+  | 'Indeferido'
+  | 'Concluído';
 
 export interface AcaoStatusModel {
   id: number;

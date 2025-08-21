@@ -30,7 +30,7 @@ export function ServicesListItem({
 
       toast.success('Serviço desativado com sucesso!');
     } catch (error: any) {
-      console.log(error);
+      toast.error(error.message);
     }
 
     setIsOpenDeleteModal(false);

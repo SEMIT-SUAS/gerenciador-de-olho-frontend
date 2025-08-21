@@ -39,9 +39,10 @@ export interface DenunciaModel {
     nome: string;
     secretaria: string;
     status: AcaoStatusModelTypes;
-  };
+  } | null;
   idUsuario: number;
   urls: string[];
+  denunciaIndeferida: DenunciaIndeferidaModel;
 }
 
 export interface DenunciaBasicInfoModel {

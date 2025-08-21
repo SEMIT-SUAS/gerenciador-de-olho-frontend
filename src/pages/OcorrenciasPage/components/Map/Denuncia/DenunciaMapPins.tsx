@@ -40,8 +40,6 @@ export function DenunciaMapPins() {
   const navigate = useNavigate();
   const map = useMap();
 
-  console.log('Denuncias do bairro:', denunciasDoBairro);
-
   const denunciaPolygonCoordinates = useMemo(() => {
     return getConvexHull(
       [...denunciasSelecionas, ...denunciasJaVinculadas].map((d) => ({
