@@ -20,9 +20,7 @@ import AcoesService from '@/services/acoesService';
 
 export function MapFilters() {
   const { setCurrentBairroId, currentBairroId, setZoomTo } = useMapActions();
-  const {
-    setDenunciasDoBairro,
-  } = useFilters();
+  const { setDenunciasDoBairro } = useFilters();
   const { user } = useAuth();
 
   if (!currentBairroId) {
@@ -82,7 +80,6 @@ export function MapFilters() {
     }
   };
 
-
   return (
     <>
       <div className="absolute z-20 top-9 left-12">
@@ -90,11 +87,10 @@ export function MapFilters() {
           <h2 className="text-sm font-bold">Filtros da denúncia</h2>
 
           <div className="flex gap-3">
-
             <FilterDenunciaByCategoriaTipoSelect
               onValueChange={handleTipoDenunciaChange}
             />
-            <FilterDenunciaStatusSelect onValueChange={handleStatusChange} 
+            <FilterDenunciaStatusSelect onValueChange={handleStatusChange} />
           </div>
 
           <div className="flex gap-3">
