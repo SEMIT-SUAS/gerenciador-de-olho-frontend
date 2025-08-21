@@ -1,5 +1,3 @@
-import type { UsuarioModel } from './Usuario';
-
 export type AcaoStatusModelTypes =
   | 'Análise'
   | 'Andamento'
@@ -9,7 +7,6 @@ export type AcaoStatusModelTypes =
 export interface AcaoStatusModel {
   id: number;
   status: AcaoStatusModelTypes;
-  motivo: string | null;
-  AlteradoEm: string;
-  alteradoPor: UsuarioModel;
+  motivo: string;
+  dataModificacao: string;
 }

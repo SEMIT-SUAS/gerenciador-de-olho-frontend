@@ -241,7 +241,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     filtroTipoDenuncia,
   ]);
 
-  console.log('Denuncias do bairro:', denunciasDoBairro);
+  // console.log('Denuncias do bairro:', denunciasDoBairro);
 
   // const acoesFiltradas = useMemo(() => {
   //   if (filtrarAcoesPorId !== 'desabilitado') {
@@ -269,7 +269,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   //       }
   //     });
   // }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
-  // console.log(filtroStatusDenuncia);
+  console.log(filtroStatusDenuncia);
   return (
     <FiltersContext.Provider
       value={{

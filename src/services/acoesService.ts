@@ -22,6 +22,8 @@ export default class AcoesService {
         },
       });
 
+      console.log('Ações filtradas:', response);
+
       if (response.status !== 200) {
         throw new Error('Não foi possível buscar as ações por bairro.');
       }
@@ -70,24 +72,18 @@ export default class AcoesService {
     return acaoCreatedData;
   }
 
-  /**
-   * Busca uma ação específica na API pelo seu ID.
-   * @param {number} id - O ID da ação a ser buscada.
-   * @returns {Promise<AcaoModel>} Uma promessa que resolve para a ação encontrada.
-   */
-  public static async getAcaoById(id: number): Promise<AcaoModel> {
+  public static async getAcaoById(acaoId: number): Promise<AcaoModel> {
     try {
-      const response = await fetch(`${API_BASE_URL}/acoes/${id}`, {
-        method: 'GET',
+      const response = await api.get('/acao/buscar/' + acaoId, {
+        responseType: 'json',
       });
 
-      if (!response.ok) {
-        throw new Error('Não foi possível encontrar a ação.');
+      if (response.status != 200) {
+        throw new Error('Não foi possível encontrar os detalhes dessa ação.');
       }
 
-      return await response.json();
-    } catch (error) {
-      console.error('Erro em getAcaoById:', error);
+      return response.data as AcaoModel;
+    } catch {
       throw new Error(
         'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
       );

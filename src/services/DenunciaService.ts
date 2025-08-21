@@ -7,7 +7,6 @@ import type {
   DenunciaModel,
 } from '../types/Denuncia.ts';
 import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
-import type { TipoDenunciaModel } from '@/types/TipoDenuncia.ts';
 import type { DenunciaIndeferidaModel } from '@/types/DenunciaIndeferidaModel.ts';
 
 export class DenunciaService {
