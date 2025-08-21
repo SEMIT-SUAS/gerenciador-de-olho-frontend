@@ -9,8 +9,6 @@ import { DenunciaTooltip } from './DenunciaTooltip';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { type LeafletMouseEvent, divIcon } from 'leaflet';
-import { DenunciaService } from '@/services/DenunciaService';
-import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
 
 const statusIconMap: Record<string, string> = {
   indeferido: '../../../public/status/indeferido.png',
@@ -51,26 +49,26 @@ export function DenunciaMapPins() {
     );
   }, [denunciasSelecionas, denunciasJaVinculadas]);
 
-  useEffect(() => {
-    function handleClick(event: LeafletMouseEvent) {
-      if (isSelectingNewDenuncia) {
-        setNewDenunciaCoordinates({
-          lat: event.latlng.lat,
-          lng: event.latlng.lng,
-        });
-        setIsSelectingNewDenuncia(false);
-        map.off('click');
-      }
-    }
-    map.on('click', handleClick);
-  }, [
-    isSelectingNewDenuncia,
-    setNewDenunciaCoordinates,
-    setIsSelectingNewDenuncia,
-    map,
-  ]);
+  // useEffect(() => {
+  //   function handleClick(event: LeafletMouseEvent) {
+  //     if (isSelectingNewDenuncia) {
+  //       setNewDenunciaCoordinates({
+  //         lat: event.latlng.lat,
+  //         lng: event.latlng.lng,
+  //       });
+  //       setIsSelectingNewDenuncia(false);
+  //       map.off('click');
+  //     }
+  //   }
+  //   map.on('click', handleClick);
+  // }, [
+  //   isSelectingNewDenuncia,
+  //   setNewDenunciaCoordinates,
+  //   setIsSelectingNewDenuncia,
+  //   map,
+  // ]);
 
-  function handleOnDenunciaClick(currentDenuncia: DenunciaInMap) {
+  function handleOnDenunciaClick(currentDenuncia: DenunciaModel) {
     if (salvarDenunciasOnclick) {
       addDenunciaNaSelecao(currentDenuncia);
     } else {

@@ -5,13 +5,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useFilters } from '@/context/FiltersContext';
 import { useOcorrencias } from '@/context/OcorrenciasContext';
 
-export function FilterDenunciaByCategoriaTipoSelect() {
+export function FilterDenunciaByCategoriaTipoSelect({
+  onValueChange,
+}: {
+  onValueChange: (value: string) => void;
+}) {
   const { categoriaTipos } = useOcorrencias();
 
   return (
-    <Select>
+    <Select onValueChange={onValueChange}>
       <SelectTrigger className="w-full bg-white">
         <SelectValue placeholder="Tipo de denúncia" />
       </SelectTrigger>

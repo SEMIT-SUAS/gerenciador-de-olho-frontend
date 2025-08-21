@@ -3,18 +3,16 @@ import { useFilters } from '@/context/FiltersContext';
 import type { AcaoModel } from '@/types/Acao';
 import { AcaoPolygon } from './AcaoPolygon';
 import { useMapActions } from '@/context/MapActions';
-import { useOcorrencias } from '@/context/OcorrenciasContext';
 import { getConvexHull } from '@/utils/geometry';
 import { useNavigate } from 'react-router-dom';
 import { AcaoTooltip } from './AcaoTooltip';
 import { Icon } from 'leaflet';
 
 export function AcaoMapPins() {
-  const { isVisibleAcoesInMap, acoesFiltradas, denunciasFiltradas } =
+  const { isVisibleAcoesInMap, acoesFiltradas, denunciasDoBairro } =
     useFilters();
   const { salvarAcaoOnclick, toggleAcaoSelecionada, acaoSelecionada } =
     useMapActions();
-  const { denuncias } = useOcorrencias();
 
   const navigate = useNavigate();
 
@@ -47,10 +45,10 @@ export function AcaoMapPins() {
   return (
     <>
       {acoesFiltradas.map((a) => {
-        const denunciasVinculadas = denuncias.filter(
+        const denunciasVinculadas = denunciasDoBairro.filter(
           (d) =>
             d.acao?.id === a.id &&
-            denunciasFiltradas.find((df) => d.id === df.id),
+            denunciasDoBairro.find((df) => d.id === df.id),
         );
 
         const acaoPolygonCoords = getConvexHull(

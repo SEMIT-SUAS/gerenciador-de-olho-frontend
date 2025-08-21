@@ -120,7 +120,7 @@ export class DenunciaService {
     status: string;
     secretaria: number;
     bairro: string;
-    tipoDenuncia: TipoDenunciaModel | string;
+    'tipo-denuncia': string;
   }): Promise<DenunciaInMap[]> {
     try {
       const response = await api.get(`/denuncia/gerenciador/filtro-denuncias`, {

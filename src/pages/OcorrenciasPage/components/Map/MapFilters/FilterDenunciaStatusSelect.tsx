@@ -5,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useFilters } from '@/context/FiltersContext';
 
 const avaliableStatus = [
   {
@@ -29,9 +30,13 @@ const avaliableStatus = [
   },
 ];
 
-export function FilterDenunciaStatusSelect() {
+export function FilterDenunciaStatusSelect({
+  onValueChange,
+}: {
+  onValueChange: (value: string) => void;
+}) {
   return (
-    <Select>
+    <Select onValueChange={onValueChange} defaultValue="Aberto">
       <SelectTrigger className="w-full bg-white">
         <SelectValue placeholder="Status da denúncia" />
       </SelectTrigger>

@@ -19,3 +19,9 @@ export interface AcaoModel {
   secretaria: SecretariaModel;
   status: AcaoStatusModel[];
 }
+
+export interface AcaoInMap {
+  id: number;
+  latitude: number;
+  longitude: number;
+}

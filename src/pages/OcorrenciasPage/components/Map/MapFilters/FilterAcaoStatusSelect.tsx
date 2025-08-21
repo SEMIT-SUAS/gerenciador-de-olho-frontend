@@ -5,6 +5,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useFilters } from '@/context/FiltersContext';
+import { set } from 'zod/v4';
 
 const avaliableStatus = [
   {
@@ -20,14 +22,16 @@ const avaliableStatus = [
     value: 'Indeferido',
   },
   {
-    name: 'Concluída',
-    value: 'Concluída',
+    name: 'Concluído',
+    value: 'Concluído',
   },
 ];
 
 export function FilterAcaoStatusSelect() {
+  const { setFiltroStatusAcao } = useFilters();
+
   return (
-    <Select>
+    <Select onValueChange={(value) => setFiltroStatusAcao(value)}>
       <SelectTrigger className="w-full bg-white">
         <SelectValue placeholder="Status da ação" />
       </SelectTrigger>
