@@ -17,7 +17,7 @@ import type { Secretaria } from '@/types/Secretaria';
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  setUsuarios: Dispatch<SetStateAction<UsuarioModel[]>>;
+  setUsuarios: Dispatch<SetStateAction<UsuarioModel[] | null>>;
   secretarias: Secretaria[];
 }
 
@@ -31,11 +31,16 @@ export function AddUsuarioModal({
 
   async function onSubmit(data: usuarioFormValues) {
     try {
+      setIsSubmitting(true);
       const novoUsuario = await usuarioService.cadastrarGerenciador(data);
 
-      setUsuarios((prev) => [...prev, novoUsuario]);
-      toast.success('Usuário cadastrado com sucesso!');
+      setUsuarios((prev) => {
+        if (!prev) return [novoUsuario];
 
+        return [...prev, novoUsuario];
+      });
+
+      toast.success('Usuário cadastrado com sucesso!');
       onOpenChange(false);
     } catch (error: any) {
       console.error('Erro ao cadastrar usuário:', error);
@@ -44,6 +49,7 @@ export function AddUsuarioModal({
       setIsSubmitting(false);
     }
   }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
