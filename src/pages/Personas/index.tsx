@@ -23,9 +23,7 @@ import {
 import { FormPersona } from './components/PersonasForms';
 
 export function PersonasPage() {
-  const [personas, setPersonas] = useState<Persona[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [personas, setPersonas] = useState<Persona[] | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
@@ -33,61 +31,45 @@ export function PersonasPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState<Persona | null>(null);
 
-  async function fetchPersonas() {
+  async function getAllPersonasData() {
     try {
-      setLoading(true);
-      const data = await getAllPersona();
-      setPersonas(data);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao buscar as personas.');
-      toast.error(err.message || 'Erro ao buscar as personas.');
-    } finally {
-      setLoading(false);
+      return await getAllPersona();
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao buscar as personas.');
     }
   }
 
   useEffect(() => {
-    fetchPersonas();
-  }, []);
+    getAllPersonasData().then((personasData) => {
+      if (personasData) {
+        setPersonas(personasData);
+      }
+    });
 
-  const filteredPersonas = personas.filter((p) =>
-    p.nome.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+    return () => {
+      setPersonas(null);
+    };
+  }, []);
 
   function handleEdit(persona: Persona) {
     setSelectedPersona(persona);
     setIsEditModalOpen(true);
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <p className="text-red-600">Erro: {error}</p>
-          <Button onClick={fetchPersonas} variant="outline" className="mt-4">
-            Tentar novamente
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const filteredPersonas = personas?.filter((persona) =>
+    persona.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-600">Carregando personas...</p>
-      </div>
-    );
-  }
+  const totalPages = Math.ceil((filteredPersonas?.length ?? 0) / itemsPerPage);
+
+  const currentPersonas = personas
+    ? filteredPersonas?.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+      ) || []
+    : [];
 
   const itemsPerPageOptions = [8, 16, 24];
-
-  const totalPages = Math.ceil(filteredPersonas.length / itemsPerPage);
-
-  const currentData = filteredPersonas.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
 
   return (
     <LayoutPage>
@@ -123,7 +105,8 @@ export function PersonasPage() {
         </div>
 
         <PersonasList
-          personas={currentData}
+          itemsPerPage={itemsPerPage}
+          personas={currentPersonas}
           setPersonas={setPersonas}
           onEdit={handleEdit}
         />
@@ -202,19 +185,20 @@ export function PersonasPage() {
         </div>
       </div>
 
-      {/* Modal de Criar */}
       {isCreateModalOpen && (
         <FormPersona
           mode="create"
           onClose={() => setIsCreateModalOpen(false)}
           onSuccess={async () => {
             setIsCreateModalOpen(false);
-            await fetchPersonas();
+            const newData = await getAllPersonasData();
+            if (newData) {
+              setPersonas(newData);
+            }
           }}
         />
       )}
 
-      {/* Modal de Editar */}
       {isEditModalOpen && selectedPersona && (
         <FormPersona
           mode="edit"
@@ -226,7 +210,10 @@ export function PersonasPage() {
           onSuccess={async () => {
             setIsEditModalOpen(false);
             setSelectedPersona(null);
-            await fetchPersonas();
+            const newData = await getAllPersonasData();
+            if (newData) {
+              setPersonas(newData);
+            }
           }}
         />
       )}
