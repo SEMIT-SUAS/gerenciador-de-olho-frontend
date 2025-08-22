@@ -258,14 +258,23 @@ export function AddEspacoPublicoForm({ onSuccess }: AddEspacoPublicoFormProps) {
             </FormItem>
           )}
         />
-
-        <Button
-          type="submit"
-          className="w-full md:w-auto"
-          disabled={isSubmittingForm}
-        >
-          {isSubmittingForm ? 'Cadastrando...' : 'Cadastrar Espaço Público'}
-        </Button>
+        <div className="flex justify-end pt-5 gap-4 mb-8">
+          <Button
+            variant="outline"
+            className="px-8"
+            onClick={() => window.history.back()}
+            type="button"
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            className="w-full md:w-auto"
+            disabled={isSubmittingForm}
+          >
+            {isSubmittingForm ? 'Cadastrando...' : 'Cadastrar Espaço Público'}
+          </Button>
+        </div>
       </form>
     </Form>
   );

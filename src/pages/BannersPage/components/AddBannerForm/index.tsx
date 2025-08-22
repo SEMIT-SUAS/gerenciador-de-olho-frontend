@@ -145,16 +145,26 @@ export function AddABannerForm({ setBanners, onSuccess }: AddABannerFormProps) {
             )}
           />
         </div>
+        <div className="flex justify-end pt-5 gap-4">
+          <Button
+            variant="outline"
+            className="px-8"
+            onClick={() => window.history.back()}
+            type="button"
+          >
+            Cancelar
+          </Button>
 
-        <Button type="submit" className="w-full" disabled={isSubmittingForm}>
-          {isSubmittingForm ? (
-            <div className="mx-auto">
-              <Loading className="size-3" />
-            </div>
-          ) : (
-            'Criar Banner'
-          )}
-        </Button>
+          <Button type="submit" disabled={isSubmittingForm}>
+            {isSubmittingForm ? (
+              <div className="mx-auto">
+                <Loading className="size-3" />
+              </div>
+            ) : (
+              'Adicionar Banner'
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

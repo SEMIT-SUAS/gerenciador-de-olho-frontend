@@ -215,15 +215,25 @@ export function AddCategoriaForm({
         />
 
         <div className="flex justify-end">
-          <Button
-            type="submit"
-            className="w-full md:w-auto px-8"
-            size="lg"
-            disabled={isSubmittingForm}
-          >
-            {isSubmittingForm && <Loader2 className="w-4 h-4 animate-spin" />}
-            Cadastrar Categoria
-          </Button>
+          <div className="flex justify-end pt-5 gap-4">
+            <Button
+              variant="outline"
+              className="px-8"
+              onClick={() => window.history.back()}
+              type="button"
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              className="w-full md:w-auto px-8"
+              size="lg"
+              disabled={isSubmittingForm}
+            >
+              {isSubmittingForm && <Loader2 className="w-4 h-4 animate-spin" />}
+              Adicionar Categoria
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

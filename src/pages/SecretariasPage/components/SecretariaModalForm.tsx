@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+// import { z } from 'zod';
 
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -84,7 +84,7 @@ export function SecretariaFormModal({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
-          <DialogTitle>Cadastrar Secretaria</DialogTitle>
+          <DialogTitle>Adicionar Secretaria</DialogTitle>
           <DialogDescription>
             Preencha as informações abaixo para criar uma nova secretaria.
           </DialogDescription>
@@ -157,7 +157,7 @@ export function SecretariaFormModal({
                     Salvando...
                   </>
                 ) : (
-                  'Cadastrar'
+                  'Adicionar'
                 )}
               </Button>
             </DialogFooter>

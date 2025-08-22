@@ -80,11 +80,10 @@ export function BannersPage() {
             </div>
 
             <Button
-              variant={'outline'}
               className="flex items-center gap-2"
               onClick={() => setIsOpenAddBannerModal(true)}
             >
-              <PlusIcon className="h-4 w-4" />
+              <PlusIcon className="h-4 w-4 " />
               Adicionar banner
             </Button>
           </div>
