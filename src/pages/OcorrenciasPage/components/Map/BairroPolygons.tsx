@@ -32,9 +32,10 @@ export function BairroPolygons() {
             <Polygon
               positions={bairro.coordenadas as any}
               pathOptions={{
-                color: bairro.id === currentBairroId ? '#9ac670' : '#39a6de',
+                color: bairro.id === currentBairroId ? '#39a6de' : '#56b2b8',
                 fillColor: bairro.id === currentBairroId ? '' : 'lightblue',
                 fillOpacity: 0.2,
+                weight: bairro.id === currentBairroId ? 3 : 1,
               }}
               eventHandlers={{
                 click: () => handleOnClickAtBairro(bairro),

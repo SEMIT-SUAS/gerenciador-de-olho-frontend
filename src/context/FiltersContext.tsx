@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type Dispatch,
   type ReactNode,
@@ -148,20 +149,27 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         secretaria: user!.idSecretaria,
       };
 
-      const denuncias = await DenunciaService.getDenunciaPorBairro(
-        denunciaParams,
-      );
+      if (isVisibleDenunciasInMap) {
+        const denuncias = await DenunciaService.getDenunciaPorBairro(
+          denunciaParams,
+        );
 
-      const acoes = await AcoesService.getFilteredAcoes(acaoParams);
+        return setDenunciasDoBairro(denuncias);
+      }
 
-      setAcoesDoBairro(acoes);
-      setDenunciasDoBairro(denuncias);
+      if (isVisibleAcoesInMap) {
+        const acoes = await AcoesService.getFilteredAcoes(acaoParams);
+        setAcoesDoBairro(acoes);
+      }
     } catch (err) {
       console.error('Falha ao buscar denúncias:', err);
     } finally {
       // setIsLoading(false);
     }
   };
+  useEffect(() => {
+    fetchDataFiltrada();
+  }, [currentBairroId]);
 
   return (
     <FiltersContext.Provider

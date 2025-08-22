@@ -106,7 +106,24 @@ export default class AcoesService {
   }
 
   public static async updateAcao(payload: any): Promise<AcaoModel> {
-    console.log('Concluir ação com payload:', payload);
+    try {
+      const response = await api.put(`/acao/atualizar`, payload);
+
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error('Não foi possível atualizar a ação.');
+      }
+
+      return response.data.acao;
+    } catch (error) {
+      console.error('Erro ao concluir ação:', error);
+      throw new Error(
+        'Ocorreu um erro no servidor ao tentar concluir a ação. Tente novamente.',
+      );
+    }
+  }
+
+  public static async vincularDenunciaAcao(payload: any): Promise<AcaoModel> {
+    console.log('Vincular denúncias com payload:', payload);
     try {
       const response = await api.put(`/acao/atualizar`, payload);
 

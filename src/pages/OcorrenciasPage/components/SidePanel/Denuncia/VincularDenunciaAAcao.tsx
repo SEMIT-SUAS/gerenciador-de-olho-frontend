@@ -1,110 +1,84 @@
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BackButton } from '../../../../../components/ui/Backbutton';
 import { useEffect, useMemo, useState } from 'react';
 import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
 import { FaMapPin } from 'react-icons/fa';
 import { useFilters } from '../../../../../context/FiltersContext';
 import { useMapActions } from '../../../../../context/MapActions';
-import { useOcorrencias } from '../../../../../context/OcorrenciasContext';
 import { toast } from 'sonner';
-// import denunciasService from '@/services/denunciasService';
-import { getPolygonoCenter } from '@/utils/geometry';
-import type { DenunciaModel } from '@/types/Denuncia';
 import { Button } from '@/components/ui/button';
+import AcoesService from '@/services/acoesService';
+import { DenunciaService } from '@/services/DenunciaService';
+import type { DenunciaModel } from '@/types/Denuncia';
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { IconTrash } from '@tabler/icons-react';
 
 export function VincularDenunciaAAcao() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const { setDenuncias, denuncias, setAcoes } = useOcorrencias();
-  const {
-    setIsVisibleDenunciasInMap,
-    setIsVisibleAcoesInMap,
-    setFiltroStatusAcao,
-    setFiltroCategoria,
-    cacheCurrentFilters,
-    restoreCachedFilters,
-    acoesFiltradas,
-  } = useFilters();
-  const {
-    setSalvarAcaoOnclick,
-    acaoSelecionada,
-    setAcaoSelecionada,
-    toggleAcaoSelecionada,
-  } = useMapActions();
+
+  const { denunciasDoBairro, acoesDoBairro, updateAcao } = useFilters();
+  const [denuncia, setDenuncia] = useState<DenunciaModel>();
+
+  const { setSalvarAcaoOnclick, acaoSelecionada, setAcaoSelecionada } =
+    useMapActions();
 
   const params = useParams();
-  const denunciaId = params.denunciaId;
+  const denunciaId = Number(params.id);
   const navigate = useNavigate();
 
-  const denuncia = useMemo(() => {
-    return denuncias.find((d) => d.id == Number(denunciaId));
-  }, [denuncias, denunciaId]);
-
-  useEffect(() => {
-    cacheCurrentFilters();
-
-    setSalvarAcaoOnclick(true);
-    setIsVisibleDenunciasInMap(false);
-    setIsVisibleAcoesInMap(true);
-    setFiltroCategoria('todas');
-    setFiltroStatusAcao(['em_analise', 'em_andamento']);
-
-    return () => {
-      setSalvarAcaoOnclick(false);
-      restoreCachedFilters();
-      setAcaoSelecionada(null);
-    };
-  }, []);
-
-  if (!denuncia || denuncia.acao != null) {
-    return <Navigate to="404" replace />;
-  }
-
-  async function handleVincularDenuncia() {
+  async function fetchDenuncia() {
     try {
-      // const denunciaUpdatedData = await denunciasService.vincularDenunciaToAcao(
-      //   denuncia?.id!,
-      //   acaoSelecionada?.id!,
-      // );
-
-      const denunciaUpdatedData: DenunciaModel = {
-        ...denuncia!,
-        acao: acaoSelecionada!,
-      };
-
-      setDenuncias((prevDenuncias) => {
-        const updatedDenuncias = prevDenuncias.map((d) =>
-          d.id === denuncia?.id ? denunciaUpdatedData : d,
-        );
-
-        const denunciasVinculadas = updatedDenuncias.filter(
-          (d) => d.acao?.id === acaoSelecionada?.id,
-        );
-
-        const centerAcao = getPolygonoCenter(
-          denunciasVinculadas.map((d) => [d.latitude, d.longitude]),
-        );
-
-        setAcoes((prevAcoes) =>
-          prevAcoes.map((acao) =>
-            acao.id === acaoSelecionada?.id
-              ? {
-                  ...acao,
-                  latitude: centerAcao[0],
-                  longitude: centerAcao[1],
-                }
-              : acao,
-          ),
-        );
-
-        return updatedDenuncias;
-      });
-
-      navigate(`/ocorrencias/acoes/${acaoSelecionada?.id}`);
-      toast.success('Denúncia vinculada com sucesso!');
-    } catch (error: any) {
-      toast.error(error.message);
+      const denuncia = await DenunciaService.getById(denunciaId);
+      setDenuncia(denuncia);
+    } catch (error) {
+      toast.error('Erro ao buscar denúncia.');
+      console.error(error);
+      return null;
     }
   }
+
+  useEffect(() => {
+    setSalvarAcaoOnclick(true);
+    return () => {
+      setSalvarAcaoOnclick(false);
+      setAcaoSelecionada(null);
+    };
+  }, [setSalvarAcaoOnclick, setAcaoSelecionada]);
+
+  async function handleVincularDenuncia() {
+    if (!denuncia || !acaoSelecionada) {
+      toast.error('Por favor, selecione uma denúncia e uma ação.');
+      return;
+    }
+
+    try {
+      setIsOpenConfirmationModal(false);
+
+      const denunciasJaVinculadasIds = acaoSelecionada.denuncias.map(
+        (d) => d.id,
+      );
+
+      const payload = {
+        acaoId: acaoSelecionada.id,
+        denuncias: [...denunciasJaVinculadasIds, denunciaId],
+      };
+      const acaoAtualizada = await AcoesService.vincularDenunciaAcao(payload);
+
+      updateAcao(acaoAtualizada);
+
+      navigate(`/ocorrencias/acoes/${acaoSelecionada.id}`);
+      toast.success('Denúncia vinculada com sucesso!');
+    } catch (error: any) {
+      toast.error(error.message || 'Falha ao vincular denúncia.');
+    }
+  }
+
+  fetchDenuncia();
 
   return (
     <>
@@ -116,38 +90,32 @@ export function VincularDenunciaAAcao() {
 
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Vinculando denúncia:</p>
-          <p className="font-bold text-blue-900">{denuncia.tipo.nome}</p>
-          <p className="flex text-xs text-blue-800 mt-1">
-            <span className="mr-1">
-              <FaMapPin />
-            </span>
-            {`${denuncia.rua}, ${denuncia.bairro}`}
+          <p className="font-bold text-blue-900">
+            {denuncia?.tipoDenuncia.nome}
           </p>
         </div>
 
         <div className="flex flex-col gap-1">
-          <h3 className="font-bold text-gray-800">
-            Selecione uma Ação Existente:
-          </h3>
-
-          <div className="flex flex-col gap-2 p-2 rounded-lg overflow-y-auto">
-            {acoesFiltradas.map((acao) => (
-              <button
-                key={acao.id}
-                onClick={() => toggleAcaoSelecionada(acao)}
-                className={`w-full text-left p-3 ${
-                  acao.id == acaoSelecionada?.id
-                    ? 'bg-gray-300'
-                    : 'bg-white hover:bg-gray-100'
-                } rounded-lg shadow-sm transition-colors cursor-pointer`}
-              >
-                <p className="font-semibold text-gray-700">{acao.nome}</p>
-                <p className="text-xs font-semibold text-gray-300">
-                  {acao.secretaria.nome}
-                </p>
-              </button>
-            ))}
-          </div>
+          <h3 className="font-bold text-gray-800">Ação selecionada:</h3>
+          {acaoSelecionada ? (
+            <div>
+              <span>{acaoSelecionada.nome}</span>
+              <span>{acaoSelecionada.criadoEm}</span>
+              <span>{acaoSelecionada.siglaSecretaria}</span>
+              <span>
+                {acaoSelecionada.denuncias.map((denuncia) => (
+                  <Card>
+                    <CardHeader className="flex items-center justify-between">
+                      <CardTitle>{denuncia.nomeTipoDenuncia}</CardTitle>
+                      <CardDescription></CardDescription>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </span>
+            </div>
+          ) : (
+            <span>Selecione uma ação uma ação no mapa</span>
+          )}
         </div>
 
         <Button
@@ -161,7 +129,7 @@ export function VincularDenunciaAAcao() {
       <ConfirmModal
         isOpen={isOpenConfirmationModal}
         title="Vínculo de denúncia à ação"
-        message={`Você deseja vincular essa denúncia ${denuncia.tipo} à essa ação ${acaoSelecionada?.nome}?`}
+        message={`Você deseja vincular essa denúncia ${denuncia?.tipoDenuncia.nome} à essa ação ${acaoSelecionada?.nome}?`}
         onCancel={() => setIsOpenConfirmationModal(false)}
         onConfirm={handleVincularDenuncia}
       />

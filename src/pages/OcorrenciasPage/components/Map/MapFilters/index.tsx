@@ -31,6 +31,10 @@ export function MapFilters() {
     setDenunciasDoBairro,
     setFiltrarTipoDenuncia,
     setFiltroStatusDenuncia,
+    isVisibleDenunciasInMap,
+    isVisibleAcoesInMap,
+    setIsVisibleDenunciasInMap,
+    setIsVisibleAcoesInMap,
   } = useFilters();
 
   const { user } = useAuth();
@@ -165,7 +169,13 @@ export function MapFilters() {
                 className="h-6 w-6"
               />
             </label>
-            <Switch id="denuncia-switch" />
+            <Switch
+              checked={isVisibleDenunciasInMap}
+              onClick={() =>
+                setIsVisibleDenunciasInMap(!isVisibleDenunciasInMap)
+              }
+              id="denuncia-switch"
+            />
           </CardContent>
         </Card>
 
@@ -176,7 +186,11 @@ export function MapFilters() {
             <label htmlFor="acao-switch">
               <img src={AcaoIcon} alt="Icone de ação" className="h-6 w-6" />
             </label>
-            <Switch id="acao-switch" />
+            <Switch
+              checked={isVisibleAcoesInMap}
+              onClick={() => setIsVisibleAcoesInMap(!isVisibleAcoesInMap)}
+              id="acao-switch"
+            />
           </CardContent>
         </Card>
       </div>
