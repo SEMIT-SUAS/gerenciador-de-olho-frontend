@@ -43,40 +43,40 @@ export default class AcoesService {
     }
   }
 
-  public static async createAcao(
-    createAcaoData: CreateAcaoModel,
-  ): Promise<AcaoModel> {
-    const centerCoordinates = getPolygonoCenter(
-      createAcaoData.denuncias.map((d) => [d.latitude, d.longitude]),
-    );
+  // public static async createAcao(
+  //   createAcaoData: CreateAcaoModel,
+  // ): Promise<AcaoModel> {
+  //   const centerCoordinates = getPolygonoCenter(
+  //     createAcaoData.denuncias.map((d) => [d.latitude, d.longitude]),
+  //   );
 
-    const secretaria: Secretaria = secretariasMock.find(
-      (sc) => sc.id === createAcaoData.secretariaId,
-    )!;
+  //   const secretaria: Secretaria = secretariasMock.find(
+  //     (sc) => sc.id === createAcaoData.secretariaId,
+  //   )!;
 
-    const acaoCreatedData: AcaoModel = {
-      id: Math.floor(Math.random() * 100000),
-      nome: createAcaoData.nome,
-      obs: createAcaoData.obs,
-      secretaria,
-      latitude: centerCoordinates[0],
-      longitude: centerCoordinates[1],
-      criadoEm: new Date().toUTCString(),
-      status: [
-        {
-          id: 1,
-          motivo: 'Criada',
-          AlteradoEm: new Date().toUTCString(),
-          alteradoPor: userMock,
-          status: 'em_analise',
-        },
-      ],
-    };
+  //   const acaoCreatedData: AcaoModel = {
+  //     id: Math.floor(Math.random() * 100000),
+  //     nome: createAcaoData.nome,
+  //     obs: createAcaoData.obs,
+  //     secretaria,
+  //     latitude: centerCoordinates[0],
+  //     longitude: centerCoordinates[1],
+  //     criadoEm: new Date().toUTCString(),
+  //     status: [
+  //       {
+  //         id: 1,
+  //         motivo: 'Criada',
+  //         AlteradoEm: new Date().toUTCString(),
+  //         alteradoPor: userMock,
+  //         status: 'em_analise',
+  //       },
+  //     ],
+  //   };
 
-    // Adiciona a nova ação ao nosso array mock.
-    this.acoes.push(acaoCreatedData);
-    return acaoCreatedData;
-  }
+  //   // Adiciona a nova ação ao nosso array mock.
+  //   this.acoes.push(acaoCreatedData);
+  //   return acaoCreatedData;
+  // }
 
   public static async getAcaoById(acaoId: number): Promise<AcaoModel> {
     try {

@@ -59,8 +59,7 @@ type FiltersContextProps = FilterState & {
   denunciasDoBairro: DenunciaInMap[];
   setDenunciasDoBairro: Dispatch<SetStateAction<DenunciaInMap[]>>;
   filtroStatusDenuncia: DenunciaStatusModelTypes | string | null;
-  acoesFiltradas: AcaoModel[];
-  updateAcao: UpdatedAcaoModel;
+  updateAcao: (acaoAtualizada: AcaoModel) => void;
   filtrarAcoesPorId: number[] | 'desabilitado';
   setFiltrarAcoesPorId: Dispatch<SetStateAction<number[] | 'desabilitado'>>;
 };

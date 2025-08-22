@@ -69,7 +69,7 @@ export class DenunciaService {
   }
 
   public static async getNumberDenunciasInMap(
-    status: string,
+    status: string | null,
     secretaria: number,
   ): Promise<NumeroDeDenunciasPorBairro[]> {
     console.log(
@@ -149,10 +149,10 @@ export class DenunciaService {
   }
 
   public static async getDenunciaPorBairro(data: {
-    status: string;
+    status: string | null;
     secretaria: number;
     bairro: string;
-    'tipo-denuncia': string | null;
+    'tipo-denuncia': string | null | TipoDenunciaModel;
   }): Promise<DenunciaInMap[]> {
     console.log('Fetching denuncias por bairro with params:', data);
     try {
