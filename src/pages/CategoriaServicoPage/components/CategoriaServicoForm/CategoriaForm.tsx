@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import { ImageInput } from '@/components/Forms/ImageInput';
 
 interface Props {
   onSubmit: (
@@ -90,52 +91,46 @@ export function AddCategoriaForm({
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="icone"
             render={({ field: { value, onChange, ...fieldProps } }) => (
               <FormItem className="space-y-3">
                 <FormLabel className="text-sm font-medium text-gray-700">
-                  Ícone da Categoria
+                  Ícone da Categoria*
                 </FormLabel>
                 <FormControl>
                   <div className="space-y-2">
-                    <Input
+                    <ImageInput
                       {...fieldProps}
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        onChange(file || null);
-                      }}
+                      onChange={onChange}
+                      value={value}
                       className="w-full"
+                      height={120}
                     />
 
-                    {/* Mostrar arquivo atual no modo editar (string) - sempre mostrar se existir */}
+                    {/* Mostrar arquivo atual no modo editar */}
                     {mode === 'edit' &&
                       defaultValues?.icone &&
-                      typeof defaultValues.icone === 'string' && (
+                      typeof defaultValues.icone === 'string' &&
+                      !value && (
                         <div className="text-sm text-blue-600 bg-blue-50 p-2 rounded">
                           Arquivo atual:{' '}
                           <span className="font-medium">
                             {(defaultValues.icone as string).split('/').pop() ||
                               'imagem.jpg'}
                           </span>
-                          {!value && (
-                            <div className="text-xs text-blue-500 mt-1">
-                              Selecione um novo arquivo para substituir
-                            </div>
-                          )}
+                          <div className="text-xs text-blue-500 mt-1">
+                            Clique acima para selecionar um novo arquivo
+                          </div>
                         </div>
                       )}
 
-                    {/* Mostrar arquivo selecionado (File) */}
+                    {/* Mostrar arquivo selecionado */}
                     {value && value instanceof File && (
                       <div className="text-sm text-green-600 bg-green-50 p-2 rounded">
                         Novo arquivo selecionado:{' '}
                         <span className="font-medium">{value.name}</span>
-                        <div className="text-xs text-green-500 mt-1"></div>
                       </div>
                     )}
                   </div>
