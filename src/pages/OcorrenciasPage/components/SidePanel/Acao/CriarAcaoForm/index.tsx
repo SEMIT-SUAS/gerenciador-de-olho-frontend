@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useMapActions } from '@/context/MapActions';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreateAcaoFormSchema, type CreateAcaoFormValues } from './schema';
 import { Button } from '@/components/ui/button';
@@ -31,8 +31,17 @@ import {
 } from '@/components/ui/card';
 import { IconTrash } from '@tabler/icons-react';
 import { useFilters } from '@/context/FiltersContext';
+import { toast } from 'sonner';
+import { getPolygonoCenter } from '@/utils/geometry';
+import type { AcaoModel, CreateAcaoModel } from '@/types/Acao';
+import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
+import { useNavigate } from 'react-router-dom';
+import AcoesService from '@/services/acoesService';
 
 export function CriarAcaoForm() {
+  const [isCriandoAcao, setIsCriandoAcao] = useState(false);
+
+  const navigate = useNavigate();
   const form = useForm({
     resolver: zodResolver(CreateAcaoFormSchema),
     defaultValues: {
@@ -48,6 +57,7 @@ export function CriarAcaoForm() {
     setSalvarDenunciasOnClick,
     denunciasSelecionas,
     toggleDenunciaSelecionadas,
+    currentBairroId,
   } = useMapActions();
   const {
     setIsVisibleDenunciasInMap,
@@ -67,11 +77,62 @@ export function CriarAcaoForm() {
     return () => {
       setIsVisibleAcoesInMap(true);
       setSalvarDenunciasOnClick(false);
+
+      fetchDataFiltrada();
+      form.reset();
     };
   }, []);
 
   async function handleCreateAcao(values: CreateAcaoFormValues) {
-    console.log('Dados do formulário:', values);
+    try {
+      setIsCriandoAcao(true);
+
+      const bairro = DADOS_BAIRROS.find(
+        (bairro) => bairro.id === currentBairroId,
+      );
+
+      if (!bairro) {
+        return toast.error(
+          'Não foi possível localizar o bairro atual selecionado',
+        );
+      }
+
+      const centerCoordinates = getPolygonoCenter(
+        denunciasSelecionas.map((denuncia) => [
+          denuncia.latitude,
+          denuncia.longitude,
+        ]),
+      );
+
+      const createAcaoData: CreateAcaoModel = {
+        nome: values.nome,
+        descricao: values.descricao,
+        secretaria: values.secretariaId,
+        observacao: values.observacao,
+        latitude: centerCoordinates[0],
+        longitude: centerCoordinates[1],
+        bairro: bairro.nome,
+        denuncias: denunciasSelecionas.map((denuncia) => denuncia.id),
+        acaoStatus: {
+          status: 'Análise',
+          motivo: 'Criando ação',
+          modificadoEm: new Date().toString(),
+        },
+        ativo: true,
+      };
+
+      const acaoCreatedData: AcaoModel = await AcoesService.create(
+        createAcaoData,
+      );
+
+      setFiltroStatusDenuncia('Análise');
+      navigate(`/ocorrencias/acoes/${acaoCreatedData.id}`);
+      toast.success('Ação criada com sucesso!');
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsCriandoAcao(false);
+    }
   }
 
   return (

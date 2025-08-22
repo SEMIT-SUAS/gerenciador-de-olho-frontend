@@ -1,11 +1,21 @@
 import type { AcaoStatusModel } from './AcaoStatus';
-import type { DenunciaBasicInfoModel, DenunciaModel } from './Denuncia';
+import type { DenunciaBasicInfoModel } from './Denuncia';
 
 export interface CreateAcaoModel {
   nome: string;
-  obs: string | null;
-  secretariaId: number;
-  denuncias: DenunciaModel[];
+  latitude: number;
+  longitude: number;
+  descricao: string;
+  observacao?: string;
+  bairro: string;
+  secretaria: number;
+  denuncias: number[];
+  acaoStatus: {
+    status: string;
+    motivo: string;
+    modificadoEm: string;
+  };
+  ativo: boolean;
 }
 
 export interface AcaoModel {

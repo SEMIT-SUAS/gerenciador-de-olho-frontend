@@ -1,24 +1,33 @@
-import type {
-  AcaoInMap,
-  AcaoModel,
-  CreateAcaoModel,
-  UpdateAcao,
-  UpdatedAcaoModel,
-} from '../types/Acao';
-import { api, API_BASE_URL } from '../config/api';
-import { getPolygonoCenter } from '../utils/geometry';
-import type { Secretaria } from '../types/Secretaria';
-import { secretariasMock, userMock } from '../constants/mocks';
+import type { AcaoInMap, AcaoModel, CreateAcaoModel } from '../types/Acao';
+import { api } from '../config/api';
 
 export default class AcoesService {
-  public static acoes: AcaoModel[] = [];
+  public static async create(data: CreateAcaoModel) {
+    try {
+      const body = JSON.stringify(data);
+
+      const response = await api.post('/acao/cadastrar', body, {
+        responseType: 'json',
+        headers: {
+          'Content-Type': 'Application/json',
+        },
+      });
+
+      if (response.status !== 201) {
+        throw new Error('Não foi possível criar á ação.');
+      }
+
+      return response.data;
+    } catch {
+      throw new Error('Serviço de ação fora do ar. Tente novamente mais tarde');
+    }
+  }
 
   public static async getFilteredAcoes(data: {
     status: string | null;
     secretaria: number;
     bairro: string;
   }): Promise<AcaoInMap[]> {
-    console.log('Buscando ações filtradas com os dados:', data);
     try {
       const response = await api.get('/acao/gerenciador/filtro-acao', {
         params: {
