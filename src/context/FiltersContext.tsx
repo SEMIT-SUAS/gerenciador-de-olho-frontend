@@ -1,23 +1,17 @@
 import {
   createContext,
   useContext,
-  useMemo,
   useState,
   type Dispatch,
   type ReactNode,
   type SetStateAction,
-  useCallback,
-  useEffect,
 } from 'react';
-import { useOcorrencias } from './OcorrenciasContext';
 import type {
   DenunciaInMap,
-  DenunciaModel,
   DenunciaStatusModelTypes,
 } from '../types/Denuncia';
-import type { AcaoInMap, AcaoModel, UpdatedAcaoModel } from '../types/Acao';
+import type { AcaoInMap, AcaoModel } from '../types/Acao';
 import type { AcaoStatusModelTypes } from '../types/AcaoStatus';
-import { getDenunciaStatus } from '../utils/getDenunciaStatus';
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import { useMapActions } from './MapActions';
 import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
@@ -62,6 +56,7 @@ type FiltersContextProps = FilterState & {
   updateAcao: (acaoAtualizada: AcaoModel) => void;
   filtrarAcoesPorId: number[] | 'desabilitado';
   setFiltrarAcoesPorId: Dispatch<SetStateAction<number[] | 'desabilitado'>>;
+  fetchDataFiltrada: () => Promise<void>;
 };
 
 const defaultFilters: FilterState = {
@@ -129,159 +124,52 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  // const {} = useOcorrencias();
+  const fetchDataFiltrada = async () => {
+    if (!currentBairroId) {
+      setDenunciasDoBairro([]);
+      return;
+    }
 
-  // const cacheCurrentFilters = useCallback(() => {
-  //   setCacheFilters({
-  //     isVisibleDenunciasInMap,
-  //     isVisibleAcoesInMap,
-  //     filtroStatusDenuncia,
-  //     filtroStatusAcao,
-  //     filtroCategoria,
-  //     filtroSecretaria,
-  //     filtroDenunciasComAcao,
-  //     filtrarAcoesPorId,
-  //     filtroTipoDenuncia,
-  //   });
-  // }, [
-  //   isVisibleDenunciasInMap,
-  //   isVisibleAcoesInMap,
-  //   filtroStatusDenuncia,
-  //   filtroStatusAcao,
-  //   filtroCategoria,
-  //   filtroSecretaria,
-  //   filtroDenunciasComAcao,
-  //   filtrarAcoesPorId,
-  //   filtroTipoDenuncia,
-  // ]);
+    // setIsLoading(true);
 
-  // const restoreCachedFilters = useCallback(() => {
-  //   const filtersToRestore = cacheFilters || defaultFilters;
+    // setError(null);
 
-  //   setIsVisibleDenunciasInMap(filtersToRestore.isVisibleDenunciasInMap);
-  //   setIsVisibleAcoesInMap(filtersToRestore.isVisibleAcoesInMap);
-  //   setFiltroStatusDenuncia(filtersToRestore.filtroStatusDenuncia);
-  //   setFiltroStatusAcao(filtersToRestore.filtroStatusAcao);
-  //   setFiltroCategoria(filtersToRestore.filtroCategoria);
-  //   setFiltroSecretaria(filtersToRestore.filtroSecretaria);
-  //   setFiltroDenunciasComAcao(filtersToRestore.filtroDenunciasComAcao);
-  //   setFiltrarAcoesPorId(filtersToRestore.filtrarAcoesPorId);
-  //   setFiltrarTipoDenuncia(filtersToRestore.filtroTipoDenuncia);
+    try {
+      const denunciaParams = {
+        bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
+        status: filtroStatusDenuncia,
+        secretaria: user!.idSecretaria,
+        'tipo-denuncia': filtroTipoDenuncia,
+      };
 
-  //   if (cacheFilters) {
-  //     setCacheFilters(null);
-  //   }
-  // }, [cacheFilters]);
+      const acaoParams = {
+        bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
+        status: filtroStatusDenuncia,
+        secretaria: user!.idSecretaria,
+      };
 
-  // const denunciasFiltradas = useMemo(() => {
-  //   return denuncias.filter((d) => {
-  //     const denunciaStatus = getDenunciaStatus(d);
+      const denuncias = await DenunciaService.getDenunciaPorBairro(
+        denunciaParams,
+      );
+      if (isVisibleDenunciasInMap) {
+        const denuncias = await DenunciaService.getDenunciaPorBairro(
+          denunciaParams,
+        );
 
-  //     // console.log(denunciaStatus);
-
-  //     const passaStatus =
-  //       filtroStatusDenuncia === 'todos' ||
-  //       filtroStatusDenuncia.includes(denunciaStatus);
-
-  //     const passaCategoria =
-  //       filtroCategoria === 'todas' ||
-  //       d.tipo?.categoria?.nome === filtroCategoria;
-
-  //     const passaFiltroAcao =
-  //       filtroDenunciasComAcao === 'desabilitado' ||
-  //       (filtroDenunciasComAcao === 'com_acao' && d.acao) ||
-  //       (filtroDenunciasComAcao === 'sem_acao' && !d.acao);
-
-  //     return passaStatus && passaCategoria && passaFiltroAcao;
-  //   });
-  // }, [
-  //   denuncias,
-  //   filtroStatusDenuncia,
-  //   filtroCategoria,
-  //   filtroDenunciasComAcao,
-  //   acoes,
-  // ]);
-
-  useEffect(() => {
-    const fetchDenunciasFiltradas = async () => {
-      if (!currentBairroId) {
-        setDenunciasDoBairro([]);
-        return;
+        return setDenunciasDoBairro(denuncias);
       }
 
-      // setIsLoading(true);
-
-      // setError(null);
-
-      try {
-        const denunciaParams = {
-          bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-          status: filtroStatusDenuncia,
-          secretaria: user!.idSecretaria,
-          'tipo-denuncia': filtroTipoDenuncia,
-        };
-
-        const acaoParams = {
-          bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-          status: filtroStatusDenuncia,
-          secretaria: user!.idSecretaria,
-        };
-
-        if (isVisibleDenunciasInMap) {
-          const denuncias = await DenunciaService.getDenunciaPorBairro(
-            denunciaParams,
-          );
-
-          return setDenunciasDoBairro(denuncias);
-        }
-
-        if (isVisibleAcoesInMap) {
-          const acoes = await AcoesService.getFilteredAcoes(acaoParams);
-          setAcoesDoBairro(acoes);
-        }
-      } catch (err) {
-        console.error('Falha ao buscar denúncias:', err);
-      } finally {
-        // setIsLoading(false);
+      if (isVisibleAcoesInMap) {
+        const acoes = await AcoesService.getFilteredAcoes(acaoParams);
+        setAcoesDoBairro(acoes);
       }
-    };
+    } catch (err) {
+      console.error('Falha ao buscar denúncias:', err);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
 
-    fetchDenunciasFiltradas();
-  }, [
-    currentBairroId,
-    filtroStatusDenuncia,
-    filtroSecretaria,
-    filtroTipoDenuncia,
-  ]);
-
-  // console.log('Denuncias do bairro:', denunciasDoBairro);
-
-  // const acoesFiltradas = useMemo(() => {
-  //   if (filtrarAcoesPorId !== 'desabilitado') {
-  //     return acoes.filter((a) => filtrarAcoesPorId.includes(a.id));
-  //   }
-
-  //   return acoes
-  //     .filter((a) => {
-  //       console.log(filtroSecretaria);
-  //       if (filtroSecretaria === 'todas') {
-  //         return a;
-  //       } else {
-  //         console.log(a.secretaria.sigla);
-  //         return a.secretaria.sigla === filtroSecretaria;
-  //       }
-  //     })
-  //     .filter((a) => {
-  //       const currentStatus = a.status?.[a.status.length - 1]?.status;
-  //       if (!currentStatus) return false;
-
-  //       if (filtroStatusAcao === 'todos') {
-  //         return a;
-  //       } else {
-  //         return filtroStatusAcao[0] === currentStatus;
-  //       }
-  //     });
-  // }, [acoes, filtroStatusAcao, filtroSecretaria, filtrarAcoesPorId]);
   return (
     <FiltersContext.Provider
       value={{
@@ -309,6 +197,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         filtroTipoDenuncia,
         setFiltrarTipoDenuncia,
         updateAcao,
+        fetchDataFiltrada,
       }}
     >
       {children}

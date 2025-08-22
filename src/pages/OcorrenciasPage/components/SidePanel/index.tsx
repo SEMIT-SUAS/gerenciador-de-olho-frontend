@@ -1,10 +1,10 @@
 import { type ReactNode, useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useMapActions } from '@/context/MapActions';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 interface SidePanelProps {
   children: ReactNode;
@@ -16,21 +16,11 @@ export function SidePanel({ children }: SidePanelProps) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { currentBairroId } = useMapActions();
+  const { currentBairroId, salvarDenunciasOnclick, salvarAcaoOnclick } =
+    useMapActions();
+  const prevBairroIdRef = useRef<number | null>(undefined);
 
-  const prevBairroIdRef = useRef<number | null>(undefined); // Ref para armazenar o ID do bairro anterior
-
-  // Efeito para detectar cliques fora do painel
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        panelRef.current &&
-        !panelRef.current.contains(event.target as Node)
-      ) {
-        setIsMinimized(true);
-      }
-    }
-
     if (!isMinimized) {
       document.addEventListener('mousedown', handleClickOutside);
     }
@@ -65,6 +55,14 @@ export function SidePanel({ children }: SidePanelProps) {
     prevBairroIdRef.current = currentBairroId;
   }, [currentBairroId, location.pathname, navigate]);
 
+  function handleClickOutside(event: MouseEvent) {
+    if (salvarDenunciasOnclick || salvarAcaoOnclick) return;
+
+    if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
+      setIsMinimized(true);
+    }
+  }
+
   return (
     <Card
       ref={panelRef}
@@ -93,9 +91,7 @@ export function SidePanel({ children }: SidePanelProps) {
         )}
       >
         <CardHeader className="border-b">
-          <h1 className="text-lg font-bold">
-            Gerenciado <span>De Olho na Cidade</span>
-          </h1>
+          <h1 className="text-lg font-bold">Painel de ocorrências</h1>
         </CardHeader>
 
         <CardContent className={cn('p-8 overflow-y-auto h-[calc(100%-80px)]')}>

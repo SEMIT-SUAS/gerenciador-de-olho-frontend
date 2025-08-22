@@ -25,8 +25,9 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { FiltersProvider } from './context/FiltersContext';
 import { MapActionsProvider } from './context/MapActions';
 import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcaoDetails';
-import { useAuth } from './context/AuthContext';
+
 import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/VincularDenunciaAAcao';
+import { CriarAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/CriarAcao';
 
 export function App() {
   return (
@@ -57,7 +58,8 @@ export function App() {
             </Route>
 
             <Route path="acoes">
-              <Route path=":id" element={<AcaoDetails />}></Route>
+              <Route path=":id" element={<AcaoDetails />} />
+              <Route path="criar" element={<CriarAcao />} />
             </Route>
           </Route>
 

@@ -2,22 +2,17 @@ import { Marker, useMap } from 'react-leaflet';
 import { useFilters } from '@/context/FiltersContext';
 import { getDenunciaIconByTipo } from '@/utils/getPinIcon';
 import { useMapActions } from '@/context/MapActions';
-import type { DenunciaInMap, DenunciaModel } from '@/types/Denuncia';
+import type {
+  DenunciaBasicInfoModel,
+  DenunciaInMap,
+  DenunciaModel,
+} from '@/types/Denuncia';
 import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
 import { getConvexHull } from '@/utils/geometry';
 import { DenunciaTooltip } from './DenunciaTooltip';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { divIcon } from 'leaflet';
-
-// const statusIconMap: Record<string, string> = {
-//   indeferido: '../../../public/status/indeferido.png',
-//   concluido: '../../../public/status/concluido.png',
-//   em_andamento: '../../../public/status/em_andamento.png',
-//   em_aberto: '../../../public/status/em_aberto.png',
-//   em_analise: '../../../public/status/em_analise.png',
-//   default: '../../../public/status/indeferido.png',
-// };
 
 export function DenunciaMapPins() {
   const { denunciasDoBairro } = useFilters();
@@ -26,7 +21,7 @@ export function DenunciaMapPins() {
 
   const {
     salvarDenunciasOnclick,
-    addDenunciaNaSelecao,
+    toggleDenunciaSelecionadas,
     denunciasSelecionas,
     denunciasJaVinculadas,
     isSelectingNewDenuncia,
@@ -63,9 +58,9 @@ export function DenunciaMapPins() {
   //   map,
   // ]);
 
-  function handleOnDenunciaClick(currentDenuncia: DenunciaModel) {
+  function handleOnDenunciaClick(currentDenuncia: DenunciaInMap) {
     if (salvarDenunciasOnclick) {
-      addDenunciaNaSelecao(currentDenuncia);
+      toggleDenunciaSelecionadas(currentDenuncia);
     } else {
       navigate(`/ocorrencias/denuncias/${currentDenuncia.id}`);
     }

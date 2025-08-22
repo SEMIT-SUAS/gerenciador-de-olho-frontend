@@ -12,17 +12,23 @@ import DenunciaIcon from '/public/icons/denuncia.png';
 import { IconX } from '@tabler/icons-react';
 import { useMapActions } from '@/context/MapActions';
 import { DenunciaService } from '@/services/DenunciaService';
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { useFilters } from '@/context/FiltersContext';
 import { useAuth } from '@/context/AuthContext';
 import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
-import AcoesService from '@/services/acoesService';
+import { useNavigate } from 'react-router-dom';
+
+interface TempFiltersState {
+  bairroId?: string;
+  denunciaStatus: string;
+  tipoDenuncia: string | null; // <-- Aqui você permite string OU null
+  acaoStatus?: string;
+}
 
 export function MapFilters() {
   const { setCurrentBairroId, currentBairroId, setZoomTo } = useMapActions();
   const {
     setDenunciasDoBairro,
-    setAcoesDoBairro,
     setFiltrarTipoDenuncia,
     setFiltroStatusDenuncia,
     isVisibleDenunciasInMap,
@@ -30,18 +36,9 @@ export function MapFilters() {
     setIsVisibleDenunciasInMap,
     setIsVisibleAcoesInMap,
   } = useFilters();
+
   const { user } = useAuth();
-
-  interface TempFiltersState {
-    bairroId?: string;
-    denunciaStatus: string;
-    tipoDenuncia: string | null; // <-- Aqui você permite string OU null
-    acaoStatus?: string;
-  }
-
-  if (!currentBairroId) {
-    return null;
-  }
+  const navigate = useNavigate();
 
   const handleZoomOut = () => {
     setCurrentBairroId(null);
@@ -54,6 +51,10 @@ export function MapFilters() {
     tipoDenuncia: null,
     acaoStatus: 'Andamento',
   });
+
+  if (!currentBairroId) {
+    return null;
+  }
 
   const handleClearFilters = () => {
     setFiltrarTipoDenuncia(null);
@@ -139,7 +140,10 @@ export function MapFilters() {
       </div>
 
       <div className="absolute z-20 bottom-9 left-12">
-        <Button className="w-56">
+        <Button
+          className="w-56"
+          onClick={() => navigate('/ocorrencias/acoes/criar')}
+        >
           Criar ação
           <img src={AcaoIcon} alt="Icone de denúncia" className="h-6 w-6" />
         </Button>
