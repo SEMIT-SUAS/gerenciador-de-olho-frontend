@@ -194,17 +194,29 @@ export function TipoDenunciaForm({
             </FormItem>
           )}
         />
-
-        <div className="flex justify-end">
+        <div className="flex justify-end pt-5 gap-4">
           <Button
-            type="submit"
-            className="w-full md:w-auto px-8"
-            size="lg"
-            disabled={isSubmitting}
+            variant="outline"
+            className="px-8"
+            onClick={() => window.history.back()}
+            type="button"
           >
-            {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Cadastrar Tipo de Denúncia
+            Cancelar
           </Button>
+
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="w-full md:w-auto px-8"
+              size="lg"
+              disabled={isSubmitting}
+            >
+              {isSubmitting && (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              )}
+              Adicionar Tipo de Denúncia
+            </Button>
+          </div>
         </div>
       </form>
     </Form>
