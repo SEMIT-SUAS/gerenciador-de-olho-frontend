@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { ImageInput } from '@/components/Forms/ImageInput';
 
 type Props = {
   onClose: () => void;
@@ -33,6 +32,7 @@ export function FormPersona({
   defaultValues,
 }: Props) {
   const [loading, setLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
 
   const form = useForm<PersonaFormData>({
     resolver: zodResolver(personaSchema),
@@ -44,12 +44,11 @@ export function FormPersona({
     },
   });
 
-  // Se estiver em modo de edição, define o valor inicial do ícone
   useEffect(() => {
     if (mode === 'edit' && defaultValues?.icone) {
-      form.setValue('icone', defaultValues.icone);
+      setPreviewUrl(defaultValues.icone);
     }
-  }, [mode, defaultValues, form]);
+  }, [mode, defaultValues]);
 
   const handleSubmit = async (data: PersonaFormData) => {
     setLoading(true);
@@ -57,7 +56,7 @@ export function FormPersona({
     try {
       if (mode === 'create') {
         // CREATE: não envia ID, ícone é obrigatório
-        if (!data.icone) {
+        if (!data.icone || !data.icone[0]) {
           toast.error('Ícone é obrigatório para criar uma nova persona');
           setLoading(false);
           return;
@@ -65,17 +64,7 @@ export function FormPersona({
 
         const formData = new FormData();
         formData.append('nome', data.nome);
-
-        // Verifica se icone é FileList ou string (URL)
-        if (data.icone instanceof FileList && data.icone[0]) {
-          formData.append('icone', data.icone[0]);
-        } else if (
-          typeof data.icone === 'object' &&
-          data.icone instanceof File
-        ) {
-          formData.append('icone', data.icone);
-        }
-
+        formData.append('icone', data.icone[0]);
         formData.append('visivel', String(data.visivel));
         formData.append('ativo', String(data.ativo));
 
@@ -91,10 +80,8 @@ export function FormPersona({
         formData.append('ativo', String(data.ativo));
 
         // Só adiciona ícone se foi selecionado um novo
-        if (data.icone instanceof FileList && data.icone[0]) {
+        if (data.icone && data.icone[0]) {
           formData.append('icone', data.icone[0]);
-        } else if (data.icone instanceof File) {
-          formData.append('icone', data.icone);
         }
 
         await updatePersona(formData);
@@ -103,12 +90,7 @@ export function FormPersona({
         onSuccess({
           ...defaultValues,
           ...data,
-          icone:
-            data.icone instanceof File || data.icone instanceof FileList
-              ? URL.createObjectURL(
-                  data.icone instanceof FileList ? data.icone[0] : data.icone,
-                )
-              : defaultValues.icone,
+          icone: data.icone && data.icone[0] ? previewUrl : defaultValues.icone,
         });
       }
 
@@ -120,6 +102,23 @@ export function FormPersona({
       setLoading(false);
     }
   };
+
+  const handleFileChange = (files: FileList | null) => {
+    if (files && files[0]) {
+      const file = files[0];
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      form.setValue('icone', files);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -152,7 +151,7 @@ export function FormPersona({
               )}
             />
 
-            {/* Ícone com ImageInput */}
+            {/* Ícone */}
             <FormField
               control={form.control}
               name="icone"
@@ -160,15 +159,61 @@ export function FormPersona({
                 <FormItem>
                   <FormLabel>
                     Ícone {mode === 'create' && '*'}
-                    {mode === 'edit' && ' (clique para alterar)'}
+                    {mode === 'edit' && ' (deixe vazio para manter o atual)'}
                   </FormLabel>
                   <FormControl>
-                    <ImageInput
-                      onChange={field.onChange}
-                      value={field.value}
-                      className="w-full"
-                      height={120}
-                    />
+                    <div className="space-y-3">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        disabled={loading}
+                        onChange={(e) => {
+                          const files = e.target.files;
+                          handleFileChange(files);
+                        }}
+                      />
+
+                      {/* Preview do ícone */}
+                      {previewUrl && (
+                        <div className="space-y-2">
+                          <p className="text-sm text-gray-600">
+                            {mode === 'edit' && !(field.value && field.value[0])
+                              ? 'Ícone atual:'
+                              : 'Preview:'}
+                          </p>
+                          <div className="relative inline-block">
+                            <img
+                              src={previewUrl}
+                              alt="Preview"
+                              className="h-14 w-auto rounded-md object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src =
+                                  'https://via.placeholder.com/80?text=Erro+ao+carregar';
+                              }}
+                            />
+                            {field.value && field.value[0] && (
+                              <div className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                                Novo
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Informações do arquivo */}
+                      {field.value && field.value[0] && (
+                        <div className="text-sm text-green-600 bg-green-50 p-2 rounded">
+                          <p className="font-medium">
+                            Novo arquivo selecionado:
+                          </p>
+                          <p className="text-xs">{field.value[0].name}</p>
+                          <p className="text-xs">
+                            Tamanho:{' '}
+                            {(field.value[0].size / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
