@@ -8,6 +8,7 @@ import type {
 } from '../types/Denuncia.ts';
 import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 import type { DenunciaIndeferidaModel } from '@/types/DenunciaIndeferidaModel.ts';
+import type { TipoDenunciaModel } from '@/types/TipoDenuncia.ts';
 
 export class DenunciaService {
   private static SERVICE_UNAVAILABLE_ERROR = new Error(
@@ -142,10 +143,10 @@ export class DenunciaService {
   }
 
   public static async getDenunciaPorBairro(data: {
-    status: string;
+    status: string | null;
     secretaria: number;
     bairro: string;
-    'tipo-denuncia': string;
+    'tipo-denuncia': string | null | TipoDenunciaModel;
   }): Promise<DenunciaInMap[]> {
     console.log('Fetching denuncias por bairro with params:', data);
     try {

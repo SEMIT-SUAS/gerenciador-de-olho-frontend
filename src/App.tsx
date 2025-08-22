@@ -25,8 +25,11 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { FiltersProvider } from './context/FiltersContext';
 import { MapActionsProvider } from './context/MapActions';
 import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcaoDetails';
+import { useAuth } from './context/AuthContext';
 
 export function App() {
+  const { user } = useAuth();
+
   return (
     <BrowserRouter>
       <Routes>
@@ -51,7 +54,7 @@ export function App() {
             </Route>
 
             <Route path="acoes">
-              <Route path=":id" element={<AcaoDetails />} />
+              <Route path=":id" element={<AcaoDetails />}></Route>
             </Route>
           </Route>
 

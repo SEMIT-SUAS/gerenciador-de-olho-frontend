@@ -22,8 +22,19 @@ export interface AcaoModel {
   denuncias: DenunciaBasicInfoModel[];
 }
 
+export interface UpdatedAcaoModel {
+  mensagem: string;
+  acao: AcaoModel;
+}
+
 export interface AcaoInMap {
   id: number;
   latitude: number;
   longitude: number;
+}
+
+export interface UpdateAcao {
+  id: number;
+  acaoStatus: AcaoStatusModel;
+  ativo: boolean;
 }

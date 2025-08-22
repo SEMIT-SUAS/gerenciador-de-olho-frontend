@@ -7,6 +7,6 @@ export type AcaoStatusModelTypes =
 export interface AcaoStatusModel {
   id: number;
   status: AcaoStatusModelTypes;
-  motivo: string;
+  motivo: string | null;
   dataModificacao: string;
 }

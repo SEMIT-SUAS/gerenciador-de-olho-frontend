@@ -33,12 +33,8 @@ import {
 
 export function AddAcaoForm() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const { secretarias, setDenuncias, setAcoes } = useOcorrencias();
-  const {
-    cacheCurrentFilters,
-    restoreCachedFilters,
-    setFiltroDenunciasComAcao,
-  } = useFilters();
+  const { secretarias } = useOcorrencias();
+  const { setFiltroDenunciasComAcao } = useFilters();
 
   const {
     setSalvarDenunciasOnClick,
@@ -60,13 +56,10 @@ export function AddAcaoForm() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    cacheCurrentFilters();
-
     setFiltroDenunciasComAcao('sem_acao');
     setSalvarDenunciasOnClick(true);
 
     return () => {
-      restoreCachedFilters();
       setDenunciasSelecionadas([]);
       setSalvarDenunciasOnClick(false);
     };

@@ -6,18 +6,18 @@ import type { DenunciaInMap, DenunciaModel } from '@/types/Denuncia';
 import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
 import { getConvexHull } from '@/utils/geometry';
 import { DenunciaTooltip } from './DenunciaTooltip';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { type LeafletMouseEvent, divIcon } from 'leaflet';
+import { divIcon } from 'leaflet';
 
-const statusIconMap: Record<string, string> = {
-  indeferido: '../../../public/status/indeferido.png',
-  concluido: '../../../public/status/concluido.png',
-  em_andamento: '../../../public/status/em_andamento.png',
-  em_aberto: '../../../public/status/em_aberto.png',
-  em_analise: '../../../public/status/em_analise.png',
-  default: '../../../public/status/indeferido.png',
-};
+// const statusIconMap: Record<string, string> = {
+//   indeferido: '../../../public/status/indeferido.png',
+//   concluido: '../../../public/status/concluido.png',
+//   em_andamento: '../../../public/status/em_andamento.png',
+//   em_aberto: '../../../public/status/em_aberto.png',
+//   em_analise: '../../../public/status/em_analise.png',
+//   default: '../../../public/status/indeferido.png',
+// };
 
 export function DenunciaMapPins() {
   const { denunciasDoBairro } = useFilters();
@@ -29,14 +29,11 @@ export function DenunciaMapPins() {
     addDenunciaNaSelecao,
     denunciasSelecionas,
     denunciasJaVinculadas,
-    setIsSelectingNewDenuncia,
-    setNewDenunciaCoordinates,
     isSelectingNewDenuncia,
     newDenunciaCoordinates,
   } = useMapActions();
 
   const navigate = useNavigate();
-  const map = useMap();
 
   const denunciaPolygonCoordinates = useMemo(() => {
     return getConvexHull(
@@ -84,14 +81,13 @@ export function DenunciaMapPins() {
     const mainIconUrl = baseIcon.options.iconUrl;
     const iconSize = baseIcon.options.iconSize as [number, number];
 
-    const statusValue = denuncia.acaoStatus || 'default';
+    // const statusValue = denuncia.acaoStatus || 'default';
 
-    const statusIconUrl = statusIconMap[statusValue] || statusIconMap.default;
+    // const statusIconUrl = statusIconMap[statusValue] || statusIconMap.default;
 
     const iconHTML = `
       <div class="marker-container">
         <img src="${mainIconUrl}" style="width: ${iconSize[0]}px; height: ${iconSize[1]}px;" />
-        <img src="${statusIconUrl}" class="status-badge" />
       </div>
     `;
 

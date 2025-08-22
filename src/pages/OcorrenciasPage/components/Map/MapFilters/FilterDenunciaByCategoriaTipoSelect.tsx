@@ -9,14 +9,16 @@ import { useFilters } from '@/context/FiltersContext';
 import { useOcorrencias } from '@/context/OcorrenciasContext';
 
 export function FilterDenunciaByCategoriaTipoSelect({
+  value,
   onValueChange,
 }: {
+  value: string | null; // <-- Adicione a tipagem
   onValueChange: (value: string) => void;
 }) {
   const { categoriaTipos } = useOcorrencias();
 
   return (
-    <Select onValueChange={onValueChange}>
+    <Select onValueChange={onValueChange} value={value ?? ''}>
       <SelectTrigger className="w-full bg-white">
         <SelectValue placeholder="Tipo de denúncia" />
       </SelectTrigger>

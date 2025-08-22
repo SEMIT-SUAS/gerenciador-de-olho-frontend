@@ -30,6 +30,13 @@ export function MapFilters() {
   } = useFilters();
   const { user } = useAuth();
 
+  interface TempFiltersState {
+    bairroId?: string;
+    denunciaStatus: string;
+    tipoDenuncia: string | null; // <-- Aqui você permite string OU null
+    acaoStatus?: string;
+  }
+
   if (!currentBairroId) {
     return null;
   }
@@ -39,18 +46,27 @@ export function MapFilters() {
     setZoomTo({ lat: -2.51, lng: -44.28, level: 13 });
   };
 
-  const [tempFilters, setTempFilters] = useState({
+  const [tempFilters, setTempFilters] = useState<TempFiltersState>({
     bairroId: '',
     denunciaStatus: 'Aberto',
-    tipoDenuncia: '',
+    tipoDenuncia: null,
     acaoStatus: 'Andamento',
   });
+
+  const handleClearFilters = () => {
+    setFiltrarTipoDenuncia(null);
+    setFiltroStatusDenuncia('Aberto');
+    setTempFilters({
+      denunciaStatus: 'Aberto',
+      tipoDenuncia: null,
+    });
+  };
 
   const handleStatusChange = (value: string) => {
     setTempFilters((prev) => ({ ...prev, denunciaStatus: value }));
   };
 
-  const handleTipoDenunciaChange = (value: string) => {
+  const handleTipoDenunciaChange = (value: string | null) => {
     setTempFilters((prev) => ({ ...prev, tipoDenuncia: value }));
   };
 
@@ -66,21 +82,24 @@ export function MapFilters() {
         'tipo-denuncia': tempFilters.tipoDenuncia,
       };
 
-      const acaoParams = {
-        bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
+      setFiltroStatusDenuncia(tempFilters.denunciaStatus);
+      setFiltrarTipoDenuncia(tempFilters.tipoDenuncia);
 
-        status: tempFilters.denunciaStatus,
+      // const acaoParams = {
+      //   bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
 
-        secretaria: user!.idSecretaria,
-      };
+      //   status: tempFilters.denunciaStatus,
+
+      //   secretaria: user!.idSecretaria,
+      // };
 
       const denunciaFiltradas = await DenunciaService.getDenunciaPorBairro(
         denunciaParams,
       );
 
-      const acaoFiltradas = await AcoesService.getFilteredAcoes(acaoParams);
+      // const acaoFiltradas = await AcoesService.getFilteredAcoes(acaoParams);
 
-      setAcoesDoBairro(acaoFiltradas);
+      // setAcoesDoBairro(acaoFiltradas);
       setDenunciasDoBairro(denunciaFiltradas);
     } catch (error) {
       console.error('Error applying filters:', error);
@@ -95,14 +114,22 @@ export function MapFilters() {
 
           <div className="flex gap-3">
             <FilterDenunciaByCategoriaTipoSelect
+              value={tempFilters.tipoDenuncia}
               onValueChange={handleTipoDenunciaChange}
             />
-            <FilterDenunciaStatusSelect onValueChange={handleStatusChange} />
+            <FilterDenunciaStatusSelect
+              onValueChange={handleStatusChange}
+              value={tempFilters.denunciaStatus}
+            />
           </div>
 
           <div className="flex gap-3">
             <Button onClick={handleApplyFilters}>Filtrar</Button>
-            <Button variant="outline" className="text-gray-600">
+            <Button
+              onClick={handleClearFilters}
+              variant="outline"
+              className="text-gray-600"
+            >
               <IconX /> Limpar Filtros
             </Button>
           </div>

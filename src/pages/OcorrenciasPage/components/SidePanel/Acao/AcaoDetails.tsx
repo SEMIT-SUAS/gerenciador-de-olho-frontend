@@ -15,9 +15,14 @@ import { toast } from 'sonner';
 import AcoesService from '@/services/acoesService';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ConcluirAcaoModal } from './ConcluirAcao';
+import { IndeferirAcaoModal } from './IndefirirAcao';
+import { useFilters } from '@/context/FiltersContext';
 
 export function AcaoDetails() {
   const [acao, setAcao] = useState<AcaoModel | null>(null);
+  const [isConcluirModalOpen, setIsConcluirModalOpen] = useState(false); // Estado para controlar o modal
+  const [isIndeferirModalOpen, setIsIndeferirModalOpen] = useState(false); // 2. Estado para o novo modal
 
   const params = useParams();
   const navigate = useNavigate();
@@ -38,6 +43,40 @@ export function AcaoDetails() {
   }
 
   const urls = acao.denuncias.flatMap((denuncia) => denuncia.urls);
+
+  const handleDesvincularDenuncia = (denunciaId: number) => {
+    if (!acao) return;
+
+    const denunciasAtualizadas = acao.denuncias.filter(
+      (d) => d.id !== denunciaId,
+    );
+
+    setAcao({
+      ...acao,
+      denuncias: denunciasAtualizadas,
+    });
+  };
+
+  const handleInciarAcao = () => {
+    const payload = {
+      id: acao.id,
+      acaoStatus: {
+        id: acao.acaoStatus.id,
+        status: 'Andamento',
+        motivo: '',
+      },
+      ativo: true,
+    };
+
+    AcoesService.updateAcao(payload)
+      .then((acaoAtualizada) => {
+        setAcao(acaoAtualizada);
+        toast.success('Ação iniciada com sucesso!');
+      })
+      .catch((error: any) => {
+        toast.error(error.message);
+      });
+  };
 
   return (
     <div className="flex flex-col h-full space-y-7">
@@ -76,7 +115,9 @@ export function AcaoDetails() {
         )}
 
         {acao.acaoStatus.status === 'Análise' && (
-          <Button className="w-full">Iniciar ação</Button>
+          <Button onClick={handleInciarAcao} className="w-full">
+            Iniciar ação
+          </Button>
         )}
 
         <div
@@ -116,12 +157,12 @@ export function AcaoDetails() {
                     ['Análise', 'Andamento'].includes(acao.acaoStatus.status);
 
                   return (
-                    // <DenunciaManageInAction
-                    //   key={denuncia.id}
-                    //   denuncia={denuncia}
-                    //   allowDisvincularItem={canDisvincular}
-                    // />
-                    <h1>Teste</h1>
+                    <DenunciaManageInAction
+                      key={denuncia.id}
+                      denuncia={denuncia}
+                      allowDisvincularItem={canDisvincular}
+                      onDisvincular={handleDesvincularDenuncia} // <-- Passando a função para o filho
+                    />
                   );
                 })}
               </div>
@@ -139,13 +180,17 @@ export function AcaoDetails() {
 
       {['Análise', 'Andamento'].includes(acao.acaoStatus.status) && (
         <footer className="flex items-center gap-2">
-          <Button onClick={() => navigate('concluir')} className={cn('flex-1')}>
+          {/* O botão agora abre o modal */}
+          <Button
+            onClick={() => setIsConcluirModalOpen(true)}
+            className={cn('flex-1')}
+          >
             <IconCircleCheckFilled />
             Concluir Ação
           </Button>
 
           <Button
-            onClick={() => navigate('indeferir')}
+            onClick={() => setIsIndeferirModalOpen(true)} // 3. Abrir o modal de indeferir
             className={cn('flex-2')}
             variant="destructive"
           >
@@ -155,13 +200,29 @@ export function AcaoDetails() {
         </footer>
       )}
 
-      {/* <ConfirmModal
-        isOpen={isModalOpen}
-        title="Iniciar Ação"
-        message="Tem certeza de que deseja mover esta ação para 'Em Andamento'?"
-        onConfirm={onConfirmarInicio}
-        onCancel={() => setIsModalOpen(false)}
-      /> */}
+      {acao && (
+        <ConcluirAcaoModal
+          isOpen={isConcluirModalOpen}
+          onClose={() => setIsConcluirModalOpen(false)}
+          acao={acao}
+          onSuccess={(acaoAtualizada) => {
+            setAcao(acaoAtualizada); // Atualiza o estado local para refletir a mudança na UI
+            setIsConcluirModalOpen(false);
+          }}
+        />
+      )}
+
+      {acao && (
+        <IndeferirAcaoModal
+          isOpen={isIndeferirModalOpen}
+          onClose={() => setIsIndeferirModalOpen(false)}
+          acao={acao}
+          onSuccess={(acaoAtualizada) => {
+            setAcao(acaoAtualizada); // Atualiza o estado local para refletir a mudança na UI
+            setIsConcluirModalOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

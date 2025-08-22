@@ -1,8 +1,10 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useMapActions } from '@/context/MapActions';
 
 interface SidePanelProps {
   children: ReactNode;
@@ -10,9 +12,62 @@ interface SidePanelProps {
 
 export function SidePanel({ children }: SidePanelProps) {
   const [isMinimized, setIsMinimized] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { currentBairroId } = useMapActions();
+
+  const prevBairroIdRef = useRef<number | null>(undefined); // Ref para armazenar o ID do bairro anterior
+
+  // Efeito para detectar cliques fora do painel
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        panelRef.current &&
+        !panelRef.current.contains(event.target as Node)
+      ) {
+        setIsMinimized(true);
+      }
+    }
+
+    if (!isMinimized) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMinimized]);
+
+  useEffect(() => {
+    setIsMinimized(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const pathParts = location.pathname.split('/');
+    const isDetailPage =
+      (pathParts[2] === 'denuncias' || pathParts[2] === 'acoes') &&
+      pathParts[3];
+
+    if (!isDetailPage) {
+      prevBairroIdRef.current = undefined;
+      return;
+    }
+
+    if (
+      prevBairroIdRef.current !== undefined &&
+      prevBairroIdRef.current !== currentBairroId
+    ) {
+      navigate('/ocorrencias/');
+    }
+
+    prevBairroIdRef.current = currentBairroId;
+  }, [currentBairroId, location.pathname, navigate]);
 
   return (
     <Card
+      ref={panelRef}
       className={cn(
         'absolute left-0 top-0 z-30 h-full bg-white shadow-xl border-l border-gray-200 transition-all duration-300 rounded-l-none',
         isMinimized ? 'w-[18px]' : 'w-[480px]',
@@ -38,7 +93,9 @@ export function SidePanel({ children }: SidePanelProps) {
         )}
       >
         <CardHeader className="border-b">
-          <h1 className="text-lg font-semibold">Gerenciador DONC</h1>
+          <h1 className="text-lg font-bold">
+            Gerenciado <span>De Olho na Cidade</span>
+          </h1>
         </CardHeader>
 
         <CardContent className={cn('p-8 overflow-y-auto h-[calc(100%-80px)]')}>

@@ -1,4 +1,10 @@
-import type { AcaoInMap, AcaoModel, CreateAcaoModel } from '../types/Acao';
+import type {
+  AcaoInMap,
+  AcaoModel,
+  CreateAcaoModel,
+  UpdateAcao,
+  UpdatedAcaoModel,
+} from '../types/Acao';
 import { api, API_BASE_URL } from '../config/api';
 import { getPolygonoCenter } from '../utils/geometry';
 import type { Secretaria } from '../types/Secretaria';
@@ -8,7 +14,7 @@ export default class AcoesService {
   public static acoes: AcaoModel[] = [];
 
   public static async getFilteredAcoes(data: {
-    status: string;
+    status: string | null;
     secretaria: number;
     bairro: string;
   }): Promise<AcaoInMap[]> {
@@ -90,30 +96,20 @@ export default class AcoesService {
     }
   }
 
-  /**
-   * Atualiza uma ação na API.
-   * @param {AcaoModel} acao - O objeto da ação com os dados atualizados.
-   * @returns {Promise<AcaoModel>} Uma promessa que resolve para a ação atualizada.
-   */
-  public static async updateAcao(acao: AcaoModel): Promise<AcaoModel> {
+  public static async updateAcao(payload: any): Promise<AcaoModel> {
+    console.log('Concluir ação com payload:', payload);
     try {
-      const response = await fetch(`${API_BASE_URL}/acoes/${acao.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(acao),
-      });
+      const response = await api.put(`/acao/atualizar`, payload);
 
-      if (!response.ok) {
+      if (response.status !== 200 && response.status !== 201) {
         throw new Error('Não foi possível atualizar a ação.');
       }
 
-      return await response.json();
+      return response.data.acao;
     } catch (error) {
-      console.error('Erro em updateAcao:', error);
+      console.error('Erro ao concluir ação:', error);
       throw new Error(
-        'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
+        'Ocorreu um erro no servidor ao tentar concluir a ação. Tente novamente.',
       );
     }
   }
