@@ -38,6 +38,7 @@ import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
 import { useNavigate } from 'react-router-dom';
 import AcoesService from '@/services/acoesService';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 export function CriarAcaoForm() {
   const [isCriandoAcao, setIsCriandoAcao] = useState(false);
@@ -53,12 +54,14 @@ export function CriarAcaoForm() {
     },
   });
 
+  const { user } = useAuth();
   const { secretarias } = useOcorrencias();
   const {
     setSalvarDenunciasOnClick,
     denunciasSelecionas,
     toggleDenunciaSelecionadas,
     currentBairroId,
+    setDenunciasSelecionadas,
   } = useMapActions();
   const {
     setIsVisibleDenunciasInMap,
@@ -114,6 +117,7 @@ export function CriarAcaoForm() {
         longitude: centerCoordinates[1],
         bairro: bairro.nome,
         denuncias: denunciasSelecionas.map((denuncia) => denuncia.id),
+        gerenciador: user?.id!,
         acaoStatus: {
           status: 'Análise',
           motivo: 'Criando ação',
@@ -126,6 +130,7 @@ export function CriarAcaoForm() {
         createAcaoData,
       );
 
+      setDenunciasSelecionadas([]);
       setFiltroStatusDenuncia('Análise');
       navigate(`/ocorrencias/acoes/${acaoCreatedData.id}`);
       toast.success('Ação criada com sucesso!');
@@ -255,7 +260,7 @@ export function CriarAcaoForm() {
 
         <div className="flex justify-end">
           <Button type="submit" className="w-[50%]" disabled={isCriandoAcao}>
-            {isCriandoAcao && <Loader2 />}
+            {isCriandoAcao && <Loader2 className="animate-spin" />}
             Criar ação
           </Button>
         </div>
