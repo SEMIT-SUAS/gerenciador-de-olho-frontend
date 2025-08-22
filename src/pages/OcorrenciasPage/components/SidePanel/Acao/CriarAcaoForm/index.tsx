@@ -37,6 +37,7 @@ import type { AcaoModel, CreateAcaoModel } from '@/types/Acao';
 import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
 import { useNavigate } from 'react-router-dom';
 import AcoesService from '@/services/acoesService';
+import { Loader2 } from 'lucide-react';
 
 export function CriarAcaoForm() {
   const [isCriandoAcao, setIsCriandoAcao] = useState(false);
@@ -253,7 +254,8 @@ export function CriarAcaoForm() {
         </Card>
 
         <div className="flex justify-end">
-          <Button type="submit" className="w-[50%]">
+          <Button type="submit" className="w-[50%]" disabled={isCriandoAcao}>
+            {isCriandoAcao && <Loader2 />}
             Criar ação
           </Button>
         </div>
