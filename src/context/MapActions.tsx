@@ -8,7 +8,7 @@ import {
   type SetStateAction,
 } from 'react';
 import type { AcaoModel } from '../types/Acao';
-import { type DenunciaModel } from '../types/Denuncia';
+import { type DenunciaInMap, type DenunciaModel } from '../types/Denuncia';
 import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 
 type SelectAcoesOuDenunciasProps = {

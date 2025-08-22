@@ -10,6 +10,13 @@ import { Button } from '@/components/ui/button';
 import AcoesService from '@/services/acoesService';
 import { DenunciaService } from '@/services/DenunciaService';
 import type { DenunciaModel } from '@/types/Denuncia';
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { IconTrash } from '@tabler/icons-react';
 
 export function VincularDenunciaAAcao() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
@@ -71,6 +78,8 @@ export function VincularDenunciaAAcao() {
     }
   }
 
+  fetchDenuncia();
+
   return (
     <>
       <div className="flex gap-4 flex-col h-full">
@@ -84,11 +93,6 @@ export function VincularDenunciaAAcao() {
           <p className="font-bold text-blue-900">
             {denuncia?.tipoDenuncia.nome}
           </p>
-          <p className="flex text-xs text-blue-800 mt-1">
-            <span className="mr-1">
-              <FaMapPin />
-            </span>
-          </p>
         </div>
 
         <div className="flex flex-col gap-1">
@@ -99,7 +103,14 @@ export function VincularDenunciaAAcao() {
               <span>{acaoSelecionada.criadoEm}</span>
               <span>{acaoSelecionada.siglaSecretaria}</span>
               <span>
-                {acaoSelecionada.}
+                {acaoSelecionada.denuncias.map((denuncia) => (
+                  <Card>
+                    <CardHeader className="flex items-center justify-between">
+                      <CardTitle>{denuncia.nomeTipoDenuncia}</CardTitle>
+                      <CardDescription></CardDescription>
+                    </CardHeader>
+                  </Card>
+                ))}
               </span>
             </div>
           ) : (

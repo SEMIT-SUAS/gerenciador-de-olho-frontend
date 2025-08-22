@@ -28,6 +28,8 @@ import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/A
 
 import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/VincularDenunciaAAcao';
 import { CriarAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/CriarAcao';
+// import { VincularAcaoADenuncias } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoADenuncias';
+import { VincularDenunciasAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoView';
 
 export function App() {
   return (
@@ -60,6 +62,10 @@ export function App() {
             <Route path="acoes">
               <Route path=":id" element={<AcaoDetails />} />
               <Route path="criar" element={<CriarAcao />} />
+              <Route
+                path=":id/vincular-denuncias"
+                element={<VincularDenunciasAcao />}
+              />
             </Route>
           </Route>
 

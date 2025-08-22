@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type Dispatch,
   type ReactNode,
@@ -148,9 +149,6 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         secretaria: user!.idSecretaria,
       };
 
-      const denuncias = await DenunciaService.getDenunciaPorBairro(
-        denunciaParams,
-      );
       if (isVisibleDenunciasInMap) {
         const denuncias = await DenunciaService.getDenunciaPorBairro(
           denunciaParams,
@@ -169,6 +167,9 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       // setIsLoading(false);
     }
   };
+  useEffect(() => {
+    fetchDataFiltrada();
+  }, [currentBairroId]);
 
   return (
     <FiltersContext.Provider

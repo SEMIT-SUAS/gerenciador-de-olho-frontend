@@ -1,110 +1,145 @@
-import { useState, type FC } from 'react';
-import { useVincularDenunciaContext } from '../../../context/vincularDenunciaContext';
-import { useOcorrencias } from '../../../../../context/OcorrenciasContext';
-import type { Acao } from '../../../../../types/Acao';
-import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BackButton } from '../../../../../components/ui/Backbutton';
-import { FaMapPin } from 'react-icons/fa';
+import { useEffect, useMemo, useState } from 'react';
+import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
+import { useFilters } from '../../../../../context/FiltersContext';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import AcoesService from '@/services/acoesService';
+import type { AcaoModel } from '@/types/Acao';
 
-export const VincularAcaoView: FC = () => {
-  const { acoes, setActualDetailItem } = useOcorrencias();
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentAcao, setCurrentAcao] = useState<Acao | null>(null);
-  const {
-    denunciaParaVincular,
-    confirmLink,
-    cancelLinking,
-    acaoParaVincular,
-    setAcaoParaVincular,
-    setIsSelectingAcaoInMap,
-    isSelectingAcaoInMap,
-  } = useVincularDenunciaContext();
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { IconTrash } from '@tabler/icons-react';
 
-  if (!denunciaParaVincular) return null;
+export function VincularDenunciasAcao() {
+  const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
+  const [acao, setAcao] = useState<AcaoModel | null>(null);
+  const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>(
+    [],
+  );
 
-  function handleOnConfirmLink(acao: Acao) {
-    confirmLink(acao.id);
-    setActualDetailItem(acaoParaVincular);
-    setAcaoParaVincular(null);
+  const { denunciasDoBairro, updateAcao } = useFilters();
+  const params = useParams();
+  const acaoId = Number(params.id);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    AcoesService.getAcaoById(acaoId)
+      .then(setAcao)
+      .catch(() => toast.error('Erro ao buscar detalhes da ação.'));
+  }, [acaoId]);
+
+  const denunciasDisponiveis = useMemo(() => {
+    return denunciasDoBairro.filter((d) => !d.idAcao);
+  }, [denunciasDoBairro]);
+
+  // Função para adicionar ou remover uma denúncia da seleção
+  const handleToggleDenuncia = (denunciaId: number) => {
+    setDenunciasSelecionadas((prev) =>
+      prev.includes(denunciaId)
+        ? prev.filter((id) => id !== denunciaId)
+        : [...prev, denunciaId],
+    );
+  };
+
+  // Função principal que chama o serviço para vincular
+  async function handleConfirmarVinculo() {
+    if (!acao || denunciasSelecionadas.length === 0) {
+      toast.error('Selecione pelo menos uma denúncia para vincular.');
+      return;
+    }
+
+    try {
+      setIsOpenConfirmationModal(false);
+
+      const denunciasJaVinculadasIds = acao.denuncias.map((d) => d.id);
+      const payload = {
+        acaoId: acao.id,
+        denuncias: [...denunciasJaVinculadasIds, ...denunciasSelecionadas],
+      };
+
+      const acaoAtualizada = await AcoesService.vincularDenunciaAcao(payload);
+      updateAcao(acaoAtualizada);
+
+      navigate(`/ocorrencias/acoes/${acao.id}`);
+      toast.success('Denúncias vinculadas com sucesso!');
+    } catch (error: any) {
+      toast.error(error.message || 'Falha ao vincular denúncias.');
+    }
   }
 
-  function handleOnSelectAcao(acao: Acao) {
-    setIsOpen(true);
-    setCurrentAcao(acao);
+  if (!acao) {
+    return <div>Carregando ação...</div>;
   }
 
   return (
     <>
-      <div className="flex flex-col h-full">
-        <BackButton onClick={cancelLinking} />
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">Vinculando denúncia:</p>
-          <p className="font-bold text-blue-900">
-            {denunciaParaVincular.tipo.name}
-          </p>
-          <p className="flex text-xs text-blue-800 mt-1">
-            <span className="mr-1">
-              <FaMapPin />
-            </span>
-            {`${denunciaParaVincular.endereco.rua}, ${denunciaParaVincular.endereco.bairro}`}
-          </p>
-        </div>
-        <button
-          onClick={() => setIsSelectingAcaoInMap((current) => !current)}
-          className={`w-full ${
-            isSelectingAcaoInMap
-              ? ' border-2 border-red-600 bg-red-600 hover:bg-red-700 text-white'
-              : ' border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'
-          } text-sm font-semibold py-2 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed mb-2`}
-        >
-          {!isSelectingAcaoInMap
-            ? 'Selecionar Ação no Mapa'
-            : 'Cancelar seleção no mapa'}
-        </button>
-        {acaoParaVincular && (
-          <div className="my-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800">Ação selecionada:</p>
-            <p className="font-bold text-blue-900">{acaoParaVincular.nome}</p>
-            <p className="text-sm text-blue-800 font-semibold">
-              {acaoParaVincular.secretaria.name}
-            </p>
-          </div>
-        )}
+      <div className="flex gap-4 flex-col h-full">
+        <BackButton
+          to={`/ocorrencias/acoes/${acaoId}`}
+          children="Vincular Denúncias à Ação"
+        />
 
-        <h3 className="font-semibold text-gray-800 mb-2">
-          Selecione uma Ação Existente:
-        </h3>
-        <div className="flex-1 rounded-lg overflow-y-auto bg-gray-50 space-y-2 p-2">
-          {acoes.map((acao) => (
-            <button
-              key={acao.id}
-              onClick={() => setAcaoParaVincular(acao)}
-              className="w-full text-left p-3 bg-white rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
-            >
-              <p className="font-semibold text-gray-700">{acao.nome}</p>
-              <p className="text-xs font-semibold text-gray-300">
-                {acao.secretaria.name}
-              </p>
-            </button>
-          ))}
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800">Ação selecionada:</p>
+          <p className="font-bold text-blue-900">{acao.nome}</p>
         </div>
-        {acaoParaVincular && (
-          <button
-            className="w-full bg-bg-blue-600 bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
-            onClick={() => handleOnSelectAcao(acaoParaVincular!)}
-          >
-            Confirmar vínculo
-          </button>
-        )}
+
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Denúncias Selecionadas</CardTitle>
+            <CardDescription>
+              As denúncias abaixo foram selecionadas no mapa para esta ação.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {denunciasDisponiveis.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                {denunciasDisponiveis.map((denuncia) => (
+                  <Card>
+                    <CardHeader className="flex items-center justify-between">
+                      <CardTitle>{denuncia.nomeTipoDenuncia}</CardTitle>
+                      <CardDescription>
+                        <Button
+                          size="icon"
+                          onClick={() => handleToggleDenuncia(denuncia.id)}
+                        >
+                          <IconTrash />
+                        </Button>
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Nenhuma denúncia selecionada no mapa.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Button
+          onClick={() => setIsOpenConfirmationModal(true)}
+          disabled={denunciasSelecionadas.length === 0}
+        >
+          Vincular {denunciasSelecionadas.length} denúncia(s)
+        </Button>
       </div>
 
       <ConfirmModal
-        isOpen={isOpen}
-        title="Vínculo de denúncia à ação"
-        message={`Você deseja vincular essa denúncia ${denunciaParaVincular.tipo} à essa ação ${currentAcao?.nome}?`}
-        onCancel={cancelLinking}
-        onConfirm={() => handleOnConfirmLink(acaoParaVincular!)}
+        isOpen={isOpenConfirmationModal}
+        title="Vincular Denúncias"
+        message={`Deseja vincular ${denunciasSelecionadas.length} denúncia(s) à ação "${acao?.nome}"?`}
+        onCancel={() => setIsOpenConfirmationModal(false)}
+        onConfirm={handleConfirmarVinculo}
       />
     </>
   );
-};
+}
