@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'react-toastify';
 
-
 import { portaisSchema, type PortaisSchema } from './portaisSchema';
 import {
   Form,
@@ -29,30 +28,31 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-
-
 import type { Portais } from '@/types/Portais';
 
 type PortalFormProps = {
   setPortais?: Dispatch<SetStateAction<Portais[]>>;
 
-  defaultValues?: Portais,
+  defaultValues?: Portais;
   onSubmit: (data: PortaisSchema) => void;
-  isSubmitting: boolean
+  isSubmitting: boolean;
 };
 
-export function PortalForm({ defaultValues, onSubmit, isSubmitting }: PortalFormProps) {
-
+export function PortalForm({
+  defaultValues,
+  onSubmit,
+  isSubmitting,
+}: PortalFormProps) {
   const form = useForm<PortaisSchema>({
     resolver: zodResolver(portaisSchema),
-    defaultValues: defaultValues || ({
-        nome: '',
-        categoria: undefined,
-        destaque: false,
-        link: '',
-        visivel: true,
-        ativo: true,
-    }), 
+    defaultValues: defaultValues || {
+      nome: '',
+      categoria: undefined,
+      destaque: false,
+      link: '',
+      visivel: true,
+      ativo: true,
+    },
   });
 
   return (
@@ -87,15 +87,17 @@ export function PortalForm({ defaultValues, onSubmit, isSubmitting }: PortalForm
             )}
           />
 
-
           <FormField
             control={form.control}
             name="categoria"
             render={({ field }) => (
-              <FormItem >
+              <FormItem>
                 <FormLabel>Categoria</FormLabel>
                 {/* O componente Select principal controla o estado */}
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     {/* O SelectTrigger é o que o usuário vê e clica */}
                     <SelectTrigger className="w-full">
@@ -115,14 +117,16 @@ export function PortalForm({ defaultValues, onSubmit, isSubmitting }: PortalForm
             )}
           />
 
-
           <FormField
             control={form.control}
             name="destaque"
             render={({ field }) => (
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
-                  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
                 <div className="space-y-1 leading-none">
                   <FormLabel>Destaque</FormLabel>
@@ -140,7 +144,10 @@ export function PortalForm({ defaultValues, onSubmit, isSubmitting }: PortalForm
             render={({ field }) => (
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
-                  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
                 <div className="space-y-1 leading-none">
                   <FormLabel>Visível</FormLabel>
@@ -151,12 +158,21 @@ export function PortalForm({ defaultValues, onSubmit, isSubmitting }: PortalForm
               </FormItem>
             )}
           />
-
         </div>
+        <div className="flex justify-end pt-5 gap-4">
+          <Button
+            variant="outline"
+            className="px-8"
+            onClick={() => window.history.back()}
+            type="button"
+          >
+            Cancelar
+          </Button>
 
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? <Loading className="size-4" /> : 'Salvar Portal'}
-        </Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? <Loading className="size-4" /> : 'Salvar Portal'}
+          </Button>
+        </div>
       </form>
     </Form>
   );
