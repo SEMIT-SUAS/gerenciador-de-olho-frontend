@@ -28,7 +28,7 @@ import AcoesService from '@/services/acoesService';
 type FilterState = {
   isVisibleDenunciasInMap: boolean;
   isVisibleAcoesInMap: boolean;
-  filtroStatusDenuncia: string | null | DenunciaStatusModelTypes;
+  filtroStatusDenuncia: string | DenunciaStatusModelTypes | null;
   filtroStatusAcao: string | AcaoStatusModelTypes;
   filtroCategoria: 'todas' | string | null;
   filtroSecretaria: 'todas' | string | null;
@@ -58,7 +58,7 @@ type FiltersContextProps = FilterState & {
   setAcoesDoBairro: Dispatch<SetStateAction<AcaoInMap[]>>;
   denunciasDoBairro: DenunciaInMap[];
   setDenunciasDoBairro: Dispatch<SetStateAction<DenunciaInMap[]>>;
-  filtroStatusDenuncia: DenunciaStatusModelTypes;
+  filtroStatusDenuncia: DenunciaStatusModelTypes | string | null;
   acoesFiltradas: AcaoModel[];
   updateAcao: UpdatedAcaoModel;
   filtrarAcoesPorId: number[] | 'desabilitado';
@@ -211,6 +211,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       }
 
       // setIsLoading(true);
+
       // setError(null);
 
       try {
@@ -285,6 +286,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         isVisibleAcoesInMap,
         setIsVisibleDenunciasInMap,
         setIsVisibleAcoesInMap,
+        filtroStatusDenuncia,
         setFiltroStatusDenuncia,
         filtroStatusAcao,
         setFiltroStatusAcao,

@@ -72,6 +72,12 @@ export class DenunciaService {
     status: string,
     secretaria: number,
   ): Promise<NumeroDeDenunciasPorBairro[]> {
+    console.log(
+      'Fetching number of denuncias in map with status:',
+      status,
+      'and secretaria:',
+      secretaria,
+    );
     try {
       const response = await api.get(
         '/denuncia/gerenciador/contador-denuncias-bairro',
@@ -143,10 +149,10 @@ export class DenunciaService {
   }
 
   public static async getDenunciaPorBairro(data: {
-    status: string | null;
+    status: string;
     secretaria: number;
     bairro: string;
-    'tipo-denuncia': string | null | TipoDenunciaModel;
+    'tipo-denuncia': string | null;
   }): Promise<DenunciaInMap[]> {
     console.log('Fetching denuncias por bairro with params:', data);
     try {
