@@ -66,7 +66,7 @@ export function EditBannerForm({
 
     formData.append('id', `${banner.id}`);
 
-    try {
+     {
       setIsSubmitingEditBannerForm(true);
       const dataUpdated = await bannersService.update(formData);
 
