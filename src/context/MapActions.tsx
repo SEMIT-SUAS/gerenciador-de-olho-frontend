@@ -7,7 +7,7 @@ import {
   type ReactNode,
   type SetStateAction,
 } from 'react';
-import type { AcaoModel } from '../types/Acao';
+import type { AcaoInMap, AcaoModel } from '../types/Acao';
 import { type DenunciaModel } from '../types/Denuncia';
 import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 

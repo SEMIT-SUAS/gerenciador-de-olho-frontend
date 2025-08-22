@@ -26,10 +26,9 @@ import { FiltersProvider } from './context/FiltersContext';
 import { MapActionsProvider } from './context/MapActions';
 import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcaoDetails';
 import { useAuth } from './context/AuthContext';
+import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/VincularDenunciaAAcao';
 
 export function App() {
-  const { user } = useAuth();
-
   return (
     <BrowserRouter>
       <Routes>
@@ -51,6 +50,10 @@ export function App() {
           >
             <Route path="denuncias">
               <Route path=":id" element={<DenunciaDetails />} />
+              <Route
+                path=":id/vincular-denuncia"
+                element={<VincularDenunciaAAcao />}
+              />
             </Route>
 
             <Route path="acoes">

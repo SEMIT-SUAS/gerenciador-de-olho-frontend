@@ -185,7 +185,7 @@ export function DenunciaDetails() {
                 </p>
                 <Button
                   className="w-full"
-                  onClick={() => navigate('vincular-acao')}
+                  onClick={() => navigate(`vincular-denuncia`)}
                 >
                   Vincular a uma Ação
                 </Button>

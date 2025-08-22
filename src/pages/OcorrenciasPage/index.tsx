@@ -3,8 +3,6 @@ import { useOcorrencias } from '@/context/OcorrenciasContext';
 import { OcorrenciasMap } from './components/Map/OcorrenciasMap';
 import { SidePanel } from './components/SidePanel';
 import { Outlet, useOutlet } from 'react-router-dom';
-import { MapActionsProvider } from '@/context/MapActions';
-import { FiltersProvider } from '@/context/FiltersContext';
 
 export function OcorrenciasPage() {
   const { isLoadingInitialContent } = useOcorrencias();
@@ -12,21 +10,12 @@ export function OcorrenciasPage() {
 
   return (
     <div className="h-screen w-full relative">
-      <MapActionsProvider>
-        {outletContent && (
-          <SidePanel>
-            <Outlet />
-          </SidePanel>
-        )}
-
-        {isLoadingInitialContent ? (
-          <MapLoading />
-        ) : (
-          <FiltersProvider>
-            <OcorrenciasMap />
-          </FiltersProvider>
-        )}
-      </MapActionsProvider>
+      {outletContent && (
+        <SidePanel>
+          <Outlet />
+        </SidePanel>
+      )}
+      {isLoadingInitialContent ? <MapLoading /> : <OcorrenciasMap />}
     </div>
   );
 }
