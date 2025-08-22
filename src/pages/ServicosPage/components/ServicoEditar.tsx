@@ -16,6 +16,7 @@ import { LayoutPage } from '@/components/LayoutPage';
 
 import { ServicoForm } from '@/pages/ServicosPage/components/ServicoForm/ServicoForm';
 import { getAllSecretarias } from '@/services/secretariaService';
+import { toast } from 'react-toastify';
 
 function ServicoEditarPage() {
   const navigate = useNavigate();
@@ -100,6 +101,7 @@ function ServicoEditarPage() {
         setServicoParaEditar(dadosFormatadosParaForm);
       } catch (err) {
         console.error('Erro ao buscar dados para edição:', err);
+        toast.error('Erro ao buscar dados para edição do serviço.');
       } finally {
         setIsLoading(false);
       }
@@ -128,6 +130,10 @@ function ServicoEditarPage() {
       navigate(`/servicos/${servicoId}`);
     } catch (err: any) {
       console.error('Erro ao atualizar o serviço:', err);
+      toast.error(
+        'Erro ao atualizar o serviço: ' +
+          (err instanceof Error ? err.message : ''),
+      );
     } finally {
       setIsSubmitting(false);
     }

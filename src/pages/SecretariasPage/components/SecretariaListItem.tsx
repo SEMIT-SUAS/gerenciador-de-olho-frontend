@@ -5,6 +5,7 @@ import { useState } from 'react';
 import type { Secretaria } from '@/types/Secretaria'; // ajuste para o caminho correto
 import type { Dispatch, SetStateAction } from 'react';
 import secretariasService from '@/services/secretariaService'; // você precisa ter isso
+import { toast } from 'react-toastify';
 
 interface SecretariaListItemProps {
   secretaria: Secretaria;
@@ -25,6 +26,10 @@ export function SecretariaListItem({
       setSecretarias((prev) => prev.filter((s) => s.id !== secretaria.id));
     } catch (error) {
       console.error('Erro ao desativar a secretaria:', error);
+      toast.error(
+        'Erro ao desativar a secretaria: ' +
+          (error instanceof Error ? error.message : ''),
+      );
     }
 
     setIsOpenDeleteModal(false);
