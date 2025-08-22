@@ -8,7 +8,7 @@ import {
   type SetStateAction,
 } from 'react';
 import type { AcaoModel } from '../types/Acao';
-import { type DenunciaModel } from '../types/Denuncia';
+import { type DenunciaInMap, type DenunciaModel } from '../types/Denuncia';
 import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 
 type SelectAcoesOuDenunciasProps = {
@@ -18,11 +18,11 @@ type SelectAcoesOuDenunciasProps = {
   setSalvarAcaoOnclick: Dispatch<SetStateAction<boolean>>;
   acaoSelecionada: AcaoModel | null;
   setAcaoSelecionada: Dispatch<SetStateAction<AcaoModel | null>>;
-  denunciasSelecionas: DenunciaModel[];
-  setDenunciasSelecionadas: Dispatch<SetStateAction<DenunciaModel[]>>;
+  denunciasSelecionas: DenunciaInMap[];
+  setDenunciasSelecionadas: Dispatch<SetStateAction<DenunciaInMap[]>>;
   disableMapFilters: boolean;
   setDisableMapFilters: Dispatch<SetStateAction<boolean>>;
-  addDenunciaNaSelecao: (newDenuncia: DenunciaModel) => void;
+  toggleDenunciaSelecionadas: (newDenuncia: DenunciaInMap) => void;
   denunciasJaVinculadas: DenunciaModel[];
   setDenunciasJaVinculadas: Dispatch<SetStateAction<DenunciaModel[]>>;
   isSelectingNewDenuncia: boolean;
@@ -61,7 +61,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     null,
   );
   const [denunciasSelecionas, setDenunciasSelecionadas] = useState<
-    DenunciaModel[]
+    DenunciaInMap[]
   >([]);
 
   const [isSelectingNewDenuncia, setIsSelectingNewDenuncia] = useState(false);
@@ -87,7 +87,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     setDenunciasSelecionadas,
     disableMapFilters,
     setDisableMapFilters,
-    addDenunciaNaSelecao,
+    toggleDenunciaSelecionadas,
     denunciasJaVinculadas,
     setDenunciasJaVinculadas,
     isSelectingNewDenuncia,
@@ -109,7 +109,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     );
   }, [salvarAcaoOnclick, salvarDenunciasOnclick]);
 
-  function addDenunciaNaSelecao(newDenuncia: DenunciaModel) {
+  function toggleDenunciaSelecionadas(newDenuncia: DenunciaInMap) {
     if (denunciasSelecionas.find((d) => d.id == newDenuncia.id)) {
       setDenunciasSelecionadas((denuncias) =>
         denuncias.filter((d) => d.id !== newDenuncia.id),
