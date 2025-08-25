@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/context/AuthContext';
-import { useFilters } from '@/context/FiltersContext';
 import AcoesService from '@/services/acoesService';
 import type { AcaoModel } from '@/types/Acao';
 import { IconProgressX } from '@tabler/icons-react';
@@ -57,7 +56,7 @@ export function IndeferirAcaoModal({
           status: 'Indeferido',
           motivo: motivo.trim(),
         },
-        ativo: true, // Ou false, dependendo da regra de negócio
+        ativo: true,
       };
 
       const acaoAtualizada = await AcoesService.updateAcao(payload);

@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { BackButton } from '../../../../../components/ui/Backbutton';
 import { useEffect, useMemo, useState } from 'react';
 import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
-import { useFilters } from '../../../../../context/FiltersContext';
+import { useFilters } from '@/context/FiltersContext';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import AcoesService from '@/services/acoesService';
@@ -24,7 +24,7 @@ export function VincularDenunciasAcao() {
     [],
   );
 
-  const { denunciasDoBairro, updateAcao } = useFilters();
+  const { denunciasDoBairro } = useFilters();
   const params = useParams();
   const acaoId = Number(params.id);
   const navigate = useNavigate();
@@ -64,8 +64,8 @@ export function VincularDenunciasAcao() {
         denuncias: [...denunciasJaVinculadasIds, ...denunciasSelecionadas],
       };
 
-      const acaoAtualizada = await AcoesService.vincularDenunciaAcao(payload);
-      updateAcao(acaoAtualizada);
+      //ATUALIZAR ESTADO DA AÇÃO
+      //FILTRAR NOVAMENTE A DATA
 
       navigate(`/ocorrencias/acoes/${acao.id}`);
       toast.success('Denúncias vinculadas com sucesso!');

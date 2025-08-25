@@ -7,17 +7,15 @@ import {
 } from '@/components/ui/select';
 import { useOcorrencias } from '@/context/OcorrenciasContext';
 
-export function FilterDenunciaByCategoriaTipoSelect({
-  value,
-  onValueChange,
-}: {
-  value: string | null; // <-- Adicione a tipagem
-  onValueChange: (value: string) => void;
-}) {
+export function FilterDenunciaByCategoriaTipoSelect() {
   const { categoriaTipos } = useOcorrencias();
+  const { filtroTipoDenuncia, setFiltrarTipoDenuncia } = useFilters();
 
   return (
-    <Select onValueChange={onValueChange} value={value ?? ''}>
+    <Select
+      onValueChange={(value) => setFiltrarTipoDenuncia(value)}
+      value={filtroTipoDenuncia}
+    >
       <SelectTrigger className="w-full bg-white">
         <SelectValue placeholder="Tipo de denúncia" />
       </SelectTrigger>

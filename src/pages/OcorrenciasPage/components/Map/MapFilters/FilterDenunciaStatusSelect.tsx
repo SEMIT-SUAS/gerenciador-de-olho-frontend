@@ -30,15 +30,15 @@ const avaliableStatus = [
   },
 ];
 
-export function FilterDenunciaStatusSelect({
-  value,
-  onValueChange,
-}: {
-  value: string;
-  onValueChange: (value: string) => void;
-}) {
+export function FilterDenunciaStatusSelect() {
+  const { setFiltroStatusDenuncia, filtroStatusDenuncia } = useFilters();
+
   return (
-    <Select onValueChange={onValueChange} defaultValue="Aberto" value={value}>
+    <Select
+      onValueChange={(value) => setFiltroStatusDenuncia(value)}
+      defaultValue="Aberto"
+      value={filtroStatusDenuncia}
+    >
       <SelectTrigger className="w-full bg-white">
         <SelectValue placeholder="Status da denúncia" />
       </SelectTrigger>

@@ -2,8 +2,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
-import { FilterAcaoSecretariaSelect } from './FilterAcaoSecretariaSelect';
-import { FilterAcaoStatusSelect } from './FilterAcaoStatusSelect';
 import { FilterDenunciaByCategoriaTipoSelect } from './FilterDenunciaByCategoriaTipoSelect';
 import { FilterDenunciaStatusSelect } from './FilterDenunciaStatusSelect';
 
@@ -11,24 +9,13 @@ import AcaoIcon from '/public/icons/acao.png';
 import DenunciaIcon from '/public/icons/denuncia.png';
 import { IconX } from '@tabler/icons-react';
 import { useMapActions } from '@/context/MapActions';
-import { DenunciaService } from '@/services/DenunciaService';
-import { useState } from 'react';
 import { useFilters } from '@/context/FiltersContext';
-import { useAuth } from '@/context/AuthContext';
-import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
 import { useNavigate } from 'react-router-dom';
-
-interface TempFiltersState {
-  bairroId?: string;
-  denunciaStatus: string;
-  tipoDenuncia: string | null;
-  acaoStatus?: string;
-}
+import { Loader2 } from 'lucide-react';
 
 export function MapFilters() {
   const { setCurrentBairroId, currentBairroId, setZoomTo } = useMapActions();
   const {
-    setDenunciasDoBairro,
     setFiltrarTipoDenuncia,
     setFiltroStatusDenuncia,
     isVisibleDenunciasInMap,
@@ -36,22 +23,16 @@ export function MapFilters() {
     setIsVisibleDenunciasInMap,
     setIsVisibleAcoesInMap,
     denunciasDoBairro,
+    filtrarData,
+    isLoading,
   } = useFilters();
 
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleZoomOut = () => {
     setCurrentBairroId(null);
     setZoomTo({ lat: -2.51, lng: -44.28, level: 13 });
   };
-
-  const [tempFilters, setTempFilters] = useState<TempFiltersState>({
-    bairroId: '',
-    denunciaStatus: 'Aberto',
-    tipoDenuncia: null,
-    acaoStatus: 'Andamento',
-  });
 
   if (!currentBairroId) {
     return null;
@@ -60,40 +41,10 @@ export function MapFilters() {
   const handleClearFilters = () => {
     setFiltrarTipoDenuncia(null);
     setFiltroStatusDenuncia('Aberto');
-    setTempFilters({
-      denunciaStatus: 'Aberto',
-      tipoDenuncia: null,
-    });
-  };
-
-  const handleStatusChange = (value: string) => {
-    setTempFilters((prev) => ({ ...prev, denunciaStatus: value }));
-  };
-
-  const handleTipoDenunciaChange = (value: string | null) => {
-    setTempFilters((prev) => ({ ...prev, tipoDenuncia: value }));
   };
 
   const handleApplyFilters = async () => {
-    try {
-      const denunciaParams = {
-        bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-        status: tempFilters.denunciaStatus,
-        secretaria: user!.idSecretaria,
-        'tipo-denuncia': tempFilters.tipoDenuncia,
-      };
-
-      setFiltroStatusDenuncia(tempFilters.denunciaStatus);
-      setFiltrarTipoDenuncia(tempFilters.tipoDenuncia);
-
-      const denunciaFiltradas = await DenunciaService.getDenunciaPorBairro(
-        denunciaParams,
-      );
-
-      setDenunciasDoBairro(denunciaFiltradas);
-    } catch (error) {
-      console.error('Error applying filters:', error);
-    }
+    await filtrarData();
   };
 
   return (
@@ -103,22 +54,19 @@ export function MapFilters() {
           <h2 className="text-sm font-bold">Filtros</h2>
 
           <div className="flex gap-3">
-            <FilterDenunciaByCategoriaTipoSelect
-              value={tempFilters.tipoDenuncia}
-              onValueChange={handleTipoDenunciaChange}
-            />
-            <FilterDenunciaStatusSelect
-              onValueChange={handleStatusChange}
-              value={tempFilters.denunciaStatus}
-            />
+            <FilterDenunciaByCategoriaTipoSelect />
+            <FilterDenunciaStatusSelect />
           </div>
 
           <div className="flex gap-3">
-            <Button onClick={handleApplyFilters}>Filtrar</Button>
+            <Button onClick={handleApplyFilters} disabled={isLoading}>
+              {isLoading && <Loader2 className="animate-spin" />} Filtrar
+            </Button>
             <Button
               onClick={handleClearFilters}
               variant="outline"
               className="text-gray-600"
+              disabled={isLoading}
             >
               <IconX /> Limpar Filtros
             </Button>

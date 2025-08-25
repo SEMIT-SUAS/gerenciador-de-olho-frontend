@@ -1,12 +1,8 @@
-import { Marker, useMap } from 'react-leaflet';
+import { Marker } from 'react-leaflet';
 import { useFilters } from '@/context/FiltersContext';
 import { getDenunciaIconByTipo } from '@/utils/getPinIcon';
 import { useMapActions } from '@/context/MapActions';
-import type {
-  DenunciaBasicInfoModel,
-  DenunciaInMap,
-  DenunciaModel,
-} from '@/types/Denuncia';
+import type { DenunciaInMap } from '@/types/Denuncia';
 import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
 import { getConvexHull } from '@/utils/geometry';
 import { DenunciaTooltip } from './DenunciaTooltip';
