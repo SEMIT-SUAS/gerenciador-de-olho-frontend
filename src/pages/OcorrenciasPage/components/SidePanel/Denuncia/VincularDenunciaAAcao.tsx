@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { BackButton } from '../../../../../components/ui/Backbutton';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
 import { FaMapPin } from 'react-icons/fa';
 import { useFilters } from '../../../../../context/FiltersContext';
@@ -16,12 +16,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { IconTrash } from '@tabler/icons-react';
+import { useAuth } from '@/context/AuthContext';
 
 export function VincularDenunciaAAcao() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
 
-  const { denunciasDoBairro, acoesDoBairro, updateAcao } = useFilters();
+  const { setIsVisibleDenunciasInMap, updateAcao, setIsVisibleAcoesInMap } =
+    useFilters();
   const [denuncia, setDenuncia] = useState<DenunciaModel>();
 
   const { setSalvarAcaoOnclick, acaoSelecionada, setAcaoSelecionada } =
@@ -43,8 +44,27 @@ export function VincularDenunciaAAcao() {
   }
 
   useEffect(() => {
+    setIsVisibleDenunciasInMap(false);
+    setIsVisibleAcoesInMap(true);
     fetchDenuncia();
-  }, [denunciaId]);
+    return () => {
+      setIsVisibleDenunciasInMap(true);
+    };
+  }, [denunciaId, setIsVisibleDenunciasInMap, setIsVisibleAcoesInMap]);
+
+  // useEffect(() => {
+  //   const filtroOriginal = filtroStatusDenuncia;
+
+  //   setFiltroStatusDenuncia('Análise');
+
+  //   return () => {
+  //     setFiltroStatusDenuncia(filtroOriginal);
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   fetchDataFiltrada();
+  // }, [filtroStatusDenuncia, fetchDataFiltrada]);
 
   useEffect(() => {
     setSalvarAcaoOnclick(true);

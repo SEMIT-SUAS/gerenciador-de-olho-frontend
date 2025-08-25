@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -131,16 +132,13 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const fetchDataFiltrada = async () => {
+  const fetchDataFiltrada = useCallback(async () => {
     if (!currentBairroId) {
       setDenunciasDoBairro([]);
       return;
     }
-
     setLoading(true);
-
     setError(null);
-
     try {
       const denunciaParams = {
         bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
@@ -148,21 +146,18 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         secretaria: user!.idSecretaria,
         'tipo-denuncia': filtroTipoDenuncia,
       };
-
       const acaoParams = {
         bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-        status: filtroStatusDenuncia,
+        // Lembre-se de usar a variável correta que corrigimos antes
+        status: filtroStatusAcao,
         secretaria: user!.idSecretaria,
       };
-
       if (isVisibleDenunciasInMap) {
         const denuncias = await DenunciaService.getDenunciaPorBairro(
           denunciaParams,
         );
-
         setDenunciasDoBairro(denuncias);
       }
-
       if (isVisibleAcoesInMap) {
         const acoes = await AcoesService.getFilteredAcoes(acaoParams);
         setAcoesDoBairro(acoes);
@@ -172,10 +167,20 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
-  };
+    // 3. Adicionar todas as dependências que a função usa
+  }, [
+    currentBairroId,
+    filtroStatusDenuncia,
+    user,
+    filtroTipoDenuncia,
+    filtroStatusAcao,
+    isVisibleDenunciasInMap,
+    isVisibleAcoesInMap,
+  ]);
+
   useEffect(() => {
     fetchDataFiltrada();
-  }, [currentBairroId]);
+  }, [currentBairroId, fetchDataFiltrada]); // Agora fetchDataFiltrada é estável
 
   return (
     <FiltersContext.Provider

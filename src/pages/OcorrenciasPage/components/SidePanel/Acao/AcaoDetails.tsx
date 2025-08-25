@@ -15,15 +15,19 @@ import { cn } from '@/lib/utils';
 import { ConcluirAcaoModal } from './ConcluirAcao';
 import { IndeferirAcaoModal } from './IndefirirAcao';
 import type { AcaoDetailsModel } from '@/types/Acao';
+import { useAuth } from '@/context/AuthContext';
+import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 export function AcaoDetails() {
   const [acaoData, setAcaoData] = useState<AcaoDetailsModel | null>(null);
   const [isConcluirModalOpen, setIsConcluirModalOpen] = useState(false);
   const [isIndeferirModalOpen, setIsIndeferirModalOpen] = useState(false);
+  const [isIniciarAcaoOpen, setIsIniciarAcaoOpen] = useState(false);
 
   const params = useParams();
   const navigate = useNavigate();
   const acaoId = Number(params.id);
+  const { user } = useAuth();
 
   useEffect(() => {
     AcoesService.getAcaoById(acaoId)
@@ -62,25 +66,26 @@ export function AcaoDetails() {
   };
 
   const handleInciarAcao = () => {
-    return null;
-    // const payload = {
-    //   id: acao.id,
-    //   acaoStatus: {
-    //     id: acao.,
-    //     status: 'Andamento',
-    //     motivo: '',
-    //   },
-    //   ativo: true,
-    // };
-    // AcoesService.updateAcao(payload)
-    //   .then((acaoAtualizada) => {
-    //     setAcao(acaoAtualizada);
-    //     toast.success('Ação iniciada com sucesso!');
-    //   })
-    //   .catch((error: any) => {
-    //     toast.error(error.message);
-    //   });
+    const payload = {
+      id: acao.id,
+      acaoStatus: {
+        status: 'Andamento',
+        motivo: '',
+        gerenciador: user!.id,
+      },
+      ativo: true,
+    };
+    AcoesService.updateAcao(payload)
+      .then((acaoAtualizada) => {
+        setAcaoData({ ...acaoData, acao: acaoAtualizada });
+        toast.success('Ação iniciada com sucesso!');
+      })
+      .catch((error: any) => {
+        toast.error(error.message);
+      });
   };
+
+  console.log(acao);
 
   return (
     <div className="flex flex-col h-full space-y-7">
@@ -119,7 +124,7 @@ export function AcaoDetails() {
         )}
 
         {acao.acaoStatus.status === 'Análise' && (
-          <Button onClick={handleInciarAcao} className="w-full">
+          <Button onClick={() => setIsIniciarAcaoOpen(true)} className="w-full">
             Iniciar ação
           </Button>
         )}
@@ -210,7 +215,7 @@ export function AcaoDetails() {
           onClose={() => setIsConcluirModalOpen(false)}
           acao={acaoData.acao}
           onSuccess={(acaoAtualizada) => {
-            setAcaoData({ ...acaoData, acao: acaoAtualizada }); // Atualiza o estado local para refletir a mudança na UI
+            setAcaoData({ ...acaoData, acao: acaoAtualizada });
             setIsConcluirModalOpen(false);
           }}
         />
@@ -228,6 +233,16 @@ export function AcaoDetails() {
             });
             setIsConcluirModalOpen(false);
           }}
+        />
+      )}
+
+      {acao.acaoStatus.status === 'Análise' && (
+        <ConfirmModal
+          isOpen={isIniciarAcaoOpen}
+          onCancel={() => setIsIniciarAcaoOpen(false)}
+          title="Deseja iniciar essa ação?"
+          message='Você está prestes a iniciar uma ação, seu status será "Em Andamento". Esta ação não pode ser desfeita.'
+          onConfirm={handleInciarAcao}
         />
       )}
     </div>
