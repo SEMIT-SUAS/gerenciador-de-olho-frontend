@@ -33,8 +33,7 @@ export function ConcluirAcaoModal({
   onSuccess,
 }: ConcluirAcaoModalProps) {
   const [isConcluindoAcao, setIsConcluindoAcao] = useState(false);
-  const [motivo, setMotivo] = useState(''); // O motivo ainda é útil para a UI e talvez para outro endpoint
-
+  const [motivo, setMotivo] = useState('');
   const { user } = useAuth();
 
   const handleConfirmarConclusao = async () => {
@@ -46,9 +45,9 @@ export function ConcluirAcaoModal({
       const payload = {
         id: acao.id,
         acaoStatus: {
-          id: acao.acaoStatus.id,
           status: 'Concluída',
-          motivo: motivo.trim(),
+          motivo: motivo,
+          gerenciador: user.id,
         },
         ativo: true,
       };

@@ -4,7 +4,6 @@ import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { FilterDenunciaByCategoriaTipoSelect } from './FilterDenunciaByCategoriaTipoSelect';
 import { FilterDenunciaStatusSelect } from './FilterDenunciaStatusSelect';
-
 import AcaoIcon from '/public/icons/acao.png';
 import DenunciaIcon from '/public/icons/denuncia.png';
 import { IconX } from '@tabler/icons-react';
