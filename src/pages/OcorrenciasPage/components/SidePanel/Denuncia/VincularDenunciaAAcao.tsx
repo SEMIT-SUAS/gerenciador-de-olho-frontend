@@ -15,14 +15,16 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useAuth } from '@/context/AuthContext';
 
 export function VincularDenunciaAAcao() {
-  return null;
-
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
 
-  const { setIsVisibleDenunciasInMap, setIsVisibleAcoesInMap } = useFilters();
+  const {
+    setIsVisibleDenunciasInMap,
+    setIsVisibleAcoesInMap,
+    setFiltroStatusDenuncia,
+    filtrarData,
+  } = useFilters();
   const [denuncia, setDenuncia] = useState<DenunciaModel>();
 
   const { setSalvarAcaoOnclick, acaoSelecionada, setAcaoSelecionada } =
@@ -46,6 +48,8 @@ export function VincularDenunciaAAcao() {
   useEffect(() => {
     setIsVisibleDenunciasInMap(false);
     setIsVisibleAcoesInMap(true);
+    setFiltroStatusDenuncia('Análise');
+    filtrarData();
     fetchDenuncia();
     return () => {
       setIsVisibleDenunciasInMap(true);
@@ -92,8 +96,6 @@ export function VincularDenunciaAAcao() {
         denuncias: [...denunciasJaVinculadasIds, denunciaId],
       };
       const acaoAtualizada = await AcoesService.vincularDenunciaAcao(payload);
-
-      updateAcao(acaoAtualizada);
 
       navigate(`/ocorrencias/acoes/${acaoSelecionada.id}`);
       toast.success('Denúncia vinculada com sucesso!');
