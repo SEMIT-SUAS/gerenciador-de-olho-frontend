@@ -1,6 +1,6 @@
 import { Marker } from 'react-leaflet';
 import { useFilters } from '@/context/FiltersContext';
-import type { AcaoModel } from '@/types/Acao';
+import type { AcaoDetailsModel, AcaoModel, AcaoInMap } from '@/types/Acao'; // Garanta que AcaoInMap está importado se necessário
 import { AcaoPolygon } from './AcaoPolygon';
 import { useMapActions } from '@/context/MapActions';
 import { getConvexHull } from '@/utils/geometry';
@@ -15,11 +15,11 @@ export function AcaoMapPins() {
 
   const navigate = useNavigate();
 
-  function handleOnAcaoClick(acao: AcaoModel) {
+  function handleOnAcaoClick(acao: AcaoDetailsModel) {
     if (salvarAcaoOnclick) {
       toggleAcaoSelecionada(acao);
     } else {
-      navigate(`/ocorrencias/acoes/${acao.id}`);
+      navigate(`/ocorrencias/acoes/${acao.acao.id}`);
     }
   }
 
@@ -28,7 +28,7 @@ export function AcaoMapPins() {
   }
 
   function handleGetActionIcon(acao: AcaoModel) {
-    const isSelected = acao.id === acaoSelecionada?.id;
+    const isSelected = acao.id === acaoSelecionada?.acao.id;
     const iconSize = isSelected ? 36 : 32;
 
     return new Icon({
@@ -56,6 +56,14 @@ export function AcaoMapPins() {
           })),
         );
 
+        // --- INÍCIO DA CORREÇÃO ---
+        // 1. Crie o objeto no formato AcaoDetailsModel
+        const acaoDetails: AcaoDetailsModel = {
+          acao: a, // A propriedade 'acao' recebe o objeto 'a' (AcaoInMap)
+          denuncias: denunciasVinculadas, // A propriedade 'denuncias' recebe a lista que você filtrou
+        };
+        // --- FIM DA CORREÇÃO ---
+
         return (
           <div key={`acao-group-${a.id}`}>
             <Marker
@@ -63,7 +71,7 @@ export function AcaoMapPins() {
               position={[a.latitude, a.longitude]}
               icon={handleGetActionIcon(a)}
               eventHandlers={{
-                click: () => handleOnAcaoClick(a),
+                click: () => handleOnAcaoClick(acaoDetails),
               }}
             ></Marker>
 

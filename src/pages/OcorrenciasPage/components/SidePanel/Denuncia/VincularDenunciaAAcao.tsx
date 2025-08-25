@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { useAuth } from '@/context/AuthContext';
 
 export function VincularDenunciaAAcao() {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
@@ -29,6 +30,8 @@ export function VincularDenunciaAAcao() {
 
   const { setSalvarAcaoOnclick, acaoSelecionada, setAcaoSelecionada } =
     useMapActions();
+
+  const { user } = useAuth();
 
   const params = useParams();
   const denunciaId = Number(params.id);
@@ -56,20 +59,6 @@ export function VincularDenunciaAAcao() {
     };
   }, [denunciaId, setIsVisibleDenunciasInMap, setIsVisibleAcoesInMap]);
 
-  // useEffect(() => {
-  //   const filtroOriginal = filtroStatusDenuncia;
-
-  //   setFiltroStatusDenuncia('Análise');
-
-  //   return () => {
-  //     setFiltroStatusDenuncia(filtroOriginal);
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchDataFiltrada();
-  // }, [filtroStatusDenuncia, fetchDataFiltrada]);
-
   useEffect(() => {
     setSalvarAcaoOnclick(true);
     return () => {
@@ -92,12 +81,12 @@ export function VincularDenunciaAAcao() {
       );
 
       const payload = {
-        acaoId: acaoSelecionada.id,
+        id: acaoSelecionada.acao.id,
         denuncias: [...denunciasJaVinculadasIds, denunciaId],
       };
       const acaoAtualizada = await AcoesService.vincularDenunciaAcao(payload);
 
-      navigate(`/ocorrencias/acoes/${acaoSelecionada.id}`);
+      navigate(`/ocorrencias/acoes/${acaoSelecionada.acao.id}`);
       toast.success('Denúncia vinculada com sucesso!');
     } catch (error: any) {
       toast.error(error.message || 'Falha ao vincular denúncia.');
@@ -123,9 +112,9 @@ export function VincularDenunciaAAcao() {
           <h3 className="font-bold text-gray-800">Ação selecionada:</h3>
           {acaoSelecionada ? (
             <div>
-              <span>{acaoSelecionada.nome}</span>
-              <span>{acaoSelecionada.criadoEm}</span>
-              <span>{acaoSelecionada.siglaSecretaria}</span>
+              <span>{acaoSelecionada.acao.nome}</span>
+              <span>{acaoSelecionada.acao.criadoEm}</span>
+              <span>{acaoSelecionada.acao.siglaSecretaria}</span>
               <span>
                 {acaoSelecionada.denuncias.map((denuncia) => (
                   <Card>
@@ -153,7 +142,7 @@ export function VincularDenunciaAAcao() {
       <ConfirmModal
         isOpen={isOpenConfirmationModal}
         title="Vínculo de denúncia à ação"
-        message={`Você deseja vincular essa denúncia ${denuncia?.tipoDenuncia.nome} à essa ação ${acaoSelecionada?.nome}?`}
+        message={`Você deseja vincular essa denúncia ${denuncia?.tipoDenuncia.nome} à essa ação ${acaoSelecionada?.acao.nome}?`}
         onCancel={() => setIsOpenConfirmationModal(false)}
         onConfirm={handleVincularDenuncia}
       />

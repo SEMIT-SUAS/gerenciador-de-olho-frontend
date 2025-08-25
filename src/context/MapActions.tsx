@@ -7,7 +7,7 @@ import {
   type ReactNode,
   type SetStateAction,
 } from 'react';
-import type { AcaoModel } from '../types/Acao';
+import type { AcaoDetailsModel, AcaoModel } from '../types/Acao';
 import { type DenunciaInMap, type DenunciaModel } from '../types/Denuncia';
 import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 
@@ -16,8 +16,8 @@ type SelectAcoesOuDenunciasProps = {
   setSalvarDenunciasOnClick: Dispatch<SetStateAction<boolean>>;
   salvarAcaoOnclick: boolean;
   setSalvarAcaoOnclick: Dispatch<SetStateAction<boolean>>;
-  acaoSelecionada: AcaoModel | null;
-  setAcaoSelecionada: Dispatch<SetStateAction<AcaoModel | null>>;
+  acaoSelecionada: AcaoDetailsModel | null;
+  setAcaoSelecionada: Dispatch<SetStateAction<AcaoDetailsModel | null>>;
   denunciasSelecionas: DenunciaInMap[];
   setDenunciasSelecionadas: Dispatch<SetStateAction<DenunciaInMap[]>>;
   disableMapFilters: boolean;
@@ -31,7 +31,7 @@ type SelectAcoesOuDenunciasProps = {
   setZoomTo: Dispatch<SetStateAction<Coordinates | null>>;
   newDenunciaCoordinates: Coordinates | null;
   setNewDenunciaCoordinates: Dispatch<SetStateAction<Coordinates | null>>;
-  toggleAcaoSelecionada: (acao: AcaoModel) => void;
+  toggleAcaoSelecionada: (acao: AcaoDetailsModel) => void;
   currentBairroId: number | null;
   setCurrentBairroId: Dispatch<SetStateAction<number | null>>;
   numberDenunciasInMap: NumeroDeDenunciasPorBairro[];
@@ -57,9 +57,8 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   const [salvarDenunciasOnclick, setSalvarDenunciasOnClick] = useState(false);
   const [salvarAcaoOnclick, setSalvarAcaoOnclick] = useState(false);
 
-  const [acaoSelecionada, setAcaoSelecionada] = useState<AcaoModel | null>(
-    null,
-  );
+  const [acaoSelecionada, setAcaoSelecionada] =
+    useState<AcaoDetailsModel | null>(null);
   const [denunciasSelecionas, setDenunciasSelecionadas] = useState<
     DenunciaInMap[]
   >([]);
@@ -119,8 +118,8 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function toggleAcaoSelecionada(acao: AcaoModel) {
-    if (acaoSelecionada?.id === acao.id) {
+  function toggleAcaoSelecionada(acao: AcaoDetailsModel) {
+    if (acaoSelecionada?.acao.id === acao.acao.id) {
       setAcaoSelecionada(null);
     } else {
       setAcaoSelecionada(acao);
