@@ -67,7 +67,7 @@ export function CriarAcaoForm() {
     setIsVisibleDenunciasInMap,
     setIsVisibleAcoesInMap,
     setFiltroStatusDenuncia,
-    fetchDataFiltrada,
+    filtrarData,
   } = useFilters();
 
   useEffect(() => {
@@ -76,14 +76,14 @@ export function CriarAcaoForm() {
     setSalvarDenunciasOnClick(true);
     setIsVisibleAcoesInMap(false);
 
-    fetchDataFiltrada();
+    filtrarData();
 
     return () => {
       setIsVisibleAcoesInMap(true);
       setSalvarDenunciasOnClick(false);
       setDenunciasSelecionadas([]);
 
-      fetchDataFiltrada();
+      filtrarData();
       form.reset();
     };
   }, []);

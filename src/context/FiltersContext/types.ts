@@ -13,7 +13,7 @@ export type FilterState = {
   filtroSecretaria: 'todas' | string | null;
   filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
   filtrarAcoesPorId: number[] | 'desabilitado';
-  filtroTipoDenuncia: TipoDenunciaModel | string | null;
+  filtroTipoDenuncia: string | null;
 };
 
 export type FiltersContextProps = FilterState & {
@@ -28,9 +28,7 @@ export type FiltersContextProps = FilterState & {
     SetStateAction<'desabilitado' | 'com_acao' | 'sem_acao'>
   >;
 
-  setFiltrarTipoDenuncia: Dispatch<
-    SetStateAction<TipoDenunciaModel | string | null>
-  >;
+  setFiltrarTipoDenuncia: Dispatch<SetStateAction<string | null>>;
   acoesDoBairro: AcaoInMap[];
   setAcoesDoBairro: Dispatch<SetStateAction<AcaoInMap[]>>;
   denunciasDoBairro: DenunciaInMap[];

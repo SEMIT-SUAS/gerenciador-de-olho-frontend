@@ -1,8 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { BackButton } from '../../../../../components/ui/Backbutton';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
-import { FaMapPin } from 'react-icons/fa';
 import { useFilters } from '@/context/FiltersContext';
 import { useMapActions } from '../../../../../context/MapActions';
 import { toast } from 'sonner';
@@ -19,10 +18,11 @@ import {
 import { useAuth } from '@/context/AuthContext';
 
 export function VincularDenunciaAAcao() {
+  return null;
+
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
 
-  const { setIsVisibleDenunciasInMap, updateAcao, setIsVisibleAcoesInMap } =
-    useFilters();
+  const { setIsVisibleDenunciasInMap, setIsVisibleAcoesInMap } = useFilters();
   const [denuncia, setDenuncia] = useState<DenunciaModel>();
 
   const { setSalvarAcaoOnclick, acaoSelecionada, setAcaoSelecionada } =

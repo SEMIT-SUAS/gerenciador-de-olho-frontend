@@ -106,6 +106,7 @@ export function MapFilters() {
               />
             </label>
             <Switch
+              disabled={isLoading}
               checked={isVisibleDenunciasInMap}
               onClick={() =>
                 setIsVisibleDenunciasInMap(!isVisibleDenunciasInMap)
@@ -123,6 +124,7 @@ export function MapFilters() {
               <img src={AcaoIcon} alt="Icone de ação" className="h-6 w-6" />
             </label>
             <Switch
+              disabled={isLoading}
               checked={isVisibleAcoesInMap}
               onClick={() => setIsVisibleAcoesInMap(!isVisibleAcoesInMap)}
               id="acao-switch"

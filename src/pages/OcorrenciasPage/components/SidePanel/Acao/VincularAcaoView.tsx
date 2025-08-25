@@ -6,7 +6,6 @@ import { useFilters } from '@/context/FiltersContext';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import AcoesService from '@/services/acoesService';
-import type { AcaoModel } from '@/types/Acao';
 
 import {
   Card,
@@ -16,10 +15,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { IconTrash } from '@tabler/icons-react';
+import type { AcaoDetailsModel } from '@/types/Acao';
 
 export function VincularDenunciasAcao() {
+  return null;
+
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const [acao, setAcao] = useState<AcaoModel | null>(null);
+  const [acaoData, setAcaoData] = useState<AcaoDetailsModel | null>(null);
   const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>(
     [],
   );
@@ -31,7 +33,7 @@ export function VincularDenunciasAcao() {
 
   useEffect(() => {
     AcoesService.getAcaoById(acaoId)
-      .then(setAcao)
+      .then((acaoDataResponse) => setAcaoData(acaoDataResponse))
       .catch(() => toast.error('Erro ao buscar detalhes da ação.'));
   }, [acaoId]);
 

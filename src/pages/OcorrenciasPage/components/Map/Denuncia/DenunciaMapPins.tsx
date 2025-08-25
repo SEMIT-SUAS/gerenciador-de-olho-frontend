@@ -12,7 +12,6 @@ import { divIcon } from 'leaflet';
 
 export function DenunciaMapPins() {
   const { denunciasDoBairro } = useFilters();
-
   const { isVisibleDenunciasInMap } = useFilters();
 
   const {
@@ -34,25 +33,6 @@ export function DenunciaMapPins() {
       })),
     );
   }, [denunciasSelecionas, denunciasJaVinculadas]);
-
-  // useEffect(() => {
-  //   function handleClick(event: LeafletMouseEvent) {
-  //     if (isSelectingNewDenuncia) {
-  //       setNewDenunciaCoordinates({
-  //         lat: event.latlng.lat,
-  //         lng: event.latlng.lng,
-  //       });
-  //       setIsSelectingNewDenuncia(false);
-  //       map.off('click');
-  //     }
-  //   }
-  //   map.on('click', handleClick);
-  // }, [
-  //   isSelectingNewDenuncia,
-  //   setNewDenunciaCoordinates,
-  //   setIsSelectingNewDenuncia,
-  //   map,
-  // ]);
 
   function handleOnDenunciaClick(currentDenuncia: DenunciaInMap) {
     if (salvarDenunciasOnclick) {
