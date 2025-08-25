@@ -15,7 +15,7 @@ export function FilterDenunciaByCategoriaTipoSelect() {
   return (
     <Select
       onValueChange={(value) => setFiltrarTipoDenuncia(value)}
-      value={filtroTipoDenuncia}
+      value={!filtroTipoDenuncia ? '' : filtroTipoDenuncia}
     >
       <SelectTrigger className="w-full bg-white">
         <SelectValue placeholder="Tipo de denúncia" />
