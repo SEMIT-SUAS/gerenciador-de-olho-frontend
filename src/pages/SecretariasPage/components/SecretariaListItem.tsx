@@ -51,15 +51,15 @@ export function SecretariaListItem({
             <IconEdit size={18} stroke={2} className="text-gray-400 mr-2" />
             {/* </button> */}
 
-            <button>
-              <IconEye size={18} stroke={2} className="text-gray-500 mr-2" />
-            </button>
-
             <button
               aria-label={`Deletar ${secretaria.nome}`}
               onClick={() => setIsOpenDeleteModal(true)}
             >
               <IconTrash size={18} stroke={2} className="text-black-600 mr-2" />
+            </button>
+
+            <button>
+              <IconEye size={18} stroke={2} className="text-gray-500 mr-2" />
             </button>
           </div>
         </TableCell>

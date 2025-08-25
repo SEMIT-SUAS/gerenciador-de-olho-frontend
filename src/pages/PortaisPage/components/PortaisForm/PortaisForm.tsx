@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Loading } from '@/components/Loading/Loading';
 import { cn } from '@/lib/utils';
 import {
@@ -28,6 +27,7 @@ import {
 } from '@/components/ui/select';
 
 import type { Portais } from '@/types/Portais';
+import { Switch } from '@/components/ui/switch';
 
 type PortalFormProps = {
   setPortais?: Dispatch<SetStateAction<Portais[]>>;
@@ -120,19 +120,20 @@ export function PortalForm({
             control={form.control}
             name="destaque"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormItem className="flex items-center justify-between border p-3 rounded-md">
+                <div>
+                  <FormLabel className="text-base">Destaque</FormLabel>
+                  <div className="text-sm text-gray-500">
+                    Marcar para destacar este portal na página inicial
+                  </div>
+                </div>
                 <FormControl>
-                  <Checkbox
+                  <Switch
                     checked={field.value}
                     onCheckedChange={field.onChange}
+                    disabled={isSubmitting}
                   />
                 </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Destaque</FormLabel>
-                  <FormDescription>
-                    Marcar para destacar este portal na página inicial.
-                  </FormDescription>
-                </div>
               </FormItem>
             )}
           />
@@ -141,19 +142,20 @@ export function PortalForm({
             control={form.control}
             name="visivel"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormItem className="flex items-center justify-between border p-3 rounded-md">
+                <div>
+                  <FormLabel className="text-base">Visível</FormLabel>
+                  <div className="text-sm text-gray-500">
+                    Aparece para os usuários no aplicativo
+                  </div>
+                </div>
                 <FormControl>
-                  <Checkbox
+                  <Switch
                     checked={field.value}
                     onCheckedChange={field.onChange}
+                    disabled={isSubmitting}
                   />
                 </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Visível</FormLabel>
-                  <FormDescription>
-                    Se desmarcado, o portal não será exibido para os usuários.
-                  </FormDescription>
-                </div>
               </FormItem>
             )}
           />

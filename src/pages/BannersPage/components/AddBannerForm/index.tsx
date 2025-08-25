@@ -17,7 +17,7 @@ import type { BannerModel } from '@/types/Banner';
 import { AddBannerFormSchema, type AddBannerFormValues } from './types';
 import { Loading } from '@/components/Loading/Loading';
 import { ImageInput } from '@/components/Forms/ImageInput';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 import bannersService from '@/services/bannersService';
 
 type AddABannerFormProps = {
@@ -121,25 +121,25 @@ export function AddABannerForm({ setBanners, onSuccess }: AddABannerFormProps) {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="visivel"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Vísivel</FormLabel>
+              <FormItem className="flex items-center justify-between border p-3 rounded-md">
+                <div>
+                  <FormLabel className="text-base">Visível</FormLabel>
                   <p className="text-sm text-muted-foreground">
                     Se marcado, o banner será exibido automaticamente ao ser
                     cadastrado
                   </p>
                 </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isSubmittingForm}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
