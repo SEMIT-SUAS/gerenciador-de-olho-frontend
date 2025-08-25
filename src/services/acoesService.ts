@@ -17,7 +17,7 @@ export default class AcoesService {
         throw new Error('Não foi possível criar á ação.');
       }
 
-      return response.data;
+      return response.data.acao;
     } catch {
       throw new Error('Serviço de ação fora do ar. Tente novamente mais tarde');
     }

@@ -3,20 +3,32 @@ import { BackButton } from '@/components/ui/Backbutton';
 import { useMapActions } from '@/context/MapActions';
 import { DenunciaService } from '@/services/DenunciaService';
 import type { DenunciaModel } from '@/types/Denuncia';
-import { IconProgressX, IconTrash } from '@tabler/icons-react';
+import {
+  IconInfoCircle,
+  IconLink,
+  IconProgressX,
+  IconTrash,
+} from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Tag } from '../Tag';
 import { FilesCarrrousel } from '@/components/FilesCarrousel';
 import { Button } from '@/components/ui/button';
 import { SidePanelContentSkeleton } from '../SidePanelContentSkeleton';
-import { Loading } from '@/components/Loading/Loading';
 import { IndeferirModal } from '../Modals/IndeferirModal';
 import { mensagensSugeridasParaIndeferirDenuncia } from '@/constants/messagesRejectComplaint';
 import { useAuth } from '@/context/AuthContext';
 import type { DenunciaIndeferidaModel } from '@/types/DenunciaIndeferidaModel';
 import { getDenunciaStatus } from '@/utils/status';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
 export function DenunciaDetails() {
   const [denuncia, setDenuncia] = useState<null | DenunciaModel>(null);
@@ -37,14 +49,18 @@ export function DenunciaDetails() {
   const navigate = useNavigate();
   const denunciaId = Number(params.id);
 
-  const { setZoomTo } = useMapActions();
+  const { setZoomTo, currentBairroId } = useMapActions();
   const { user } = useAuth();
 
   useEffect(() => {
     DenunciaService.getById(denunciaId)
       .then((denunciaData) => setDenuncia(denunciaData))
       .catch((error: any) => toast.error(error.message));
-  }, []);
+
+    return () => {
+      setDenuncia(null);
+    };
+  }, [denunciaId]);
 
   useEffect(() => {
     if (denuncia) {
@@ -61,6 +77,10 @@ export function DenunciaDetails() {
   const backButton = (
     <BackButton to="/ocorrencias" children="Detalhes da Denúncia" />
   );
+
+  if (!currentBairroId) {
+    return <Navigate to="/ocorrencias" />;
+  }
 
   if (!denuncia) {
     return <SidePanelContentSkeleton backButton={backButton} />;
@@ -149,32 +169,53 @@ export function DenunciaDetails() {
               </p>
             </div>
           </div>
+
           {denuncia.dadosAcaoParaDenuncia && (
-            <div className="flex items-center px-4 py-3 justify-between bg-yellow-50 border border-yellow-200 rounded-xl">
-              <div>
-                <p className="text-sm font-semibold text-yellow-700">
-                  Ação Vinculada:
-                </p>
-                <p className="text-md font-bold text-yellow-900">
-                  {denuncia.dadosAcaoParaDenuncia.nome}
-                </p>
-                <p className="text-xs font-semibold text-yellow-800">
-                  {denuncia.dadosAcaoParaDenuncia.secretaria}
-                </p>
-              </div>
-              <button
-                onClick={() => setIsOpenDesvincularAcaoConfirmationModal(true)}
-                className="z-10 cursor-pointer rounded-full p-2 text-yellow-800 transition-colors hover:bg-red-100 hover:text-red-600"
-                aria-label="Desvincular Ação"
-                disabled={isDesvinculandoAcaoDaDenuncia}
-              >
-                {isDesvinculandoAcaoDaDenuncia ? (
-                  <Loading className="h-4 w-4" />
-                ) : (
-                  <IconTrash size={18} />
-                )}
-              </button>
-            </div>
+            <Card>
+              <CardContent className="flex gap-2 justify-between">
+                <div className="flex gap-2">
+                  <IconInfoCircle size={32} />
+                  <div className="flex flex-col gap-2">
+                    <CardTitle>Ação Vinculada</CardTitle>
+                    <CardDescription>
+                      {denuncia.dadosAcaoParaDenuncia.nome}
+                      <h4 className={cn('text-[12px]')}>
+                        {denuncia.dadosAcaoParaDenuncia.secretaria}
+                      </h4>
+                    </CardDescription>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="icon"
+                    aria-label="Ver detalhes da ação"
+                    onClick={() =>
+                      navigate(
+                        `/ocorrencias/acoes/${denuncia.dadosAcaoParaDenuncia?.id}`,
+                      )
+                    }
+                  >
+                    <IconLink />
+                  </Button>
+
+                  <Button
+                    size="icon"
+                    aria-label="Desvincular ação"
+                    disabled={isDesvinculandoAcaoDaDenuncia}
+                    onClick={() =>
+                      setIsOpenDesvincularAcaoConfirmationModal(true)
+                    }
+                  >
+                    {isDesvinculandoAcaoDaDenuncia ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <IconTrash />
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           )}
 
           {!denuncia.dadosAcaoParaDenuncia &&

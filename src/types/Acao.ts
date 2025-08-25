@@ -10,8 +10,8 @@ export interface CreateAcaoModel {
   bairro: string;
   secretaria: number;
   denuncias: number[];
-  gerenciador: number;
   acaoStatus: {
+    gerenciador: number;
     status: string;
     motivo: string;
     modificadoEm: string;

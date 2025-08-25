@@ -6,9 +6,7 @@ import { FaInfoCircle } from 'react-icons/fa';
 import { Tag } from '../Tag';
 import { IconPlus, IconProgressX } from '@tabler/icons-react';
 import { FilesCarrrousel } from '@/components/FilesCarrousel';
-import { IoIosAdd } from 'react-icons/io';
 import { IconCircleCheckFilled } from '@tabler/icons-react';
-import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import type { AcaoModel } from '@/types/Acao';
 import { SidePanelContentSkeleton } from '../SidePanelContentSkeleton';
 import { toast } from 'sonner';
@@ -17,12 +15,11 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ConcluirAcaoModal } from './ConcluirAcao';
 import { IndeferirAcaoModal } from './IndefirirAcao';
-import { useFilters } from '@/context/FiltersContext';
 
 export function AcaoDetails() {
   const [acao, setAcao] = useState<AcaoModel | null>(null);
-  const [isConcluirModalOpen, setIsConcluirModalOpen] = useState(false); // Estado para controlar o modal
-  const [isIndeferirModalOpen, setIsIndeferirModalOpen] = useState(false); // 2. Estado para o novo modal
+  const [isConcluirModalOpen, setIsConcluirModalOpen] = useState(false);
+  const [isIndeferirModalOpen, setIsIndeferirModalOpen] = useState(false);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -32,7 +29,11 @@ export function AcaoDetails() {
     AcoesService.getAcaoById(acaoId)
       .then((acaoData) => setAcao(acaoData))
       .catch((error: any) => toast.error(error.message));
-  }, []);
+
+    return () => {
+      setAcao(null);
+    };
+  }, [acaoId]);
 
   const backButton = (
     <BackButton to="/ocorrencias" children="Detalhes da Ação" />
@@ -161,7 +162,7 @@ export function AcaoDetails() {
                       key={denuncia.id}
                       denuncia={denuncia}
                       allowDisvincularItem={canDisvincular}
-                      onDisvincular={handleDesvincularDenuncia} // <-- Passando a função para o filho
+                      onDisvincular={handleDesvincularDenuncia}
                     />
                   );
                 })}
