@@ -72,12 +72,6 @@ export class DenunciaService {
     status: string | null,
     secretaria: number,
   ): Promise<NumeroDeDenunciasPorBairro[]> {
-    console.log(
-      'Fetching number of denuncias in map with status:',
-      status,
-      'and secretaria:',
-      secretaria,
-    );
     try {
       const response = await api.get(
         '/denuncia/gerenciador/contador-denuncias-bairro',

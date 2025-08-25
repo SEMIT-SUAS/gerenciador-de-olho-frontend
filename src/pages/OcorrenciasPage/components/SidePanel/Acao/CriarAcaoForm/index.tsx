@@ -81,6 +81,7 @@ export function CriarAcaoForm() {
     return () => {
       setIsVisibleAcoesInMap(true);
       setSalvarDenunciasOnClick(false);
+      setDenunciasSelecionadas([]);
 
       fetchDataFiltrada();
       form.reset();
@@ -117,11 +118,11 @@ export function CriarAcaoForm() {
         longitude: centerCoordinates[1],
         bairro: bairro.nome,
         denuncias: denunciasSelecionas.map((denuncia) => denuncia.id),
-        gerenciador: user?.id!,
         acaoStatus: {
           status: 'Análise',
           motivo: 'Criando ação',
           modificadoEm: new Date().toString(),
+          gerenciador: user?.id!,
         },
         ativo: true,
       };
@@ -130,7 +131,6 @@ export function CriarAcaoForm() {
         createAcaoData,
       );
 
-      setDenunciasSelecionadas([]);
       setFiltroStatusDenuncia('Análise');
       navigate(`/ocorrencias/acoes/${acaoCreatedData.id}`);
       toast.success('Ação criada com sucesso!');

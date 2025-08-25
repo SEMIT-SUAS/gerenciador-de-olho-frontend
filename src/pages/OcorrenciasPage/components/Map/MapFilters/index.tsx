@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 interface TempFiltersState {
   bairroId?: string;
   denunciaStatus: string;
-  tipoDenuncia: string | null; // <-- Aqui você permite string OU null
+  tipoDenuncia: string | null;
   acaoStatus?: string;
 }
 
@@ -35,6 +35,7 @@ export function MapFilters() {
     isVisibleAcoesInMap,
     setIsVisibleDenunciasInMap,
     setIsVisibleAcoesInMap,
+    denunciasDoBairro,
   } = useFilters();
 
   const { user } = useAuth();
@@ -77,32 +78,18 @@ export function MapFilters() {
     try {
       const denunciaParams = {
         bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-
         status: tempFilters.denunciaStatus,
-
         secretaria: user!.idSecretaria,
-
         'tipo-denuncia': tempFilters.tipoDenuncia,
       };
 
       setFiltroStatusDenuncia(tempFilters.denunciaStatus);
       setFiltrarTipoDenuncia(tempFilters.tipoDenuncia);
 
-      // const acaoParams = {
-      //   bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-
-      //   status: tempFilters.denunciaStatus,
-
-      //   secretaria: user!.idSecretaria,
-      // };
-
       const denunciaFiltradas = await DenunciaService.getDenunciaPorBairro(
         denunciaParams,
       );
 
-      // const acaoFiltradas = await AcoesService.getFilteredAcoes(acaoParams);
-
-      // setAcoesDoBairro(acaoFiltradas);
       setDenunciasDoBairro(denunciaFiltradas);
     } catch (error) {
       console.error('Error applying filters:', error);
@@ -143,6 +130,7 @@ export function MapFilters() {
         <Button
           className="w-56"
           onClick={() => navigate('/ocorrencias/acoes/criar')}
+          disabled={denunciasDoBairro.length === 0}
         >
           Criar ação
           <img src={AcaoIcon} alt="Icone de denúncia" className="h-6 w-6" />
