@@ -1,7 +1,6 @@
 import type { AcaoInMap } from '@/types/Acao';
 import type { AcaoStatusModelTypes } from '@/types/AcaoStatus';
 import type { DenunciaInMap, DenunciaStatusModelTypes } from '@/types/Denuncia';
-import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import type { Dispatch, SetStateAction } from 'react';
 
 export type FilterState = {
@@ -13,7 +12,7 @@ export type FilterState = {
   filtroSecretaria: 'todas' | string | null;
   filtroDenunciasComAcao: 'desabilitado' | 'com_acao' | 'sem_acao';
   filtrarAcoesPorId: number[] | 'desabilitado';
-  filtroTipoDenuncia: string | null;
+  filtroTipoDenuncia: string;
 };
 
 export type FiltersContextProps = FilterState & {
@@ -28,7 +27,7 @@ export type FiltersContextProps = FilterState & {
     SetStateAction<'desabilitado' | 'com_acao' | 'sem_acao'>
   >;
 
-  setFiltrarTipoDenuncia: Dispatch<SetStateAction<string | null>>;
+  setFiltrarTipoDenuncia: Dispatch<SetStateAction<string>>;
   acoesDoBairro: AcaoInMap[];
   setAcoesDoBairro: Dispatch<SetStateAction<AcaoInMap[]>>;
   denunciasDoBairro: DenunciaInMap[];
