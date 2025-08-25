@@ -85,7 +85,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         setAcoesDoBairro(acoes);
       }
 
-      setIsLoading(false);
+      // setIsLoading(false);
     } catch (error: any) {
       toast.error(error.message);
     }

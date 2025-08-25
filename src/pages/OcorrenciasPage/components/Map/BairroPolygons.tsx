@@ -4,9 +4,11 @@ import { Polygon, Marker } from 'react-leaflet';
 
 import L from 'leaflet';
 import { useOcorrencias } from '@/context/OcorrenciasContext';
+import { useFilters } from '@/context/FiltersContext';
 
 export function BairroPolygons() {
   const { bairros } = useOcorrencias();
+  const { isLoading } = useFilters();
   const { setCurrentBairroId, currentBairroId, setZoomTo } = useMapActions();
 
   function handleOnClickAtBairro(bairro: Bairro) {
