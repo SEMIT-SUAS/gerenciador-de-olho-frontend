@@ -11,6 +11,7 @@ import { useMapActions } from '@/context/MapActions';
 import { useFilters } from '@/context/FiltersContext';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
+import { initialFiltersValues } from '@/context/FiltersContext/initialFilterValues';
 
 export function MapFilters() {
   const { setCurrentBairroId, currentBairroId, setZoomTo } = useMapActions();
@@ -38,8 +39,8 @@ export function MapFilters() {
   }
 
   const handleClearFilters = () => {
-    setFiltrarTipoDenuncia(null);
-    setFiltroStatusDenuncia('Aberto');
+    setFiltrarTipoDenuncia(initialFiltersValues.filtroTipoDenuncia);
+    setFiltroStatusDenuncia(initialFiltersValues.filtroStatusDenuncia);
   };
 
   const handleApplyFilters = async () => {

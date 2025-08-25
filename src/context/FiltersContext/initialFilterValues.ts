@@ -4,7 +4,7 @@ export const initialFiltersValues: FilterState = {
   isVisibleDenunciasInMap: true,
   isVisibleAcoesInMap: true,
   filtroStatusDenuncia: 'Aberto',
-  filtroTipoDenuncia: null,
+  filtroTipoDenuncia: '',
   filtroStatusAcao: 'Análise',
   filtroCategoria: 'todas',
   filtroSecretaria: 'todas',
