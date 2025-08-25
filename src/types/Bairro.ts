@@ -13,6 +13,6 @@ export interface Bairro {
 }
 
 export interface NumeroDeDenunciasPorBairro {
-  bairro: string
-  quantidade: number
+  bairro: string;
+  quantidade: number;
 }

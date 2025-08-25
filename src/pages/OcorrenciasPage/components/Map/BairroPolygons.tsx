@@ -1,9 +1,9 @@
 import { useMapActions } from '@/context/MapActions';
-import { useOcorrencias } from '@/context/OcorrenciasContext';
 import type { Bairro } from '@/types/Bairro';
 import { Polygon, Marker } from 'react-leaflet';
 
 import L from 'leaflet';
+import { useOcorrencias } from '@/context/OcorrenciasContext';
 
 export function BairroPolygons() {
   const { bairros } = useOcorrencias();
