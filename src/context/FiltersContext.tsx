@@ -154,13 +154,15 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
           denunciaParams,
         );
 
-        return setDenunciasDoBairro(denuncias);
+        setDenunciasDoBairro(denuncias);
       }
 
       if (isVisibleAcoesInMap) {
         const acoes = await AcoesService.getFilteredAcoes(acaoParams);
         setAcoesDoBairro(acoes);
       }
+
+      console.log(acoesDoBairro);
     } catch (err) {
       console.error('Falha ao buscar denúncias:', err);
     } finally {

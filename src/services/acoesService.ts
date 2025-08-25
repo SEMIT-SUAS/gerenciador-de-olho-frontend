@@ -37,7 +37,7 @@ export default class AcoesService {
         },
       });
 
-      console.log('Ações filtradas:', response);
+      console.log('Ações filtradas:', response.data);
 
       if (response.status !== 200) {
         throw new Error('Não foi possível buscar as ações por bairro.');

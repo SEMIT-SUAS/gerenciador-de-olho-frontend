@@ -5,7 +5,6 @@ import { AcaoPolygon } from './AcaoPolygon';
 import { useMapActions } from '@/context/MapActions';
 import { getConvexHull } from '@/utils/geometry';
 import { useNavigate } from 'react-router-dom';
-import { AcaoTooltip } from './AcaoTooltip';
 import { Icon } from 'leaflet';
 
 export function AcaoMapPins() {
@@ -66,9 +65,7 @@ export function AcaoMapPins() {
               eventHandlers={{
                 click: () => handleOnAcaoClick(a),
               }}
-            >
-              {/* {!salvarAcaoOnclick && <AcaoTooltip acao={a} />} */}
-            </Marker>
+            ></Marker>
 
             {denunciasVinculadas.length > 0 && (
               <AcaoPolygon coordinates={acaoPolygonCoords} />

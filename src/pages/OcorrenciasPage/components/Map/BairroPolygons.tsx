@@ -35,7 +35,7 @@ export function BairroPolygons() {
                 color: bairro.id === currentBairroId ? '#39a6de' : '#56b2b8',
                 fillColor: bairro.id === currentBairroId ? '' : 'lightblue',
                 fillOpacity: 0.2,
-                weight: bairro.id === currentBairroId ? 3 : 1,
+                weight: bairro.id === currentBairroId ? 4 : 2,
               }}
               eventHandlers={{
                 click: () => handleOnClickAtBairro(bairro),

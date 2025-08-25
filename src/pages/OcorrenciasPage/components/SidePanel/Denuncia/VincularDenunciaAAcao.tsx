@@ -43,6 +43,10 @@ export function VincularDenunciaAAcao() {
   }
 
   useEffect(() => {
+    fetchDenuncia();
+  }, [denunciaId]);
+
+  useEffect(() => {
     setSalvarAcaoOnclick(true);
     return () => {
       setSalvarAcaoOnclick(false);
@@ -77,8 +81,6 @@ export function VincularDenunciaAAcao() {
       toast.error(error.message || 'Falha ao vincular denúncia.');
     }
   }
-
-  fetchDenuncia();
 
   return (
     <>
