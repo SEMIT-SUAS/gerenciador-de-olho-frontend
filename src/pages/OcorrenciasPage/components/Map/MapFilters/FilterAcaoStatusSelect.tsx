@@ -6,7 +6,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useFilters } from '@/context/FiltersContext';
-import { set } from 'zod/v4';
 
 const avaliableStatus = [
   {

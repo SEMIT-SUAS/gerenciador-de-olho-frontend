@@ -174,7 +174,7 @@ export function DenunciaDetails() {
             <Card>
               <CardContent className="flex gap-2 justify-between">
                 <div className="flex gap-2">
-                  <IconInfoCircle size={32} />
+                  <IconInfoCircle size={24} />
                   <div className="flex flex-col gap-2">
                     <CardTitle>Ação Vinculada</CardTitle>
                     <CardDescription>

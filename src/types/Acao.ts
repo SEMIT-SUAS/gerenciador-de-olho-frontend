@@ -30,6 +30,10 @@ export interface AcaoModel {
   siglaSecretaria: string;
   bairro: string;
   acaoStatus: AcaoStatusModel;
+}
+
+export interface AcaoDetailsModel {
+  acao: AcaoModel;
   denuncias: DenunciaBasicInfoModel[];
 }
 

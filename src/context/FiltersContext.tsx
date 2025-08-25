@@ -58,6 +58,10 @@ type FiltersContextProps = FilterState & {
   filtrarAcoesPorId: number[] | 'desabilitado';
   setFiltrarAcoesPorId: Dispatch<SetStateAction<number[] | 'desabilitado'>>;
   fetchDataFiltrada: () => Promise<void>;
+  loading: boolean;
+  setLoading: Dispatch<SetStateAction<boolean>>;
+  error: string | null;
+  setError: Dispatch<SetStateAction<string | null>>;
 };
 
 const defaultFilters: FilterState = {
@@ -81,6 +85,8 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   const [denunciasDoBairro, setDenunciasDoBairro] = useState<DenunciaInMap[]>(
     [],
   );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [acoesDoBairro, setAcoesDoBairro] = useState<AcaoInMap[]>([]);
 
@@ -131,9 +137,9 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // setIsLoading(true);
+    setLoading(true);
 
-    // setError(null);
+    setError(null);
 
     try {
       const denunciaParams = {
@@ -161,12 +167,10 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         const acoes = await AcoesService.getFilteredAcoes(acaoParams);
         setAcoesDoBairro(acoes);
       }
-
-      console.log(acoesDoBairro);
     } catch (err) {
       console.error('Falha ao buscar denúncias:', err);
     } finally {
-      // setIsLoading(false);
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -192,7 +196,6 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         setDenunciasDoBairro,
         acoesDoBairro,
         setAcoesDoBairro,
-        // acoesFiltradas,
         filtroDenunciasComAcao,
         setFiltroDenunciasComAcao,
         filtrarAcoesPorId,
@@ -201,6 +204,10 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         setFiltrarTipoDenuncia,
         updateAcao,
         fetchDataFiltrada,
+        loading,
+        error,
+        setLoading,
+        setError,
       }}
     >
       {children}

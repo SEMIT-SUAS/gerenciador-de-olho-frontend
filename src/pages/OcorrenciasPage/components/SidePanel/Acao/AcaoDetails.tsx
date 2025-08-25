@@ -7,7 +7,6 @@ import { Tag } from '../Tag';
 import { IconPlus, IconProgressX } from '@tabler/icons-react';
 import { FilesCarrrousel } from '@/components/FilesCarrousel';
 import { IconCircleCheckFilled } from '@tabler/icons-react';
-import type { AcaoModel } from '@/types/Acao';
 import { SidePanelContentSkeleton } from '../SidePanelContentSkeleton';
 import { toast } from 'sonner';
 import AcoesService from '@/services/acoesService';
@@ -15,9 +14,10 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ConcluirAcaoModal } from './ConcluirAcao';
 import { IndeferirAcaoModal } from './IndefirirAcao';
+import type { AcaoDetailsModel } from '@/types/Acao';
 
 export function AcaoDetails() {
-  const [acao, setAcao] = useState<AcaoModel | null>(null);
+  const [acaoData, setAcaoData] = useState<AcaoDetailsModel | null>(null);
   const [isConcluirModalOpen, setIsConcluirModalOpen] = useState(false);
   const [isIndeferirModalOpen, setIsIndeferirModalOpen] = useState(false);
 
@@ -27,11 +27,11 @@ export function AcaoDetails() {
 
   useEffect(() => {
     AcoesService.getAcaoById(acaoId)
-      .then((acaoData) => setAcao(acaoData))
+      .then((acaoData) => setAcaoData(acaoData))
       .catch((error: any) => toast.error(error.message));
 
     return () => {
-      setAcao(null);
+      setAcaoData(null);
     };
   }, [acaoId]);
 
@@ -39,44 +39,47 @@ export function AcaoDetails() {
     <BackButton to="/ocorrencias" children="Detalhes da Ação" />
   );
 
-  if (!acao) {
+  if (!acaoData) {
     return <SidePanelContentSkeleton backButton={backButton} />;
   }
 
-  const urls = acao.denuncias.flatMap((denuncia) => denuncia.urls);
+  const acao = acaoData.acao;
+  const denunciasVinculadas = acaoData.denuncias;
+
+  const urls = denunciasVinculadas.flatMap((denuncia) => denuncia.urls);
 
   const handleDesvincularDenuncia = (denunciaId: number) => {
     if (!acao) return;
 
-    const denunciasAtualizadas = acao.denuncias.filter(
+    const denunciasAtualizadas = denunciasVinculadas.filter(
       (d) => d.id !== denunciaId,
     );
 
-    setAcao({
-      ...acao,
+    setAcaoData({
+      ...acaoData,
       denuncias: denunciasAtualizadas,
     });
   };
 
   const handleInciarAcao = () => {
-    const payload = {
-      id: acao.id,
-      acaoStatus: {
-        id: acao.acaoStatus.id,
-        status: 'Andamento',
-        motivo: '',
-      },
-      ativo: true,
-    };
-
-    AcoesService.updateAcao(payload)
-      .then((acaoAtualizada) => {
-        setAcao(acaoAtualizada);
-        toast.success('Ação iniciada com sucesso!');
-      })
-      .catch((error: any) => {
-        toast.error(error.message);
-      });
+    return null;
+    // const payload = {
+    //   id: acao.id,
+    //   acaoStatus: {
+    //     id: acao.,
+    //     status: 'Andamento',
+    //     motivo: '',
+    //   },
+    //   ativo: true,
+    // };
+    // AcoesService.updateAcao(payload)
+    //   .then((acaoAtualizada) => {
+    //     setAcao(acaoAtualizada);
+    //     toast.success('Ação iniciada com sucesso!');
+    //   })
+    //   .catch((error: any) => {
+    //     toast.error(error.message);
+    //   });
   };
 
   return (
@@ -99,7 +102,7 @@ export function AcaoDetails() {
       </div>
 
       <div className="flex-1 flex flex-col gap-4">
-        {acao.denuncias.length > 0 && (
+        {denunciasVinculadas.length > 0 && (
           <div className="flex items-center p-3 bg-blue-50 rounded-xl border border-blue-200">
             <FaInfoCircle className="text-blue-500 mr-3 flex-shrink-0" />
             <p className="text-sm font-semibold text-blue-800">
@@ -146,15 +149,15 @@ export function AcaoDetails() {
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scrollbar-blue">
-            {acao.denuncias.length === 0 ? (
+            {denunciasVinculadas.length === 0 ? (
               <div className="text-center py-10">
                 <p className="text-gray-500">Nenhuma denúncia vinculada.</p>
               </div>
             ) : (
               <div className="space-y-2">
-                {acao.denuncias.map((denuncia) => {
+                {denunciasVinculadas.map((denuncia) => {
                   const canDisvincular =
-                    acao.denuncias.length > 1 &&
+                    denunciasVinculadas.length > 1 &&
                     ['Análise', 'Andamento'].includes(acao.acaoStatus.status);
 
                   return (
@@ -205,9 +208,9 @@ export function AcaoDetails() {
         <ConcluirAcaoModal
           isOpen={isConcluirModalOpen}
           onClose={() => setIsConcluirModalOpen(false)}
-          acao={acao}
+          acao={acaoData.acao}
           onSuccess={(acaoAtualizada) => {
-            setAcao(acaoAtualizada); // Atualiza o estado local para refletir a mudança na UI
+            setAcaoData({ ...acaoData, acao: acaoAtualizada }); // Atualiza o estado local para refletir a mudança na UI
             setIsConcluirModalOpen(false);
           }}
         />
@@ -219,7 +222,10 @@ export function AcaoDetails() {
           onClose={() => setIsIndeferirModalOpen(false)}
           acao={acao}
           onSuccess={(acaoAtualizada) => {
-            setAcao(acaoAtualizada); // Atualiza o estado local para refletir a mudança na UI
+            setAcaoData({
+              ...acaoData,
+              acao: acaoAtualizada,
+            });
             setIsConcluirModalOpen(false);
           }}
         />

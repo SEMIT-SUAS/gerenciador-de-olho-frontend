@@ -1,4 +1,9 @@
-import type { AcaoInMap, AcaoModel, CreateAcaoModel } from '../types/Acao';
+import type {
+  AcaoDetailsModel,
+  AcaoInMap,
+  AcaoModel,
+  CreateAcaoModel,
+} from '../types/Acao';
 import { api } from '../config/api';
 
 export default class AcoesService {
@@ -87,7 +92,7 @@ export default class AcoesService {
   //   return acaoCreatedData;
   // }
 
-  public static async getAcaoById(acaoId: number): Promise<AcaoModel> {
+  public static async getAcaoById(acaoId: number): Promise<AcaoDetailsModel> {
     try {
       const response = await api.get('/acao/buscar/' + acaoId, {
         responseType: 'json',
@@ -97,7 +102,7 @@ export default class AcoesService {
         throw new Error('Não foi possível encontrar os detalhes dessa ação.');
       }
 
-      return response.data as AcaoModel;
+      return response.data as AcaoDetailsModel;
     } catch {
       throw new Error(
         'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
