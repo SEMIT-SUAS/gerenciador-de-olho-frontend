@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Loading } from '@/components/Loading/Loading';
-import bannersService from '@/services/bannersService';
+import { BannerService } from '@/services/bannersService';
 
 type EditBannerForm = {
   banner: BannerModel;
@@ -68,7 +68,7 @@ export function EditBannerForm({
 
     try {
       setIsSubmitingEditBannerForm(true);
-      const dataUpdated = await bannersService.update(formData);
+      const dataUpdated = await new BannerService().update(formData);
 
       setBanners(
         (prev) =>

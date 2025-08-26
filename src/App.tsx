@@ -29,7 +29,7 @@ import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/components/Ed
 import { PortaisPage } from './pages/PortaisPage';
 import { DenunciaCategoriasPage } from './pages/CategoriasDenunciaPage';
 import { SecretariaPage } from './pages/SecretariasPage';
-import { PersonasPage } from './pages/Personas';
+import { PersonasPage } from './pages/PersonasPage';
 import { UsuariosPage } from './pages/UsuarioPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -37,9 +37,10 @@ export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
 
         <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<DashboardPage />} />
 
           <Route
@@ -103,9 +104,9 @@ export function App() {
 
           <Route path="/personas" element={<PersonasPage />} />
           <Route path="/usuarios" element={<UsuariosPage />} />
-
-          <Route path="*" element={<NotFoundPage />} />
         </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
       <ToastContainer />

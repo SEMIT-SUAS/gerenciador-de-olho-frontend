@@ -9,7 +9,7 @@ import { AddBannerModal } from './components/AddBannerModal';
 import { BannersList } from './components/BannersList';
 import { Pagination } from '@/components/Pagination';
 
-import bannersService from '@/services/bannersService';
+import { BannerService } from '@/services/bannersService';
 
 export function BannersPage() {
   const [itemsPerPage, setItemsPerPage] = useState(8);
@@ -20,7 +20,7 @@ export function BannersPage() {
 
   async function getAllBanners() {
     try {
-      return await bannersService.getAll();
+      return await new BannerService().getAll();
     } catch (error: any) {
       toast.error(error.message);
     }

@@ -3,7 +3,7 @@ import type { BannerModel } from '@/types/Banner';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { Loading } from '@/components/Loading/Loading';
 import { toast } from 'sonner';
-import bannersService from '@/services/bannersService';
+import { BannerService } from '@/services/bannersService';
 
 type BannerVisibilityProps = {
   banner: BannerModel;
@@ -19,7 +19,7 @@ export function BannerVisibility({
   async function handleOnClickButton() {
     try {
       setIsChangingVisibility(true);
-      await bannersService.toggleVisibility(banner.id, !banner.visivel);
+      await new BannerService().toggleVisibility(banner.id, !banner.visivel);
 
       setBanners(
         (prev) =>
