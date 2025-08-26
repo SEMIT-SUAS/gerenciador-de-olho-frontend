@@ -17,7 +17,7 @@ export function DenunciaMapPins() {
   const {
     salvarDenunciasOnclick,
     toggleDenunciaSelecionadas,
-    denunciasSelecionas,
+    denunciasSelecionadas,
     denunciasJaVinculadas,
     isSelectingNewDenuncia,
     newDenunciaCoordinates,
@@ -27,12 +27,12 @@ export function DenunciaMapPins() {
 
   const denunciaPolygonCoordinates = useMemo(() => {
     return getConvexHull(
-      [...denunciasSelecionas, ...denunciasJaVinculadas].map((d) => ({
+      [...denunciasSelecionadas, ...denunciasJaVinculadas].map((d) => ({
         lat: d.latitude,
         lon: d.longitude,
       })),
     );
-  }, [denunciasSelecionas, denunciasJaVinculadas]);
+  }, [denunciasSelecionadas, denunciasJaVinculadas]);
 
   function handleOnDenunciaClick(currentDenuncia: DenunciaInMap) {
     if (salvarDenunciasOnclick) {
@@ -43,7 +43,9 @@ export function DenunciaMapPins() {
   }
 
   function handleGetIcon(denuncia: DenunciaInMap) {
-    const isSelected = !!denunciasSelecionas.find((d) => d.id === denuncia.id);
+    const isSelected = !!denunciasSelecionadas.find(
+      (d) => d.id === denuncia.id,
+    );
 
     const baseIcon = getDenunciaIconByTipo(
       denuncia.nomeTipoDenuncia,

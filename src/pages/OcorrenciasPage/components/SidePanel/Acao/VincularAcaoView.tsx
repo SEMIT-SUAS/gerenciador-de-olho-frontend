@@ -16,17 +16,22 @@ import {
 } from '@/components/ui/card';
 import { IconTrash } from '@tabler/icons-react';
 import type { AcaoDetailsModel } from '@/types/Acao';
+import { useAuth } from '@/context/AuthContext';
+import { getPolygonoCenter } from '@/utils/geometry';
+import type { DenunciaInMap } from '@/types/Denuncia';
+import { useMapActions } from '@/context/MapActions';
 
-export function VincularDenunciasAcao() {
-  return null;
+export function VincularAcaoView() {
+  const { user } = useAuth();
+
+  const { setSalvarDenunciasOnClick } = useMapActions();
 
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
   const [acaoData, setAcaoData] = useState<AcaoDetailsModel | null>(null);
-  const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<number[]>(
-    [],
-  );
+  const { denunciasSelecionadas, setDenunciasSelecionadas } = useMapActions();
 
-  const { denunciasDoBairro } = useFilters();
+  const { setFiltroStatusDenuncia, setFiltrarTipoDenuncia, filtrarData } =
+    useFilters();
   const params = useParams();
   const acaoId = Number(params.id);
   const navigate = useNavigate();
@@ -35,24 +40,26 @@ export function VincularDenunciasAcao() {
     AcoesService.getAcaoById(acaoId)
       .then((acaoDataResponse) => setAcaoData(acaoDataResponse))
       .catch(() => toast.error('Erro ao buscar detalhes da ação.'));
+    setFiltroStatusDenuncia('Aberto');
+    setFiltrarTipoDenuncia(null);
+
+    filtrarData();
+
+    return () => {
+      setDenunciasSelecionadas([]);
+    };
   }, [acaoId]);
 
-  const denunciasDisponiveis = useMemo(() => {
-    return denunciasDoBairro.filter((d) => !d.idAcao);
-  }, [denunciasDoBairro]);
-
-  // Função para adicionar ou remover uma denúncia da seleção
-  const handleToggleDenuncia = (denunciaId: number) => {
+  const handleToggleDenuncia = (denuncia: DenunciaInMap) => {
     setDenunciasSelecionadas((prev) =>
-      prev.includes(denunciaId)
-        ? prev.filter((id) => id !== denunciaId)
-        : [...prev, denunciaId],
+      prev.some((d) => d.id === denuncia.id)
+        ? prev.filter((d) => d.id !== denuncia.id)
+        : [...prev, denuncia],
     );
   };
 
-  // Função principal que chama o serviço para vincular
   async function handleConfirmarVinculo() {
-    if (!acao || denunciasSelecionadas.length === 0) {
+    if (!acaoData || denunciasSelecionadas.length === 0) {
       toast.error('Selecione pelo menos uma denúncia para vincular.');
       return;
     }
@@ -60,23 +67,70 @@ export function VincularDenunciasAcao() {
     try {
       setIsOpenConfirmationModal(false);
 
-      const denunciasJaVinculadasIds = acao.denuncias.map((d) => d.id);
+      // const todasCoordenadas = [
+      //   ...acaoData.denuncias
+      //     .filter(
+      //       (d) =>
+      //         typeof d.endereco === 'object' && // Garante que 'endereco' é um objeto
+      //         d.endereco !== null && // E que não é nulo
+      //         'latitude' in d.endereco && // E que a chave 'latitude' existe no objeto
+      //         'longitude' in d.endereco, // E que a chave 'longitude' também existe
+      //     )
+      //     .map((d) => {
+      //       return [
+      //         (d.endereco as any).latitude,
+      //         (d.endereco as any).longitude,
+      //       ] as [number, number];
+      //     }),
+
+      //   ...denunciasSelecionadas
+      //     .filter(
+      //       (d) =>
+      //         typeof d.latitude === 'number' && typeof d.longitude === 'number',
+      //     )
+      //     .map((d) => [d.latitude, d.longitude] as [number, number]),
+      // ];
+
+      const todasCoordenadas = [
+        // Usamos "as [number, number]" para informar ao TypeScript o formato exato do array.
+        ...acaoData.denuncias.map(
+          (d) =>
+            [d.endereco.latitude, d.endereco.longitude] as [number, number],
+        ),
+
+        ...denunciasSelecionadas.map(
+          (d) => [d.latitude, d.longitude] as [number, number],
+        ),
+      ];
+
+      const centerCoordinates = getPolygonoCenter(todasCoordenadas);
+
       const payload = {
-        acaoId: acao.id,
-        denuncias: [...denunciasJaVinculadasIds, ...denunciasSelecionadas],
+        id: acaoData.acao.id,
+        latitude: centerCoordinates[0],
+        longitude: centerCoordinates[1],
+        denuncias: [...denunciasSelecionadas.map((d) => d.id)],
       };
 
-      //ATUALIZAR ESTADO DA AÇÃO
-      //FILTRAR NOVAMENTE A DATA
+      await AcoesService.vincularDenunciaAcao(payload);
+      await filtrarData();
 
-      navigate(`/ocorrencias/acoes/${acao.id}`);
+      navigate(`/ocorrencias/acoes/${acaoData.acao.id}`);
       toast.success('Denúncias vinculadas com sucesso!');
     } catch (error: any) {
       toast.error(error.message || 'Falha ao vincular denúncias.');
     }
   }
 
-  if (!acao) {
+  useEffect(() => {
+    setSalvarDenunciasOnClick(true);
+
+    return () => {
+      setSalvarDenunciasOnClick(false);
+    };
+  }, [setSalvarDenunciasOnClick]); //
+
+  if (!acaoData) {
     return <div>Carregando ação...</div>;
   }
 
@@ -90,7 +144,7 @@ export function VincularDenunciasAcao() {
 
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">Ação selecionada:</p>
-          <p className="font-bold text-blue-900">{acao.nome}</p>
+          <p className="font-bold text-blue-900">{acaoData.acao.nome}</p>
         </div>
 
         <Card className="w-full max-w-md">
@@ -101,16 +155,16 @@ export function VincularDenunciasAcao() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {denunciasDisponiveis.length > 0 ? (
+            {denunciasSelecionadas.length > 0 ? (
               <div className="flex flex-col gap-2">
-                {denunciasDisponiveis.map((denuncia) => (
+                {denunciasSelecionadas.map((denuncia) => (
                   <Card>
                     <CardHeader className="flex items-center justify-between">
                       <CardTitle>{denuncia.nomeTipoDenuncia}</CardTitle>
                       <CardDescription>
                         <Button
                           size="icon"
-                          onClick={() => handleToggleDenuncia(denuncia.id)}
+                          onClick={() => handleToggleDenuncia(denuncia)}
                         >
                           <IconTrash />
                         </Button>
@@ -138,7 +192,7 @@ export function VincularDenunciasAcao() {
       <ConfirmModal
         isOpen={isOpenConfirmationModal}
         title="Vincular Denúncias"
-        message={`Deseja vincular ${denunciasSelecionadas.length} denúncia(s) à ação "${acao?.nome}"?`}
+        message={`Deseja vincular ${denunciasSelecionadas.length} denúncia(s) à ação "${acaoData?.acao.nome}"?`}
         onCancel={() => setIsOpenConfirmationModal(false)}
         onConfirm={handleConfirmarVinculo}
       />

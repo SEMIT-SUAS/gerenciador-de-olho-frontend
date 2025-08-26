@@ -18,7 +18,7 @@ type SelectAcoesOuDenunciasProps = {
   setSalvarAcaoOnclick: Dispatch<SetStateAction<boolean>>;
   acaoSelecionada: AcaoDetailsModel | null;
   setAcaoSelecionada: Dispatch<SetStateAction<AcaoDetailsModel | null>>;
-  denunciasSelecionas: DenunciaInMap[];
+  denunciasSelecionadas: DenunciaInMap[];
   setDenunciasSelecionadas: Dispatch<SetStateAction<DenunciaInMap[]>>;
   disableMapFilters: boolean;
   setDisableMapFilters: Dispatch<SetStateAction<boolean>>;
@@ -59,7 +59,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
 
   const [acaoSelecionada, setAcaoSelecionada] =
     useState<AcaoDetailsModel | null>(null);
-  const [denunciasSelecionas, setDenunciasSelecionadas] = useState<
+  const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<
     DenunciaInMap[]
   >([]);
 
@@ -82,7 +82,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     setSalvarAcaoOnclick,
     acaoSelecionada,
     setAcaoSelecionada,
-    denunciasSelecionas,
+    denunciasSelecionadas,
     setDenunciasSelecionadas,
     disableMapFilters,
     setDisableMapFilters,
@@ -109,7 +109,7 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   }, [salvarAcaoOnclick, salvarDenunciasOnclick]);
 
   function toggleDenunciaSelecionadas(newDenuncia: DenunciaInMap) {
-    if (denunciasSelecionas.find((d) => d.id == newDenuncia.id)) {
+    if (denunciasSelecionadas.find((d) => d.id == newDenuncia.id)) {
       setDenunciasSelecionadas((denuncias) =>
         denuncias.filter((d) => d.id !== newDenuncia.id),
       );

@@ -25,10 +25,9 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { FiltersProvider } from './context/FiltersContext';
 import { MapActionsProvider } from './context/MapActions';
 import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcaoDetails';
-
 import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/VincularDenunciaAAcao';
 import { CriarAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/CriarAcao';
-import { VincularDenunciasAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoView';
+import { VincularAcaoView } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoView';
 
 export function App() {
   return (
@@ -61,10 +60,7 @@ export function App() {
             <Route path="acoes">
               <Route path=":id" element={<AcaoDetails />} />
               <Route path="criar" element={<CriarAcao />} />
-              <Route
-                path=":id/vincular-denuncias"
-                element={<VincularDenunciasAcao />}
-              />
+              <Route path=":id/vincular-acao" element={<VincularAcaoView />} />
             </Route>
           </Route>
 

@@ -82,9 +82,10 @@ export function VincularDenunciaAAcao() {
 
       const payload = {
         id: acaoSelecionada.acao.id,
-        denuncias: [...denunciasJaVinculadasIds, denunciaId],
+        denuncias: [denunciaId],
       };
-      const acaoAtualizada = await AcoesService.vincularDenunciaAcao(payload);
+
+      await AcoesService.vincularDenunciaAcao(payload);
 
       navigate(`/ocorrencias/acoes/${acaoSelecionada.acao.id}`);
       toast.success('Denúncia vinculada com sucesso!');

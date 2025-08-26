@@ -1,10 +1,12 @@
 import type {
   AcaoDetailsModel,
+  AcaoHistory,
   AcaoInMap,
   AcaoModel,
   CreateAcaoModel,
 } from '../types/Acao';
 import { api } from '../config/api';
+import { ca } from 'zod/v4/locales';
 
 export default class AcoesService {
   public static async create(data: CreateAcaoModel) {
@@ -118,7 +120,6 @@ export default class AcoesService {
 
       return response.data.acao;
     } catch (error) {
-      console.error('Erro ao concluir ação:', error);
       throw new Error(
         'Ocorreu um erro no servidor ao tentar concluir a ação. Tente novamente.',
       );
@@ -136,9 +137,21 @@ export default class AcoesService {
 
       return response.data.acao;
     } catch (error) {
-      console.error('Erro ao concluir ação:', error);
       throw new Error(
         'Ocorreu um erro no servidor ao tentar concluir a ação. Tente novamente.',
+      );
+    }
+  }
+
+  public static async getAcaoHistory(acaoId: number): Promise<AcaoHistory[]> {
+    try {
+      const response = await api.get(`/acao/historico-status/${acaoId}`);
+
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw new Error(
+        'Ocorreu um erro no servidor ao tentar buscar o histórico da ação. Tente novamente.',
       );
     }
   }

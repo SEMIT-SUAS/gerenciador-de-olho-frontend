@@ -53,3 +53,10 @@ export interface UpdateAcao {
   acaoStatus: AcaoStatusModel;
   ativo: boolean;
 }
+
+export interface AcaoHistory {
+  dataModificacao: string;
+  id: number;
+  motivo: string;
+  status: string;
+}

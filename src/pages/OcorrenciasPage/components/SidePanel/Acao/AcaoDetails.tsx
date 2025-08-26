@@ -14,15 +14,17 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ConcluirAcaoModal } from './ConcluirAcao';
 import { IndeferirAcaoModal } from './IndefirirAcao';
-import type { AcaoDetailsModel } from '@/types/Acao';
+import type { AcaoDetailsModel, AcaoHistory } from '@/types/Acao';
 import { useAuth } from '@/context/AuthContext';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
+import { Timeline } from './Timeline';
 
 export function AcaoDetails() {
   const [acaoData, setAcaoData] = useState<AcaoDetailsModel | null>(null);
   const [isConcluirModalOpen, setIsConcluirModalOpen] = useState(false);
   const [isIndeferirModalOpen, setIsIndeferirModalOpen] = useState(false);
   const [isIniciarAcaoOpen, setIsIniciarAcaoOpen] = useState(false);
+  const [acaoHistory, setAcaoHistory] = useState<AcaoHistory[]>([]);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -33,8 +35,12 @@ export function AcaoDetails() {
     AcoesService.getAcaoById(acaoId)
       .then((acaoData) => setAcaoData(acaoData))
       .catch((error: any) => toast.error(error.message));
+    AcoesService.getAcaoHistory(acaoId)
+      .then((acaoHistory) => setAcaoHistory(acaoHistory))
+      .catch((error: any) => toast.error(error.message));
 
     return () => {
+      setAcaoHistory([]);
       setAcaoData(null);
     };
   }, [acaoId]);
@@ -143,7 +149,7 @@ export function AcaoDetails() {
                 acao.acaoStatus.status,
               ) && (
                 <Button
-                  onClick={() => navigate('vincular-denuncias')}
+                  onClick={() => navigate('vincular-acao')}
                   size="icon"
                   className="rounded-full"
                 >
@@ -207,6 +213,15 @@ export function AcaoDetails() {
             Indeferir Ação
           </Button>
         </footer>
+      )}
+
+      {acaoHistory.length > 0 && (
+        <div>
+          <h3 className="font-semibold text-gray-800 mb-4 mt-6">
+            Histórico de Alterações
+          </h3>
+          <Timeline acaoHistory={acaoHistory} />
+        </div>
       )}
 
       {acao && (

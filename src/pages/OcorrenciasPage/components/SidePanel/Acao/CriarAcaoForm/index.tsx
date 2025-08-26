@@ -58,7 +58,7 @@ export function CriarAcaoForm() {
   const { secretarias } = useOcorrencias();
   const {
     setSalvarDenunciasOnClick,
-    denunciasSelecionas,
+    denunciasSelecionadas,
     toggleDenunciaSelecionadas,
     currentBairroId,
     setDenunciasSelecionadas,
@@ -103,7 +103,7 @@ export function CriarAcaoForm() {
       }
 
       const centerCoordinates = getPolygonoCenter(
-        denunciasSelecionas.map((denuncia) => [
+        denunciasSelecionadas.map((denuncia) => [
           denuncia.latitude,
           denuncia.longitude,
         ]),
@@ -117,7 +117,7 @@ export function CriarAcaoForm() {
         latitude: centerCoordinates[0],
         longitude: centerCoordinates[1],
         bairro: bairro.nome,
-        denuncias: denunciasSelecionas.map((denuncia) => denuncia.id),
+        denuncias: denunciasSelecionadas.map((denuncia) => denuncia.id),
         acaoStatus: {
           status: 'Análise',
           motivo: 'Criando ação',
@@ -232,9 +232,9 @@ export function CriarAcaoForm() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {denunciasSelecionas.length > 0 ? (
+            {denunciasSelecionadas.length > 0 ? (
               <div className="flex flex-col gap-2">
-                {denunciasSelecionas.map((denuncia) => (
+                {denunciasSelecionadas.map((denuncia) => (
                   <Card>
                     <CardHeader className="flex items-center justify-between">
                       <CardTitle>{denuncia.nomeTipoDenuncia}</CardTitle>
