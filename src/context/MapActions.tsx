@@ -7,7 +7,7 @@ import {
   type ReactNode,
   type SetStateAction,
 } from 'react';
-import type { AcaoDetailsModel, AcaoModel } from '../types/Acao';
+import type { AcaoDetailsModel, AcaoInMap, AcaoModel } from '../types/Acao';
 import { type DenunciaInMap, type DenunciaModel } from '../types/Denuncia';
 import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 
@@ -16,8 +16,8 @@ type SelectAcoesOuDenunciasProps = {
   setSalvarDenunciasOnClick: Dispatch<SetStateAction<boolean>>;
   salvarAcaoOnclick: boolean;
   setSalvarAcaoOnclick: Dispatch<SetStateAction<boolean>>;
-  acaoSelecionada: AcaoDetailsModel | null;
-  setAcaoSelecionada: Dispatch<SetStateAction<AcaoDetailsModel | null>>;
+  acaoSelecionada: AcaoInMap | null;
+  setAcaoSelecionada: Dispatch<SetStateAction<AcaoInMap | null>>;
   denunciasSelecionadas: DenunciaInMap[];
   setDenunciasSelecionadas: Dispatch<SetStateAction<DenunciaInMap[]>>;
   disableMapFilters: boolean;
@@ -57,8 +57,9 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   const [salvarDenunciasOnclick, setSalvarDenunciasOnClick] = useState(false);
   const [salvarAcaoOnclick, setSalvarAcaoOnclick] = useState(false);
 
-  const [acaoSelecionada, setAcaoSelecionada] =
-    useState<AcaoDetailsModel | null>(null);
+  const [acaoSelecionada, setAcaoSelecionada] = useState<AcaoInMap | null>(
+    null,
+  );
   const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<
     DenunciaInMap[]
   >([]);
@@ -119,10 +120,10 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   }
 
   function toggleAcaoSelecionada(acao: AcaoDetailsModel) {
-    if (acaoSelecionada?.acao.id === acao.acao.id) {
+    if (acaoSelecionada?.id === acao.acao.id) {
       setAcaoSelecionada(null);
     } else {
-      setAcaoSelecionada(acao);
+      setAcaoSelecionada(acao.acao);
     }
   }
 

@@ -18,6 +18,7 @@ import type { AcaoDetailsModel, AcaoHistory } from '@/types/Acao';
 import { useAuth } from '@/context/AuthContext';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { Timeline } from './Timeline';
+import { useMapActions } from '@/context/MapActions';
 
 export function AcaoDetails() {
   const [acaoData, setAcaoData] = useState<AcaoDetailsModel | null>(null);
@@ -25,6 +26,7 @@ export function AcaoDetails() {
   const [isIndeferirModalOpen, setIsIndeferirModalOpen] = useState(false);
   const [isIniciarAcaoOpen, setIsIniciarAcaoOpen] = useState(false);
   const [acaoHistory, setAcaoHistory] = useState<AcaoHistory[]>([]);
+  const { salvarDenunciasOnclick } = useMapActions();
 
   const params = useParams();
   const navigate = useNavigate();
@@ -81,6 +83,7 @@ export function AcaoDetails() {
       },
       ativo: true,
     };
+
     AcoesService.updateAcao(payload)
       .then((acaoAtualizada) => {
         setAcaoData({ ...acaoData, acao: acaoAtualizada });
@@ -90,8 +93,6 @@ export function AcaoDetails() {
         toast.error(error.message);
       });
   };
-
-  console.log(acao);
 
   return (
     <div className="flex flex-col h-full space-y-7">

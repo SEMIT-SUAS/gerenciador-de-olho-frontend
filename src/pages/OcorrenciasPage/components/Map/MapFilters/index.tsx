@@ -25,6 +25,9 @@ export function MapFilters() {
     denunciasDoBairro,
     filtrarData,
     isLoading,
+    isDisabledFiltersInMap,
+    filtroStatusDenuncia,
+    filtroTipoDenuncia,
   } = useFilters();
 
   const navigate = useNavigate();
@@ -44,7 +47,12 @@ export function MapFilters() {
   };
 
   const handleApplyFilters = async () => {
-    await filtrarData();
+    await filtrarData({
+      acaoStatusParam:
+        filtroStatusDenuncia !== 'Aberto' ? filtroStatusDenuncia : null,
+      denunciaStatusParam: filtroStatusDenuncia,
+      tipoDaDenunciaParam: filtroTipoDenuncia,
+    });
   };
 
   return (
@@ -66,7 +74,7 @@ export function MapFilters() {
               onClick={handleClearFilters}
               variant="outline"
               className="text-gray-600"
-              disabled={isLoading}
+              disabled={isLoading || isDisabledFiltersInMap}
             >
               <IconX /> Limpar Filtros
             </Button>
@@ -87,6 +95,7 @@ export function MapFilters() {
           className="inline-flex ml-3"
           variant={'outline'}
           onClick={handleZoomOut}
+          disabled={isLoading || isDisabledFiltersInMap}
         >
           <IconX />
           Limpar seleção
@@ -106,7 +115,7 @@ export function MapFilters() {
               />
             </label>
             <Switch
-              disabled={isLoading}
+              disabled={isLoading || isDisabledFiltersInMap}
               checked={isVisibleDenunciasInMap}
               onClick={() =>
                 setIsVisibleDenunciasInMap(!isVisibleDenunciasInMap)
@@ -124,7 +133,7 @@ export function MapFilters() {
               <img src={AcaoIcon} alt="Icone de ação" className="h-6 w-6" />
             </label>
             <Switch
-              disabled={isLoading}
+              disabled={isLoading || isDisabledFiltersInMap}
               checked={isVisibleAcoesInMap}
               onClick={() => setIsVisibleAcoesInMap(!isVisibleAcoesInMap)}
               id="acao-switch"

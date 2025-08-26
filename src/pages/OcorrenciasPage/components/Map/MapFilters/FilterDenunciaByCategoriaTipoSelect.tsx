@@ -10,12 +10,14 @@ import { useOcorrencias } from '@/context/OcorrenciasContext';
 
 export function FilterDenunciaByCategoriaTipoSelect() {
   const { categoriaTipos } = useOcorrencias();
-  const { filtroTipoDenuncia, setFiltrarTipoDenuncia } = useFilters();
+  const { filtroTipoDenuncia, setFiltrarTipoDenuncia, isDisabledFiltersInMap } =
+    useFilters();
 
   return (
     <Select
       onValueChange={(value) => setFiltrarTipoDenuncia(value)}
       value={!filtroTipoDenuncia ? '' : filtroTipoDenuncia}
+      disabled={isDisabledFiltersInMap}
     >
       <SelectTrigger className="w-full bg-white">
         <SelectValue placeholder="Tipo de denúncia" />

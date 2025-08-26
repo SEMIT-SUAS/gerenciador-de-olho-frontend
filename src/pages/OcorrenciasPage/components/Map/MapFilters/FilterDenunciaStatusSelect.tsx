@@ -6,6 +6,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useFilters } from '@/context/FiltersContext';
+import type { DenunciaStatusModelTypes } from '@/types/Denuncia';
 
 const avaliableStatus = [
   {
@@ -31,13 +32,20 @@ const avaliableStatus = [
 ];
 
 export function FilterDenunciaStatusSelect() {
-  const { setFiltroStatusDenuncia, filtroStatusDenuncia } = useFilters();
+  const {
+    setFiltroStatusDenuncia,
+    filtroStatusDenuncia,
+    isDisabledFiltersInMap,
+  } = useFilters();
 
   return (
     <Select
-      onValueChange={(value) => setFiltroStatusDenuncia(value)}
+      onValueChange={(value: DenunciaStatusModelTypes) =>
+        setFiltroStatusDenuncia(value)
+      }
       defaultValue="Aberto"
       value={filtroStatusDenuncia}
+      disabled={isDisabledFiltersInMap}
     >
       <SelectTrigger className="w-full bg-white">
         <SelectValue placeholder="Status da denúncia" />

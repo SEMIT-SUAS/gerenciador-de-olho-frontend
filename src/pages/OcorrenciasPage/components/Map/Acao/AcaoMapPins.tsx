@@ -27,8 +27,8 @@ export function AcaoMapPins() {
     return null;
   }
 
-  function handleGetActionIcon(acao: AcaoModel) {
-    const isSelected = acao.id === acaoSelecionada?.acao.id;
+  function handleGetActionIcon(acao: AcaoInMap) {
+    const isSelected = acao.id === acaoSelecionada?.id;
     const iconSize = isSelected ? 36 : 32;
 
     return new Icon({

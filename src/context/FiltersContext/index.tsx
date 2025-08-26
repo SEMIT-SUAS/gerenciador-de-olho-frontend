@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { DenunciaInMap } from '@/types/Denuncia';
+import type { DenunciaInMap, DenunciaStatusModelTypes } from '@/types/Denuncia';
 import type { AcaoInMap } from '@/types/Acao';
 import { useMapActions } from '@/context/MapActions';
 import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
@@ -13,8 +13,9 @@ import { useAuth } from '@/context/AuthContext';
 import { DenunciaService } from '@/services/DenunciaService';
 import AcoesService from '@/services/acoesService';
 import { initialFiltersValues } from './initialFilterValues';
-import type { FiltersContextProps } from './types';
+import type { FiltersContextProps, FiltrarDataPrams } from './types';
 import { toast } from 'sonner';
+import type { AcaoStatusModelTypes } from '@/types/AcaoStatus';
 
 const FiltersContext = createContext({} as FiltersContextProps);
 
@@ -57,24 +58,46 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     number[] | 'desabilitado'
   >('desabilitado');
 
+  const [isDisabledFiltersInMap, setIsDisabledFiltersInMap] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
 
-  async function filtrarData() {
+  async function filtrarData({
+    denunciaStatusParam,
+    acaoStatusParam,
+    tipoDaDenunciaParam,
+  }: FiltrarDataPrams) {
     if (!currentBairroId) return;
 
     try {
       setIsLoading(true);
 
+      if (denunciaStatusParam) {
+        setIsVisibleDenunciasInMap(true);
+        setFiltroStatusDenuncia(denunciaStatusParam);
+      } else {
+        setIsVisibleDenunciasInMap(false);
+      }
+
+      if (acaoStatusParam) {
+        setIsVisibleAcoesInMap(true);
+        setFiltroStatusAcao(acaoStatusParam);
+      } else {
+        setIsVisibleAcoesInMap(false);
+      }
+
+      setFiltrarTipoDenuncia(tipoDaDenunciaParam);
+
       const denunciaParams = {
         bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-        status: filtroStatusDenuncia,
+        status: denunciaStatusParam,
         secretaria: user!.idSecretaria,
-        'tipo-denuncia': filtroTipoDenuncia,
+        'tipo-denuncia': tipoDaDenunciaParam,
       };
 
       const acaoParams = {
         bairro: DADOS_BAIRROS.find((b) => b.id === currentBairroId)!.nome,
-        status: filtroStatusDenuncia,
+        status: acaoStatusParam,
         secretaria: user!.idSecretaria,
       };
 
@@ -86,19 +109,25 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         setDenunciasDoBairro(denuncias);
       }
 
-      if (isVisibleAcoesInMap) {
+      if (acaoStatusParam) {
         const acoes = await AcoesService.getFilteredAcoes(acaoParams);
         setAcoesDoBairro(acoes);
       }
 
       setIsLoading(false);
     } catch (error: any) {
+      console.error(error);
       toast.error(error.message);
     }
   }
 
   useEffect(() => {
-    filtrarData();
+    filtrarData({
+      acaoStatusParam:
+        filtroStatusDenuncia === 'Aberto' ? null : filtroStatusDenuncia,
+      denunciaStatusParam: filtroStatusDenuncia,
+      tipoDaDenunciaParam: filtroTipoDenuncia,
+    });
   }, [currentBairroId]);
 
   return (
@@ -126,6 +155,8 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         setFiltrarAcoesPorId,
         filtroTipoDenuncia,
         setFiltrarTipoDenuncia,
+        isDisabledFiltersInMap,
+        setIsDisabledFiltersInMap,
         filtrarData,
         isLoading,
       }}

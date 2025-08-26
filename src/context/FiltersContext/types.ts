@@ -15,6 +15,12 @@ export type FilterState = {
   filtroTipoDenuncia: string | null;
 };
 
+export type FiltrarDataPrams = {
+  denunciaStatusParam: DenunciaStatusModelTypes | null;
+  acaoStatusParam: AcaoStatusModelTypes | null;
+  tipoDaDenunciaParam: string | null;
+};
+
 export type FiltersContextProps = FilterState & {
   setIsVisibleDenunciasInMap: Dispatch<SetStateAction<boolean>>;
   setIsVisibleAcoesInMap: Dispatch<SetStateAction<boolean>>;
@@ -35,6 +41,8 @@ export type FiltersContextProps = FilterState & {
   filtroStatusDenuncia: DenunciaStatusModelTypes | string | null;
   filtrarAcoesPorId: number[] | 'desabilitado';
   setFiltrarAcoesPorId: Dispatch<SetStateAction<number[] | 'desabilitado'>>;
-  filtrarData: () => Promise<void>;
+  isDisabledFiltersInMap: boolean;
+  setIsDisabledFiltersInMap: Dispatch<SetStateAction<boolean>>;
+  filtrarData: (params: FiltrarDataPrams) => Promise<void>;
   isLoading: boolean;
 };
