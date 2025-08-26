@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import type { DenunciaInMap } from '@/types/Denuncia';
 import type { AcaoInMap } from '@/types/Acao';
 import { useMapActions } from '@/context/MapActions';
@@ -90,6 +96,10 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       toast.error(error.message);
     }
   }
+
+  useEffect(() => {
+    filtrarData();
+  }, [currentBairroId]);
 
   return (
     <FiltersContext.Provider
