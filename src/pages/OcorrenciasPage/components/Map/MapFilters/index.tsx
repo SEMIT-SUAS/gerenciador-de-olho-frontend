@@ -23,6 +23,8 @@ export function MapFilters() {
     setIsVisibleDenunciasInMap,
     setIsVisibleAcoesInMap,
     denunciasDoBairro,
+    setAcoesDoBairro,
+    setDenunciasDoBairro,
     filtrarData,
     isLoading,
   } = useFilters();
@@ -31,6 +33,8 @@ export function MapFilters() {
 
   const handleZoomOut = () => {
     setCurrentBairroId(null);
+    setAcoesDoBairro([]);
+    setDenunciasDoBairro([]);
     setZoomTo({ lat: -2.51, lng: -44.28, level: 13 });
   };
 
