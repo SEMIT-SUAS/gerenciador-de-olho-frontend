@@ -1,14 +1,13 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { PortalForm } from './PortaisForm/PortaisForm';
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  // DialogTrigger,
 } from '@/components/ui/dialog';
-import { Plus } from 'lucide-react';
 import type { PortaisSchema } from './PortaisForm/portaisSchema';
 import PortaisService from '@/services/PortaisService';
 import { toast } from 'sonner';
@@ -17,7 +16,7 @@ import type { Portais } from '@/types/Portais';
 interface AddPortalModalProps {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  setPortais: Dispatch<SetStateAction<Portais[]>>;
+  setPortais: Dispatch<SetStateAction<Portais[] | null>>;
 }
 
 export function AddPortalModal({
@@ -33,9 +32,11 @@ export function AddPortalModal({
 
       const newPortal = await PortaisService.createPortal(data);
 
-      if (setPortais) {
-        setPortais((prev) => [...prev, newPortal]);
-      }
+      setPortais((prev) => {
+        if (!prev) return [newPortal];
+
+        return [...prev, newPortal];
+      });
 
       toast.success(`Portal "${newPortal.nome}" criado com sucesso!`);
       onOpenChange(false);

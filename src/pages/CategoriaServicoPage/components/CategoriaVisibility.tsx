@@ -1,15 +1,15 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { toast } from 'sonner';
-import { toggleVisivel } from '@/services/servicocategoriaService'; // ← import correto
+import { toggleVisivel } from '@/services/servicocategoriaService';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 type CategoriaVisibilityProps = {
   categoria: ServicoCategoria & { id: number };
   setCategorias: Dispatch<
-    SetStateAction<(ServicoCategoria & { id: number })[]>
-  >; // ← mesma tipagem
+    SetStateAction<(ServicoCategoria & { id: number })[] | null>
+  >; // ← ATUALIZADO: Adicionado | null
 };
 
 export function CategoriaVisibility({
@@ -17,18 +17,20 @@ export function CategoriaVisibility({
   setCategorias,
 }: CategoriaVisibilityProps) {
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
+
   async function handleOnClickButton() {
     try {
       const novoValorVisivel = !categoria.visivel;
 
       await toggleVisivel(categoria.id, novoValorVisivel);
 
-      setCategorias((prev: (ServicoCategoria & { id: number })[]) => {
-        const novoEstado = prev.map((cat) =>
+      setCategorias((prev) => {
+        // ← ATUALIZADO: Tratamento para null
+        if (!prev) return prev; // Se for null, mantém null
+
+        return prev.map((cat) =>
           cat.id === categoria.id ? { ...cat, visivel: novoValorVisivel } : cat,
         );
-
-        return novoEstado;
       });
 
       toast.success(

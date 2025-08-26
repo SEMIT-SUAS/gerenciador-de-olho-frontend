@@ -15,7 +15,7 @@ interface EditPortalModalProps {
   portal?: Portais;
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  setPortais: Dispatch<SetStateAction<Portais[]>>;
+  setPortais: Dispatch<SetStateAction<Portais[] | null>>;
 }
 
 export function EditPortalModal({
@@ -35,10 +35,7 @@ export function EditPortalModal({
         id: Number(portal!.id),
       };
 
-      console.log(payload);
-
       const newPortal = await PortaisService.updatePortal(payload);
-
       if (setPortais) {
         setPortais((prev) => (prev ? [...prev, newPortal] : [newPortal]));
       }

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useOcorrencias } from '../../../../../context/OcorrenciasContext';
 import denunciasService from '../../../../../services/denunciasService';
 import { getPolygonoCenter } from '@/utils/geometry';
+import { toast } from 'react-toastify';
 
 type DenunciaManageInActionProps = {
   denuncia: DenunciaModel;
@@ -54,6 +55,7 @@ export function DenunciaManageInAction({
       });
     } catch (error) {
       console.error('Erro ao desvincular denúncia:', error);
+      toast.error('Erro ao desvincular denúncia.');
     }
   }
 

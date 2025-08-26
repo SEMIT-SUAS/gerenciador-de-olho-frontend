@@ -33,101 +33,89 @@ import { AddCategoriaForm } from '@/pages/CategoriaServicoPage/components/Catego
 
 export function CategoriasPage() {
   const [categorias, setCategorias] = useState<
-    (ServicoCategoria & { id: number })[]
-  >([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+    (ServicoCategoria & { id: number })[] | null
+  >(null);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
 
-  // Estados do modal
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editCategoria, setEditCategoria] = useState<
     (ServicoCategoria & { id: number }) | null
   >(null);
 
-  async function fetchCategorias() {
+  async function getAllCategoriasData() {
     try {
-      setLoading(true);
-      const data = await getAllCategorias();
-      setCategorias(data);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao buscar as categorias.');
-      toast.error(err.message || 'Erro ao buscar as categorias.');
-    } finally {
-      setLoading(false);
+      return await getAllCategorias();
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao buscar as categorias.');
     }
   }
 
   useEffect(() => {
-    fetchCategorias();
+    getAllCategoriasData().then((categoriasData) => {
+      if (categoriasData) {
+        setCategorias(categoriasData);
+      }
+    });
+
+    return () => {
+      setCategorias(null);
+    };
   }, []);
 
   const handleSubmitCategoria = async (
     data: createServicoCategoria | (ServicoCategoriaEditar & { id: number }),
   ) => {
     try {
-      // Se tem id, é edição
       if ('id' in data && data.id) {
         await editarCategoria(data as ServicoCategoriaEditar & { id: number });
         toast.success('Categoria editada com sucesso!');
         setEditCategoria(null);
       } else {
-        // Se não tem id, é criação
         await createCategoria(data as createServicoCategoria);
         toast.success('Categoria criada com sucesso!');
         setShowCreateModal(false);
       }
-      fetchCategorias();
+
+      const newData = await getAllCategoriasData();
+      if (newData) {
+        setCategorias(newData);
+      }
     } catch (error: any) {
       toast.error(error.message || 'Erro ao salvar categoria');
     }
   };
 
-  const filtered = categorias.filter((c) =>
-    c.nome.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredCategorias = categorias?.filter((categoria) =>
+    categoria.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <p className="text-red-600">Erro: {error}</p>
-          <Button onClick={fetchCategorias} variant="outline" className="mt-4">
-            Tentar novamente
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const totalPages = Math.ceil(
+    (filteredCategorias?.length ?? 0) / itemsPerPage,
+  );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-600">Carregando categorias...</p>
-      </div>
-    );
-  }
+  const currentCategorias =
+    filteredCategorias?.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage,
+    ) || [];
 
   const itemsPerPageOptions = [8, 16, 24];
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
-  const currentData = filtered.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
 
   return (
     <LayoutPage>
-      <div className="flex flex-col gap-6 py-8 px-36">
+      <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
         <div className="max-w-[640px]">
           <h2 className="text-3xl font-bold tracking-tight">Categorias</h2>
-          <p className="text-slate-600 text-xs mt-1">
+          <p className="text-slate-600 text-sm sm:text-xs mt-1">
             Gerencie as categorias disponíveis com clareza e objetividade.
           </p>
         </div>
-        <div className="flex items-center justify-end gap-2">
-          <div className="w-[320px]">
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
+          <div className="w-full sm:w-[280px] md:w-[320px]">
             <SearchInput
               placeholder="Pesquise por nome"
               value={searchTerm}
@@ -138,7 +126,10 @@ export function CategoriasPage() {
             />
           </div>
           <div>
-            <Button onClick={() => setShowCreateModal(true)}>
+            <Button
+              className="w-full sm:w-auto"
+              onClick={() => setShowCreateModal(true)}
+            >
               <Plus className="mr-2 h-4 w-4" />
               Adicionar categoria
             </Button>
@@ -146,14 +137,17 @@ export function CategoriasPage() {
         </div>
 
         <CategoriasServicosList
+          itemsPerPage={itemsPerPage}
+          categorias={currentCategorias}
           setCategorias={setCategorias}
-          categorias={currentData}
           onEdit={setEditCategoria}
         />
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Linhas por página:</span>
+            <span className="hidden sm:inline-flex text-sm text-gray-600">
+              Linhas por página:
+            </span>
 
             <Select
               value={itemsPerPage.toString()}
@@ -180,7 +174,7 @@ export function CategoriasPage() {
               Página {currentPage} de {totalPages}
             </span>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <Button
                 variant="outline"
                 size="sm"
@@ -223,9 +217,8 @@ export function CategoriasPage() {
         </div>
       </div>
 
-      {/* Modal de Criar */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50  flex items-center justify-center z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <AddCategoriaForm
               mode="create"
@@ -236,9 +229,8 @@ export function CategoriasPage() {
         </div>
       )}
 
-      {/* Modal de Editar */}
       {editCategoria && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50  flex items-center justify-center z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[60vh] overflow-y-auto">
             <AddCategoriaForm
               mode="edit"

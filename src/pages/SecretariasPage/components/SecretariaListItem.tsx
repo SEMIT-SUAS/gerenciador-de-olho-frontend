@@ -5,6 +5,7 @@ import { useState } from 'react';
 import type { Secretaria } from '@/types/Secretaria'; // ajuste para o caminho correto
 import type { Dispatch, SetStateAction } from 'react';
 import secretariasService from '@/services/secretariaService'; // você precisa ter isso
+import { toast } from 'react-toastify';
 
 interface SecretariaListItemProps {
   secretaria: Secretaria;
@@ -25,6 +26,10 @@ export function SecretariaListItem({
       setSecretarias((prev) => prev.filter((s) => s.id !== secretaria.id));
     } catch (error) {
       console.error('Erro ao desativar a secretaria:', error);
+      toast.error(
+        'Erro ao desativar a secretaria: ' +
+          (error instanceof Error ? error.message : ''),
+      );
     }
 
     setIsOpenDeleteModal(false);
@@ -46,15 +51,15 @@ export function SecretariaListItem({
             <IconEdit size={18} stroke={2} className="text-gray-400 mr-2" />
             {/* </button> */}
 
-            <button>
-              <IconEye size={18} stroke={2} className="text-gray-500 mr-2" />
-            </button>
-
             <button
               aria-label={`Deletar ${secretaria.nome}`}
               onClick={() => setIsOpenDeleteModal(true)}
             >
               <IconTrash size={18} stroke={2} className="text-black-600 mr-2" />
+            </button>
+
+            <button>
+              <IconEye size={18} stroke={2} className="text-gray-500 mr-2" />
             </button>
           </div>
         </TableCell>

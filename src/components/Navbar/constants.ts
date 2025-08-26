@@ -10,12 +10,8 @@ export const modules: Module[] = [
         to: '/ocorrencias',
       },
       {
-        title: 'Categorias',
+        title: 'Categorias e Tipos',
         to: '/categorias-denuncia',
-      },
-      {
-        title: 'Tipos',
-        to: '/tipos-denuncia',
       },
     ],
   },

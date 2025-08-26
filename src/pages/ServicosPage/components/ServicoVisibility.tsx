@@ -7,7 +7,7 @@ import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 type ServicoVisibilityProps = {
   servico: ServicosListar;
-  setServicos: Dispatch<SetStateAction<ServicosListar[]>>;
+  setServicos: Dispatch<SetStateAction<ServicosListar[] | null>>;
 };
 
 export function ServicoVisibility({
@@ -22,17 +22,26 @@ export function ServicoVisibility({
         servico.id,
         !servico.visivel,
       );
-      setServicos(
-        (prev) =>
-          prev?.map((prevServico) =>
-            prevServico.id === servico.id
-              ? { ...prevServico, visivel: !servico.visivel }
-              : prevServico,
-          ) ?? null,
+
+      setServicos((prev) => {
+        if (!prev) return prev;
+
+        return prev.map((prevServico) =>
+          prevServico.id === servico.id
+            ? { ...prevServico, visivel: !servico.visivel }
+            : prevServico,
+        );
+      });
+
+      toast.success(
+        !servico.visivel
+          ? 'Serviço tornado visível com sucesso!'
+          : 'Serviço ocultado com sucesso!',
       );
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message ?? 'Erro ao alterar visibilidade do serviço');
     }
+
     setIsOpenConfirmModal(false);
   }
 

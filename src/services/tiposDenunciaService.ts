@@ -1,6 +1,6 @@
 import { API_BASE_URL } from '@/config/api';
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
-import type { FormMethod } from 'react-router-dom';
+// import type { FormMethod } from 'react-router-dom';
 
 async function getAllTiposDenuncia(): Promise<TipoDenunciaModel[]> {
   try {
@@ -100,15 +100,12 @@ async function changeTipoVisibility(
   }
 }
 
-async function updateTipoDenuncia(formData:FormData) {
+async function updateTipoDenuncia(formData: FormData) {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/tipo-denuncia/atualizar`,
-      {
-        method: 'PUT',
-        body: formData,
-      },
-    );
+    const response = await fetch(`${API_BASE_URL}/tipo-denuncia/atualizar`, {
+      method: 'PUT',
+      body: formData,
+    });
 
     if (!response.ok) {
       throw new Error('Não foi possível apagar o tipo de denúncia.');
@@ -127,5 +124,5 @@ export default {
   changeTipoAtivo,
   changeTipoVisibility,
   createTipoDenuncia,
-  updateTipoDenuncia
+  updateTipoDenuncia,
 };
