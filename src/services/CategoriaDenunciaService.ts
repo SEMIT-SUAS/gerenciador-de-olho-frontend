@@ -1,7 +1,6 @@
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import { getAPIFileURL } from '@/utils/getAPIFileURL';
 import { BaseServiceClass } from './BaseServiceClass';
-import type { DenunciaModel, DenunciaStatusModelTypes } from '@/types/Denuncia';
 import type { BannerModel } from '@/types/Banner';
 import { AxiosError } from 'axios';
 import { api } from '@/config/api';
@@ -35,28 +34,28 @@ export class CategoriaDenunciaService extends BaseServiceClass {
         '/categoria-denuncia/listar-ativos',
       );
       // Adiciona o mapeamento para transformar a URL do ícone, se necessário
-      return response.data.map((categoria) => ({
-        ...categoria,
-        icone: getAPIFileURL(categoria.icone),
-      }));
+      return response.data;
     } catch (error) {
       // O Axios já rejeita a promise para status não-2xx, então o catch é suficiente.
       throw this.serviceUnavailableError;
     }
   }
 
-  public async create(data: FormData): Promise<CategoriaDenunciaModel> {
+  public async create(data: FormData): Promise<void> {
     try {
-      // O Axios define o 'Content-Type' como 'multipart/form-data' automaticamente para FormData
       const response = await api.post<CategoriaDenunciaModel>(
         '/categoria-denuncia/cadastrar',
         data,
       );
 
-      const newCategory = response.data;
-      newCategory.icone = getAPIFileURL(newCategory.icone);
+      if (response.status != 201) {
+        throw new Error('Não foi possível criar essa categoria de denúncia');
+      }
 
-      return newCategory;
+      // const newCategory = response.data;
+      // newCategory.icone = getAPIFileURL(newCategory.icone);
+
+      // return newCategory;
     } catch (error) {
       throw this.createError;
     }

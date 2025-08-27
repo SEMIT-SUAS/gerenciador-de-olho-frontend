@@ -8,12 +8,14 @@ interface AddCategoriaModalProps {
   isOpen: boolean;
   onClose: () => void;
   setCategorias: Dispatch<SetStateAction<CategoriaDenunciaModel[] | null>>;
+  reloadCategoriestList: () => Promise<void>;
 }
 
 export function AddCategoriaModal({
   isOpen,
   onClose,
   setCategorias,
+  reloadCategoriestList,
 }: AddCategoriaModalProps) {
   if (!isOpen) {
     return null;
@@ -33,7 +35,10 @@ export function AddCategoriaModal({
 
         <AddCategoriaForm
           setCategorias={setCategorias}
-          onSuccess={() => onClose()}
+          onSuccess={() => {
+            onClose();
+            reloadCategoriestList();
+          }}
         />
       </DialogContent>
     </Dialog>

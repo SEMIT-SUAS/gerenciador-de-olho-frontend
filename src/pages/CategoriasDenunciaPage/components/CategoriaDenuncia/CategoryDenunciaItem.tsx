@@ -61,7 +61,6 @@ export function CategoryDenunciaItem({
             style={{
               backgroundColor: `${category.cor}20`,
               color: category.cor,
-              border: `1px solid ${category.cor}`,
             }}
           >
             {category.cor.toUpperCase()}
@@ -70,9 +69,11 @@ export function CategoryDenunciaItem({
 
         <TableCell className="p-3">
           {category.destaque && (
-            <Badge variant="outline" className="hidden gap-2 md:table-cell">
-              <IconStarFilled className="text-yellow-300" size={'12px'} />
-              Destacado
+            <Badge className="md:table-cell">
+              <div className="flex items-center gap-2">
+                <IconStarFilled className="text-yellow-300" size={'12px'} />
+                Destacado
+              </div>
             </Badge>
           )}
         </TableCell>

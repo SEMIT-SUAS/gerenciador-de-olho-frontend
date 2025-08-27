@@ -33,7 +33,10 @@ export function CategoryVisibility({
   async function handleConfirm() {
     try {
       setIsChangingVisibility(true);
-      await categoriaService.toggleVisibility(category.id, !category.visivel);
+      await new CategoriaDenunciaService().toggleVisibility(
+        category.id,
+        !category.visivel,
+      );
       setCategories(
         (prev) =>
           prev?.map((prevCategory) =>

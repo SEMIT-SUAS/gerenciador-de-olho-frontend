@@ -1,5 +1,3 @@
-import { api } from '@/config/api';
-
 export function getAPIFileURL(filePath: string | null | undefined): string {
   if (!filePath) {
     return '';

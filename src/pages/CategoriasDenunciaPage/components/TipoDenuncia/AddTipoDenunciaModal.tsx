@@ -7,12 +7,9 @@ import {
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { TipoDenunciaForm } from './TipoDenunciaForm/TipoDenunciaForm';
-import {
-  type TipoDenunciaFormSchema,
-  type TipoDenunciaFormValues,
-} from './TipoDenunciaForm/tipoDenunciaSchema';
+import { type TipoDenunciaFormValues } from './TipoDenunciaForm/tipoDenunciaSchema';
 import { tipoDenunciaService } from '@/services/tiposDenunciaService';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import type { Secretaria } from '@/types/Secretaria';
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 
@@ -22,6 +19,7 @@ interface AddTipoDenunciaModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   setTipos: Dispatch<SetStateAction<TipoDenunciaModel[]>>;
+  reloadTipos: () => void;
 }
 
 export function AddTipoDenunciaModal({
@@ -30,6 +28,7 @@ export function AddTipoDenunciaModal({
   setTipos,
   secretarias,
   categorias,
+  reloadTipos,
 }: AddTipoDenunciaModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -54,8 +53,9 @@ export function AddTipoDenunciaModal({
         setTipos((prev) => [...prev, newTipo]);
       }
 
-      toast.success(`Portal "${newTipo.nome}" criado com sucesso!`);
+      toast.success(`tipo "${newTipo.nome}" criado com sucesso!`);
       onOpenChange(false);
+      reloadTipos();
     } catch (error: any) {
       toast.error(error.message || 'Ocorreu um erro ao criar o portal.');
     } finally {

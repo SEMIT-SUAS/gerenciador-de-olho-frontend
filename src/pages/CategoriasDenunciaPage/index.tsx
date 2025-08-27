@@ -46,20 +46,29 @@ export function DenunciaCategoriasPage() {
     setTipoParaEditar(null);
   };
 
-  useEffect(() => {
-    new TipoDenunciaService()
-      .getAll()
-      .then((data) => {
-        setTipos(data);
-      })
-      .catch((error: any) => toast.error(error.message));
+  async function loadDenunciaCategories() {
+    try {
+      setCategorias(null);
+      const categoriesData = await new CategoriaDenunciaService().getAll();
+      setCategorias(categoriesData);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
 
-    new CategoriaDenunciaService()
-      .getAll()
-      .then((data) => {
-        setCategorias(data);
-      })
-      .catch((error: any) => toast.error(error.message));
+  async function loadDenunciaTipos() {
+    try {
+      setTipos([]);
+      const tiposData = await new TipoDenunciaService().getAll();
+      setTipos(tiposData);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
+
+  useEffect(() => {
+    loadDenunciaCategories();
+    loadDenunciaTipos();
 
     secretariaService
       .getAll()
@@ -196,6 +205,7 @@ export function DenunciaCategoriasPage() {
         isOpen={isOpenAddCategoriaModal}
         onClose={() => setIsOpenAddCategoriaModal(false)}
         setCategorias={setCategorias}
+        reloadCategoriestList={loadDenunciaCategories}
       />
       <AddTipoDenunciaModal
         open={IsOpenAddTipoModal}
@@ -203,6 +213,7 @@ export function DenunciaCategoriasPage() {
         secretarias={secretarias}
         categorias={categorias!}
         setTipos={setTipos}
+        reloadTipos={loadDenunciaTipos}
       />
       {tipoParaEditar && (
         <EditTipoDenunciaModal
