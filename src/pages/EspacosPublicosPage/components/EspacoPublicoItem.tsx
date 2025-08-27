@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { EspacoPublicoVisibility } from './EspacoPublicoVisibility';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 import { toast } from 'sonner';
-import espaçoPublicoService from '@/services/espacoPublicoService';
+import { espacoPublicoService } from '@/services/espacoPublicoService';
 
 interface EspacoPublicoItemProps {
   espacoPublico: EspacoPublicoModel;
@@ -24,7 +24,7 @@ export function EspacoPublicoItem({
 
   async function handleDeleteEspacoPublico() {
     try {
-      await espaçoPublicoService.trash(espacoPublico.id);
+      await espacoPublicoService.trash(espacoPublico.id);
 
       setEspacosPublicos(
         (prev) => prev?.filter((item) => item.id !== espacoPublico.id) ?? null,

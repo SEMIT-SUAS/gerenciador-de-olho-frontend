@@ -1,75 +1,107 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import type { Dispatch, FC, ReactNode, SetStateAction } from 'react';
-import type { DenunciaModel } from '../types/Denuncia';
-import type { AcaoModel } from '../types/Acao';
-import denunciasService from '../services/denunciasService';
-import acoesService from '../services/acoesService';
-import { type Secretaria } from '@/types/Secretaria';
-import categoriaService from '../services/categoriaService';
-import type { CategoriaDenunciaModel } from '../types/CategoriaDenuncia';
-import secretariaService from '@/services/secretariaService';
+import {
+  useContext,
+  useEffect,
+  useState,
+  createContext,
+  type ReactNode,
+} from 'react';
+import type { Secretaria } from '@/types/Secretaria';
+import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
+import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
+import { TipoDenunciaService } from '@/services/tiposDenunciaService';
+import { secretariaService } from '@/services/secretariaService';
+import type { Bairro } from '@/types/Bairro';
+import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
+import { DenunciaService } from '@/services/DenunciaService';
+import { useAuth } from './AuthContext';
+import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 
-interface OcorrenciasContextType {
-  denuncias: DenunciaModel[];
-  setDenuncias: Dispatch<SetStateAction<DenunciaModel[]>>;
-  acoes: AcaoModel[];
-  setAcoes: Dispatch<SetStateAction<AcaoModel[]>>;
+type OcorrenciasContextProps = {
+  isLoadingInitialContent: boolean;
+  APIError: null | string;
   categorias: CategoriaDenunciaModel[];
+  categoriaTipos: TipoDenunciaModel[];
   secretarias: Secretaria[];
-  loading: boolean;
-  error: string | null;
-}
+  bairros: Bairro[];
+};
 
-const OcorrenciasContext = createContext<OcorrenciasContextType | undefined>(
+const OcorrenciasContext = createContext<OcorrenciasContextProps | undefined>(
   undefined,
 );
 
-export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const [denuncias, setDenuncias] = useState<DenunciaModel[]>([]);
-  const [acoes, setAcoes] = useState<AcaoModel[]>([]);
+export function OcorrenciasProvider({ children }: { children: ReactNode }) {
+  const [isLoadingInitialContent, setIsLoadingInitialContent] =
+    useState<boolean>(true);
   const [categorias, setCategorias] = useState<CategoriaDenunciaModel[]>([]);
+  const [categoriaTipos, setCategoriaTipos] = useState<TipoDenunciaModel[]>([]);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
+  const [bairros, setBairros] = useState<Bairro[]>([]);
+  const [APIError, setAPIError] = useState<string | null>(null);
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     async function loadData() {
       try {
-        setLoading(true);
-        const [denunciasData, acoesData, categoriasData, secretariasData] =
-          await Promise.all([
-            denunciasService.getAllDenuncias(),
-            acoesService.getAllAcoes(),
-            categoriaService.getAll(),
-            secretariaService.getAllSecretarias(),
-          ]);
+        const [
+          categoriasData,
+          categoriaTiposData,
+          secretariasData,
+          dataDenunciasInMap,
+        ] = await Promise.all([
+          new CategoriaDenunciaService().getAll(),
+          new TipoDenunciaService().getAll(),
+          secretariaService.getAll(),
+          DenunciaService.getNumberDenunciasInMap(
+            'Aberto',
+            user?.idSecretaria!,
+          ),
+        ]);
 
-        setDenuncias(denunciasData);
-        setAcoes(acoesData);
         setCategorias(categoriasData);
+        setCategoriaTipos(categoriaTiposData);
         setSecretarias(secretariasData);
-      } catch (err: any) {
-        setError(err.message);
+
+        const bairroPromises = DADOS_BAIRROS.map((bairro) => {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              const totalDeDenuncias =
+                dataDenunciasInMap.find(
+                  (dInMap) => dInMap.bairro === bairro.nome,
+                )?.quantidade || 0;
+
+              const bairroFormatado = {
+                ...bairro,
+                totalDeDenuncias,
+              };
+
+              resolve(bairroFormatado);
+            }, 0);
+          });
+        });
+
+        const formattedBairros = (await Promise.all(
+          bairroPromises,
+        )) as Bairro[];
+
+        setBairros(formattedBairros);
+      } catch (error: any) {
+        setAPIError(error.message);
       } finally {
-        setLoading(false);
+        setIsLoadingInitialContent(false);
       }
     }
 
     loadData();
   }, []);
 
-  const value: OcorrenciasContextType = {
-    denuncias,
-    setDenuncias,
-    acoes,
-    setAcoes,
-    loading,
-    error,
-    secretarias,
+  const value: OcorrenciasContextProps = {
+    isLoadingInitialContent,
+    APIError,
     categorias,
+    categoriaTipos,
+    secretarias,
+    bairros,
   };
 
   return (
@@ -77,7 +109,7 @@ export const OcorrenciasProvider: FC<{ children: ReactNode }> = ({
       {children}
     </OcorrenciasContext.Provider>
   );
-};
+}
 
 export const useOcorrencias = () => {
   const context = useContext(OcorrenciasContext);

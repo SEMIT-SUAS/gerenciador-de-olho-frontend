@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import type { Secretaria } from '../../types/Secretaria';
-import { getAllSecretarias } from '../../services/secretariaService';
+import { secretariaService } from '../../services/secretariaService';
 import { SecretariaList } from './components/SecretariaList';
 import { SecretariaFormModal } from './components/SecretariaModalForm';
 import { SearchInput } from '@/components/ui/input';
@@ -35,7 +35,7 @@ export function SecretariaPage() {
   async function fetchSecretarias() {
     try {
       setLoading(true);
-      const data = await getAllSecretarias();
+      const data = await secretariaService.getAll();
       setSecretarias(data);
     } catch (err: any) {
       setError(err.message || 'Erro ao buscar as secretarias.');

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LayoutPage } from '../../components/LayoutPage';
-import { getAllServices } from '@/services/servicosServices';
+import { servicoService } from '@/services/servicosServices';
 import { toast } from 'sonner';
 import type { ServicosListar } from '@/types/ServicosListar';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,7 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
 } from '@tabler/icons-react';
-import { getAllServicoExterno } from '@/services/servicosExternosService';
+import { servicoExternoService } from '@/services/servicosExternosService';
 import type { ServicoExterno } from '@/types/ServicoExterno';
 import { ServicosExternosList } from '@/pages/ServicosPage/components/ServicosExternosList';
 import { FormServicoExterno } from '@/pages/ServicosPage/components/ServicosExternosForm/ServicoExternoForm';
@@ -42,10 +42,9 @@ export function ServicesPage() {
 
   async function getAllServicesData() {
     try {
-      const [dataCartaDeServico, dataServicoExterno] = await Promise.all([
-        getAllServices(),
-        getAllServicoExterno(),
-      ]);
+      // setLoading(true);
+      const dataCartaDeServico = await servicoService.getAll();
+      const dataServicoExterno = await servicoExternoService.getAll();
 
       setCartaDeServicos(dataCartaDeServico);
       setServicosExternos(dataServicoExterno);

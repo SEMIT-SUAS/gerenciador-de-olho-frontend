@@ -6,7 +6,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { IconEdit, IconTrash, IconUser } from '@tabler/icons-react';
 
 import { Badge } from '@/components/ui/badge';
-import secretariaService from '@/services/secretariaService';
+import { secretariaService } from '@/services/secretariaService';
 
 interface UsuariosListItemProps {
   usuario: UsuarioModel;
@@ -30,9 +30,7 @@ export function UsuariosListItem({
       try {
         setLoading(true);
         setError(null);
-        const data = await secretariaService.getSecretariaById(
-          usuario.idSecretaria,
-        );
+        const data = await secretariaService.getById(usuario.idSecretaria);
         setSecretaria(data);
       } catch (err) {
         setError('Falha ao carregar a secretaria.');

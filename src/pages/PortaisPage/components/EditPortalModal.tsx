@@ -8,7 +8,7 @@ import {
 import type { Portais } from '@/types/Portais';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { PortaisSchema } from './PortaisForm/portaisSchema';
-import PortaisService from '@/services/PortaisService';
+import { portalService } from '@/services/PortaisService';
 import { toast } from 'sonner';
 
 interface EditPortalModalProps {
@@ -35,7 +35,8 @@ export function EditPortalModal({
         id: Number(portal!.id),
       };
 
-      const newPortal = await PortaisService.updatePortal(payload);
+      const newPortal = await portalService.update(payload);
+
       if (setPortais) {
         setPortais((prev) => (prev ? [...prev, newPortal] : [newPortal]));
       }

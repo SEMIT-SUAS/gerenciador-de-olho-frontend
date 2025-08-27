@@ -1,21 +1,62 @@
 import type { AcaoStatusModel } from './AcaoStatus';
-import type { DenunciaModel } from './Denuncia';
-import type { SecretariaModel } from './Secretaria';
+import type { DenunciaBasicInfoModel } from './Denuncia';
 
 export interface CreateAcaoModel {
   nome: string;
-  obs: string | null;
-  secretariaId: number;
-  denuncias: DenunciaModel[];
+  latitude: number;
+  longitude: number;
+  descricao: string;
+  observacao?: string;
+  bairro: string;
+  secretaria: number;
+  denuncias: number[];
+  acaoStatus: {
+    gerenciador: number;
+    status: string;
+    motivo: string;
+    modificadoEm: string;
+  };
+  ativo: boolean;
 }
 
 export interface AcaoModel {
   id: number;
   nome: string;
+  descricao: string;
   latitude: number;
   longitude: number;
-  obs: string | null;
   criadoEm: string;
-  secretaria: SecretariaModel;
-  status: AcaoStatusModel[];
+  nomeSecretaria: string;
+  siglaSecretaria: string;
+  bairro: string;
+  acaoStatus: AcaoStatusModel;
+}
+
+export interface AcaoDetailsModel {
+  acao: AcaoModel;
+  denuncias: DenunciaBasicInfoModel[];
+}
+
+export interface UpdatedAcaoModel {
+  mensagem: string;
+  acao: AcaoModel;
+}
+
+export interface AcaoInMap {
+  id: number;
+  latitude: number;
+  longitude: number;
+}
+
+export interface UpdateAcao {
+  id: number;
+  acaoStatus: AcaoStatusModel;
+  ativo: boolean;
+}
+
+export interface AcaoHistory {
+  dataModificacao: string;
+  id: number;
+  motivo: string;
+  status: string;
 }

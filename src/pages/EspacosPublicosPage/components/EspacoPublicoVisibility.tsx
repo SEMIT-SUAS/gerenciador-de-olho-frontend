@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Loading } from '../../../components/Loading/Loading';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { toast } from 'sonner';
-import espaçoPublicoService from '@/services/espacoPublicoService';
+import { espacoPublicoService } from '@/services/espacoPublicoService';
 
 interface EspacoPublicoVisibilityProps {
   espacoPublico: EspacoPublicoModel;
@@ -21,7 +21,7 @@ export function EspacoPublicoVisibility({
   async function handleOnClickButton() {
     try {
       setIsChangingVisibility(true);
-      await espaçoPublicoService.toggleVisibility(
+      await espacoPublicoService.toggleVisibility(
         espacoPublico.id,
         !espacoPublico.visivel,
       );

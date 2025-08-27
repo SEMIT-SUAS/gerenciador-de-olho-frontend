@@ -18,11 +18,7 @@ import {
   IconChevronsRight,
 } from '@tabler/icons-react';
 
-import {
-  getAllCategorias,
-  createCategoria,
-  editarCategoria,
-} from '@/services/servicocategoriaService';
+import { categoriaServicoService } from '@/services/categoriaServicoService';
 import type {
   ServicoCategoria,
   createServicoCategoria,
@@ -47,14 +43,19 @@ export function CategoriasPage() {
 
   async function getAllCategoriasData() {
     try {
-      return await getAllCategorias();
-    } catch (error: any) {
-      toast.error(error.message || 'Erro ao buscar as categorias.');
+      // setLoading(true);
+      const data = await categoriaServicoService.getAll();
+      setCategorias(data);
+    } catch (err: any) {
+      // setError(err.message || 'Erro ao buscar as categorias.');
+      toast.error(err.message || 'Erro ao buscar as categorias.');
+    } finally {
+      // setLoading(false);
     }
   }
 
   useEffect(() => {
-    getAllCategoriasData().then((categoriasData) => {
+    categoriaServicoService.getAll().then((categoriasData) => {
       if (categoriasData) {
         setCategorias(categoriasData);
       }
@@ -70,16 +71,19 @@ export function CategoriasPage() {
   ) => {
     try {
       if ('id' in data && data.id) {
-        await editarCategoria(data as ServicoCategoriaEditar & { id: number });
+        await categoriaServicoService.update(
+          data as ServicoCategoriaEditar & { id: number },
+        );
         toast.success('Categoria editada com sucesso!');
         setEditCategoria(null);
       } else {
-        await createCategoria(data as createServicoCategoria);
+        // Se não tem id, é criação
+        await categoriaServicoService.create(data as createServicoCategoria);
         toast.success('Categoria criada com sucesso!');
         setShowCreateModal(false);
       }
 
-      const newData = await getAllCategoriasData();
+      const newData = await categoriaServicoService.getAll();
       if (newData) {
         setCategorias(newData);
       }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Portais } from '@/types/Portais';
-import { getAllPortais } from '@/services/PortaisService';
+import { portalService } from '@/services/PortaisService';
 import { toast } from 'sonner';
 
 import { PortaisList } from '@/pages/PortaisPage/components/PortaisList';
@@ -32,7 +32,7 @@ export function PortaisPage() {
 
   async function getAllPortaisData() {
     try {
-      return await getAllPortais();
+      return await portalService.getAll();
     } catch (error: any) {
       toast.error(error.message || 'Erro ao buscar os portais.');
     }

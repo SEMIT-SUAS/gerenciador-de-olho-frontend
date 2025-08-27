@@ -1,13 +1,13 @@
-import { getAllSecretarias } from '@/services/secretariaService';
+import { secretariaService } from '@/services/secretariaService';
 import { ServicoForm } from './ServicoForm/ServicoForm';
 import { type ServicoFormOutput } from './ServicoForm/servicoSchema';
 import { useState, useEffect } from 'react';
-import { getAllCategorias } from '@/services/servicocategoriaService';
-import { getAllPersona } from '@/services/servicoPersona';
+import { categoriaServicoService } from '@/services/categoriaServicoService';
+import { personaService } from '@/services/personaService';
 import type { Secretaria } from '@/types/Secretaria';
 import type { Persona } from '@/types/Persona';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
-import { createService } from '@/services/servicosServices';
+import { servicoService } from '@/services/servicosServices';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPage } from '@/components/LayoutPage';
 import { toast } from 'react-toastify';
@@ -25,9 +25,9 @@ function ServicoNovo() {
       try {
         const [secretariasData, categoriasData, personaData] =
           await Promise.all([
-            getAllSecretarias(),
-            getAllCategorias(),
-            getAllPersona(),
+            secretariaService.getAll(),
+            categoriaServicoService.getAll(),
+            personaService.getAll(),
           ]);
         setSecretarias(secretariasData);
         setCategorias(categoriasData);
@@ -49,7 +49,7 @@ function ServicoNovo() {
     };
 
     try {
-      await createService(payload as any);
+      await servicoService.create(payload as any);
       navigate('/servicos');
     } catch (err: any) {}
     await new Promise((resolve) => setTimeout(resolve, 1000));

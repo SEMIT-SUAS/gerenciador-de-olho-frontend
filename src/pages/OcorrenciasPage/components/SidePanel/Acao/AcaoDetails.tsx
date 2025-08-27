@@ -1,98 +1,115 @@
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
-import { useOcorrencias } from '../../../../../context/OcorrenciasContext';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { DenunciaManageInAction } from '../Denuncia/DenunciaManagerInAction';
 import { BackButton } from '../../../../../components/ui/Backbutton';
 import { FaInfoCircle } from 'react-icons/fa';
-import { useMapActions } from '../../../../../context/MapActions';
 import { Tag } from '../Tag';
-import type { AcaoStatusModelTypes } from '../../../../../types/AcaoStatus';
-import { useFilters } from '../../../../../context/FiltersContext';
-import { Button } from '@/components/ui/button';
-import { IconProgressX } from '@tabler/icons-react';
+import { IconPlus, IconProgressX } from '@tabler/icons-react';
 import { FilesCarrrousel } from '@/components/FilesCarrousel';
-import { IoIosAdd } from 'react-icons/io';
 import { IconCircleCheckFilled } from '@tabler/icons-react';
-import { handleIniciarAcao } from './IniciarAcao';
+import { SidePanelContentSkeleton } from '../SidePanelContentSkeleton';
+import { toast } from 'sonner';
+import AcoesService from '@/services/acoesService';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { ConcluirAcaoModal } from './ConcluirAcao';
+import { IndeferirAcaoModal } from './IndefirirAcao';
+import type { AcaoDetailsModel, AcaoHistory } from '@/types/Acao';
+import { useAuth } from '@/context/AuthContext';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
+import { Timeline } from './Timeline';
+import { useMapActions } from '@/context/MapActions';
 
 export function AcaoDetails() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { acoes, denuncias, setAcoes, setDenuncias } = useOcorrencias();
-  const { setZoomTo } = useMapActions();
-  const { cacheCurrentFilters, restoreCachedFilters, setFiltroStatusDenuncia } =
-    useFilters();
+  const [acaoData, setAcaoData] = useState<AcaoDetailsModel | null>(null);
+  const [isConcluirModalOpen, setIsConcluirModalOpen] = useState(false);
+  const [isIndeferirModalOpen, setIsIndeferirModalOpen] = useState(false);
+  const [isIniciarAcaoOpen, setIsIniciarAcaoOpen] = useState(false);
+  const [acaoHistory, setAcaoHistory] = useState<AcaoHistory[]>([]);
+  const { salvarDenunciasOnclick } = useMapActions();
 
   const params = useParams();
   const navigate = useNavigate();
-  const acaoId = params.acaoId;
+  const acaoId = Number(params.id);
+  const { user } = useAuth();
 
-  const acao = useMemo(() => {
-    return acoes.find((ac) => ac.id === Number(acaoId));
-  }, [acaoId, acoes]);
+  useEffect(() => {
+    AcoesService.getAcaoById(acaoId)
+      .then((acaoData) => setAcaoData(acaoData))
+      .catch((error: any) => toast.error(error.message));
+    AcoesService.getAcaoHistory(acaoId)
+      .then((acaoHistory) => setAcaoHistory(acaoHistory))
+      .catch((error: any) => toast.error(error.message));
 
-  const currentAcaoStatus = useMemo((): AcaoStatusModelTypes | null => {
-    if (!acao) {
-      return null;
-    }
+    return () => {
+      setAcaoHistory([]);
+      setAcaoData(null);
+    };
+  }, [acaoId]);
 
-    return acao.status[acao.status.length - 1]?.status;
-  }, [acao]);
+  const backButton = (
+    <BackButton to="/ocorrencias" children="Detalhes da Ação" />
+  );
 
-  const denunciasVinculadas = useMemo(() => {
-    if (!acao) return [];
+  if (!acaoData) {
+    return <SidePanelContentSkeleton backButton={backButton} />;
+  }
 
-    return denuncias.filter((d) => d.acao?.id === acao.id);
-  }, [denuncias, acao]);
+  const acao = acaoData.acao;
+  const denunciasVinculadas = acaoData.denuncias;
 
-  const onConfirmarInicio = () => {
-    handleIniciarAcao({
-      acao,
-      setAcoes,
-      setDenuncias,
+  const urls = denunciasVinculadas.flatMap((denuncia) => denuncia.urls);
+
+  const handleDesvincularDenuncia = (denunciaId: number) => {
+    if (!acao) return;
+
+    const denunciasAtualizadas = denunciasVinculadas.filter(
+      (d) => d.id !== denunciaId,
+    );
+
+    setAcaoData({
+      ...acaoData,
+      denuncias: denunciasAtualizadas,
     });
-    setIsModalOpen(false); // Fecha o modal
   };
 
-  useEffect(() => {
-    cacheCurrentFilters();
-
-    setFiltroStatusDenuncia('todos');
-    return () => {
-      restoreCachedFilters();
+  async function handleInciarAcao() {
+    const payload = {
+      id: acao.id,
+      acaoStatus: {
+        status: 'Andamento',
+        motivo: 'Iniciando Ação',
+        gerenciador: user!.id,
+      },
+      ativo: true,
     };
-  }, []);
 
-  useEffect(() => {
-    if (acao) {
-      setZoomTo({
-        lat: acao.latitude,
-        lng: acao.longitude,
+    AcoesService.updateAcao(payload)
+      .then((acaoAtualizada) => {
+        setAcaoData({ ...acaoData!, acao: acaoAtualizada });
+        toast.success('Ação iniciada com sucesso!');
+      })
+      .catch((error: any) => {
+        toast.error(error.message);
       });
-    }
-
-    return () => setZoomTo(null);
-  }, [acao, setZoomTo]);
-
-  if (!acao || !currentAcaoStatus) {
-    return <Navigate to="/404" replace />;
   }
 
   return (
     <div className="flex flex-col h-full space-y-7">
-      <BackButton to="/ocorrencias/acoes" children="Detalhes da Ação" />
+      {backButton}
+
       <div className="flex-shrink-0">
         <div className="flex justify-between items-center">
           <div>
             <p className="text-sm text-gray-500">
-              Responsável: {acao.secretaria.sigla}
+              Responsável: {acao.siglaSecretaria}
             </p>
             <h1 className="text-2xl font-bold text-gray-800">{acao.nome}</h1>
             <p className="text-sm text-gray-500">
               Criada em: {new Date(acao.criadoEm).toLocaleString('pt-BR')}
             </p>
           </div>
-          <Tag status={currentAcaoStatus} />
+          <Tag status={acao.acaoStatus.status} />
         </div>
       </div>
 
@@ -106,17 +123,15 @@ export function AcaoDetails() {
           </div>
         )}
 
-        {acao.obs && (
+        {acao.descricao.length > 1 && (
           <div>
             <h3 className="font-semibold text-sm text-gray-800">Descrição:</h3>
-            <p className="text-sm text-gray-600">{acao.obs}</p>
+            <p className="text-sm text-gray-600">{acao.descricao}</p>
           </div>
         )}
-        {currentAcaoStatus === 'em_analise' && (
-          <Button
-            onClick={() => setIsModalOpen(true)} // Abre o modal
-            className="w-full"
-          >
+
+        {acao.acaoStatus.status === 'Análise' && (
+          <Button onClick={() => setIsIniciarAcaoOpen(true)} className="w-full">
             Iniciar ação
           </Button>
         )}
@@ -131,13 +146,16 @@ export function AcaoDetails() {
                 Denúncias Vinculadas
               </h1>
 
-              {!['indeferido', 'concluido'].includes(currentAcaoStatus) && (
-                <button
-                  onClick={() => navigate('vincular-denuncias')}
-                  className="bg-blue-500 rounded-full p-1 hover:bg-blue-600 transition-colors"
+              {!['Indeferido', 'Concluído'].includes(
+                acao.acaoStatus.status,
+              ) && (
+                <Button
+                  onClick={() => navigate('vincular-acao')}
+                  size="icon"
+                  className="rounded-full"
                 >
-                  <IoIosAdd size={24} color="white" />
-                </button>
+                  <IconPlus className="size-5 font-extrabold" />
+                </Button>
               )}
             </div>
           </div>
@@ -152,13 +170,14 @@ export function AcaoDetails() {
                 {denunciasVinculadas.map((denuncia) => {
                   const canDisvincular =
                     denunciasVinculadas.length > 1 &&
-                    ['em_analise', 'em_andamento'].includes(currentAcaoStatus);
+                    ['Análise', 'Andamento'].includes(acao.acaoStatus.status);
 
                   return (
                     <DenunciaManageInAction
                       key={denuncia.id}
                       denuncia={denuncia}
                       allowDisvincularItem={canDisvincular}
+                      onDisvincular={handleDesvincularDenuncia}
                     />
                   );
                 })}
@@ -168,48 +187,80 @@ export function AcaoDetails() {
         </div>
       </div>
 
-      <div>
-        <h3 className="font-semibold text-gray-800 mb-1">Mídias:</h3>
-        <FilesCarrrousel
-          files={denunciasVinculadas.flatMap((denuncia) =>
-            denuncia.files.map((file) => ({
-              ...file,
-              nome: file.nome,
-              tipo:
-                file.tipo ?? (file.nome.includes('.mp4') ? 'video' : 'imagem'),
-            })),
-          )}
+      {urls.length > 0 && (
+        <div>
+          <h3 className="font-semibold text-gray-800 mb-1">Mídias:</h3>
+          <FilesCarrrousel filesURLs={urls} />
+        </div>
+      )}
+
+      {['Análise', 'Andamento'].includes(acao.acaoStatus.status) && (
+        <footer className="flex items-center gap-2">
+          {/* O botão agora abre o modal */}
+          <Button
+            onClick={() => setIsConcluirModalOpen(true)}
+            className={cn('flex-1')}
+          >
+            <IconCircleCheckFilled />
+            Concluir Ação
+          </Button>
+
+          <Button
+            onClick={() => setIsIndeferirModalOpen(true)} // 3. Abrir o modal de indeferir
+            className={cn('flex-2')}
+            variant="destructive"
+          >
+            <IconProgressX className="inline h-4" />
+            Indeferir Ação
+          </Button>
+        </footer>
+      )}
+
+      {acaoHistory.length > 0 && (
+        <div>
+          <h3 className="font-semibold text-gray-800 mb-4 mt-6">
+            Histórico de Alterações
+          </h3>
+          <Timeline acaoHistory={acaoHistory} />
+        </div>
+      )}
+
+      {acao && (
+        <ConcluirAcaoModal
+          isOpen={isConcluirModalOpen}
+          onClose={() => setIsConcluirModalOpen(false)}
+          acao={acaoData.acao}
+          onSuccess={(acaoAtualizada) => {
+            setAcaoData({ ...acaoData, acao: acaoAtualizada });
+            setIsConcluirModalOpen(false);
+          }}
         />
-      </div>
+      )}
 
-      <footer className="flex flex-col gap-2 flex-shrink-0">
-        {['em_analise', 'em_andamento'].includes(currentAcaoStatus) && (
-          <div className="flex gap-1">
-            <Button
-              onClick={() => navigate('concluir')}
-              className="flex justify-center items-center w-full"
-            >
-              <IconCircleCheckFilled className="inline h-4" />
-              Concluir Ação
-            </Button>
+      {acao && (
+        <IndeferirAcaoModal
+          isOpen={isIndeferirModalOpen}
+          onClose={() => setIsIndeferirModalOpen(false)}
+          acao={acao}
+          onSuccess={(acaoAtualizada) => {
+            setAcaoData({
+              ...acaoData,
+              acao: acaoAtualizada,
+            });
+            setIsConcluirModalOpen(false);
+          }}
+        />
+      )}
 
-            <Button
-              onClick={() => navigate('indeferir')}
-              className="flex justify-center items-center w-60"
-            >
-              <IconProgressX className="inline h-4" />
-              Indeferir Ação
-            </Button>
-          </div>
-        )}
-      </footer>
-      <ConfirmModal
-        isOpen={isModalOpen}
-        title="Iniciar Ação"
-        message="Tem certeza de que deseja mover esta ação para 'Em Andamento'?"
-        onConfirm={onConfirmarInicio}
-        onCancel={() => setIsModalOpen(false)}
-      />
+      {acao.acaoStatus.status === 'Análise' && (
+        <ConfirmModal
+          isOpen={isIniciarAcaoOpen}
+          onCancel={() => setIsIniciarAcaoOpen(false)}
+          title="Deseja iniciar essa ação?"
+          message='Você está prestes a iniciar uma ação, seu status será "Em Andamento". Esta ação não pode ser desfeita.'
+          onConfirm={handleInciarAcao}
+        />
+      )}
     </div>
   );
 }

@@ -47,7 +47,6 @@ export function LoginForm({
       await login(data);
       navigate('/dashboard');
     } catch (error) {
-      console.error('Falha no login:', error);
       toast.error('Falha no login. Verifique suas credenciais.');
     }
   }

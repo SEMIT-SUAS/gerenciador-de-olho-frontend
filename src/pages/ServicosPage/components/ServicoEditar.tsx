@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { getAllCategorias } from '@/services/servicocategoriaService';
-import { getAllPersona } from '@/services/servicoPersona';
-import { getServicoById, updateServico } from '@/services/servicosServices';
+import { categoriaServicoService } from '@/services/categoriaServicoService';
+import { personaService } from '@/services/personaService';
+import { servicoService } from '@/services/servicosServices';
 import type {
   ServicoFormInput,
   ServicoFormOutput,
@@ -15,7 +15,7 @@ import type { ServicoCategoria } from '@/types/CategoriaServico';
 import { LayoutPage } from '@/components/LayoutPage';
 
 import { ServicoForm } from '@/pages/ServicosPage/components/ServicoForm/ServicoForm';
-import { getAllSecretarias } from '@/services/secretariaService';
+import { secretariaService } from '@/services/secretariaService';
 import { toast } from 'react-toastify';
 
 function ServicoEditarPage() {
@@ -43,10 +43,10 @@ function ServicoEditarPage() {
       try {
         const [secretariasData, categoriasData, personaData, servicoData] =
           await Promise.all([
-            getAllSecretarias(),
-            getAllCategorias(),
-            getAllPersona(),
-            getServicoById(Number(servicoId)),
+            secretariaService.getAll(),
+            categoriaServicoService.getAll(),
+            personaService.getAll(),
+            servicoService.getById(Number(servicoId)),
           ]);
 
         setSecretarias(secretariasData);
@@ -123,10 +123,8 @@ function ServicoEditarPage() {
       personas: data.personaIds,
     };
 
-    console.log('Payload enviado:', JSON.stringify(payload, null, 2));
-
     try {
-      await updateServico(payload);
+      await servicoService.update(payload);
       navigate(`/servicos/${servicoId}`);
     } catch (err: any) {
       console.error('Erro ao atualizar o serviço:', err);

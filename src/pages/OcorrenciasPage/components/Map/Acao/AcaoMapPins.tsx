@@ -1,28 +1,25 @@
 import { Marker } from 'react-leaflet';
 import { useFilters } from '@/context/FiltersContext';
-import type { AcaoModel } from '@/types/Acao';
+import type { AcaoDetailsModel, AcaoModel, AcaoInMap } from '@/types/Acao'; // Garanta que AcaoInMap está importado se necessário
 import { AcaoPolygon } from './AcaoPolygon';
 import { useMapActions } from '@/context/MapActions';
-import { useOcorrencias } from '@/context/OcorrenciasContext';
 import { getConvexHull } from '@/utils/geometry';
 import { useNavigate } from 'react-router-dom';
-import { AcaoTooltip } from './AcaoTooltip';
 import { Icon } from 'leaflet';
 
 export function AcaoMapPins() {
-  const { isVisibleAcoesInMap, acoesFiltradas, denunciasFiltradas } =
+  const { isVisibleAcoesInMap, denunciasDoBairro, acoesDoBairro } =
     useFilters();
   const { salvarAcaoOnclick, toggleAcaoSelecionada, acaoSelecionada } =
     useMapActions();
-  const { denuncias } = useOcorrencias();
 
   const navigate = useNavigate();
 
-  function handleOnAcaoClick(acao: AcaoModel) {
+  function handleOnAcaoClick(acao: AcaoDetailsModel) {
     if (salvarAcaoOnclick) {
       toggleAcaoSelecionada(acao);
     } else {
-      navigate(`/ocorrencias/acoes/${acao.id}`);
+      navigate(`/ocorrencias/acoes/${acao.acao.id}`);
     }
   }
 
@@ -30,7 +27,7 @@ export function AcaoMapPins() {
     return null;
   }
 
-  function handleGetActionIcon(acao: AcaoModel) {
+  function handleGetActionIcon(acao: AcaoInMap) {
     const isSelected = acao.id === acaoSelecionada?.id;
     const iconSize = isSelected ? 36 : 32;
 
@@ -46,11 +43,10 @@ export function AcaoMapPins() {
 
   return (
     <>
-      {acoesFiltradas.map((a) => {
-        const denunciasVinculadas = denuncias.filter(
+      {acoesDoBairro.map((a) => {
+        const denunciasVinculadas = denunciasDoBairro.filter(
           (d) =>
-            d.acao?.id === a.id &&
-            denunciasFiltradas.find((df) => d.id === df.id),
+            d.idAcao === a.id && denunciasDoBairro.find((df) => d.id === df.id),
         );
 
         const acaoPolygonCoords = getConvexHull(
@@ -60,6 +56,14 @@ export function AcaoMapPins() {
           })),
         );
 
+        // --- INÍCIO DA CORREÇÃO ---
+        // 1. Crie o objeto no formato AcaoDetailsModel
+        const acaoDetails: AcaoDetailsModel = {
+          acao: a, // A propriedade 'acao' recebe o objeto 'a' (AcaoInMap)
+          denuncias: denunciasVinculadas, // A propriedade 'denuncias' recebe a lista que você filtrou
+        };
+        // --- FIM DA CORREÇÃO ---
+
         return (
           <div key={`acao-group-${a.id}`}>
             <Marker
@@ -67,11 +71,9 @@ export function AcaoMapPins() {
               position={[a.latitude, a.longitude]}
               icon={handleGetActionIcon(a)}
               eventHandlers={{
-                click: () => handleOnAcaoClick(a),
+                click: () => handleOnAcaoClick(acaoDetails),
               }}
-            >
-              {!salvarAcaoOnclick && <AcaoTooltip acao={a} />}
-            </Marker>
+            ></Marker>
 
             {denunciasVinculadas.length > 0 && (
               <AcaoPolygon coordinates={acaoPolygonCoords} />

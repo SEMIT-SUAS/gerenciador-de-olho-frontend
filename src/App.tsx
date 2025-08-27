@@ -1,25 +1,14 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { DashboardPage } from './pages/DashboardPage';
-import LoginPage from './pages/LoginPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
-import { DenunciasList } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciasList';
-import { DenunciaDetails } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciaDetails';
-import { AddDenuncia } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/AddDenuncia';
-import { IndeferirDenuncia } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/IndeferirDenuncia';
-import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/VincularDenunciaAAcao';
-import { AcoesList } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcoesList';
-import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcaoDetails';
-import { AddAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/AddAcao';
-import { VincularAcaoADenuncias } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoADenuncias';
 import { ServicoDetalhes } from './pages/ServicosPage/components/ServicoDetalhes';
+import LoginPage from './pages/LoginPage';
 import ServicoEditarPage from './pages/ServicosPage/components/ServicoEditar';
 import ServicoNovo from './pages/ServicosPage/components/ServicoNovo';
 import { ServicesPage } from './pages/ServicosPage';
 import { NotFoundPage } from './pages/404';
-import { IndeferirAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/IndefirirAcao';
-import { ConcluirAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/ConcluirAcao';
 import { BannersPage } from './pages/BannersPage';
 import { Toaster } from 'sonner';
 import { CategoriasPage } from './pages/CategoriaServicoPage';
@@ -32,50 +21,44 @@ import { SecretariaPage } from './pages/SecretariasPage';
 import { PersonasPage } from './pages/PersonasPage';
 import { UsuariosPage } from './pages/UsuarioPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { FiltersProvider } from './context/FiltersContext';
+import { MapActionsProvider } from './context/MapActions';
+import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/AcaoDetails';
+import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/VincularDenunciaAAcao';
+import { CriarAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/CriarAcao';
+import { VincularAcaoView } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoView';
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-
+        <Route index path="/login" element={<LoginPage />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/" element={<DashboardPage />} />
 
           <Route
             path="/ocorrencias"
             element={
-              <OcorrenciasProvider>
-                <OcorrenciasPage />
-              </OcorrenciasProvider>
+              <MapActionsProvider>
+                <FiltersProvider>
+                  <OcorrenciasProvider>
+                    <OcorrenciasPage />
+                  </OcorrenciasProvider>
+                </FiltersProvider>
+              </MapActionsProvider>
             }
           >
-            <Route index element={<Navigate to="denuncias" replace />} />
             <Route path="denuncias">
-              <Route index element={<DenunciasList />} />
-              <Route path=":denunciaId" element={<DenunciaDetails />} />
-              <Route path="add" element={<AddDenuncia />} />
               <Route
-                path=":denunciaId/indeferir"
-                element={<IndeferirDenuncia />}
-              />
-              <Route
-                path=":denunciaId/vincular-acao"
+                path=":id/vincular-denuncia"
                 element={<VincularDenunciaAAcao />}
               />
             </Route>
 
             <Route path="acoes">
-              <Route index element={<AcoesList />} />
-              <Route path=":acaoId" element={<AcaoDetails />} />
-              <Route path="add" element={<AddAcao />} />
-              <Route path=":acaoId/indeferir" element={<IndeferirAcao />} />
-              <Route
-                path=":acaoId/vincular-denuncias"
-                element={<VincularAcaoADenuncias />}
-              />
-              <Route path=":acaoId/concluir" element={<ConcluirAcao />} />
+              <Route path=":id" element={<AcaoDetails />} />
+              <Route path="criar" element={<CriarAcao />} />
+              <Route path=":id/vincular-acao" element={<VincularAcaoView />} />
             </Route>
           </Route>
 
@@ -90,7 +73,6 @@ export function App() {
 
           <Route path="/portais" element={<PortaisPage />} />
           <Route path="/banners" element={<BannersPage />} />
-
           <Route path="/espacos-publicos">
             <Route index element={<EspacosPublicosPage />} />
             <Route path="add" element={<AddEspacoPublicoPage />} />
@@ -104,6 +86,7 @@ export function App() {
 
           <Route path="/personas" element={<PersonasPage />} />
           <Route path="/usuarios" element={<UsuariosPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

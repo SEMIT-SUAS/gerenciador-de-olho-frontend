@@ -9,7 +9,7 @@ import {
   // DialogTrigger,
 } from '@/components/ui/dialog';
 import type { PortaisSchema } from './PortaisForm/portaisSchema';
-import PortaisService from '@/services/PortaisService';
+import { portalService } from '@/services/PortaisService';
 import { toast } from 'sonner';
 import type { Portais } from '@/types/Portais';
 
@@ -30,7 +30,7 @@ export function AddPortalModal({
     try {
       setIsSubmitting(true);
 
-      const newPortal = await PortaisService.createPortal(data);
+      const newPortal = await portalService.create(data);
 
       setPortais((prev) => {
         if (!prev) return [newPortal];

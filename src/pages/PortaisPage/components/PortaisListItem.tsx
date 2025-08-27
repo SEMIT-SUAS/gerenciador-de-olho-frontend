@@ -12,10 +12,7 @@ import {
   IconTrash,
 } from '@tabler/icons-react';
 
-import {
-  toggleAtivo,
-  changeServiceVisibility,
-} from '@/services/PortaisService';
+import { portalService } from '@/services/PortaisService';
 
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { EditPortalModal } from './EditPortalModal';
@@ -33,7 +30,7 @@ export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
 
   async function handleToggleAtivo() {
     try {
-      await toggleAtivo(portal.id!, !portal.ativo);
+      await portalService.toggleAtivo(portal.id!, !portal.ativo);
 
       setPortais((prev) => {
         if (!prev) return prev;
@@ -53,7 +50,7 @@ export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {
 
   async function handleToggleVisibilidade() {
     try {
-      await changeServiceVisibility(portal.id!, !portal.visivel);
+      await portalService.toggleVisibility(portal.id!, !portal.visivel);
 
       setPortais((prev) => {
         if (!prev) return prev;

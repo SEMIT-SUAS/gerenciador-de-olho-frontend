@@ -4,7 +4,7 @@ import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { useState } from 'react';
 import type { Secretaria } from '@/types/Secretaria'; // ajuste para o caminho correto
 import type { Dispatch, SetStateAction } from 'react';
-import secretariasService from '@/services/secretariaService'; // você precisa ter isso
+import { secretariaService } from '@/services/secretariaService'; // você precisa ter isso
 import { toast } from 'react-toastify';
 
 interface SecretariaListItemProps {
@@ -21,7 +21,7 @@ export function SecretariaListItem({
   async function handleDeleteSecretaria() {
     try {
       // Aqui você pode ajustar a lógica: deletar, desativar ou ocultar
-      await secretariasService.deleteSecretaria(secretaria.id); // ou desativar()
+      await secretariaService.delete(secretaria.id); // ou desativar()
 
       setSecretarias((prev) => prev.filter((s) => s.id !== secretaria.id));
     } catch (error) {

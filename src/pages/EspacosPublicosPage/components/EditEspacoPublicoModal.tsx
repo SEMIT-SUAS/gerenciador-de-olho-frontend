@@ -3,7 +3,7 @@ import { LayoutPage } from '../../../components/LayoutPage';
 import { EditEspacoPublicoForm } from '@/pages/EspacosPublicosPage/components/EditEspacoPublicoForm';
 import { useEffect, useState } from 'react';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
-import espacoPublicoService from '@/services/espacoPublicoService';
+import { espacoPublicoService } from '@/services/espacoPublicoService';
 
 export function EditEspacoPublicoPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +16,7 @@ export function EditEspacoPublicoPage() {
 
   useEffect(() => {
     espacoPublicoService
-      .get(espacoPublicoId)
+      .getById(espacoPublicoId)
       .then((data) => {
         setEspacoPublico(data);
         setIsLoading(false);

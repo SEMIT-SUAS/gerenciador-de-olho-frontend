@@ -1,11 +1,16 @@
-import { API_BASE_URL } from '@/config/api';
+import { api } from '@/config/api';
 
-export function getAPIFileURL(filePath: string) {
-  const fileName = filePath.split('uploads/').pop();
-
-  if (!fileName) {
-    throw new Error('Invalid file path');
+export function getAPIFileURL(filePath: string | null | undefined): string {
+  if (!filePath) {
+    return '';
   }
 
-  return `${API_BASE_URL}/arquivo/upload/${fileName}`;
+  const parts = filePath.split('uploads/');
+  const fileName = parts.length > 1 ? parts.pop() : parts[0];
+
+  if (!fileName) {
+    return '';
+  }
+
+  return `/${fileName}`;
 }

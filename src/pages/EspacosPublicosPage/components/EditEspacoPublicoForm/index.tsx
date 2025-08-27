@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { SelectLocationInMap } from '../../../../components/SelectLocationInMap';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import denunciasService from '@/services/denunciasService';
+import { AddressService } from '@/services/AddressService';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
 import {
   EditEspacoPublicoFormSchema,
@@ -51,8 +51,7 @@ export function EditEspacoPublicoForm({
 
   useEffect(() => {
     if (position) {
-      denunciasService
-        .getAddressByCoordinates(position[0], position[1])
+      AddressService.getAddressByCoordinates(position[0], position[1])
         .then((addressData) => {
           form.setValue('addressRua', addressData.rua);
           form.setValue('addressBairro', addressData.bairro);

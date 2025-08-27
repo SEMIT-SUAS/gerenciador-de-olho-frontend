@@ -4,7 +4,8 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import type { Persona } from '@/types/Persona';
-import { changePersonaAtivo } from '@/services/servicoPersona';
+import { personaService } from '@/services/personaService';
+
 import { PersonaVisibility } from './PersonaVisibility';
 
 interface PersonaListItemProps {
@@ -22,7 +23,7 @@ export function PersonaListItem({
 
   async function handleDeletePersona() {
     try {
-      await changePersonaAtivo(persona.id, false);
+      await personaService.toggleAtivo(persona.id, false);
 
       setPersonas((prev) => {
         if (!prev) return prev;
@@ -34,7 +35,6 @@ export function PersonaListItem({
 
       toast.success('Persona desativada com sucesso!');
     } catch (error: any) {
-      console.log(error);
       toast.error('Erro ao desativar persona');
     }
 

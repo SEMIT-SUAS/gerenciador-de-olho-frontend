@@ -7,21 +7,22 @@ import {
   type ReactNode,
   type SetStateAction,
 } from 'react';
-import type { AcaoModel } from '../types/Acao';
-import { type DenunciaModel } from '../types/Denuncia';
+import type { AcaoDetailsModel, AcaoInMap, AcaoModel } from '../types/Acao';
+import { type DenunciaInMap, type DenunciaModel } from '../types/Denuncia';
+import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 
 type SelectAcoesOuDenunciasProps = {
   salvarDenunciasOnclick: boolean;
   setSalvarDenunciasOnClick: Dispatch<SetStateAction<boolean>>;
   salvarAcaoOnclick: boolean;
   setSalvarAcaoOnclick: Dispatch<SetStateAction<boolean>>;
-  acaoSelecionada: AcaoModel | null;
-  setAcaoSelecionada: Dispatch<SetStateAction<AcaoModel | null>>;
-  denunciasSelecionas: DenunciaModel[];
-  setDenunciasSelecionadas: Dispatch<SetStateAction<DenunciaModel[]>>;
+  acaoSelecionada: AcaoInMap | null;
+  setAcaoSelecionada: Dispatch<SetStateAction<AcaoInMap | null>>;
+  denunciasSelecionadas: DenunciaInMap[];
+  setDenunciasSelecionadas: Dispatch<SetStateAction<DenunciaInMap[]>>;
   disableMapFilters: boolean;
   setDisableMapFilters: Dispatch<SetStateAction<boolean>>;
-  addDenunciaNaSelecao: (newDenuncia: DenunciaModel) => void;
+  toggleDenunciaSelecionadas: (newDenuncia: DenunciaInMap) => void;
   denunciasJaVinculadas: DenunciaModel[];
   setDenunciasJaVinculadas: Dispatch<SetStateAction<DenunciaModel[]>>;
   isSelectingNewDenuncia: boolean;
@@ -30,12 +31,19 @@ type SelectAcoesOuDenunciasProps = {
   setZoomTo: Dispatch<SetStateAction<Coordinates | null>>;
   newDenunciaCoordinates: Coordinates | null;
   setNewDenunciaCoordinates: Dispatch<SetStateAction<Coordinates | null>>;
-  toggleAcaoSelecionada: (acao: AcaoModel) => void;
+  toggleAcaoSelecionada: (acao: AcaoDetailsModel) => void;
+  currentBairroId: number | null;
+  setCurrentBairroId: Dispatch<SetStateAction<number | null>>;
+  numberDenunciasInMap: NumeroDeDenunciasPorBairro[];
+  setNumberDenunciasInMap: Dispatch<
+    SetStateAction<NumeroDeDenunciasPorBairro[]>
+  >;
 };
 
 type Coordinates = {
   lat: number;
   lng: number;
+  level: number;
 };
 
 const MapActionsContext = createContext<
@@ -43,15 +51,17 @@ const MapActionsContext = createContext<
 >(undefined);
 
 export function MapActionsProvider({ children }: { children: ReactNode }) {
+  const [currentBairroId, setCurrentBairroId] = useState<null | number>(null);
+
   const [disableMapFilters, setDisableMapFilters] = useState(false);
   const [salvarDenunciasOnclick, setSalvarDenunciasOnClick] = useState(false);
   const [salvarAcaoOnclick, setSalvarAcaoOnclick] = useState(false);
 
-  const [acaoSelecionada, setAcaoSelecionada] = useState<AcaoModel | null>(
+  const [acaoSelecionada, setAcaoSelecionada] = useState<AcaoInMap | null>(
     null,
   );
-  const [denunciasSelecionas, setDenunciasSelecionadas] = useState<
-    DenunciaModel[]
+  const [denunciasSelecionadas, setDenunciasSelecionadas] = useState<
+    DenunciaInMap[]
   >([]);
 
   const [isSelectingNewDenuncia, setIsSelectingNewDenuncia] = useState(false);
@@ -62,6 +72,10 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   const [newDenunciaCoordinates, setNewDenunciaCoordinates] =
     useState<null | Coordinates>(null);
 
+  const [numberDenunciasInMap, setNumberDenunciasInMap] = useState<
+    NumeroDeDenunciasPorBairro[]
+  >([]);
+
   const value: SelectAcoesOuDenunciasProps = {
     salvarDenunciasOnclick,
     setSalvarDenunciasOnClick,
@@ -69,11 +83,11 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     setSalvarAcaoOnclick,
     acaoSelecionada,
     setAcaoSelecionada,
-    denunciasSelecionas,
+    denunciasSelecionadas,
     setDenunciasSelecionadas,
     disableMapFilters,
     setDisableMapFilters,
-    addDenunciaNaSelecao,
+    toggleDenunciaSelecionadas,
     denunciasJaVinculadas,
     setDenunciasJaVinculadas,
     isSelectingNewDenuncia,
@@ -83,6 +97,10 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     newDenunciaCoordinates,
     setNewDenunciaCoordinates,
     toggleAcaoSelecionada,
+    currentBairroId,
+    setCurrentBairroId,
+    numberDenunciasInMap,
+    setNumberDenunciasInMap,
   };
 
   useEffect(() => {
@@ -91,8 +109,8 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     );
   }, [salvarAcaoOnclick, salvarDenunciasOnclick]);
 
-  function addDenunciaNaSelecao(newDenuncia: DenunciaModel) {
-    if (denunciasSelecionas.find((d) => d.id == newDenuncia.id)) {
+  function toggleDenunciaSelecionadas(newDenuncia: DenunciaInMap) {
+    if (denunciasSelecionadas.find((d) => d.id == newDenuncia.id)) {
       setDenunciasSelecionadas((denuncias) =>
         denuncias.filter((d) => d.id !== newDenuncia.id),
       );
@@ -101,11 +119,11 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function toggleAcaoSelecionada(acao: AcaoModel) {
-    if (acaoSelecionada?.id === acao.id) {
+  function toggleAcaoSelecionada(acao: AcaoDetailsModel) {
+    if (acaoSelecionada?.id === acao.acao.id) {
       setAcaoSelecionada(null);
     } else {
-      setAcaoSelecionada(acao);
+      setAcaoSelecionada(acao.acao);
     }
   }
 

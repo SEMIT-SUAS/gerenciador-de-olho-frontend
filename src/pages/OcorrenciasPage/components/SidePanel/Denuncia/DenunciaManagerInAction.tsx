@@ -1,24 +1,45 @@
 import { FaExternalLinkAlt, FaTrashAlt } from 'react-icons/fa';
-import type { DenunciaModel } from '../../../../../types/Denuncia';
+import type {
+  DenunciaBasicInfoModel,
+  DenunciaModel,
+} from '../../../../../types/Denuncia';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
 import { useState } from 'react';
-import { useOcorrencias } from '../../../../../context/OcorrenciasContext';
-import denunciasService from '../../../../../services/denunciasService';
+// import { useOcorrencias } from '../../../../../context/OcorrenciasContext';
+// import denunciasService from '../../../../../services/DenunciaService';
 import { getPolygonoCenter } from '@/utils/geometry';
-import { toast } from 'react-toastify';
+import { DenunciaService } from '@/services/DenunciaService';
+import { toast } from 'sonner';
+import type { EnderecoModel } from '@/types/Endereco';
 
 type DenunciaManageInActionProps = {
-  denuncia: DenunciaModel;
+  denuncia: DenunciaBasicInfoModel;
   allowDisvincularItem: boolean;
+  onDisvincular: (denunciaId: number) => void; // <-- 1. Adicionar o callback
+};
+
+const formatarEndereco = (
+  endereco: string | EnderecoModel | undefined,
+): string => {
+  if (!endereco) {
+    return 'Endereço não informado';
+  }
+  if (typeof endereco === 'string') {
+    return endereco;
+  }
+  if (typeof endereco === 'object' && endereco.rua) {
+    return `${endereco.rua}, ${endereco.bairro}`;
+  }
+  return 'Endereço inválido';
 };
 
 export function DenunciaManageInAction({
   denuncia,
   allowDisvincularItem,
+  onDisvincular,
 }: DenunciaManageInActionProps) {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
-  const { setDenuncias, setAcoes } = useOcorrencias();
   const navigate = useNavigate();
 
   function handleShowDenunciaDetails() {
@@ -27,50 +48,26 @@ export function DenunciaManageInAction({
 
   async function handleDeleteDenunciaFromAction() {
     try {
-      const updatedDenunciaData =
-        await denunciasService.desvincularDenunciaAcao(denuncia.id);
+      setIsOpenConfirmationModal(false); // Fechar modal
+      await DenunciaService.desvincularAcao(denuncia.id);
 
-      setDenuncias((prevDenuncias) => {
-        const newDenuncias = prevDenuncias.map((d) =>
-          d.id === denuncia.id ? updatedDenunciaData : d,
-        );
+      onDisvincular(denuncia.id);
 
-        const updatedDenunciasVinculadas = newDenuncias.filter(
-          (d) => d.acao?.id === denuncia.acao?.id,
-        );
-
-        const actionCenter = getPolygonoCenter(
-          updatedDenunciasVinculadas.map((d) => [d.latitude, d.longitude]),
-        );
-
-        setAcoes((prevAcoes) =>
-          prevAcoes.map((a) =>
-            a.id === denuncia.acao?.id
-              ? { ...a, latitude: actionCenter[0], longitude: actionCenter[1] }
-              : a,
-          ),
-        );
-
-        return newDenuncias;
-      });
-    } catch (error) {
-      console.error('Erro ao desvincular denúncia:', error);
-      toast.error('Erro ao desvincular denúncia.');
+      toast.success('Denúncia desvinculada com sucesso!');
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao desvincular a denúncia.');
     }
   }
 
   return (
     <>
       <div
-        aria-label={`Ver detalhes da denúncia ${denuncia.tipo.nome}`}
+        aria-label={`Ver detalhes da denúncia ${denuncia.nomeTipoDenuncia}`}
         className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-left transition-all  hover:shadow-md focus:outline-none"
       >
         <div className="flex flex-col">
-          <p className="font-semibold text-md text-gray-800">
-            {denuncia.tipo.nome}
-          </p>
           <p className="text-xs text-gray-500">
-            {denuncia.rua}, {denuncia.bairro}
+            {formatarEndereco(denuncia.endereco)},
           </p>
         </div>
 
@@ -86,7 +83,7 @@ export function DenunciaManageInAction({
           {allowDisvincularItem && (
             <button
               onClick={() => setIsOpenConfirmationModal(true)}
-              aria-label={`Desvincular denúncia ${denuncia.tipo}`}
+              aria-label={`Desvincular denúncia ${denuncia.nomeTipoDenuncia}`}
               className="cursor-pointer rounded-full p-2 text-gray-400 transition-colors hover:bg-red-100 hover:text-red-600"
             >
               <FaTrashAlt />

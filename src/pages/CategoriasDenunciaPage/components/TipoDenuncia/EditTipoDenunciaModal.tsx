@@ -8,7 +8,7 @@ import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { TipoDenunciaForm } from './TipoDenunciaForm/TipoDenunciaForm';
 import { type TipoDenunciaFormValues } from './TipoDenunciaForm/tipoDenunciaSchema';
-import tiposDenunciaService from '@/services/tiposDenunciaService';
+import { tipoDenunciaService } from '@/services/tiposDenunciaService';
 import { toast } from 'react-toastify';
 import type { Secretaria } from '@/types/Secretaria';
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
@@ -45,9 +45,6 @@ export function EditTipoDenunciaModal({
       (c) => c.nome === tipoParaEditar.categoria,
     );
 
-    console.log('Secretaria Encontrada:', secretariaEncontrada);
-    console.log('Categoria Encontrada:', categoriaEncontrada);
-
     return {
       nome: tipoParaEditar.nome,
       secretariaId: secretariaEncontrada!.id,
@@ -64,22 +61,15 @@ export function EditTipoDenunciaModal({
       setIsSubmitting(true);
 
       const formData = new FormData();
-
       formData.append('nome', data.nome);
-
       formData.append('secretaria_id', String(data.secretariaId));
       formData.append('categoria_denuncia_id', String(data.categoriaId));
       formData.append('cor', data.cor);
-
       formData.append('icone', data.icone);
-
       formData.append('visivel', String(data.visivel));
-
       formData.append('ativo', String(data.ativo));
 
-      console.log(Object.fromEntries(formData.entries()));
-
-      const newTipo = await tiposDenunciaService.updateTipoDenuncia(formData);
+      const newTipo = await tipoDenunciaService.update(formData);
 
       if (setTipos) {
         setTipos((prev) => [...prev, newTipo]);

@@ -4,10 +4,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { getServicoSchema } from './schemaServicoExterno';
 import { z } from 'zod';
-import {
-  updateServicoExterno,
-  uploadServicoExterno,
-} from '@/services/servicosExternosService';
+import { servicoExternoService } from '@/services/servicosExternosService';
 import type { ServicoExterno } from '@/types/ServicoExterno';
 
 import { Button } from '@/components/ui/button';
@@ -72,7 +69,7 @@ export function FormServicoExterno({
           formData.append('imagem', data.imagem);
         }
 
-        const resultado = await uploadServicoExterno(formData);
+        const resultado = await servicoExternoService.create(formData);
         toast.success('Serviço cadastrado com sucesso!');
         onSuccess(resultado);
       } else if (mode === 'edit' && defaultValues?.id) {
@@ -82,7 +79,7 @@ export function FormServicoExterno({
           formData.append('imagem', data.imagem);
         }
 
-        await updateServicoExterno(formData);
+        await servicoExternoService.update(formData);
 
         toast.success('Serviço atualizado com sucesso!');
         onSuccess({

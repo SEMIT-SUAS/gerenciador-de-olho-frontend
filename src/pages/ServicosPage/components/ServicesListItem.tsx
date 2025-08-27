@@ -1,4 +1,4 @@
-import servicosServices from '@/services/servicosServices';
+import { servicoService } from '@/services/servicosServices';
 import type { ServicosListar } from '@/types/ServicosListar';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'sonner';
@@ -23,7 +23,7 @@ export function ServicesListItem({
 
   async function handleDeleteServico() {
     try {
-      await servicosServices.changeServiceAtivo(servico.id, false);
+      await servicoService.toggleAtivo(servico.id, false);
 
       setServicos((prev) => {
         if (!prev) return prev;

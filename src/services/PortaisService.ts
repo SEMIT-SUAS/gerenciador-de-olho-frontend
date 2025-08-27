@@ -1,101 +1,86 @@
-import type { CreatePortal, Portais } from "../types/Portais";
-import { API_BASE_URL } from "../config/api";
+import { api } from '@/config/api'; // Importa a instância configurada do Axios
+import type { CreatePortal, Portais } from '@/types/Portais';
+import { BaseServiceClass } from './BaseServiceClass'; // Supondo o uso de uma classe base
 
+export class PortalService extends BaseServiceClass {
+  // Erros específicos para o serviço de Portais
+  protected readonly getAllError = new Error(
+    'Não foi possível listar os portais.',
+  );
+  protected readonly createError = new Error(
+    'Não foi possível criar o portal.',
+  );
+  protected readonly updateError = new Error(
+    'Não foi possível atualizar o portal.',
+  );
+  protected readonly serviceUnavailableError = new Error(
+    'Serviço indisponível. Tente novamente mais tarde.',
+  );
 
-export async function getAllPortais(): Promise<Portais[]> {
-  try{
-      const response = await fetch(`${API_BASE_URL}/portal/listar-ativos`, {
-          method: 'GET',
-      })
-
-      if(!response.ok){
-          throw new Error('Não foi possível listar os serviços.')
-      }
-
-      return await response.json()
-  } catch (error){
-      throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde')
-  }    
-}
-
-export async function createPortal(portal: CreatePortal): Promise<Portais> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/portal/cadastrar`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(portal),
-      })
-      
-    if (response.status != 201){
-      throw new Error('Não foi possível salvar serviço')
+  /**
+   * Lista todos os portais ativos.
+   */
+  public async getAll(): Promise<Portais[]> {
+    try {
+      const response = await api.get<Portais[]>('/portal/listar-ativos');
+      return response.data;
+    } catch (error) {
+      throw this.getAllError;
     }
-    
-      return await response.json()
-  } catch (error){
-      throw new Error('Infelizmente ocorreu um erro no servidor. Tente novamente')
-  }    
-}
+  }
 
-export async function toggleAtivo(id: number, ativo: boolean): Promise<void> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/portal/atualizar/atividade`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, ativo }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Erro ao alterar status ativo: ${response.status} - ${response.statusText}`);
+  /**
+   * Cria um novo portal.
+   * @param portal Os dados do portal a ser criado.
+   */
+  public async create(portal: CreatePortal): Promise<Portais> {
+    try {
+      const response = await api.post<Portais>('/portal/cadastrar', portal);
+      return response.data;
+    } catch (error) {
+      throw this.createError;
     }
-  } catch (error) {
-    console.error('Erro na requisição toggleAtivo:', error);
-    throw error;
+  }
+
+  /**
+   * Atualiza um portal existente.
+   * @param portal Os dados do portal a serem atualizados.
+   */
+  public async update(portal: Portais): Promise<Portais> {
+    try {
+      const response = await api.put<Portais>('/portal/atualizar', portal);
+      return response.data;
+    } catch (error) {
+      throw this.updateError;
+    }
+  }
+
+  /**
+   * Ativa ou desativa um portal.
+   * @param id O ID do portal.
+   * @param ativo O novo estado de atividade.
+   */
+  public async toggleAtivo(id: number, ativo: boolean): Promise<void> {
+    try {
+      await api.put('/portal/atualizar/atividade', { id, ativo });
+    } catch (error) {
+      throw this.updateError;
+    }
+  }
+
+  /**
+   * Altera a visibilidade de um portal.
+   * @param id O ID do portal.
+   * @param visivel O novo estado de visibilidade.
+   */
+  public async toggleVisibility(id: number, visivel: boolean): Promise<void> {
+    try {
+      await api.put('/portal/atualizar/visibilidade', { id, visivel });
+    } catch (error) {
+      throw this.updateError;
+    }
   }
 }
 
-export async function changeServiceVisibility(id: number, visivel: boolean): Promise<void> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/portal/atualizar/visibilidade`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, visivel }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Erro ao alterar status de visibilidade: ${response.status} - ${response.statusText}`);
-    }
-  } catch (error) {
-    console.error('Erro na requisição changeServiceVisibility:', error);
-    throw error;
-  }
-}
-
-export async function updatePortal(portal: Portais): Promise<Portais> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/portal/atualizar`, {
-      method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(portal)
-    });
-
-    console.log(response)
-
-    if(!response.ok) {
-      throw new Error(`Erro ao modificar o portal: ${response.status} - ${response.statusText}`)
-    }
-
-   return await response.json();
-
-  } catch (error) {
-    console.error('Erro na requisição updatePortal:', error);
-    throw error;
-  }
-}
-
-export default {
-  getAllPortais,
-  createPortal,
-  changeServiceVisibility,
-  toggleAtivo,
-  updatePortal
-}
+// Exporta uma instância única (Singleton) do serviço.
+export const portalService = new PortalService();
