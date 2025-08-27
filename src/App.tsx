@@ -33,9 +33,7 @@ export function App() {
     <BrowserRouter>
       <Routes>
         <Route index path="/login" element={<LoginPage />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<DashboardPage />} />
-
+        <Route path="/" element={<ProtectedRoute />}>
           <Route
             path="/ocorrencias"
             element={
@@ -86,10 +84,10 @@ export function App() {
 
           <Route path="/personas" element={<PersonasPage />} />
           <Route path="/usuarios" element={<UsuariosPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          {/* <Route path="*" element={<NotFoundPage />} /> */}
         </Route>
 
-        <Route path="*" element={<NotFoundPage />} />
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
 
       <ToastContainer />
