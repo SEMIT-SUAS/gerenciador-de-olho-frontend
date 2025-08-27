@@ -17,13 +17,19 @@ import type { Secretaria } from '@/types/Secretaria';
 import { AddTipoDenunciaModal } from './components/TipoDenuncia/AddTipoDenunciaModal';
 import { EditTipoDenunciaModal } from './components/TipoDenuncia/EditTipoDenunciaModal';
 import { AddCategoriaModal } from './components/CategoriaDenuncia/AddCategoriaModal';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export function DenunciaCategoriasPage() {
   const [categorias, setCategorias] = useState<CategoriaDenunciaModel[] | null>(
     null,
   );
   const [tipos, setTipos] = useState<TipoDenunciaModel[]>([]);
-  const [activeTab, setActiveTab] = useState('categorias');
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const queryParams = new URLSearchParams(location.search);
+  const activeTab = queryParams.get('tab') || 'categorias';
 
   const [isOpenAddCategoriaModal, setIsOpenAddCategoriaModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,6 +41,25 @@ export function DenunciaCategoriasPage() {
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [tipoParaEditar, setTipoParaEditar] =
     useState<TipoDenunciaModel | null>(null);
+
+  useEffect(() => {
+    loadDenunciaCategories();
+    loadDenunciaTipos();
+    loadSecretarias();
+  }, []);
+
+  useEffect(() => {
+    const tabFromUrl = queryParams.get('tab');
+    if (!tabFromUrl || !['categorias', 'tipos'].includes(tabFromUrl)) {
+      navigate(`${location.pathname}?tab=categorias`, { replace: true });
+    }
+  }, [location.search, location.pathname, navigate, queryParams]);
+
+  const handleTabChange = (newTab: string) => {
+    navigate(`${location.pathname}?tab=${newTab}`);
+    setSearchTerm('');
+    setCurrentPage(1);
+  };
 
   const handleOpenEditModal = (tipo: TipoDenunciaModel) => {
     setTipoParaEditar(tipo);
@@ -66,17 +91,14 @@ export function DenunciaCategoriasPage() {
     }
   }
 
-  useEffect(() => {
-    loadDenunciaCategories();
-    loadDenunciaTipos();
-
-    secretariaService
-      .getAll()
-      .then((data) => {
-        setSecretarias(data);
-      })
-      .catch((error: any) => toast.error(error.message));
-  }, []);
+  async function loadSecretarias() {
+    try {
+      const data = await secretariaService.getAll();
+      setSecretarias(data);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
 
   const filteredCategorias = categorias?.filter((categoria) =>
     categoria.nome.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -106,40 +128,23 @@ export function DenunciaCategoriasPage() {
   return (
     <>
       <LayoutPage>
-        {/*
-          ANTES: <div className="flex flex-col gap-6 py-8 px-36">
-          DEPOIS: Adicionamos padding para mobile e o original para telas grandes.
-        */}
         <div className="flex flex-col gap-6 px-4 py-8 lg:px-36">
-          {/*
-            ANTES: <div className="w-[50%]">
-            DEPOIS: Largura total no mobile, 50% em telas grandes.
-          */}
           <div className="w-full lg:w-[50%]">
-            {activeTab === 'categorias' ? (
-              <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                Categorias de denúncia
-              </h3>
-            ) : (
-              <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                Tipos de denúncia
-              </h3>
-            )}
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+              {activeTab === 'categorias'
+                ? 'Categorias de denúncia'
+                : 'Tipos de denúncia'}
+            </h3>
             <p className="text-slate-600 text-xs">
               Gerencie com precisão todas as categorias de uma denúncia.
             </p>
           </div>
 
-          {/*
-            ANTES: <div className="flex items-center justify-between gap-4">
-            DEPOIS: Empilhado no mobile, horizontal a partir de telas médias.
-          */}
           <div className="flex flex-col items-stretch gap-6 md:flex-row md:items-center md:justify-between">
-            {/* O conteúdo aqui não precisa mudar, apenas o container pai */}
             <div className="relative w-full md:w-auto">
               <Tabs
                 value={activeTab}
-                onValueChange={(value) => setActiveTab(value)}
+                onValueChange={handleTabChange}
                 className="w-full md:w-[400px]"
               >
                 <TabsList className="grid w-full grid-cols-2">
@@ -160,7 +165,7 @@ export function DenunciaCategoriasPage() {
                 }}
               />
               <Button
-                className="flex items-center justify-center gap-2" // Adicionado justify-center
+                className="flex items-center justify-center gap-2"
                 onClick={() => {
                   activeTab === 'categorias'
                     ? setIsOpenAddCategoriaModal(true)
@@ -175,7 +180,6 @@ export function DenunciaCategoriasPage() {
             </div>
           </div>
 
-          {/* O restante do seu código permanece o mesmo */}
           {activeTab === 'categorias' ? (
             <CategoriasDenunciaList
               itemsPerPage={itemsPerPage}
