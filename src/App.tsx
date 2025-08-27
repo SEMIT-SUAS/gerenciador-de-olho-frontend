@@ -49,7 +49,6 @@ export function App() {
             }
           >
             <Route path="denuncias">
-              <Route path=":id" element={<DenunciaDetails />} />
               <Route
                 path=":id/vincular-denuncia"
                 element={<VincularDenunciaAAcao />}
