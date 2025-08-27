@@ -1,5 +1,5 @@
-import { api } from '@/lib/axios.ts';
 import { AxiosError } from 'axios';
+import { api } from '@/config/api.ts';
 
 import type {
   DenunciaBasicInfoModel,
@@ -26,7 +26,8 @@ export class DenunciaService {
       if (response.status != 200) {
         throw new Error('Não foi possível buscar as denúncias.');
       }
-      return JSON.parse(response.data);
+      // return JSON.parse(response.data);
+      return response.data;
     } catch (error) {
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
@@ -35,7 +36,7 @@ export class DenunciaService {
   public static async getById(denunciaId: number): Promise<DenunciaModel> {
     try {
       const response = await api.get(
-        `/denuncia/gerenciador/buscar-denuncia/${denunciaId}`,
+        `/denuncia/buscar-denuncia/${denunciaId}`,
         {
           responseType: 'json',
         },
@@ -45,7 +46,8 @@ export class DenunciaService {
         throw new Error('Não foi possível buscar essa denúncia.');
       }
 
-      return JSON.parse(response.data);
+      // return JSON.parse(response.data);
+      return response.data;
     } catch (error) {
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
@@ -56,7 +58,7 @@ export class DenunciaService {
   ): Promise<string[]> {
     try {
       const response = await api.get<string[]>(
-        `/denuncia/arquivos/gerenciador/uploads/${denunciaId}`,
+        `/denuncia/arquivos/uploads/${denunciaId}`,
       );
       return response.data;
     } catch (error) {
@@ -73,18 +75,16 @@ export class DenunciaService {
     secretaria: number,
   ): Promise<NumeroDeDenunciasPorBairro[]> {
     try {
-      const response = await api.get(
-        '/denuncia/gerenciador/contador-denuncias-bairro',
-        {
-          params: {
-            status,
-            secretaria,
-          },
-          responseType: 'json',
+      const response = await api.get('/denuncia/contador-denuncias-bairro', {
+        params: {
+          status,
+          secretaria,
         },
-      );
+        responseType: 'json',
+      });
 
-      return JSON.parse(response.data) as NumeroDeDenunciasPorBairro[];
+      // return JSON.parse(response.data) as NumeroDeDenunciasPorBairro[];
+      return response.data;
     } catch (error) {
       console.error('Falha ao buscar o número de denúncias no mapa:', error);
       throw this.SERVICE_UNAVAILABLE_ERROR;
@@ -149,7 +149,7 @@ export class DenunciaService {
     'tipo-denuncia': string | null | TipoDenunciaModel;
   }): Promise<DenunciaInMap[]> {
     try {
-      const response = await api.get(`/denuncia/gerenciador/filtro-denuncias`, {
+      const response = await api.get(`/denuncia/filtro-denuncias`, {
         params: data,
         responseType: 'json',
       });
@@ -158,7 +158,8 @@ export class DenunciaService {
         throw new Error('Não foi possível buscar as denúncias por bairro.');
       }
 
-      return JSON.parse(response.data) as DenunciaInMap[];
+      // return JSON.parse(response.data) as DenunciaInMap[];
+      return response.data;
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 404) {
         return [];

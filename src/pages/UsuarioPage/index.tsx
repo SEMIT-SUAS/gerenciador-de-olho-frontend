@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import type { UsuarioModel, UsuarioPorId } from '@/types/Usuario';
 import type { Secretaria } from '@/types/Secretaria';
 import usuarioService from '@/services/usuariosService';
-import { getAllSecretarias } from '@/services/secretariaService';
+import { secretariaService } from '@/services/secretariaService';
 import { toast } from 'sonner';
 
 import { UsuariosList } from '@/pages/UsuarioPage/components/UsuarioList';
@@ -110,7 +110,7 @@ export function UsuariosPage() {
 
       const [usuariosData, secretariasData] = await Promise.all([
         usuarioService.getAllUsuarios(),
-        getAllSecretarias(),
+        secretariaService.getAll(),
       ]);
 
       setUsuarios(usuariosData);

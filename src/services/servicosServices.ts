@@ -1,159 +1,133 @@
-import type { Servicos, UpdateServiceModel } from '../types/Servicos';
-import { API_BASE_URL } from '../config/api';
+import { api } from '@/config/api'; // Importa a instância do Axios
+import type { Servicos, UpdateServiceModel } from '@/types/Servicos';
 import type { ServicosListar } from '@/types/ServicosListar';
+import { BaseServiceClass } from './BaseServiceClass'; // Supondo o uso de uma classe base
 
-export async function getAllServices(): Promise<ServicosListar[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/servico/listar-ativos`, {
-      method: 'GET',
-    });
+export class ServicoService extends BaseServiceClass {
+  // Erros específicos para o serviço de "Serviços"
+  protected readonly getAllError = new Error(
+    'Não foi possível listar os serviços.',
+  );
+  protected readonly getByIdError = new Error(
+    'Não foi possível buscar o serviço.',
+  );
+  protected readonly createError = new Error(
+    'Não foi possível criar o serviço.',
+  );
+  protected readonly updateError = new Error(
+    'Não foi possível atualizar o serviço.',
+  );
+  protected readonly serviceUnavailableError = new Error(
+    'Serviço indisponível. Tente novamente mais tarde.',
+  );
 
-    if (!response.ok) {
-      throw new Error('Não foi possível listar os serviços.');
+  /**
+   * Lista todos os serviços ativos.
+   */
+  public async getAll(): Promise<ServicosListar[]> {
+    try {
+      const response = await api.get<ServicosListar[]>(
+        '/servico/listar-ativos',
+      );
+      return response.data;
+    } catch (error) {
+      throw this.getAllError;
     }
+  }
 
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
+  /**
+   * Lista todos os serviços marcados como visíveis.
+   */
+  public async getAllVisible(): Promise<Servicos[]> {
+    try {
+      const response = await api.get<Servicos[]>('/servico/visiveis');
+      return response.data;
+    } catch (error) {
+      throw this.getAllError;
+    }
+  }
+
+  /**
+   * Busca um serviço específico pelo ID.
+   * @param id O ID do serviço.
+   */
+  public async getById(id: number): Promise<Servicos> {
+    try {
+      const response = await api.get<Servicos>(`/servico/buscar/${id}`);
+      return response.data;
+    } catch (error) {
+      throw this.getByIdError;
+    }
+  }
+
+  /**
+   * Cria um novo serviço.
+   * @param servico Os dados do serviço a ser criado.
+   */
+  public async create(servico: Servicos): Promise<Servicos> {
+    try {
+      const response = await api.post<Servicos>('/servico/cadastrar', servico);
+      return response.data;
+    } catch (error) {
+      throw this.createError;
+    }
+  }
+
+  /**
+   * Atualiza um serviço existente.
+   * @param servico Os dados do serviço a serem atualizados.
+   */
+  public async update(
+    servico: UpdateServiceModel,
+  ): Promise<UpdateServiceModel> {
+    try {
+      const response = await api.put<UpdateServiceModel>(
+        '/servico/atualizar',
+        servico,
+      );
+      return response.data;
+    } catch (error) {
+      throw this.updateError;
+    }
+  }
+
+  /**
+   * Altera a visibilidade de um serviço.
+   * @param id O ID do serviço.
+   * @param visivel O novo estado de visibilidade.
+   */
+  public async toggleVisibility(
+    id: number,
+    visivel: boolean,
+  ): Promise<ServicosListar> {
+    try {
+      const response = await api.put<ServicosListar>(
+        '/servico/atualizar/visibilidade',
+        { id, visivel },
+      );
+      return response.data;
+    } catch (error) {
+      throw this.updateError;
+    }
+  }
+
+  /**
+   * Altera o status de "ativo" de um serviço.
+   * @param id O ID do serviço.
+   * @param ativo O novo estado de atividade.
+   */
+  public async toggleAtivo(id: number, ativo: boolean): Promise<Servicos> {
+    try {
+      const response = await api.put<Servicos>('/servico/atualizar/atividade', {
+        id,
+        ativo,
+      });
+      return response.data;
+    } catch (error) {
+      throw this.updateError;
+    }
   }
 }
 
-export async function createService(servico: Servicos): Promise<Servicos> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/servico/cadastrar`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(servico),
-    });
-
-    if (!response.ok) {
-      throw new Error('Não foi possível salvar serviço');
-    }
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente',
-    );
-  }
-}
-
-export async function updateServico(
-  servico: UpdateServiceModel,
-): Promise<UpdateServiceModel> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/servico/atualizar`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(servico),
-    });
-
-    if (!response.ok) {
-      throw new Error('Não foi possível atualizar serviço');
-    }
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente',
-    );
-  }
-}
-
-export async function getVisibleServicos(): Promise<Servicos[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/servico/visiveis`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error('Não foi possível buscar serviços visiveis');
-    }
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
-    );
-  }
-}
-
-export async function getServicoById(id: number): Promise<Servicos> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/servico/buscar/${id}`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error('Não foi possível buscar serviço');
-    }
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente',
-    );
-  }
-}
-
-export async function changeServiceVisibility(
-  id: number,
-  visivel: boolean,
-): Promise<ServicosListar> {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/servico/atualizar/visibilidade`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id, visivel }),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error('Não foi possível alterar visibilidade do serviço');
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente',
-    );
-  }
-}
-
-export async function changeServiceAtivo(
-  id: number,
-  ativo: boolean,
-): Promise<Servicos> {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/servico/atualizar/atividade`,
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ativo }),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error('Não foi possivel alterar a opção "ativo"');
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Infelizmente ocorreu um erro no servidor. Tente novamente',
-    );
-  }
-}
-
-export default {
-  getAllServices,
-  getVisibleServicos,
-  getServicoById,
-  changeServiceVisibility,
-  createService,
-  updateServico,
-  changeServiceAtivo,
-};
+// Exporta uma instância única (Singleton) do serviço.
+export const servicoService = new ServicoService();

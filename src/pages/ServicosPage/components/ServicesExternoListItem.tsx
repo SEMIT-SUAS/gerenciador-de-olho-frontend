@@ -11,10 +11,7 @@ import {
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import type { ServicoExterno } from '@/types/ServicoExterno';
 
-import {
-  changeServiceExternoAtivo,
-  changeServiceVisibility,
-} from '@/services/servicosExternosService';
+import { servicoExternoService } from '@/services/servicosExternosService';
 
 import { FormServicoExterno } from './ServicosExternosForm/ServicoExternoForm';
 
@@ -36,7 +33,7 @@ export function ServicesExternoListItem({
     setIsProcessing(true);
     try {
       const novoStatus = !servico.ativo;
-      await changeServiceExternoAtivo(servico.id, novoStatus);
+      await servicoExternoService.toggleAtivo(servico.id, novoStatus);
 
       setServicos((prev) =>
         prev.map((s) =>
@@ -63,7 +60,10 @@ export function ServicesExternoListItem({
     try {
       const novaVisibilidade = !servico.visivel;
 
-      await changeServiceVisibility(servico.id, novaVisibilidade);
+      await servicoExternoService.toggleVisibility(
+        servico.id,
+        novaVisibilidade,
+      );
 
       setServicos((prev) =>
         prev.map((s) =>

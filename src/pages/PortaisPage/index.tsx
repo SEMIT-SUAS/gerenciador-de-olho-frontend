@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import type { Portais } from '@/types/Portais'; // Ajuste o caminho se necessário
-import { getAllPortais } from '@/services/PortaisService'; // Ajuste o caminho se necessário
+import { portalService } from '@/services/PortaisService'; // Ajuste o caminho se necessário
 import { toast } from 'sonner';
 
 import { PortaisList } from '@/pages/PortaisPage/components/PortaisList';
@@ -42,7 +42,7 @@ export function PortaisPage() {
   async function fetchPortais() {
     try {
       setLoading(true);
-      const data = await getAllPortais();
+      const data = await portalService.getAll();
       setPortais(data);
     } catch (err: any) {
       const errorMessage = err.message || 'Erro ao buscar os portais.';

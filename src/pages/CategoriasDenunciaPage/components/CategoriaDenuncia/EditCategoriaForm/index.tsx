@@ -21,7 +21,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import categoriaService from '@/services/CategoriaDenunciaService';
+import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
 
 interface EditCategoriaFormProps {
   onSuccess: () => void;
@@ -80,7 +80,9 @@ export function EditCategoriaForm({
 
     try {
       setIsSubmittingForm(true);
-      const categoryDataUpdated = await categoriaService.update(formData);
+      const categoryDataUpdated = await new CategoriaDenunciaService().update(
+        formData,
+      );
 
       setCategorias(
         (prev) =>

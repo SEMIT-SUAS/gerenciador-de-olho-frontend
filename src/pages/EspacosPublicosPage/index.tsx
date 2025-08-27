@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { LayoutPage } from '../../components/LayoutPage';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
-import espaçoPublicoService from '@/services/espacoPublicoService';
+import { espacoPublicoService } from '@/services/espacoPublicoService';
 import { EspacosPublicosList } from '@/pages/EspacosPublicosPage/components/EspacosPublicosList';
 import { SearchInput } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -32,7 +32,7 @@ export function EspacosPublicosPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    espaçoPublicoService.getAll().then((data) => {
+    espacoPublicoService.getAll().then((data) => {
       setEspacosPublicos(data);
     });
   }, []);

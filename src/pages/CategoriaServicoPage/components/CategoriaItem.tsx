@@ -1,4 +1,4 @@
-import { toggleAtivo } from '@/services/servicocategoriaService';
+import { categoriaServicoService } from '@/services/categoriaServicoService';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'sonner';
@@ -24,7 +24,7 @@ export function CategoriaListItem({
 
   async function handleDeleteCategoria() {
     try {
-      await toggleAtivo(categoria.id, false);
+      await categoriaServicoService.toggleAtivo(categoria.id, false);
 
       setCategorias((prev: (ServicoCategoria & { id: number })[]) =>
         prev.map((c) => (c.id === categoria.id ? { ...c, ativo: false } : c)),

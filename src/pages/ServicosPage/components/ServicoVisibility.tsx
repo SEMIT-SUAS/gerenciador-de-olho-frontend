@@ -1,7 +1,7 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { toast } from 'react-toastify';
-import servicosServices from '@/services/servicosServices';
+import { servicoService } from '@/services/servicosServices';
 import type { ServicosListar } from '@/types/ServicosListar';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
@@ -18,10 +18,7 @@ export function ServicoVisibility({
 
   async function handleOnClickButton() {
     try {
-      await servicosServices.changeServiceVisibility(
-        servico.id,
-        !servico.visivel,
-      );
+      await servicoService.toggleVisibility(servico.id, !servico.visivel);
       setServicos(
         (prev) =>
           prev?.map((prevServico) =>

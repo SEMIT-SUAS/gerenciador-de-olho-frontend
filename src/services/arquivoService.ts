@@ -1,4 +1,4 @@
-import { api } from '@/lib/axios';
+import { api } from '@/config/api';
 
 export class ArquivoService {
   static async getBlobByURL(url: string) {

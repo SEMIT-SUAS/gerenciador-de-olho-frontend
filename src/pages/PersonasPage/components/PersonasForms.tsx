@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { personaSchema, type PersonaFormData } from './personasSchema';
-import { updatePersona, uploadPersona } from '@/services/servicoPersona';
+import { personaService } from '@/services/personaService';
 import type { Persona } from '@/types/Persona';
 
 import { Button } from '@/components/ui/button';
@@ -68,7 +68,7 @@ export function FormPersona({
         formData.append('visivel', String(data.visivel));
         formData.append('ativo', String(data.ativo));
 
-        const resultado = await uploadPersona(formData);
+        const resultado = await personaService.create(formData);
         toast.success('Persona cadastrada com sucesso!');
         onSuccess(resultado);
       } else if (mode === 'edit' && defaultValues?.id) {
@@ -84,7 +84,7 @@ export function FormPersona({
           formData.append('icone', data.icone[0]);
         }
 
-        await updatePersona(formData);
+        await personaService.update(formData);
 
         toast.success('Persona atualizada com sucesso!');
         onSuccess({

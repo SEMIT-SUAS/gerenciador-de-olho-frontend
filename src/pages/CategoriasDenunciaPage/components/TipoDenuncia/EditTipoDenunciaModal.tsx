@@ -8,7 +8,7 @@ import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { TipoDenunciaForm } from './TipoDenunciaForm/TipoDenunciaForm';
 import { type TipoDenunciaFormValues } from './TipoDenunciaForm/tipoDenunciaSchema';
-import tiposDenunciaService from '@/services/tiposDenunciaService';
+import { tipoDenunciaService } from '@/services/tiposDenunciaService';
 import { toast } from 'react-toastify';
 import type { Secretaria } from '@/types/Secretaria';
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
@@ -69,7 +69,7 @@ export function EditTipoDenunciaModal({
       formData.append('visivel', String(data.visivel));
       formData.append('ativo', String(data.ativo));
 
-      const newTipo = await tiposDenunciaService.updateTipoDenuncia(formData);
+      const newTipo = await tipoDenunciaService.update(formData);
 
       if (setTipos) {
         setTipos((prev) => [...prev, newTipo]);

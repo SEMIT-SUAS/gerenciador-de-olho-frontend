@@ -1,7 +1,7 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { toast } from 'sonner';
-import { toggleVisivel } from '@/services/servicocategoriaService'; // ← import correto
+import { categoriaServicoService } from '@/services/categoriaServicoService'; // ← import correto
 import type { ServicoCategoria } from '@/types/CategoriaServico';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
@@ -21,7 +21,10 @@ export function CategoriaVisibility({
     try {
       const novoValorVisivel = !categoria.visivel;
 
-      await toggleVisivel(categoria.id, novoValorVisivel);
+      await categoriaServicoService.toggleVisivel(
+        categoria.id,
+        novoValorVisivel,
+      );
 
       setCategorias((prev: (ServicoCategoria & { id: number })[]) => {
         const novoEstado = prev.map((cat) =>

@@ -1,6 +1,6 @@
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { TableCell, TableRow } from '@/components/ui/table';
-import tiposDenunciaService from '@/services/tiposDenunciaService';
+import { tipoDenunciaService } from '@/services/tiposDenunciaService';
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { useState, type Dispatch, type SetStateAction } from 'react';
@@ -22,7 +22,7 @@ export function TiposDenunciaListItem({
 
   async function handleDeactivateTipoDenuncia() {
     try {
-      await tiposDenunciaService.changeTipoAtivo(tipo.id, !tipo.ativo);
+      await tipoDenunciaService.toggleAtivo(tipo.id, !tipo.ativo);
 
       setTipos((prev) =>
         prev.map((t) => (t.id === tipo.id ? { ...t, ativo: false } : t)),

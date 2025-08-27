@@ -1,7 +1,7 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { toast } from 'react-toastify';
-import { changePersonaVisibility } from '@/services/servicoPersona';
+import { personaService } from '@/services/personaService';
 import type { Persona } from '@/types/Persona';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
@@ -18,7 +18,7 @@ export function PersonaVisibility({
 
   async function handleOnClickButton() {
     try {
-      await changePersonaVisibility(persona.id, !persona.visivel);
+      await personaService.toggleVisibility(persona.id, !persona.visivel);
 
       setPersonas((prev) =>
         prev.map((p) =>

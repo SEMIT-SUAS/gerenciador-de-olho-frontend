@@ -2,7 +2,7 @@ import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { Loader2 } from 'lucide-react';
-import categoriaService from '@/services/CategoriaDenunciaService';
+import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
 import { toast } from 'sonner';
 
 type CategoryVisibilityProps = {
@@ -19,7 +19,10 @@ export function CategoryVisibility({
   async function handleOnClickButton() {
     try {
       setIsChangingVisibility(true);
-      await categoriaService.toggleVisibility(category.id, !category.visivel);
+      await new CategoriaDenunciaService().toggleVisibility(
+        category.id,
+        !category.visivel,
+      );
       setCategories(
         (prev) =>
           prev?.map((prevCategory) =>

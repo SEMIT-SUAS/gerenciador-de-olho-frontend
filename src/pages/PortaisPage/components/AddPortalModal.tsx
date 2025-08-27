@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
 import type { PortaisSchema } from './PortaisForm/portaisSchema';
-import PortaisService from '@/services/PortaisService';
+import { portalService } from '@/services/PortaisService';
 import { toast } from 'sonner';
 import type { Portais } from '@/types/Portais';
 
@@ -31,7 +31,7 @@ export function AddPortalModal({
     try {
       setIsSubmitting(true);
 
-      const newPortal = await PortaisService.createPortal(data);
+      const newPortal = await portalService.create(data);
 
       if (setPortais) {
         setPortais((prev) => [...prev, newPortal]);

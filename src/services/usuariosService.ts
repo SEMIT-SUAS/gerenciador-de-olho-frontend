@@ -32,10 +32,7 @@ interface DadosCadastroGerenciador {
 
 const login = async (credentials: LoginFormValues): Promise<LoginResponse> => {
   try {
-    const response = await api.post<LoginResponse>(
-      'gerenciador/login',
-      credentials,
-    );
+    const response = await api.post<LoginResponse>('/login', credentials);
 
     const { token } = response.data;
     localStorage.setItem('authToken', token);
@@ -73,14 +70,11 @@ const getProfile = async (loginIdentifier?: string): Promise<UsuarioModel> => {
   }
 
   try {
-    const response = await api.get<UsuarioModel>(
-      `/gerenciador/pegar-dados-login`,
-      {
-        params: {
-          login: email,
-        },
+    const response = await api.get<UsuarioModel>(`/usuario/pegar-dados-login`, {
+      params: {
+        login: email,
       },
-    );
+    });
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
@@ -107,7 +101,7 @@ const getAllUsuarios = async (): Promise<UsuarioModel[]> => {
   }
 
   try {
-    const response = await api.get<UsuarioModel[]>('/gerenciador/listar-todos');
+    const response = await api.get<UsuarioModel[]>('/usuario/listar-todos');
 
     return response.data;
   } catch (error) {
@@ -132,7 +126,7 @@ export const updateUsuario = async (
   try {
     const response = await api.put<UsuarioModel>(
       `
-        /gerenciador/atualizar`,
+        /usuario/atualizar`,
       usuario,
     );
     return response.data;
@@ -152,10 +146,7 @@ const cadastrarGerenciador = async (
   }
 
   try {
-    const response = await api.post<UsuarioModel>(
-      '/gerenciador/cadastrar',
-      dados,
-    );
+    const response = await api.post<UsuarioModel>('/usuario/cadastrar', dados);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
@@ -178,7 +169,7 @@ const listarUsuariosAtivos = async (): Promise<UsuarioModel[]> => {
   }
 
   try {
-    const response = await api.get<UsuarioModel[]>('/gerenciador/listar-todos');
+    const response = await api.get<UsuarioModel[]>('/usuario/listar-todos');
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
@@ -202,7 +193,7 @@ const buscarUsuarioPorId = async (id: number): Promise<UsuarioPorId> => {
   }
 
   try {
-    const response = await api.get<UsuarioPorId>(`/gerenciador/buscar/${id}`);
+    const response = await api.get<UsuarioPorId>(`/usuario/buscar/${id}`);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
@@ -229,7 +220,7 @@ const excluirUsuario = async (id: number): Promise<string> => {
   }
 
   try {
-    const response = await api.delete<string>(`/gerenciador/deletar/${id}`);
+    const response = await api.delete<string>(`/usuario/deletar/${id}`);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {

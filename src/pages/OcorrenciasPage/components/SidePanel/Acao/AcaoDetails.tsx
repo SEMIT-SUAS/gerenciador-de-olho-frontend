@@ -73,12 +73,12 @@ export function AcaoDetails() {
     });
   };
 
-  const handleInciarAcao = () => {
+  async function handleInciarAcao() {
     const payload = {
       id: acao.id,
       acaoStatus: {
         status: 'Andamento',
-        motivo: '',
+        motivo: 'Iniciando Ação',
         gerenciador: user!.id,
       },
       ativo: true,
@@ -86,13 +86,13 @@ export function AcaoDetails() {
 
     AcoesService.updateAcao(payload)
       .then((acaoAtualizada) => {
-        setAcaoData({ ...acaoData, acao: acaoAtualizada });
+        setAcaoData({ ...acaoData!, acao: acaoAtualizada });
         toast.success('Ação iniciada com sucesso!');
       })
       .catch((error: any) => {
         toast.error(error.message);
       });
-  };
+  }
 
   return (
     <div className="flex flex-col h-full space-y-7">

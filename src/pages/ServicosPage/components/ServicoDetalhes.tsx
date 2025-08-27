@@ -16,7 +16,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getServicoById } from '@/services/servicosServices';
+import { servicoService } from '@/services/servicosServices';
 import { LayoutPage } from '../../../components/LayoutPage';
 
 const DetailSection = ({
@@ -67,7 +67,7 @@ export function ServicoDetalhes() {
       }
       try {
         setLoading(true);
-        const servicoData = await getServicoById(Number(id));
+        const servicoData = await servicoService.getById(Number(id));
         setServico(servicoData);
       } catch (err: any) {
         setError(err.message || 'Erro ao buscar o serviço.');

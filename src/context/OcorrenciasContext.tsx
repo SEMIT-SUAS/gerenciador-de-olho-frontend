@@ -5,16 +5,16 @@ import {
   createContext,
   type ReactNode,
 } from 'react';
-import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import type { Secretaria } from '@/types/Secretaria';
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
-import CategoriaDenunciaService from '@/services/CategoriaDenunciaService';
-import tiposDenunciaService from '@/services/tiposDenunciaService';
-import secretariaService from '@/services/secretariaService';
+import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
+import { TipoDenunciaService } from '@/services/tiposDenunciaService';
+import { secretariaService } from '@/services/secretariaService';
 import type { Bairro } from '@/types/Bairro';
 import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
 import { DenunciaService } from '@/services/DenunciaService';
 import { useAuth } from './AuthContext';
+import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 
 type OcorrenciasContextProps = {
   isLoadingInitialContent: boolean;
@@ -49,9 +49,9 @@ export function OcorrenciasProvider({ children }: { children: ReactNode }) {
           secretariasData,
           dataDenunciasInMap,
         ] = await Promise.all([
-          CategoriaDenunciaService.getAll(),
-          tiposDenunciaService.getAllTiposDenuncia(),
-          secretariaService.getAllSecretarias(),
+          new CategoriaDenunciaService().getAll(),
+          new TipoDenunciaService().getAll(),
+          secretariaService.getAll(),
           DenunciaService.getNumberDenunciasInMap(
             'Aberto',
             user?.idSecretaria!,

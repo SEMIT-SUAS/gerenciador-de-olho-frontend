@@ -20,7 +20,7 @@ import { SelectLocationInMap } from '../../../../components/SelectLocationInMap'
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AddressService } from '@/services/AddressService';
-import espacoPublicoService from '@/services/espacoPublicoService';
+import { espacoPublicoService } from '@/services/espacoPublicoService';
 
 interface AddEspacoPublicoFormProps {
   onSuccess: () => void;

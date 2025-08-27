@@ -11,7 +11,7 @@ import {
   type TipoDenunciaFormSchema,
   type TipoDenunciaFormValues,
 } from './TipoDenunciaForm/tipoDenunciaSchema';
-import tiposDenunciaService from '@/services/tiposDenunciaService';
+import { tipoDenunciaService } from '@/services/tiposDenunciaService';
 import { toast } from 'react-toastify';
 import type { Secretaria } from '@/types/Secretaria';
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
@@ -48,7 +48,7 @@ export function AddTipoDenunciaModal({
       formData.append('visivel', String(data.visivel));
       formData.append('ativo', String(data.ativo));
 
-      const newTipo = await tiposDenunciaService.createTipoDenuncia(formData);
+      const newTipo = await tipoDenunciaService.create(formData);
 
       if (setTipos) {
         setTipos((prev) => [...prev, newTipo]);

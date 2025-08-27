@@ -5,10 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import type { Persona } from '@/types/Persona';
-import {
-  changePersonaAtivo,
-  changePersonaVisibility,
-} from '@/services/servicoPersona';
+import { personaService } from '@/services/personaService';
 import { PersonaVisibility } from './PersonaVisibility';
 
 interface PersonaListItemProps {
@@ -26,7 +23,7 @@ export function PersonaListItem({
 
   async function handleDeletePersona() {
     try {
-      await changePersonaAtivo(persona.id, false);
+      await personaService.toggleAtivo(persona.id, false);
 
       setPersonas((prev) =>
         prev.map((p) => (p.id === persona.id ? { ...p, ativo: false } : p)),

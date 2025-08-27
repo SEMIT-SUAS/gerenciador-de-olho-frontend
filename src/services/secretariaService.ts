@@ -1,111 +1,102 @@
-import { api, API_BASE_URL } from '../config/api';
+import { api } from '../config/api'; // Usando a instância do axios
 import type { createSecretaria, Secretaria } from '../types/Secretaria'; // Ajuste o caminho conforme necessário
+import { BaseServiceClass } from './BaseServiceClass'; // Supondo que você tenha uma classe base
+import { AxiosError } from 'axios';
 
-export async function getAllSecretarias(): Promise<Secretaria[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/secretaria/listar-todas`, {
-      method: 'GET',
-    });
+export class SecretariaService extends BaseServiceClass {
+  // Definindo mensagens de erro para o serviço
+  protected readonly getAllError = new Error(
+    'Não foi possível listar as secretarias.',
+  );
+  protected readonly getByIdError = new Error(
+    'Não foi possível buscar a secretaria.',
+  );
+  protected readonly createError = new Error(
+    'Não foi possível cadastrar a secretaria.',
+  );
+  protected readonly updateError = new Error(
+    'Não foi possível atualizar a secretaria.',
+  );
+  protected readonly deleteError = new Error(
+    'Não foi possível deletar a secretaria.',
+  );
 
-    if (!response.ok) {
-      throw new Error('Não foi possível listar as secretarias.');
+  /**
+   * Busca todas as secretarias.
+   */
+  public async getAll(): Promise<Secretaria[]> {
+    try {
+      const response = await api.get<Secretaria[]>('/secretaria/listar-todas');
+      return response.data;
+    } catch (error) {
+      throw this.getAllError;
     }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error('Erro ao buscar secretarias. Tente novamente mais tarde.');
   }
-}
 
-export async function getSecretariaById(id: number): Promise<Secretaria> {
-  try {
-    const response = await api.get<Secretaria>(`secretaria/buscar/${id}`);
-
-    return response.data;
-  } catch (error) {
-    console.error('Erro detalhado ao buscar secretaria:', error);
-
-    throw new Error('Erro ao buscar secretaria. Tente novamente mais tarde.');
-  }
-}
-
-export async function deleteSecretaria(id: number): Promise<void> {
-  alert(`id da secretaria:  ${id} tem certeza que deseja deletar?`);
-  try {
-    const response = await fetch(`${API_BASE_URL}/secretaria/${id}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      throw new Error('Não foi possível desativar a secretaria.');
+  /**
+   * Busca uma secretaria específica pelo seu ID.
+   */
+  public async getById(id: number): Promise<Secretaria> {
+    try {
+      // Este método já estava correto, apenas o integramos na classe
+      const response = await api.get<Secretaria>(`/secretaria/buscar/${id}`);
+      return response.data;
+    } catch (error) {
+      throw this.getByIdError;
     }
-  } catch (error) {
-    throw new Error(
-      'Erro ao desativar secretaria. Tente novamente mais tarde.',
-    );
   }
-}
-export async function updateSecretaria(id: number): Promise<Secretaria> {
-  alert(`id da secretaria:  ${id} tem certeza que deseja atualizar?`);
-  try {
-    const response = await fetch(`${API_BASE_URL}/secretaria/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-    });
 
-    if (!response.ok) {
-      throw new Error('Não foi possível atualizar a secretaria.');
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error(
-      'Erro ao atualizar secretaria. Tente novamente mais tarde.',
-    );
-  }
-}
-
-export async function uploadSecretaria(
-  secretaria: createSecretaria,
-): Promise<{ message: string }> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/secretaria/cadastrar`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(secretaria),
-    });
-
-    const contentType = response.headers.get('content-type');
-
-    if (!response.ok) {
-      if (contentType?.includes('application/json')) {
-        const errorJson = await response.json();
-        throw new Error(
-          errorJson.message || 'Erro ao cadastrar serviço externo.',
-        );
-      } else {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Erro ao cadastrar serviço externo.');
+  /**
+   * Cria uma nova secretaria. (Anteriormente 'uploadSecretaria')
+   * @param data Os dados da secretaria a ser criada.
+   */
+  public async create(data: createSecretaria): Promise<Secretaria> {
+    try {
+      // É mais comum que um endpoint de criação retorne o objeto criado.
+      // Ajustei o retorno para Promise<Secretaria>. Se sua API retorna outra coisa, podemos ajustar.
+      const response = await api.post<Secretaria>(
+        '/secretaria/cadastrar',
+        data,
+      );
+      return response.data;
+    } catch (error) {
+      // Tenta extrair uma mensagem de erro mais específica da resposta da API
+      if (error instanceof AxiosError && error.response?.data?.message) {
+        throw new Error(error.response.data.message);
       }
+      throw this.createError;
     }
+  }
 
-    if (contentType?.includes('application/json')) {
-      return await response.json();
-    } else {
-      const text = await response.text();
-      return { message: text };
+  /**
+   * Atualiza uma secretaria existente.
+   * @param id O ID da secretaria a ser atualizada.
+   * @param data Os novos dados para a secretaria.
+   */
+  public async update(
+    id: number,
+    data: Partial<createSecretaria>,
+  ): Promise<Secretaria> {
+    try {
+      const response = await api.put<Secretaria>(`/secretaria/${id}`, data);
+      return response.data;
+    } catch (error) {
+      throw this.updateError;
     }
-  } catch (error: any) {
-    throw new Error(
-      error.message || 'Erro desconhecido ao cadastrar serviço externo.',
-    );
+  }
+
+  /**
+   * Deleta (ou desativa) uma secretaria.
+   * @param id O ID da secretaria a ser deletada.
+   */
+  public async delete(id: number): Promise<void> {
+    try {
+      await api.delete(`/secretaria/${id}`);
+    } catch (error) {
+      throw this.deleteError;
+    }
   }
 }
 
-export default {
-  getAllSecretarias,
-  uploadSecretaria,
-  updateSecretaria,
-  deleteSecretaria,
-  getSecretariaById,
-};
+// Exportando uma instância única (Singleton) para ser usada na aplicação
+export const secretariaService = new SecretariaService();

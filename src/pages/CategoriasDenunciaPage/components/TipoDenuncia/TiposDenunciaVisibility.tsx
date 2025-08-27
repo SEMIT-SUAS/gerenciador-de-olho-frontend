@@ -1,7 +1,7 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { toast } from 'react-toastify';
-import tiposDenunciaService from '@/services/tiposDenunciaService';
+import { tipoDenunciaService } from '@/services/tiposDenunciaService';
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
@@ -15,7 +15,7 @@ export function TipoVisibility({ tipo, setTipos }: TipoVisibilityProps) {
 
   async function handleOnClickButton() {
     try {
-      await tiposDenunciaService.changeTipoVisibility(tipo.id, !tipo.visivel);
+      await tipoDenunciaService.toggleVisibility(tipo.id, !tipo.visivel);
       setTipos((prev) =>
         prev.map((prevTipo) =>
           prevTipo.id === tipo.id

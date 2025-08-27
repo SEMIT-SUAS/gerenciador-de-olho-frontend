@@ -1,45 +1,150 @@
-import { API_BASE_URL } from '@/config/api';
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import { getAPIFileURL } from '@/utils/getAPIFileURL';
 import { BaseServiceClass } from './BaseServiceClass';
 import type { DenunciaModel, DenunciaStatusModelTypes } from '@/types/Denuncia';
+import type { BannerModel } from '@/types/Banner';
+import { AxiosError } from 'axios';
+import { api } from '@/config/api';
 
 export class CategoriaDenunciaService extends BaseServiceClass {
   protected readonly serviceUnavailableError = new Error(
     'Serviço de categorias de denúncia indisponível. Tente novamente em instantes',
   );
+  protected readonly notFoundError = new Error(
+    'Categoria de denúncia não encontrada.',
+  );
+  protected readonly createError = new Error(
+    'Não foi possível criar a categoria de denúncia.',
+  );
+  protected readonly updateError = new Error(
+    'Não foi possível atualizar a categoria de denúncia.',
+  );
+  protected readonly visibilityError = new Error(
+    'Não foi possível alterar a visibilidade da categoria de denúncia.',
+  );
+  protected readonly deleteError = new Error(
+    'Não foi possível deletar essa categoria de denúncia.',
+  );
+  protected readonly serverError = new Error(
+    'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
+  );
 
-  protected readonly notFoundError = new Error('Categoria de denúncia não encontrada.');
-  protected readonly createError = new Error('Não foi possível criar a categoria de denúncia.');
-  protected readonly updateError = new Error('Não foi possível atualizar a categoria de denúncia.');
-  protected readonly visibilityError = new Error('Não foi possível alterar a visibilidade da categoria de denúncia.');
-  protected readonly deleteError = new Error('Não foi possível deletar essa categoria de denúncia.');
-  protected readonly serverError = new Error('Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde');
-
-  async getAllByBairro(bairroId: number, status: DenunciaStatusModelTypes): Promise<DenunciaModel[]> {
-    return []
+  public async getAll(): Promise<CategoriaDenunciaModel[]> {
+    try {
+      const response = await api.get<CategoriaDenunciaModel[]>(
+        '/categoria-denuncia/listar-ativos',
+      );
+      // Adiciona o mapeamento para transformar a URL do ícone, se necessário
+      return response.data.map((categoria) => ({
+        ...categoria,
+        icone: getAPIFileURL(categoria.icone),
+      }));
+    } catch (error) {
+      // O Axios já rejeita a promise para status não-2xx, então o catch é suficiente.
+      throw this.serviceUnavailableError;
+    }
   }
+
+  public async create(data: FormData): Promise<CategoriaDenunciaModel> {
+    try {
+      // O Axios define o 'Content-Type' como 'multipart/form-data' automaticamente para FormData
+      const response = await api.post<CategoriaDenunciaModel>(
+        '/categoria-denuncia/cadastrar',
+        data,
+      );
+
+      const newCategory = response.data;
+      newCategory.icone = getAPIFileURL(newCategory.icone);
+
+      return newCategory;
+    } catch (error) {
+      throw this.createError;
+    }
+  }
+
+  public async update(data: FormData): Promise<CategoriaDenunciaModel> {
+    try {
+      const response = await api.put<CategoriaDenunciaModel>(
+        '/categoria-denuncia/atualizar',
+        data,
+      );
+
+      const updatedCategory = response.data;
+      updatedCategory.icone = getAPIFileURL(updatedCategory.icone);
+
+      return updatedCategory;
+    } catch (error) {
+      throw this.updateError;
+    }
+  }
+
+  public async trash(categoryId: number): Promise<void> {
+    try {
+      // Passamos o objeto diretamente, o Axios o converte para JSON
+      await api.put('/categoria-denuncia/atualizar/atividade', {
+        id: categoryId,
+        ativo: false,
+      });
+    } catch (error) {
+      throw this.deleteError;
+    }
+  }
+
+  public async toggleVisibility(
+    categoryId: number,
+    visibility: boolean,
+  ): Promise<void> {
+    try {
+      await api.put('/categoria-denuncia/atualizar/visibilidade', {
+        id: categoryId,
+        visivel: visibility,
+      });
+    } catch (error) {
+      throw this.visibilityError;
+    }
+  }
+
+  //   async getAllByBairro(
+  //     bairroId: number,
+  //     status: DenunciaStatusModelTypes,
+  //   ): Promise<DenunciaModel[]> {
+  //     // TODO: Implementar a lógica de busca
+  //     return [];
+  //   }
 }
 
 export class BannerService extends BaseServiceClass {
+  protected readonly serviceUnavailableError = new Error(
+    'Serviço de banners indisponível.',
+  );
+  protected readonly notFoundError = new Error('Nenhum banner encontrado.');
+  protected readonly createError = new Error(
+    'Não foi possível criar o banner.',
+  );
+  protected readonly updateError = new Error(
+    'Não foi possível atualizar o banner.',
+  );
+  protected readonly visibilityError = new Error(
+    'Não foi possível alterar a visibilidade do banner.',
+  );
+  protected readonly deleteError = new Error(
+    'Não foi possível deletar o banner.',
+  );
+  protected readonly serverError = new Error(
+    'Erro no servidor ao processar a requisição do banner.',
+  );
+
   public async getAll(): Promise<BannerModel[]> {
     try {
-      const response = await api.get('/banner/listar-ativos', {
-        responseType: "json"
-      });
-
-      if (response.status === 404) {
-        throw this.notFoundError;
-      }
-
-      if (response.status !== 200) {
-        throw new Error("Ocorreu um erro na busca desse Banner");
-      }
-
-      return JSON.parse(response.data) as BannerModel[];
+      // O Axios já parseia o JSON por padrão. response.data já é o objeto/array.
+      const response = await api.get<BannerModel[]>('/banner/listar-ativos');
+      return response.data.map((banner) => ({
+        ...banner,
+        imagem: getAPIFileURL(banner.imagem),
+      }));
     } catch (error) {
-      if (error instanceof Error) {
-        throw error;
+      if (error instanceof AxiosError && error.response?.status === 404) {
+        throw this.notFoundError;
       }
       throw this.serviceUnavailableError;
     }
@@ -47,204 +152,55 @@ export class BannerService extends BaseServiceClass {
 
   public async upload(formData: FormData): Promise<BannerModel> {
     try {
-      const response = await api.post('/banner/cadastrar', formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        },
-        responseType: "json"
-      });
-
-      if (response.status !== 201) {
-        throw this.createError;
-      }
-
-      const newBanner: BannerModel = JSON.parse(response.data);
+      const response = await api.post<BannerModel>(
+        '/banner/cadastrar',
+        formData,
+      );
+      const newBanner = response.data;
       newBanner.imagem = getAPIFileURL(newBanner.imagem);
-
       return newBanner;
     } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw this.serverError;
-    }
-  }
-
-  public async toggleVisibility(bannerId: number, visible: boolean): Promise<void> {
-    try {
-      const body = JSON.stringify({
-        id: bannerId,
-        visivel: visible,
-      })
-
-      const response = await api.put('/banner/atualizar/visibilidade', body, {
-        headers: {
-          "Content-Type": "application/json"
-        },
-        responseType: "json"
-      });
-
-      if (response.status !== 200) {
-        throw this.visibilityError;
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw this.serverError;
-    }
-  }
-
-  public async trash(bannerId: number): Promise<void> {
-    try {
-      const body = JSON.stringify({
-        id: bannerId,
-        ativo: false,
-      })
-
-      const response = await api.put('/banner/atualizar/atividade', body, {
-        headers: {
-          "Content-Type": "application/json"
-        },
-      });
-
-      if (response.status !== 200) {
-        throw this.deleteError;
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw this.serverError;
+      throw this.createError;
     }
   }
 
   public async update(formData: FormData): Promise<BannerModel> {
     try {
-      const response = await api.put('/banner/atualizar', formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        },
-        responseType: "json"
-      });
-
-      if (response.status !== 200) {
-        throw this.updateError;
-      }
-
-      const updatedBanner: BannerModel = JSON.parse(response.data);
+      const response = await api.put<BannerModel>(
+        '/banner/atualizar',
+        formData,
+      );
+      const updatedBanner = response.data;
       updatedBanner.imagem = getAPIFileURL(updatedBanner.imagem);
-
       return updatedBanner;
     } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw this.serverError;
+      throw this.updateError;
+    }
+  }
+
+  public async toggleVisibility(
+    bannerId: number,
+    visible: boolean,
+  ): Promise<void> {
+    try {
+      // Enviando o corpo da requisição como um objeto JS.
+      await api.put('/banner/atualizar/visibilidade', {
+        id: bannerId,
+        visivel: visible,
+      });
+    } catch (error) {
+      throw this.visibilityError;
+    }
+  }
+
+  public async trash(bannerId: number): Promise<void> {
+    try {
+      await api.put('/banner/atualizar/atividade', {
+        id: bannerId,
+        ativo: false,
+      });
+    } catch (error) {
+      throw this.deleteError;
     }
   }
 }
-
-async function create(data: FormData): Promise<CategoriaDenunciaModel> {
-  const response = await fetch(`${API_BASE_URL}/categoria-denuncia/cadastrar`, {
-    method: 'POST',
-    body: data,
-  });
-
-  if (response.status != 201) {
-    throw new Error('Não foi possível criar uma categoria');
-  }
-
-  const body = await response.json();
-  body.icone = getAPIFileURL(body.icone);
-
-  return body;
-}
-
-async function getAll(): Promise<CategoriaDenunciaModel[]> {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/categoria-denuncia/listar-ativos`,
-      {
-        method: 'GET',
-      },
-    );
-
-    if (response.status != 200) {
-      throw new Error('Não foi possível listar as categorias');
-    }
-
-    return await response.json();
-  } catch {
-    throw new Error('Serviço indisponível');
-  }
-}
-
-async function trash(categoryId: number): Promise<void> {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/categoria-denuncia/atualizar/atividade`,
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: categoryId, ativo: false }),
-      },
-    );
-
-    if (response.status != 200) {
-      throw new Error('Não foi possível deletar a categoria');
-    }
-  } catch {
-    throw new Error('Serviço indisponível');
-  }
-}
-
-async function update(data: FormData): Promise<CategoriaDenunciaModel> {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/categoria-denuncia/atualizar`,
-      {
-        method: 'PUT',
-        body: data,
-      },
-    );
-
-    if (response.status != 200) {
-      throw new Error('Não foi possível editar essa categoria');
-    }
-
-    const body = await response.json();
-    body.icone = getAPIFileURL(body.icone);
-
-    return body;
-  } catch {
-    throw new Error('Serviço indisponível');
-  }
-}
-
-async function toggleVisibility(categoryId: number, visibility: boolean) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/categoria-denuncia/atualizar/visibilidade`,
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: categoryId, visivel: visibility }),
-      },
-    );
-
-    if (response.status != 200) {
-      throw new Error('Não foi possível alterar a visibilidade da categoria');
-    }
-  } catch {
-    throw new Error('Serviço indisponível');
-  }
-}
-
-export default {
-  create,
-  getAll,
-  trash,
-  update,
-  toggleVisibility,
-};

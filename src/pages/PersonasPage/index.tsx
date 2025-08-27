@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LayoutPage } from '../../components/LayoutPage';
-import { getAllPersona } from '@/services/servicoPersona';
+import { personaService } from '@/services/personaService';
 import { toast } from 'sonner';
 import type { Persona } from '@/types/Persona';
 import { Button } from '@/components/ui/button';
@@ -36,7 +36,7 @@ export function PersonasPage() {
   async function fetchPersonas() {
     try {
       setLoading(true);
-      const data = await getAllPersona();
+      const data = await personaService.getAll();
       setPersonas(data);
     } catch (err: any) {
       setError(err.message || 'Erro ao buscar as personas.');

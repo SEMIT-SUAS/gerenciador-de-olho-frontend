@@ -4,7 +4,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { IconEdit, IconStarFilled, IconTrash } from '@tabler/icons-react';
 import { CategoryVisibility } from './CategoryDenunciaVisibility';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
-import categoriaService from '@/services/CategoriaDenunciaService';
+import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
 import { toast } from 'sonner';
 import { EditCategoriaModal } from './EditCategoriaModal';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +26,7 @@ export function CategoryDenunciaItem({
 
   async function handleDeleteCategoria() {
     try {
-      await categoriaService.trash(category.id);
+      await new CategoriaDenunciaService().trash(category.id);
       setCategories(
         (prev) => prev?.filter((prevCat) => prevCat.id !== category.id) || null,
       );

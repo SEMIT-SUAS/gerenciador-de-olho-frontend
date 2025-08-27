@@ -16,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ImageInput } from '@/components/Forms/ImageInput';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import categoriaService from '@/services/CategoriaDenunciaService';
+import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
@@ -56,7 +56,9 @@ export function AddCategoriaForm({
 
     try {
       setIsSubmittingForm(true);
-      const categorySavedData = await categoriaService.create(formData);
+      const categorySavedData = await new CategoriaDenunciaService().create(
+        formData,
+      );
 
       setCategorias((prevCategories) => {
         if (!prevCategories) {

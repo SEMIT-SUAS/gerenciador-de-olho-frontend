@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-export const API_BASE_URL = 'http://192.168.200.51:9090/saoluis-online/api';
+export const API_BASE_URL =
+  'http://192.168.200.51:9090/saoluis-online/api/gerenciador';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

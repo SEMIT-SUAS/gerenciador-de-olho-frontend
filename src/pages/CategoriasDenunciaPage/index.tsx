@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { type CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
-import categoriaService from '@/services/CategoriaDenunciaService';
+import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
 import { toast } from 'sonner';
 import { LayoutPage } from '../../components/LayoutPage';
 import { SearchInput } from '@/components/ui/input';
@@ -9,10 +9,10 @@ import { PlusIcon } from 'lucide-react';
 import { Pagination } from '@/components/Pagination';
 import { CategoriasDenunciaList } from './components/CategoriaDenuncia/CategoriasDenunciaList';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import tiposDenunciaService from '@/services/tiposDenunciaService';
+import { TipoDenunciaService } from '@/services/tiposDenunciaService';
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import { TiposDenunciaList } from './components/TipoDenuncia/TiposDenunciaList';
-import secretariaService from '@/services/secretariaService';
+import { secretariaService } from '@/services/secretariaService';
 import type { Secretaria } from '@/types/Secretaria';
 import { AddTipoDenunciaModal } from './components/TipoDenuncia/AddTipoDenunciaModal';
 import { EditTipoDenunciaModal } from './components/TipoDenuncia/EditTipoDenunciaModal';
@@ -47,14 +47,14 @@ export function DenunciaCategoriasPage() {
   };
 
   useEffect(() => {
-    tiposDenunciaService
-      .getAllTiposDenuncia()
+    new TipoDenunciaService()
+      .getAll()
       .then((data) => {
         setTipos(data);
       })
       .catch((error: any) => toast.error(error.message));
 
-    categoriaService
+    new CategoriaDenunciaService()
       .getAll()
       .then((data) => {
         setCategorias(data);
@@ -62,7 +62,7 @@ export function DenunciaCategoriasPage() {
       .catch((error: any) => toast.error(error.message));
 
     secretariaService
-      .getAllSecretarias()
+      .getAll()
       .then((data) => {
         setSecretarias(data);
       })

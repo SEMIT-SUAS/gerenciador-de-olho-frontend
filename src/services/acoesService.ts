@@ -36,7 +36,7 @@ export default class AcoesService {
     bairro: string;
   }): Promise<AcaoInMap[]> {
     try {
-      const response = await api.get('/acao/gerenciador/filtro-acao', {
+      const response = await api.get('/acao/filtro-acao', {
         params: {
           status: data.status,
           secretaria: data.secretaria,
@@ -131,9 +131,9 @@ export default class AcoesService {
     try {
       const response = await api.put(`/acao/atualizar`, payload);
 
-      // if (response.status !== 200 && response.status !== 201) {
-      //   throw new Error('Não foi possível atualizar a ação.');
-      // }
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error('Não foi possível atualizar a ação.');
+      }
 
       return response.data.acao;
     } catch (error) {
@@ -147,7 +147,6 @@ export default class AcoesService {
     try {
       const response = await api.get(`/acao/historico-status/${acaoId}`);
 
-      console.log(response.data);
       return response.data;
     } catch (error) {
       throw new Error(
