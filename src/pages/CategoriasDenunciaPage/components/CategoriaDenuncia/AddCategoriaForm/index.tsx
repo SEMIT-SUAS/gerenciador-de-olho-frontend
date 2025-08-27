@@ -14,7 +14,7 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import { Textarea } from '@/components/ui/textarea';
 import { ImageInput } from '@/components/Forms/ImageInput';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
 import { toast } from 'sonner';
@@ -173,24 +173,25 @@ export function AddCategoriaForm({
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="fixed"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 bg-card">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Destaque</FormLabel>
+            <FormItem className="flex items-center justify-between border p-3 rounded-md bg-card">
+              <div>
+                <FormLabel className="text-base">Destaque</FormLabel>
                 <p className="text-sm text-muted-foreground">
                   Exibir como categoria destacada
                 </p>
               </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isSubmittingForm}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -199,33 +200,45 @@ export function AddCategoriaForm({
           control={form.control}
           name="visivel"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 bg-card">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Visível</FormLabel>
+            <FormItem className="flex items-center justify-between border p-3 rounded-md bg-card">
+              <div>
+                <FormLabel className="text-base">Visível</FormLabel>
                 <p className="text-sm text-muted-foreground">
                   Exibir esta categoria no aplicativo
                 </p>
               </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isSubmittingForm}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
 
         <div className="flex justify-end">
-          <Button
-            type="submit"
-            className="w-full md:w-auto px-8"
-            size="lg"
-            disabled={isSubmittingForm}
-          >
-            {isSubmittingForm && <Loader2 className="w-4 h-4 animate-spin" />}
-            Cadastrar Categoria
-          </Button>
+          <div className="flex justify-end pt-5 gap-4">
+            <Button
+              variant="outline"
+              className="px-8"
+              onClick={() => window.history.back()}
+              type="button"
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              className="w-full md:w-auto px-8"
+              size="lg"
+              disabled={isSubmittingForm}
+            >
+              {isSubmittingForm && <Loader2 className="w-4 h-4 animate-spin" />}
+              Adicionar Categoria
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

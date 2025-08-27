@@ -1,16 +1,16 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'react-toastify';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import type { Persona } from '@/types/Persona';
 import { personaService } from '@/services/personaService';
+
 import { PersonaVisibility } from './PersonaVisibility';
 
 interface PersonaListItemProps {
   persona: Persona;
-  setPersonas: Dispatch<SetStateAction<Persona[]>>;
+  setPersonas: Dispatch<SetStateAction<Persona[] | null>>;
   onEdit?: (persona: Persona) => void;
 }
 
@@ -25,9 +25,13 @@ export function PersonaListItem({
     try {
       await personaService.toggleAtivo(persona.id, false);
 
-      setPersonas((prev) =>
-        prev.map((p) => (p.id === persona.id ? { ...p, ativo: false } : p)),
-      );
+      setPersonas((prev) => {
+        if (!prev) return prev;
+
+        return prev.map((p) =>
+          p.id === persona.id ? { ...p, ativo: false } : p,
+        );
+      });
 
       toast.success('Persona desativada com sucesso!');
     } catch (error: any) {
@@ -40,7 +44,6 @@ export function PersonaListItem({
   return (
     <>
       <TableRow key={persona.id}>
-        {/* Ícone */}
         <TableCell>
           <div className="flex items-center">
             <img
@@ -54,7 +57,6 @@ export function PersonaListItem({
           </div>
         </TableCell>
 
-        {/* Nome */}
         <TableCell>
           <div className="flex flex-col">
             <span className="font-medium">{persona.nome}</span>
@@ -62,10 +64,8 @@ export function PersonaListItem({
           </div>
         </TableCell>
 
-        {/* Ações */}
         <TableCell>
           <div className="flex items-center gap-2">
-            {/* Botão Editar */}
             <button
               className="text-black-600 hover:text-black transition-colors"
               onClick={() => onEdit?.(persona)}
@@ -74,7 +74,6 @@ export function PersonaListItem({
               <IconEdit size={18} stroke={2} />
             </button>
 
-            {/* Botão Excluir */}
             <button
               onClick={() => setIsOpenDeleteModal(true)}
               className="text-black-600 hover:text-black transition-colors"
@@ -83,13 +82,11 @@ export function PersonaListItem({
               <IconTrash size={18} stroke={2} />
             </button>
 
-            {/* Toggle Visibilidade */}
             <PersonaVisibility persona={persona} setPersonas={setPersonas} />
           </div>
         </TableCell>
       </TableRow>
 
-      {/* Modal de Confirmação */}
       <ConfirmModal
         isOpen={isOpenDeleteModal}
         onConfirm={handleDeletePersona}

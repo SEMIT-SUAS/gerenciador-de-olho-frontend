@@ -28,92 +28,74 @@ import { ServicosExternosList } from '@/pages/ServicosPage/components/ServicosEx
 import { FormServicoExterno } from '@/pages/ServicosPage/components/ServicosExternosForm/ServicoExternoForm';
 
 export function ServicesPage() {
-  const [cartaDeServicos, setCartaDeServicos] = useState<ServicosListar[]>([]);
-  const [servicosExternos, setServicosExternos] = useState<ServicoExterno[]>(
-    [],
-  );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [cartaDeServicos, setCartaDeServicos] = useState<
+    ServicosListar[] | null
+  >(null);
+  const [servicosExternos, setServicosExternos] = useState<
+    ServicoExterno[] | null
+  >(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const [activeTab, setActiveTab] = useState('servicos');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  async function fetchServices() {
+  async function getAllServicesData() {
     try {
-      setLoading(true);
+      // setLoading(true);
       const dataCartaDeServico = await servicoService.getAll();
       const dataServicoExterno = await servicoExternoService.getAll();
 
       setCartaDeServicos(dataCartaDeServico);
       setServicosExternos(dataServicoExterno);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao buscar os serviços.');
-      toast.error(err.message || 'Erro ao buscar os serviços.');
-    } finally {
-      setLoading(false);
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao buscar os serviços.');
     }
   }
 
   useEffect(() => {
-    fetchServices();
+    getAllServicesData();
+
+    return () => {
+      setCartaDeServicos(null);
+      setServicosExternos(null);
+    };
   }, []);
 
-  const filteredCartaDeServicos = cartaDeServicos.filter((s) =>
+  const filteredCartaDeServicos = cartaDeServicos?.filter((s) =>
     s.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const filteredServicosExternos = servicosExternos.filter((s) =>
+  const filteredServicosExternos = servicosExternos?.filter((s) =>
     s.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-[200px] md:min-h-[400px]">
-        <div className="text-center px-4">
-          <p className="text-red-600 text-sm md:text-base">Erro: {error}</p>
-          <Button onClick={fetchServices} variant="outline" className="mt-4">
-            Tentar novamente
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[200px] md:min-h-[400px]">
-        <p className="text-gray-600 text-sm md:text-base px-4 text-center">
-          Carregando serviços...
-        </p>
-      </div>
-    );
-  }
 
   const activeList =
     activeTab === 'servicos'
       ? filteredCartaDeServicos
       : filteredServicosExternos;
 
+  const totalPages = Math.ceil((activeList?.length ?? 0) / itemsPerPage);
+
+  const currentDataCartaDeServicos = cartaDeServicos
+    ? filteredCartaDeServicos?.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+      ) || []
+    : [];
+
+  const currentDataServicosExternos = servicosExternos
+    ? filteredServicosExternos?.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+      ) || []
+    : [];
+
   const itemsPerPageOptions = [8, 16, 24];
-
-  const totalPages = Math.ceil(activeList.length / itemsPerPage);
-
-  const currentDataCartaDeServicos = filteredCartaDeServicos.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
-
-  const currentDataServicosExternos = filteredServicosExternos.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
 
   return (
     <LayoutPage>
       <div className="flex flex-col gap-6 py-4 px-4 md:py-6 md:px-8 lg:py-8 lg:px-36">
-        {/* Header Section - Responsivo */}
         <div className="w-full max-w-full lg:max-w-[640px]">
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
             {activeTab === 'servicos'
@@ -125,9 +107,7 @@ export function ServicesPage() {
           </p>
         </div>
 
-        {/* Controls Section - Layout Responsivo */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          {/* Tabs - Largura responsiva */}
           <div className="w-full md:w-auto">
             <Tabs
               defaultValue="servicos"
@@ -136,7 +116,7 @@ export function ServicesPage() {
                 setActiveTab(value);
                 setCurrentPage(1);
               }}
-              className="w-full md:w-[400px]"
+              className="w-full sm:w-auto"
             >
               <TabsList className="w-full md:w-auto">
                 <TabsTrigger value="servicos" className="flex-1 md:flex-none">
@@ -149,9 +129,7 @@ export function ServicesPage() {
             </Tabs>
           </div>
 
-          {/* Search and Actions - Layout responsivo */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            {/* Search Input - Largura responsiva */}
             <div className="w-full sm:w-[280px] md:w-[320px]">
               <SearchInput
                 placeholder="Pesquise por nome"
@@ -164,7 +142,6 @@ export function ServicesPage() {
               />
             </div>
 
-            {/* Add Button */}
             {activeTab === 'servicos' ? (
               <Button asChild className="w-full sm:w-auto">
                 <Link to={'/servicos/novo'}>
@@ -190,24 +167,23 @@ export function ServicesPage() {
           </div>
         </div>
 
-        {/* Services List - Grid responsivo será aplicado dentro dos componentes */}
         <div className="w-full">
           {activeTab === 'servicos' ? (
             <ServicesList
+              itemsPerPage={itemsPerPage}
               setServicos={setCartaDeServicos}
               servicos={currentDataCartaDeServicos}
             />
           ) : (
             <ServicosExternosList
+              itemsPerPage={itemsPerPage}
               setServicos={setServicosExternos}
               servicos={currentDataServicosExternos}
             />
           )}
         </div>
 
-        {/* Pagination Section - Layout responsivo */}
         <div className="flex items-center justify-between">
-          {/* Items per page - Centralizado no mobile */}
           <div className="flex items-center gap-2">
             <span className="hidden sm:inline-flex text-sm text-gray-600">
               Linhas por página:
@@ -233,14 +209,11 @@ export function ServicesPage() {
             </Select>
           </div>
 
-          {/* Pagination controls - Layout responsivo */}
           <div className="flex items-center gap-2">
-            {/* Page info */}
             <span className="text-sm text-gray-600">
               Página {currentPage} de {totalPages}
             </span>
 
-            {/* Navigation buttons */}
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -288,14 +261,13 @@ export function ServicesPage() {
         </div>
       </div>
 
-      {/* Modal - Responsivo */}
       {isCreateModalOpen && (
         <FormServicoExterno
           mode="create"
           onClose={() => setIsCreateModalOpen(false)}
           onSuccess={async () => {
             setIsCreateModalOpen(false);
-            await fetchServices();
+            await getAllServicesData();
           }}
         />
       )}

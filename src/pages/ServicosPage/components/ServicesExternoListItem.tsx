@@ -17,7 +17,7 @@ import { FormServicoExterno } from './ServicosExternosForm/ServicoExternoForm';
 
 interface ServiceListItemProps {
   servico: ServicoExterno;
-  setServicos: Dispatch<SetStateAction<ServicoExterno[]>>;
+  setServicos: Dispatch<SetStateAction<ServicoExterno[] | null>>;
 }
 
 export function ServicesExternoListItem({
@@ -35,11 +35,13 @@ export function ServicesExternoListItem({
       const novoStatus = !servico.ativo;
       await servicoExternoService.toggleAtivo(servico.id, novoStatus);
 
-      setServicos((prev) =>
-        prev.map((s) =>
+      setServicos((prev) => {
+        if (!prev) return prev;
+
+        return prev.map((s) =>
           s.id === servico.id ? { ...s, ativo: novoStatus } : s,
-        ),
-      );
+        );
+      });
 
       toast.success(
         novoStatus
@@ -65,11 +67,13 @@ export function ServicesExternoListItem({
         novaVisibilidade,
       );
 
-      setServicos((prev) =>
-        prev.map((s) =>
+      setServicos((prev) => {
+        if (!prev) return prev;
+
+        return prev.map((s) =>
           s.id === servico.id ? { ...s, visivel: novaVisibilidade } : s,
-        ),
-      );
+        );
+      });
 
       toast.success(
         novaVisibilidade
@@ -87,9 +91,11 @@ export function ServicesExternoListItem({
 
   const handleEditSuccess = (servicoAtualizado?: ServicoExterno) => {
     if (servicoAtualizado) {
-      setServicos((prev) =>
-        prev.map((s) => (s.id === servico.id ? servicoAtualizado : s)),
-      );
+      setServicos((prev) => {
+        if (!prev) return prev;
+
+        return prev.map((s) => (s.id === servico.id ? servicoAtualizado : s));
+      });
     }
     setIsEditModalOpen(false);
   };
@@ -162,7 +168,6 @@ export function ServicesExternoListItem({
 
         <TableCell>
           <div className="flex gap-2">
-            {/* Botão Editar */}
             <button
               className="p-1.5 text-black hover:bg-blue-50 rounded transition-colors disabled:opacity-50"
               onClick={() => setIsEditModalOpen(true)}
@@ -172,7 +177,6 @@ export function ServicesExternoListItem({
               <IconEdit size={18} stroke={2} />
             </button>
 
-            {/* Botão Ativar/Desativar */}
             <button
               onClick={() => setIsOpenDeleteModal(true)}
               className={`p-1.5 rounded transition-colors disabled:opacity-50 ${
@@ -190,7 +194,6 @@ export function ServicesExternoListItem({
               )}
             </button>
 
-            {/* Botão Visibilidade */}
             <button
               className="p-1.5 text-black hover:bg-gray-50 rounded transition-colors disabled:opacity-50"
               onClick={() => setIsOpenVisibleModal(true)}
@@ -211,7 +214,6 @@ export function ServicesExternoListItem({
         </TableCell>
       </TableRow>
 
-      {/* Modal de Edição */}
       {isEditModalOpen && (
         <FormServicoExterno
           mode="edit"
@@ -221,7 +223,6 @@ export function ServicesExternoListItem({
         />
       )}
 
-      {/* Modal de Confirmação - Ativar/Desativar */}
       <ConfirmModal
         isOpen={isOpenDeleteModal}
         onConfirm={handleToggleAtivo}
@@ -234,7 +235,6 @@ export function ServicesExternoListItem({
         }
       />
 
-      {/* Modal de Confirmação - Visibilidade */}
       <ConfirmModal
         isOpen={isOpenVisibleModal}
         onConfirm={handleToggleVisibility}

@@ -56,7 +56,11 @@ export function UsuarioForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        autoComplete="off" // (1) form off
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="nome"
@@ -67,6 +71,7 @@ export function UsuarioForm({
                 <Input
                   placeholder="Nome completo"
                   disabled={isSubmitting}
+                  autoComplete="off" // (1) input off
                   {...field}
                 />
               </FormControl>
@@ -86,6 +91,7 @@ export function UsuarioForm({
                 <Input
                   placeholder="000.000.000-00"
                   disabled={isSubmitting || isEditing}
+                  autoComplete="off" // (1)
                   {...field}
                   value={maskCPF(field.value || '')}
                   onChange={(e) => {
@@ -111,6 +117,7 @@ export function UsuarioForm({
                 <Input
                   placeholder="(00) 00000-0000"
                   disabled={isSubmitting}
+                  autoComplete="off" // (1)
                   {...field}
                   value={maskPhone(field.value || '')}
                   onChange={(e) => {
@@ -133,9 +140,15 @@ export function UsuarioForm({
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
-                  type="email"
+                  // (3) evitar heurística: não usar type="email"
+                  type="text"
+                  inputMode="email"
                   placeholder="seu@email.com"
                   disabled={isSubmitting || isEditing}
+                  autoComplete="off" // (1)
+                  // (2) bloquear autofill até foco
+                  readOnly
+                  onFocus={(e) => e.currentTarget.removeAttribute('readonly')}
                   {...field}
                 />
               </FormControl>
@@ -155,6 +168,10 @@ export function UsuarioForm({
                   type="password"
                   placeholder="•••••••"
                   disabled={isSubmitting || isEditing}
+                  autoComplete="off" // (1)
+                  // (2) bloquear autofill até foco
+                  readOnly
+                  onFocus={(e) => e.currentTarget.removeAttribute('readonly')}
                   {...field}
                 />
               </FormControl>

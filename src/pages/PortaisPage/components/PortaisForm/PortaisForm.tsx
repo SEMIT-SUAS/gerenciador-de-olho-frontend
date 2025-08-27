@@ -3,8 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useState, type Dispatch, type SetStateAction } from 'react';
-import { toast } from 'react-toastify';
-
 
 import { portaisSchema, type PortaisSchema } from './portaisSchema';
 import {
@@ -18,7 +16,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Loading } from '@/components/Loading/Loading';
 import { cn } from '@/lib/utils';
 import {
@@ -29,30 +26,32 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-
-
 import type { Portais } from '@/types/Portais';
+import { Switch } from '@/components/ui/switch';
 
 type PortalFormProps = {
   setPortais?: Dispatch<SetStateAction<Portais[]>>;
 
-  defaultValues?: Portais,
+  defaultValues?: Portais;
   onSubmit: (data: PortaisSchema) => void;
-  isSubmitting: boolean
+  isSubmitting: boolean;
 };
 
-export function PortalForm({ defaultValues, onSubmit, isSubmitting }: PortalFormProps) {
-
+export function PortalForm({
+  defaultValues,
+  onSubmit,
+  isSubmitting,
+}: PortalFormProps) {
   const form = useForm<PortaisSchema>({
     resolver: zodResolver(portaisSchema),
-    defaultValues: defaultValues || ({
-        nome: '',
-        categoria: undefined,
-        destaque: false,
-        link: '',
-        visivel: true,
-        ativo: true,
-    }), 
+    defaultValues: defaultValues || {
+      nome: '',
+      categoria: undefined,
+      destaque: false,
+      link: '',
+      visivel: true,
+      ativo: true,
+    },
   });
 
   return (
@@ -87,15 +86,17 @@ export function PortalForm({ defaultValues, onSubmit, isSubmitting }: PortalForm
             )}
           />
 
-
           <FormField
             control={form.control}
             name="categoria"
             render={({ field }) => (
-              <FormItem >
+              <FormItem>
                 <FormLabel>Categoria</FormLabel>
                 {/* O componente Select principal controla o estado */}
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     {/* O SelectTrigger é o que o usuário vê e clica */}
                     <SelectTrigger className="w-full">
@@ -115,21 +116,24 @@ export function PortalForm({ defaultValues, onSubmit, isSubmitting }: PortalForm
             )}
           />
 
-
           <FormField
             control={form.control}
             name="destaque"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                <FormControl>
-                  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Destaque</FormLabel>
-                  <FormDescription>
-                    Marcar para destacar este portal na página inicial.
-                  </FormDescription>
+              <FormItem className="flex items-center justify-between border p-3 rounded-md">
+                <div>
+                  <FormLabel className="text-base">Destaque</FormLabel>
+                  <div className="text-sm text-gray-500">
+                    Marcar para destacar este portal na página inicial
+                  </div>
                 </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isSubmitting}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />
@@ -138,25 +142,38 @@ export function PortalForm({ defaultValues, onSubmit, isSubmitting }: PortalForm
             control={form.control}
             name="visivel"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                <FormControl>
-                  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Visível</FormLabel>
-                  <FormDescription>
-                    Se desmarcado, o portal não será exibido para os usuários.
-                  </FormDescription>
+              <FormItem className="flex items-center justify-between border p-3 rounded-md">
+                <div>
+                  <FormLabel className="text-base">Visível</FormLabel>
+                  <div className="text-sm text-gray-500">
+                    Aparece para os usuários no aplicativo
+                  </div>
                 </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isSubmitting}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />
-
         </div>
+        <div className="flex justify-end pt-5 gap-4">
+          <Button
+            variant="outline"
+            className="px-8"
+            onClick={() => window.history.back()}
+            type="button"
+          >
+            Cancelar
+          </Button>
 
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? <Loading className="size-4" /> : 'Salvar Portal'}
-        </Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? <Loading className="size-4" /> : 'Salvar Portal'}
+          </Button>
+        </div>
       </form>
     </Form>
   );

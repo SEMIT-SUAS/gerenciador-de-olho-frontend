@@ -24,10 +24,10 @@ export function AddCategoriaModal({
       <DialogContent>
         <DialogHeader className="text-center!">
           <DialogTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Criar categoria
+            Adicionar categoria
           </DialogTitle>
           <DialogDescription className="text-slate-600">
-            Preencha os detalhes da categoria que deseja criar.
+            Preencha os detalhes da categoria que deseja adicionar.
           </DialogDescription>
         </DialogHeader>
 

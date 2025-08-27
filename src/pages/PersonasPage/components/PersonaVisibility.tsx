@@ -7,7 +7,7 @@ import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 interface PersonaVisibilityProps {
   persona: Persona;
-  setPersonas: Dispatch<SetStateAction<Persona[]>>;
+  setPersonas: Dispatch<SetStateAction<Persona[] | null>>;
 }
 
 export function PersonaVisibility({
@@ -20,11 +20,13 @@ export function PersonaVisibility({
     try {
       await personaService.toggleVisibility(persona.id, !persona.visivel);
 
-      setPersonas((prev) =>
-        prev.map((p) =>
+      setPersonas((prev) => {
+        if (!prev) return prev;
+
+        return prev.map((p) =>
           p.id === persona.id ? { ...p, visivel: !p.visivel } : p,
-        ),
-      );
+        );
+      });
 
       toast.success(
         `Persona "${persona.nome}" ${!persona.visivel ? 'visível' : 'oculta'}!`,

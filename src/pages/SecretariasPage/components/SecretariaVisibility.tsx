@@ -18,6 +18,7 @@ export function SecretariaVisibility({
 
   async function handleOnClickButton() {
     try {
+      ///sem função ainda
       await secretariaService.changeServiceVisibility(
         secretaria.id,
         !secretaria.visivel,

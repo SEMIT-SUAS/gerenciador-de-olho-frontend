@@ -18,7 +18,6 @@ import { EditEspacoPublicoPage } from './pages/EspacosPublicosPage/components/Ed
 import { PortaisPage } from './pages/PortaisPage';
 import { DenunciaCategoriasPage } from './pages/CategoriasDenunciaPage';
 import { SecretariaPage } from './pages/SecretariasPage';
-import { DenunciaDetails } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciaDetails';
 import { PersonasPage } from './pages/PersonasPage';
 import { UsuariosPage } from './pages/UsuarioPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -90,6 +89,8 @@ export function App() {
           <Route path="/usuarios" element={<UsuariosPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
       <ToastContainer />

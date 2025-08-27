@@ -29,7 +29,7 @@ export function AddBannerModal({
       <DialogContent>
         <DialogHeader className="text-center!">
           <DialogTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Criar Banner
+            Adicionar Banner
           </DialogTitle>
           <DialogDescription className="text-slate-600">
             Preencha os detalhes do banner que deseja criar.

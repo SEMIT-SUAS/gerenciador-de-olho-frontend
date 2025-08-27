@@ -1,6 +1,4 @@
-// src/pages/UsuariosPage.tsx
-
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import type { UsuarioModel, UsuarioPorId } from '@/types/Usuario';
 import type { Secretaria } from '@/types/Secretaria';
 import usuarioService from '@/services/usuariosService';
@@ -30,43 +28,42 @@ import { EditUsuarioModal } from './components/EditUsuarioModal';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 export function UsuariosPage() {
-  const [usuarios, setUsuarios] = useState<UsuarioModel[]>([]);
+  const [usuarios, setUsuarios] = useState<UsuarioModel[] | null>(null);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
-
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<UsuarioPorId | null>(null);
+  // const [editingUser, setEditingUser] = useState<UsuarioPorId | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [userToFetch, setUserToFetch] = useState<UsuarioModel | null>(null); // Estado para acionar a busca
-  const [fetchedUser, setFetchedUser] = useState<UsuarioPorId | null>(null); // Estado para o usuário buscado
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Estado para o modal de exclusão
-  const [usuario, setUsuario] = useState<UsuarioModel | null>(null); // Usuário a ser excluído
+  const [userToFetch, setUserToFetch] = useState<UsuarioModel | null>(null);
+  const [fetchedUser, setFetchedUser] = useState<UsuarioPorId | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [usuario, setUsuario] = useState<UsuarioModel | null>(null);
 
-  // A função que será chamada pelo componente filho (UsuarioListItem)
   const handleEdit = (usuario: UsuarioModel) => {
-    setIsEditModalOpen(true); // Abre o modal imediatamente
+    setIsEditModalOpen(true);
     setUserToFetch(usuario);
   };
+
   async function handleDelete() {
     if (!usuario) return;
 
     try {
       await usuarioService.excluirUsuario(usuario.id);
-      setUsuarios((prev) => prev.filter((u) => u.id !== usuario.id));
+      setUsuarios((prev) => {
+        if (!prev) return prev;
+        return prev.filter((u) => u.id !== usuario.id);
+      });
       toast.success('Usuário excluído com sucesso!');
     } catch (error) {
       console.error('Erro ao excluir usuário:', error);
       toast.error('Erro ao excluir usuário.');
     } finally {
       setIsDeleteModalOpen(false);
-      setUsuario(null); // Limpa o usuário após exclusão
+      setUsuario(null);
     }
   }
 
@@ -78,11 +75,11 @@ export function UsuariosPage() {
           const fetchedData = await usuarioService.buscarUsuarioPorId(
             userToFetch.id,
           );
-          setFetchedUser(fetchedData); // ATUALIZA O NOVO ESTADO COM OS DADOS FINAIS
+          setFetchedUser(fetchedData);
         } catch (error) {
           console.error('Falha ao buscar dados do usuário:', error);
           toast.error('Falha ao carregar os dados do usuário para edição.');
-          setIsEditModalOpen(false); // Fecha o modal em caso de erro
+          setIsEditModalOpen(false);
           setFetchedUser(null);
         } finally {
           setIsLoading(false);
@@ -91,65 +88,65 @@ export function UsuariosPage() {
 
       fetchUserData();
     }
-  }, [userToFetch]); // O efeito depende APENAS do userToFetch
+  }, [userToFetch]);
 
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
-    setUserToFetch(null); // Limpa o estado para a próxima edição
-    setFetchedUser(null); // Limpa o usuário buscado
+    setUserToFetch(null);
+    setFetchedUser(null);
   };
 
   const handleDeleteClick = (usuario: UsuarioModel) => {
-    setUsuario(usuario); // Define o usuário a ser deletado
-    setIsDeleteModalOpen(true); // Abre o modal de confirmação
+    setUsuario(usuario);
+    setIsDeleteModalOpen(true);
   };
 
-  async function fetchData() {
+  async function getAllUsuariosData() {
     try {
-      setLoading(true);
-
       const [usuariosData, secretariasData] = await Promise.all([
         usuarioService.getAllUsuarios(),
         secretariaService.getAll(),
       ]);
 
-      setUsuarios(usuariosData);
       setSecretarias(secretariasData);
-    } catch (err: any) {
-      const errorMessage = err.message || 'Erro ao buscar os dados.';
-      setError(errorMessage);
-      toast.error(errorMessage);
-    } finally {
-      setLoading(false);
+      return usuariosData;
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao buscar os dados.');
     }
   }
 
   useEffect(() => {
-    fetchData();
+    getAllUsuariosData().then((usuariosData) => {
+      if (usuariosData) {
+        setUsuarios(usuariosData);
+      }
+    });
+
+    return () => {
+      setUsuarios(null);
+    };
   }, []);
 
-  const filteredUsuarios = useMemo(() => {
-    return usuarios.filter((u) => {
-      const secretaria = secretarias.find((s) => s.id === u.idSecretaria);
-      const secretariaNome = secretaria?.nome.toLowerCase() || '';
-      const secretariaSigla = secretaria?.sigla.toLowerCase() || '';
+  const filteredUsuarios = usuarios?.filter((usuario) => {
+    const secretaria = secretarias.find((s) => s.id === usuario.idSecretaria);
+    const secretariaNome = secretaria?.nome.toLowerCase() || '';
+    const secretariaSigla = secretaria?.sigla.toLowerCase() || '';
 
-      return (
-        u.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        secretariaNome.includes(searchTerm.toLowerCase()) ||
-        secretariaSigla.includes(searchTerm.toLowerCase())
-      );
-    });
-  }, [usuarios, secretarias, searchTerm]);
-
-  const totalPages = Math.ceil(filteredUsuarios.length / itemsPerPage);
-
-  const currentData = useMemo(() => {
-    return filteredUsuarios.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage,
+    return (
+      usuario.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      secretariaNome.includes(searchTerm.toLowerCase()) ||
+      secretariaSigla.includes(searchTerm.toLowerCase())
     );
-  }, [filteredUsuarios, currentPage, itemsPerPage]);
+  });
+
+  const totalPages = Math.ceil((filteredUsuarios?.length ?? 0) / itemsPerPage);
+
+  const currentUsuarios = usuarios
+    ? filteredUsuarios?.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+      ) || []
+    : [];
 
   function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(e.target.value);
@@ -159,29 +156,6 @@ export function UsuariosPage() {
   function handleItemsPerPageChange(value: string) {
     setItemsPerPage(Number(value));
     setCurrentPage(1);
-  }
-
-  if (loading) {
-    return (
-      <LayoutPage>
-        <div className="flex items-center justify-center min-h-[400px]">
-          Carregando...
-        </div>
-      </LayoutPage>
-    );
-  }
-
-  if (error) {
-    return (
-      <LayoutPage>
-        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-          <p className="text-red-600">Erro: {error}</p>
-          <Button onClick={fetchData} variant="outline">
-            Tentar novamente
-          </Button>
-        </div>
-      </LayoutPage>
-    );
   }
 
   return (
@@ -214,7 +188,8 @@ export function UsuariosPage() {
         </div>
 
         <UsuariosList
-          usuarios={currentData}
+          itemsPerPage={itemsPerPage}
+          usuarios={currentUsuarios}
           setUsuarios={setUsuarios}
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
@@ -296,21 +271,20 @@ export function UsuariosPage() {
         <EditUsuarioModal
           open={isEditModalOpen}
           onOpenChange={handleCloseEditModal}
-          secretarias={secretarias} // Passe suas secretarias aqui
-          usuario={fetchedUser} // Passa o usuário já buscado
+          secretarias={secretarias}
+          usuario={fetchedUser}
         />
       )}
-      {
-        <ConfirmModal
-          isOpen={isDeleteModalOpen}
-          onConfirm={handleDelete}
-          onCancel={() => setIsDeleteModalOpen(false)}
-          title="Confirmar Exclusão"
-          message={`Tem certeza que deseja excluir o usuário "${
-            usuario?.nome ?? ''
-          }"? Esta ação não pode ser desfeita.`}
-        />
-      }
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onConfirm={handleDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        title="Confirmar Exclusão"
+        message={`Tem certeza que deseja excluir o usuário "${
+          usuario?.nome ?? ''
+        }"? Esta ação não pode ser desfeita.`}
+      />
     </LayoutPage>
   );
 }

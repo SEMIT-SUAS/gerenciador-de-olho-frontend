@@ -17,7 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ImageInput } from '@/components/Forms/ImageInput';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -193,19 +193,21 @@ export function EditCategoriaForm({
           control={form.control}
           name="fixed"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 bg-card">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Destaque</FormLabel>
+            <FormItem className="flex items-center justify-between border p-3 rounded-md bg-card">
+              <div>
+                <FormLabel className="text-base">Destaque</FormLabel>
                 <p className="text-sm text-muted-foreground">
                   Exibir como categoria destacada
                 </p>
               </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isSubmittingForm}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />

@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface ServiceListItemProps {
   servico: ServicosListar;
-  setServicos: Dispatch<SetStateAction<ServicosListar[]>>;
+  setServicos: Dispatch<SetStateAction<ServicosListar[] | null>>;
 }
 
 export function ServicesListItem({
@@ -19,23 +19,28 @@ export function ServicesListItem({
   setServicos,
 }: ServiceListItemProps) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+  const navigate = useNavigate();
 
   async function handleDeleteServico() {
     try {
       await servicoService.toggleAtivo(servico.id, false);
 
-      setServicos((prev) =>
-        prev.map((s) => (s.id === servico.id ? { ...s, ativo: false } : s)),
-      );
+      setServicos((prev) => {
+        if (!prev) return prev;
+
+        return prev.map((s) =>
+          s.id === servico.id ? { ...s, ativo: false } : s,
+        );
+      });
 
       toast.success('Serviço desativado com sucesso!');
     } catch (error: any) {
-      toast.error(error.message);
+      console.log(error);
+      toast.error('Erro ao desativar serviço');
     }
 
     setIsOpenDeleteModal(false);
   }
-  const navigate = useNavigate();
 
   return (
     <>
@@ -55,30 +60,32 @@ export function ServicesListItem({
           )}
         </TableCell>
         <TableCell>
-          <div className="gap-6">
+          <div className="flex gap-2">
             <button
-              className="text-black-600 mr-2"
+              className="text-black-600 hover:text-black transition-colors"
               onClick={() => navigate(`/servicos/editar/${servico.id}`)}
+              title="Editar serviço"
             >
               <IconEdit size={18} stroke={2} className="text-black-600" />
             </button>
             <button
               onClick={() => setIsOpenDeleteModal(true)}
-              className="text-black-600 mr-2"
+              className="text-black-600 hover:text-black transition-colors"
+              title="Desativar serviço"
             >
               <IconTrash size={18} stroke={2} className="text-black-600" />
             </button>
-            <button className="text-black-600 mr-2">
+            <div className="text-black-600">
               <ServicoVisibility servico={servico} setServicos={setServicos} />
-            </button>
+            </div>
           </div>
         </TableCell>
       </TableRow>
+
       <ConfirmModal
         isOpen={isOpenDeleteModal}
         onConfirm={async () => {
           await handleDeleteServico();
-          window.location.reload();
         }}
         onCancel={() => setIsOpenDeleteModal(false)}
         title="Você deseja apagar o serviço?"

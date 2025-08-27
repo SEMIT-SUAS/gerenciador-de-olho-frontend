@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { ImageInput } from '@/components/Forms/ImageInput';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { Loader2 } from 'lucide-react';
 
 // Importe os tipos e o serviço corretos
@@ -178,33 +179,48 @@ export function TipoDenunciaForm({
           control={form.control}
           name="visivel"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 bg-card">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Visível</FormLabel>
+            <FormItem className="flex items-center justify-between border p-3 rounded-md bg-card">
+              <div>
+                <FormLabel className="text-base">Visível</FormLabel>
                 <p className="text-sm text-muted-foreground">
                   Exibir este tipo de denúncia no aplicativo
                 </p>
               </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isSubmitting}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="flex justify-end">
+        <div className="flex justify-end pt-5 gap-4">
           <Button
-            type="submit"
-            className="w-full md:w-auto px-8"
-            size="lg"
-            disabled={isSubmitting}
+            variant="outline"
+            className="px-8"
+            onClick={() => window.history.back()}
+            type="button"
           >
-            {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Cadastrar Tipo de Denúncia
+            Cancelar
           </Button>
+
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="w-full md:w-auto px-8"
+              size="lg"
+              disabled={isSubmitting}
+            >
+              {isSubmitting && (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              )}
+              Adicionar Tipo de Denúncia
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

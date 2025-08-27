@@ -1,5 +1,3 @@
-// src/pages/UsuariosPage/components/UsuariosListItem.tsx
-
 import { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import type { UsuarioModel } from '@/types/Usuario';
@@ -12,16 +10,16 @@ import { secretariaService } from '@/services/secretariaService';
 
 interface UsuariosListItemProps {
   usuario: UsuarioModel;
-  setUsuarios: Dispatch<SetStateAction<UsuarioModel[]>>;
-  onEdit: (usuario: UsuarioModel) => void; // A nova prop para a função de edição
-  onDelete?: (usuario: UsuarioModel) => void; // Opcional, caso queira passar uma função de exclusão
+  setUsuarios: Dispatch<SetStateAction<UsuarioModel[] | null>>;
+  onEdit: (usuario: UsuarioModel) => void;
+  onDelete?: (usuario: UsuarioModel) => void;
 }
 
 export function UsuariosListItem({
   usuario,
   setUsuarios,
   onEdit,
-  onDelete, // Recebendo a nova prop
+  onDelete,
 }: UsuariosListItemProps) {
   const [secretaria, setSecretaria] = useState<Secretaria | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

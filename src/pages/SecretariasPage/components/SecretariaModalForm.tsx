@@ -3,12 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+// import { z } from 'zod';
 
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
+// import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -83,7 +84,7 @@ export function SecretariaFormModal({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
-          <DialogTitle>Cadastrar Secretaria</DialogTitle>
+          <DialogTitle>Adicionar Secretaria</DialogTitle>
           <DialogDescription>
             Preencha as informações abaixo para criar uma nova secretaria.
           </DialogDescription>
@@ -125,23 +126,28 @@ export function SecretariaFormModal({
               )}
             />
 
-            <div className="grid gap-3 pt-2">
-              <FormField
-                control={form.control}
-                name="visivel"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormLabel className="font-normal">Visível</FormLabel>
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="visivel"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base font-medium">
+                      Visível
+                    </FormLabel>
+                    <div className="text-sm text-gray-500">
+                      Aparece para os usuários no aplicativo
+                    </div>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
             <DialogFooter className="pt-4">
               <DialogClose asChild>
@@ -156,7 +162,7 @@ export function SecretariaFormModal({
                     Salvando...
                   </>
                 ) : (
-                  'Cadastrar'
+                  'Adicionar'
                 )}
               </Button>
             </DialogFooter>
