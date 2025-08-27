@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { DashboardPage } from './pages/DashboardPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
@@ -27,14 +27,27 @@ import { AcaoDetails } from './pages/OcorrenciasPage/components/SidePanel/Acao/A
 import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/VincularDenunciaAAcao';
 import { CriarAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/CriarAcao';
 import { VincularAcaoView } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoView';
+import { useAuth } from './context/AuthContext';
 
 export function App() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <BrowserRouter>
       <Routes>
         <Route index path="/login" element={<LoginPage />} />
-        <Route path="/" element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route element={<ProtectedRoute />}>
+          <Route index path="/dashboard" element={<DashboardPage />} />
 
           <Route
             path="/ocorrencias"

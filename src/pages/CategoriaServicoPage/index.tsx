@@ -31,7 +31,6 @@ export function CategoriasPage() {
   const [categorias, setCategorias] = useState<
     (ServicoCategoria & { id: number })[] | null
   >(null);
-
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
@@ -43,19 +42,14 @@ export function CategoriasPage() {
 
   async function getAllCategoriasData() {
     try {
-      // setLoading(true);
-      const data = await categoriaServicoService.getAll();
-      setCategorias(data);
-    } catch (err: any) {
-      // setError(err.message || 'Erro ao buscar as categorias.');
-      toast.error(err.message || 'Erro ao buscar as categorias.');
-    } finally {
-      // setLoading(false);
+      return await categoriaServicoService.getAll();
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao buscar as categorias.');
     }
   }
 
   useEffect(() => {
-    categoriaServicoService.getAll().then((categoriasData) => {
+    getAllCategoriasData().then((categoriasData) => {
       if (categoriasData) {
         setCategorias(categoriasData);
       }
