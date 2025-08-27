@@ -1,4 +1,4 @@
-import { api } from '../config/api'; // Usando a instância do axios
+import { api } from '@/lib/axios';
 import type { createSecretaria, Secretaria } from '../types/Secretaria'; // Ajuste o caminho conforme necessário
 import { BaseServiceClass } from './BaseServiceClass'; // Supondo que você tenha uma classe base
 import { AxiosError } from 'axios';
@@ -95,6 +95,12 @@ export class SecretariaService extends BaseServiceClass {
     } catch (error) {
       throw this.deleteError;
     }
+  }
+
+  public async toggleVisibility(secretariaId: number, visibilidade: boolean) {
+    secretariaId + 1;
+    visibilidade!;
+    return null;
   }
 }
 

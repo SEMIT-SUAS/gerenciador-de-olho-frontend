@@ -1,10 +1,9 @@
 import type {
-  UsuarioLogin,
   UsuarioModel,
   UsuarioPorId,
   UsuarioUpdate,
 } from '@/types/Usuario';
-import { api } from '../config/api';
+import { api } from '@/lib/axios';
 import { type LoginFormValues } from '@/pages/LoginPage/components/loginSchema';
 import { AxiosError } from 'axios';
 import { jwtDecode } from 'jwt-decode';
@@ -131,7 +130,6 @@ export const updateUsuario = async (
     );
     return response.data;
   } catch (error) {
-    console.error('Erro ao atualizar usuário:', error);
     throw error;
   }
 };

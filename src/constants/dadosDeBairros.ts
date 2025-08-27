@@ -287,7 +287,7 @@ export const DADOS_BAIRROS = [
   },
   {
     id: 5,
-    nome: 'Altos Do Calhau',
+    nome: 'Alto do Calhau',
     centerLatitude: -2.499813527799493,
     centerLongitude: -44.25831478003444,
     coordenadas: [
@@ -18111,7 +18111,7 @@ export const DADOS_BAIRROS = [
   },
   {
     id: 141,
-    nome: 'Planalto Vinhais Ii',
+    nome: 'Planalto Vinhais II',
     centerLatitude: -2.5062765160176936,
     centerLongitude: -44.25471517183408,
     coordenadas: [

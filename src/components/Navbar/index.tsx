@@ -1,17 +1,8 @@
-import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { modules } from './constants';
 import { IconCircleFilled, IconLogout } from '@tabler/icons-react';
-import { Menu, X } from 'lucide-react'; // Ícones para o botão hambúrguer
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '../ui/sheet';
+import { Menu } from 'lucide-react'; // Ícones para o botão hambúrguer
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from '../ui/sheet';
 import { Button } from '../ui/button';
 import { Separator } from '@radix-ui/react-select';
 import type { Module } from './types';

@@ -16,7 +16,7 @@ import { LayoutPage } from '@/components/LayoutPage';
 
 import { ServicoForm } from '@/pages/ServicosPage/components/ServicoForm/ServicoForm';
 import { secretariaService } from '@/services/secretariaService';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 function ServicoEditarPage() {
   const navigate = useNavigate();
@@ -35,7 +35,6 @@ function ServicoEditarPage() {
   useEffect(() => {
     async function fetchDadosParaEdicao() {
       if (!servicoId) {
-        console.error('ID não encontrado na URL');
         setIsLoading(false);
         return;
       }
@@ -100,7 +99,6 @@ function ServicoEditarPage() {
         };
         setServicoParaEditar(dadosFormatadosParaForm);
       } catch (err) {
-        console.error('Erro ao buscar dados para edição:', err);
         toast.error('Erro ao buscar dados para edição do serviço.');
       } finally {
         setIsLoading(false);
@@ -127,7 +125,6 @@ function ServicoEditarPage() {
       await servicoService.update(payload);
       navigate(`/servicos/${servicoId}`);
     } catch (err: any) {
-      console.error('Erro ao atualizar o serviço:', err);
       toast.error(
         'Erro ao atualizar o serviço: ' +
           (err instanceof Error ? err.message : ''),

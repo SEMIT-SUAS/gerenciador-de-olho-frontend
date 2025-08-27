@@ -16,7 +16,7 @@ import {
 } from './schema';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { ImageInput } from '@/components/Forms/ImageInput';
+import { ImageInput } from '@/components/ImageInput';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';

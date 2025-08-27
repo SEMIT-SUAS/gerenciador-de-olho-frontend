@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { getServicoSchema } from './schemaServicoExterno';
 import { z } from 'zod';
 import { servicoExternoService } from '@/services/servicosExternosService';
@@ -93,7 +93,6 @@ export function FormServicoExterno({
 
       onClose();
     } catch (error: any) {
-      console.error('Erro ao salvar serviço:', error);
       toast.error(error.message || 'Erro ao salvar serviço.');
     } finally {
       setLoading(false);

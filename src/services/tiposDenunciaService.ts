@@ -1,6 +1,6 @@
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import { BaseServiceClass } from './BaseServiceClass';
-import { api } from '@/config/api';
+import { api } from '@/lib/axios';
 
 export class TipoDenunciaService extends BaseServiceClass {
   protected readonly getAllError = new Error(

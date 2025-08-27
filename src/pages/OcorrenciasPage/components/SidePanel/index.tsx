@@ -67,7 +67,7 @@ export function SidePanel({ children }: SidePanelProps) {
     <Card
       ref={panelRef}
       className={cn(
-        'absolute left-0 top-0 z-30 h-full bg-white shadow-xl border-l border-gray-200 transition-all duration-300 rounded-l-none',
+        'absolute left-0 top-0 z-50 h-full bg-white shadow-xl border-l border-gray-200 transition-all duration-300 rounded-l-none',
         isMinimized ? 'w-[18px]' : 'w-[480px]',
       )}
     >

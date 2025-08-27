@@ -1,14 +1,11 @@
-import { BackButton } from '@/components/ui/Backbutton';
 import { Button } from '@/components/ui/button';
-import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { Textarea } from '@/components/ui/textarea';
 import { mensagensSugeridasParaConcluirAcao } from '@/constants/MensagensConcluirAcao';
 import { useAuth } from '@/context/AuthContext';
 import AcoesService from '@/services/acoesService'; // Importar o serviço
 import type { AcaoModel } from '@/types/Acao';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
-import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import {
   Dialog,

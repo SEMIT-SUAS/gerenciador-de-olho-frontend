@@ -1,7 +1,7 @@
 import { useCallback, useState, useRef } from 'react';
 import { IconPhoto, IconPlus, IconX } from '@tabler/icons-react';
 import { Input } from '@/components/ui/input';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 type MultipleImageInputProps = {
@@ -39,7 +39,7 @@ export function MultipleImageInput({
         file.type.startsWith('image/'),
       );
       if (validFiles.length !== newFiles.length) {
-        toast.warn('Apenas arquivos de imagem são permitidos.');
+        toast.warning('Apenas arquivos de imagem são permitidos.');
       }
       if (validFiles.length > 0) {
         updateFiles([...previews, ...validFiles]);

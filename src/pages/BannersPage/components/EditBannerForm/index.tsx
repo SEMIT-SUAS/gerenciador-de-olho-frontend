@@ -12,7 +12,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { useForm } from 'react-hook-form';
 import { EditBannerFormSchema, type EditBannerFormValues } from './types';
-import { ImageInput } from '@/components/Forms/ImageInput';
+import { ImageInput } from '@/components/ImageInput';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';

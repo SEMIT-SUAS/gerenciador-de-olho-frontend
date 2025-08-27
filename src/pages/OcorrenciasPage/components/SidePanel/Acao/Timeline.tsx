@@ -1,4 +1,4 @@
-import type { AcaoDetailsModel, AcaoHistory } from '@/types/Acao';
+import type { AcaoHistory } from '@/types/Acao';
 
 interface TimelineProps {
   acaoHistory: AcaoHistory[];

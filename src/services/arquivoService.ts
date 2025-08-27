@@ -1,4 +1,4 @@
-import { api } from '@/config/api';
+import { api } from '@/lib/axios';
 
 export class ArquivoService {
   static async getBlobByURL(url: string) {
@@ -15,7 +15,6 @@ export class ArquivoService {
 
       return response.data as Blob;
     } catch (error) {
-      console.error(error);
       throw new Error(
         'Serviço de arquivo fora do ar. Tente novamente mais tarde',
       );

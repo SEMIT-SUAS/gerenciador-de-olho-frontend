@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { BannerModel } from '@/types/Banner';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { AddBannerModal } from './components/AddBannerModal';
 import { BannersList } from './components/BannersList';
 import { Pagination } from '@/components/Pagination';

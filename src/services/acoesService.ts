@@ -5,8 +5,7 @@ import type {
   AcaoModel,
   CreateAcaoModel,
 } from '../types/Acao';
-import { api } from '../config/api';
-import { ca } from 'zod/v4/locales';
+import { api } from '@/lib/axios';
 
 export default class AcoesService {
   public static async create(data: CreateAcaoModel) {
@@ -50,47 +49,11 @@ export default class AcoesService {
 
       return response.data;
     } catch (error) {
-      console.error('Erro ao buscar ações:', error);
       throw new Error(
         'Infelizmente ocorreu um erro no servidor. Tente novamente mais tarde',
       );
     }
   }
-
-  // public static async createAcao(
-  //   createAcaoData: CreateAcaoModel,
-  // ): Promise<AcaoModel> {
-  //   const centerCoordinates = getPolygonoCenter(
-  //     createAcaoData.denuncias.map((d) => [d.latitude, d.longitude]),
-  //   );
-
-  //   const secretaria: Secretaria = secretariasMock.find(
-  //     (sc) => sc.id === createAcaoData.secretariaId,
-  //   )!;
-
-  //   const acaoCreatedData: AcaoModel = {
-  //     id: Math.floor(Math.random() * 100000),
-  //     nome: createAcaoData.nome,
-  //     obs: createAcaoData.obs,
-  //     secretaria,
-  //     latitude: centerCoordinates[0],
-  //     longitude: centerCoordinates[1],
-  //     criadoEm: new Date().toUTCString(),
-  //     status: [
-  //       {
-  //         id: 1,
-  //         motivo: 'Criada',
-  //         AlteradoEm: new Date().toUTCString(),
-  //         alteradoPor: userMock,
-  //         status: 'em_analise',
-  //       },
-  //     ],
-  //   };
-
-  //   // Adiciona a nova ação ao nosso array mock.
-  //   this.acoes.push(acaoCreatedData);
-  //   return acaoCreatedData;
-  // }
 
   public static async getAcaoById(acaoId: number): Promise<AcaoDetailsModel> {
     try {
@@ -127,7 +90,6 @@ export default class AcoesService {
   }
 
   public static async vincularDenunciaAcao(payload: any): Promise<AcaoModel> {
-    console.log('Vincular denúncias com payload:', payload);
     try {
       const response = await api.put(`/acao/atualizar`, payload);
 

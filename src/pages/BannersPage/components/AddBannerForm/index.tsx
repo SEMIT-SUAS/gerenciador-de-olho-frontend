@@ -16,7 +16,7 @@ import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { BannerModel } from '@/types/Banner';
 import { AddBannerFormSchema, type AddBannerFormValues } from './types';
 import { Loading } from '@/components/Loading/Loading';
-import { ImageInput } from '@/components/Forms/ImageInput';
+import { ImageInput } from '@/components/ImageInput';
 import { BannerService } from '@/services/bannersService';
 import { Switch } from '@/components/ui/switch';
 

@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { ImageInput } from '@/components/Forms/ImageInput';
+import { ImageInput } from '@/components/ImageInput';
 
 interface Props {
   onSubmit: (

@@ -1,7 +1,7 @@
 import type { BannerModel } from '../types/Banner';
 import { getAPIFileURL } from '@/utils/getAPIFileURL';
 import { BaseServiceClass } from './BaseServiceClass';
-import { api } from '@/config/api';
+import { api } from '@/lib/axios';
 
 export class BannerService extends BaseServiceClass {
   protected readonly serviceUnavailableError = new Error(
@@ -61,7 +61,7 @@ export class BannerService extends BaseServiceClass {
         throw this.createError;
       }
 
-      const newBanner: BannerModel = JSON.parse(response.data);
+      const newBanner: BannerModel = response.data;
       newBanner.imagem = getAPIFileURL(newBanner.imagem);
 
       return newBanner;

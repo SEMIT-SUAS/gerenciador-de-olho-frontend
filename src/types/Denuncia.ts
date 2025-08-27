@@ -50,7 +50,7 @@ export interface DenunciaBasicInfoModel {
   nomeTipoDenuncia: string;
   idAcao: number | null;
   status: 'Aberto' | AcaoStatusModelTypes;
-  endereco: EnderecoModel | string;
+  endereco: EnderecoModel;
   criadaEm: string;
   urls: string[];
 }

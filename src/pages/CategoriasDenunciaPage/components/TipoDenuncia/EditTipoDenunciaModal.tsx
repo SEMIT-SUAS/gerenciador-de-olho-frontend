@@ -9,7 +9,7 @@ import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { TipoDenunciaForm } from './TipoDenunciaForm/TipoDenunciaForm';
 import { type TipoDenunciaFormValues } from './TipoDenunciaForm/tipoDenunciaSchema';
 import { tipoDenunciaService } from '@/services/tiposDenunciaService';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import type { Secretaria } from '@/types/Secretaria';
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 

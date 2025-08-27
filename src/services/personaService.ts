@@ -1,4 +1,4 @@
-import { api } from '@/config/api'; // Importa a instância configurada do Axios
+import { api } from '@/lib/axios';
 import type { Persona } from '@/types/Persona';
 import { AxiosError } from 'axios';
 import { BaseServiceClass } from './BaseServiceClass'; // Supondo o uso de uma classe base

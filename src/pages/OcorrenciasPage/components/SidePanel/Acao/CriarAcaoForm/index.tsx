@@ -76,14 +76,17 @@ export function CriarAcaoForm() {
     setSalvarDenunciasOnClick(true);
     setIsVisibleAcoesInMap(false);
 
-    filtrarData();
+    filtrarData({
+      acaoStatusParam: null,
+      denunciaStatusParam: 'Aberto',
+      tipoDaDenunciaParam: null,
+    });
 
     return () => {
       setIsVisibleAcoesInMap(true);
       setSalvarDenunciasOnClick(false);
       setDenunciasSelecionadas([]);
 
-      filtrarData();
       form.reset();
     };
   }, []);
@@ -131,7 +134,11 @@ export function CriarAcaoForm() {
         createAcaoData,
       );
 
-      setFiltroStatusDenuncia('Análise');
+      filtrarData({
+        acaoStatusParam: 'Análise',
+        denunciaStatusParam: 'Análise',
+        tipoDaDenunciaParam: null,
+      });
       navigate(`/ocorrencias/acoes/${acaoCreatedData.id}`);
       toast.success('Ação criada com sucesso!');
     } catch (error: any) {

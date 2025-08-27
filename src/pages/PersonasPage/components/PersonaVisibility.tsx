@@ -1,6 +1,6 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { personaService } from '@/services/personaService';
 import type { Persona } from '@/types/Persona';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';

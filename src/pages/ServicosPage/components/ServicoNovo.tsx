@@ -10,7 +10,7 @@ import type { ServicoCategoria } from '@/types/CategoriaServico';
 import { servicoService } from '@/services/servicosServices';
 import { useNavigate } from 'react-router-dom';
 import { LayoutPage } from '@/components/LayoutPage';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 function ServicoNovo() {
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
@@ -33,7 +33,6 @@ function ServicoNovo() {
         setCategorias(categoriasData);
         setPersonas(personaData);
       } catch (err) {
-        console.error('Erro ao buscar dados:', err);
         toast.error('Erro ao buscar dados necessários para o serviço.');
       }
     }

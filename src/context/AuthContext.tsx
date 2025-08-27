@@ -33,7 +33,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(userData);
           setToken(storedToken);
         } catch (error) {
-          console.error(error);
           setUser(null);
           setToken(null);
         }

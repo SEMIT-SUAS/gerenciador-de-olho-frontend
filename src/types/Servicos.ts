@@ -1,9 +1,9 @@
-import type { SecretariaModel } from './Secretaria';
+import type { Secretaria } from './Secretaria';
 import type { Persona } from './Persona';
 import type { ServicoCategoria } from './CategoriaServico';
 
 export interface Servicos {
-  orgao: SecretariaModel | null;
+  orgao: Secretaria | null;
   id: number;
   nome: string;
   descricao: string;

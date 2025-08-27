@@ -1,6 +1,7 @@
+import { ArrowLeft } from 'lucide-react';
 import { type ReactNode } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 interface BackButtonProps {
   to?: string;
@@ -9,12 +10,7 @@ interface BackButtonProps {
   className?: string;
 }
 
-export function BackButton({
-  to,
-  fallback = '/',
-  children,
-  className,
-}: BackButtonProps) {
+export function BackButton({ to, fallback = '/', children }: BackButtonProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,5 +40,17 @@ export function BackButton({
       </span>
       <span className={textButton}>{children}</span>
     </button>
+  );
+}
+
+export function DashboardBackButton() {
+  return (
+    <Link
+      to="/dashboard"
+      className="absolute top-5 left-12 z-40 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 transition-colors"
+    >
+      <ArrowLeft className="w-4 h-4 mr-2" />
+      Voltar para o Dashboard
+    </Link>
   );
 }

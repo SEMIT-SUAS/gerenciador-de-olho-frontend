@@ -1,7 +1,7 @@
 import { useCallback, useState, useRef, useEffect } from 'react';
 import { IconPhoto, IconX } from '@tabler/icons-react';
 import { Input } from '@/components/ui/input';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import 'leaflet/dist/leaflet.css';
 

@@ -16,10 +16,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AddressService } from '@/services/AddressService';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
-import {
-  EditEspacoPublicoFormSchema,
-  type EditEspacoPublicoFormValues,
-} from './schema';
+import { EditEspacoPublicoFormSchema } from './schema';
 
 interface EditEspacoPublicoFormProps {
   espacoPublico: EspacoPublicoModel;
@@ -28,9 +25,8 @@ interface EditEspacoPublicoFormProps {
 
 export function EditEspacoPublicoForm({
   espacoPublico,
-  onSuccess,
 }: EditEspacoPublicoFormProps) {
-  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+  const [isSubmittingForm] = useState(false);
   const [position, setPosition] = useState<[number, number]>([
     espacoPublico.latitude,
     espacoPublico.longitude,
@@ -60,42 +56,42 @@ export function EditEspacoPublicoForm({
     }
   }, [position]);
 
-  async function onSubmit(values: EditEspacoPublicoFormValues) {
-    if (!position) return;
+  // async function onSubmit(values: EditEspacoPublicoFormValues) {
+  //     if (!position) return;
 
-    try {
-      setIsSubmittingForm(true);
-      //   const formData = new FormData();
-      //   formData.append('nome', values.name);
-      //   formData.append('estado', 'Maranhão');
-      //   formData.append('cidade', 'São Luís');
-      //   formData.append('bairro', values.addressBairro);
-      //   formData.append('rua', values.addressRua);
-      //   formData.append('latitude', position[0].toString());
-      //   formData.append('longitude', position[1].toString());
-      //   formData.append('capacidade_maxima', values.maxCapacity.toString());
-      //   formData.append('hora_inicio', values.startHour);
-      //   formData.append('hora_fim', values.endHour);
-      //   formData.append('visivel', values.visivel.toString());
-      //   formData.append('ativo', 'true');
+  //     try {
+  //         setIsSubmittingForm(true);
+  //           const formData = new FormData();
+  //           formData.append('nome', values.name);
+  //           formData.append('estado', 'Maranhão');
+  //           formData.append('cidade', 'São Luís');
+  //           formData.append('bairro', values.addressBairro);
+  //           formData.append('rua', values.addressRua);
+  //           formData.append('latitude', position[0].toString());
+  //       formData.append('longitude', position[1].toString());
+  //       formData.append('capacidade_maxima', values.maxCapacity.toString());
+  //       formData.append('hora_inicio', values.startHour);
+  //       formData.append('hora_fim', values.endHour);
+  //       formData.append('visivel', values.visivel.toString());
+  //       formData.append('ativo', 'true');
 
-      //   values.files.forEach((file) => {
-      //     formData.append('arquivos', file);
-      //   });
+  //       values.files.forEach((file) => {
+  //           formData.append('arquivos', file);
+  //         });
 
-      //   await espacoPublicoService.create(formData);
-      //   onSuccess();
-      //   toast.success('Espaço público cadastrado com sucesso!');
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsSubmittingForm(false);
-    }
-  }
+  //         await espacoPublicoService.create(formData);
+  //         onSuccess();
+  //         toast.success('Espaço público cadastrado com sucesso!');
+  //     } catch (error: any) {
+  //         toast.error(error.message);
+  //       } finally {
+  //           setIsSubmittingForm(false);
+  //         }
+  //       }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form className="space-y-6">
         <div className="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
           <FormField
             control={form.control}

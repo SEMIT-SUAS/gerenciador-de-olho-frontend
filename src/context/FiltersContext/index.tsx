@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { DenunciaInMap, DenunciaStatusModelTypes } from '@/types/Denuncia';
+import type { DenunciaInMap } from '@/types/Denuncia';
 import type { AcaoInMap } from '@/types/Acao';
 import { useMapActions } from '@/context/MapActions';
 import { DADOS_BAIRROS } from '@/constants/dadosDeBairros';
@@ -15,7 +15,6 @@ import AcoesService from '@/services/acoesService';
 import { initialFiltersValues } from './initialFilterValues';
 import type { FiltersContextProps, FiltrarDataPrams } from './types';
 import { toast } from 'sonner';
-import type { AcaoStatusModelTypes } from '@/types/AcaoStatus';
 
 const FiltersContext = createContext({} as FiltersContextProps);
 
@@ -116,7 +115,6 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
 
       setIsLoading(false);
     } catch (error: any) {
-      console.error(error);
       toast.error(error.message);
     }
   }

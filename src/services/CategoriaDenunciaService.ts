@@ -3,7 +3,7 @@ import { getAPIFileURL } from '@/utils/getAPIFileURL';
 import { BaseServiceClass } from './BaseServiceClass';
 import type { BannerModel } from '@/types/Banner';
 import { AxiosError } from 'axios';
-import { api } from '@/config/api';
+import { api } from '@/lib/axios';
 
 export class CategoriaDenunciaService extends BaseServiceClass {
   protected readonly serviceUnavailableError = new Error(

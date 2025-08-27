@@ -1,8 +1,5 @@
 import { FaExternalLinkAlt, FaTrashAlt } from 'react-icons/fa';
-import type {
-  DenunciaBasicInfoModel,
-  DenunciaModel,
-} from '../../../../../types/Denuncia';
+import type { DenunciaBasicInfoModel } from '../../../../../types/Denuncia';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
 import { useEffect, useState } from 'react';

@@ -36,12 +36,11 @@ export function UsuariosPage() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  // const [editingUser, setEditingUser] = useState<UsuarioPorId | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [userToFetch, setUserToFetch] = useState<UsuarioModel | null>(null);
   const [fetchedUser, setFetchedUser] = useState<UsuarioPorId | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [usuario, setUsuario] = useState<UsuarioModel | null>(null);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const handleEdit = (usuario: UsuarioModel) => {
     setIsEditModalOpen(true);
@@ -59,7 +58,6 @@ export function UsuariosPage() {
       });
       toast.success('Usuário excluído com sucesso!');
     } catch (error) {
-      console.error('Erro ao excluir usuário:', error);
       toast.error('Erro ao excluir usuário.');
     } finally {
       setIsDeleteModalOpen(false);
@@ -70,19 +68,18 @@ export function UsuariosPage() {
   useEffect(() => {
     if (userToFetch) {
       const fetchUserData = async () => {
-        setIsLoading(true);
+        // setIsLoading(true);
         try {
           const fetchedData = await usuarioService.buscarUsuarioPorId(
             userToFetch.id,
           );
           setFetchedUser(fetchedData);
         } catch (error) {
-          console.error('Falha ao buscar dados do usuário:', error);
           toast.error('Falha ao carregar os dados do usuário para edição.');
           setIsEditModalOpen(false);
           setFetchedUser(null);
         } finally {
-          setIsLoading(false);
+          // setIsLoading(false);
         }
       };
 

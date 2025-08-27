@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Loading } from './Loading/Loading';
-import { ArquivoService } from '@/services/ArquivoService';
+import { ArquivoService } from '@/services/arquivoService';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { cn } from '@/lib/utils';

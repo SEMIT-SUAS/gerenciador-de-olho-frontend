@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { api } from '@/config/api.ts';
+import { api } from '@/lib/axios';
 
 import type {
   DenunciaBasicInfoModel,
@@ -62,10 +62,6 @@ export class DenunciaService {
       );
       return response.data;
     } catch (error) {
-      console.error(
-        `Falha ao buscar arquivos da denúncia ${denunciaId}:`,
-        error,
-      );
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
   }
@@ -86,7 +82,6 @@ export class DenunciaService {
       // return JSON.parse(response.data) as NumeroDeDenunciasPorBairro[];
       return response.data;
     } catch (error) {
-      console.error('Falha ao buscar o número de denúncias no mapa:', error);
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
   }
@@ -95,10 +90,6 @@ export class DenunciaService {
     try {
       await api.patch(`/denuncia/desvincular-acao/${denunciaId}`);
     } catch (error) {
-      console.error(
-        `Falha ao desvincular ação da denúncia ${denunciaId}:`,
-        error,
-      );
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
   }
@@ -164,7 +155,6 @@ export class DenunciaService {
       if (error instanceof AxiosError && error.response?.status === 404) {
         return [];
       }
-      console.error('Erro ao buscar denúncias por bairro:', error);
       throw this.SERVICE_UNAVAILABLE_ERROR;
     }
   }

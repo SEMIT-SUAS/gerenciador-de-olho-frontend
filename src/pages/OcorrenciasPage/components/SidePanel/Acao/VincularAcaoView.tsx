@@ -145,8 +145,6 @@ export function VincularAcaoView() {
     return <div>Carregando ação...</div>;
   }
 
-  console.log(acaoData);
-
   return (
     <>
       <div className="flex gap-4 flex-col h-full">

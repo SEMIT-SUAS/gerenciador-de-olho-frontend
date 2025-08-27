@@ -56,7 +56,6 @@ export function VincularDenunciaAAcao() {
       setDenuncia(denunciaData);
     } catch (error) {
       toast.error('Erro ao buscar denúncia.');
-      console.error(error);
     }
   }, [denunciaId]);
 
@@ -128,7 +127,6 @@ export function VincularDenunciaAAcao() {
         setAcaoData(acaoDataResponse);
       } catch (error) {
         toast.error('Erro ao buscar detalhes da ação.');
-        console.error(error);
       }
     };
     fetchAcaoDetails();

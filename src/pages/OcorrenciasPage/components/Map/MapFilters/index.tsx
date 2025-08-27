@@ -61,7 +61,7 @@ export function MapFilters() {
 
   return (
     <>
-      <div className="absolute z-20 top-9 left-12">
+      <div className="absolute z-40 top-18 left-12">
         <div className="flex flex-col gap-3">
           <h2 className="text-sm font-bold">Filtros</h2>
 

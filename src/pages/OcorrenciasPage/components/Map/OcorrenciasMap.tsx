@@ -6,13 +6,13 @@ import 'leaflet/dist/leaflet.css';
 import { MapZoom } from './MapZoom';
 import { DenunciaMapPins } from './Denuncia/DenunciaMapPins';
 import { AcaoMapPins } from './Acao/AcaoMapPins';
-import { BackButton } from '@/components/ui/Backbutton';
-import { Navbar } from '@/components/Navbar';
+import { DashboardBackButton } from '@/components/ui/Backbutton';
 
 export function OcorrenciasMap() {
   return (
     <>
       <div className="relative h-full w-full">
+        <DashboardBackButton />
         <MapFilters />
         <MapContainer
           center={[-2.51, -44.28]}

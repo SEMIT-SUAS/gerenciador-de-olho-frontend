@@ -1,5 +1,5 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';

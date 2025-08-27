@@ -1,4 +1,3 @@
-import React from 'react';
 import { FileText, Image, Settings } from 'lucide-react';
 import { IconBallFootball } from '@tabler/icons-react';
 import { useAuth } from '@/context/AuthContext';

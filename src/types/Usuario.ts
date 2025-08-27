@@ -1,6 +1,3 @@
-import type { PerfilModel } from './Perfil';
-import type { Secretaria } from './Secretaria';
-
 export interface UsuarioModel {
   id: number;
   nome: string;
@@ -11,7 +8,7 @@ export interface UsuarioModel {
   idSecretaria: number;
   perfil: string;
   criadoEm: string;
-  ativo: boolean
+  ativo: boolean;
   criadoPor?: UsuarioModel | null;
 }
 
@@ -25,7 +22,7 @@ export interface UsuarioPorId {
   secretaria: string;
   perfil: string;
   criadoEm: string;
-  ativo: boolean
+  ativo: boolean;
   criadoPor?: UsuarioModel | null;
 }
 
@@ -37,7 +34,7 @@ export interface UsuarioLogin {
 }
 
 export interface UsuarioUpdate {
-  id: number
-  nome: string 
-  contato: string
+  id: number;
+  nome: string;
+  contato: string;
 }

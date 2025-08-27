@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { personaSchema, type PersonaFormData } from './personasSchema';
 import { personaService } from '@/services/personaService';
 import type { Persona } from '@/types/Persona';
@@ -96,7 +96,6 @@ export function FormPersona({
 
       onClose();
     } catch (error: any) {
-      console.error('Erro ao salvar persona:', error);
       toast.error(error.message || 'Erro ao salvar persona.');
     } finally {
       setLoading(false);

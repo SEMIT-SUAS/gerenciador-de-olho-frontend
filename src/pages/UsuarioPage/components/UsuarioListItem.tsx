@@ -17,32 +17,31 @@ interface UsuariosListItemProps {
 
 export function UsuariosListItem({
   usuario,
-  setUsuarios,
   onEdit,
   onDelete,
 }: UsuariosListItemProps) {
   const [secretaria, setSecretaria] = useState<Secretaria | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSecretaria = async () => {
       try {
-        setLoading(true);
-        setError(null);
+        // setLoading(true);
+        // setError(null);
         const data = await secretariaService.getById(usuario.idSecretaria);
         setSecretaria(data);
       } catch (err) {
-        setError('Falha ao carregar a secretaria.');
+        // setError('Falha ao carregar a secretaria.');
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
     if (usuario.idSecretaria) {
       fetchSecretaria();
     } else {
-      setLoading(false);
+      // setLoading(false);
     }
   }, [usuario.idSecretaria]);
 

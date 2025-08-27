@@ -1,12 +1,12 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
-import { toast } from 'react-toastify';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import type { Secretaria } from '@/types/Secretaria';
-import secretariaService from '@/services/secretariaService';
+import { SecretariaService } from '@/services/secretariaService';
+import { toast } from 'sonner';
 
 type ServicoVisibilityProps = {
-  servico: Secretaria;
+  secretaria: Secretaria;
   setSecretarias: Dispatch<SetStateAction<Secretaria[]>>;
 };
 
@@ -19,7 +19,7 @@ export function SecretariaVisibility({
   async function handleOnClickButton() {
     try {
       ///sem função ainda
-      await secretariaService.changeServiceVisibility(
+      await new SecretariaService().toggleVisibility(
         secretaria.id,
         !secretaria.visivel,
       );

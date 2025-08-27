@@ -1,4 +1,4 @@
-import { api } from '@/config/api'; // Importa a instância do Axios
+import { api } from '@/lib/axios';
 import type { Servicos, UpdateServiceModel } from '@/types/Servicos';
 import type { ServicosListar } from '@/types/ServicosListar';
 import { BaseServiceClass } from './BaseServiceClass'; // Supondo o uso de uma classe base

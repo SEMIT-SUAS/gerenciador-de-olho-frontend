@@ -49,7 +49,6 @@ export function ServicesExternoListItem({
           : 'Serviço desativado com sucesso!',
       );
     } catch (error: any) {
-      console.error('Erro ao alterar status do serviço:', error);
       toast.error('Erro ao alterar status do serviço');
     } finally {
       setIsProcessing(false);
@@ -81,7 +80,6 @@ export function ServicesExternoListItem({
           : 'Serviço foi ocultado do aplicativo!',
       );
     } catch (error: any) {
-      console.error('Erro ao alterar visibilidade:', error);
       toast.error('Erro ao alterar visibilidade do serviço');
     } finally {
       setIsProcessing(false);

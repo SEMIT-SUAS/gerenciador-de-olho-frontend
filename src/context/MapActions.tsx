@@ -7,7 +7,7 @@ import {
   type ReactNode,
   type SetStateAction,
 } from 'react';
-import type { AcaoDetailsModel, AcaoInMap, AcaoModel } from '../types/Acao';
+import type { AcaoInMap } from '../types/Acao';
 import { type DenunciaInMap, type DenunciaModel } from '../types/Denuncia';
 import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 
@@ -31,7 +31,7 @@ type SelectAcoesOuDenunciasProps = {
   setZoomTo: Dispatch<SetStateAction<Coordinates | null>>;
   newDenunciaCoordinates: Coordinates | null;
   setNewDenunciaCoordinates: Dispatch<SetStateAction<Coordinates | null>>;
-  toggleAcaoSelecionada: (acao: AcaoDetailsModel) => void;
+  toggleAcaoSelecionada: (acao: AcaoInMap) => void;
   currentBairroId: number | null;
   setCurrentBairroId: Dispatch<SetStateAction<number | null>>;
   numberDenunciasInMap: NumeroDeDenunciasPorBairro[];
@@ -119,11 +119,11 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function toggleAcaoSelecionada(acao: AcaoDetailsModel) {
-    if (acaoSelecionada?.id === acao.acao.id) {
+  function toggleAcaoSelecionada(acao: AcaoInMap) {
+    if (acaoSelecionada?.id === acao.id) {
       setAcaoSelecionada(null);
     } else {
-      setAcaoSelecionada(acao.acao);
+      setAcaoSelecionada(acao);
     }
   }
 

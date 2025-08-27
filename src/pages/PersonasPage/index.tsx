@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LayoutPage } from '../../components/LayoutPage';
 import { personaService } from '@/services/personaService';
-import { toast } from 'sonner';
 import type { Persona } from '@/types/Persona';
 import { Button } from '@/components/ui/button';
 import { PersonasList } from './components/PersonaList';
@@ -30,19 +29,6 @@ export function PersonasPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState<Persona | null>(null);
-
-  async function getAllPersonasData() {
-    try {
-      // setLoading(true);
-      const data = await personaService.getAll();
-      setPersonas(data);
-    } catch (err: any) {
-      // setError(err.message || 'Erro ao buscar as personas.');
-      toast.error(err.message || 'Erro ao buscar as personas.');
-    } finally {
-      // setLoading(false);
-    }
-  }
 
   useEffect(() => {
     personaService.getAll().then((personasData) => {

@@ -10,7 +10,7 @@ import type { usuarioFormValues } from './usuarioForm/usuarioSchema';
 import usuarioService from '@/services/usuariosService';
 import type { UsuarioModel } from '@/types/Usuario';
 import { useState, type Dispatch, type SetStateAction } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { UsuarioForm } from './usuarioForm/usuarioForm';
 import type { Secretaria } from '@/types/Secretaria';
 
@@ -43,7 +43,6 @@ export function AddUsuarioModal({
       toast.success('Usuário cadastrado com sucesso!');
       onOpenChange(false);
     } catch (error: any) {
-      console.error('Erro ao cadastrar usuário:', error);
       toast.error(error.message || 'Erro ao cadastrar usuário');
     } finally {
       setIsSubmitting(false);

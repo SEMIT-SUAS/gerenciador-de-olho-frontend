@@ -6,6 +6,7 @@ import { EspacoPublicoVisibility } from './EspacoPublicoVisibility';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 import { toast } from 'sonner';
 import { espacoPublicoService } from '@/services/espacoPublicoService';
+import { Button } from '@/components/ui/button';
 
 interface EspacoPublicoItemProps {
   espacoPublico: EspacoPublicoModel;
@@ -63,13 +64,16 @@ export function EspacoPublicoItem({
                 setEspacosPublicos={setEspacosPublicos}
               />
 
-              <Link
-                to={`/espacos-publicos/edit/${espacoPublico.id}`}
-                title="Editar espaço"
-                className="text-green-500 hover:text-green-700"
-              >
-                <IconPencil stroke={2} size={18} />
-              </Link>
+              <Button asChild disabled>
+                <Link
+                  to={`/espacos-publicos/edit/${espacoPublico.id}`}
+                  title="Editar espaço"
+                  // className="text-green-500 hover:text-green-700"
+                  className="text-gray-500"
+                >
+                  <IconPencil stroke={2} size={18} />
+                </Link>
+              </Button>
 
               <button
                 className="text-red-500 hover:text-red-700"

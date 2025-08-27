@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import { Textarea } from '@/components/ui/textarea';
-import { ImageInput } from '@/components/Forms/ImageInput';
+import { ImageInput } from '@/components/ImageInput';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
@@ -26,7 +26,6 @@ interface AddCategoriaFormProps {
 }
 
 export function AddCategoriaForm({
-  setCategorias,
   onSuccess,
 }: AddCategoriaFormProps) {
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
@@ -56,17 +55,7 @@ export function AddCategoriaForm({
 
     try {
       setIsSubmittingForm(true);
-      const categorySavedData = await new CategoriaDenunciaService().create(
-        formData,
-      );
-
-      setCategorias((prevCategories) => {
-        if (!prevCategories) {
-          return null;
-        }
-
-        return [...prevCategories, categorySavedData];
-      });
+      await new CategoriaDenunciaService().create(formData);
 
       toast('Categoria adicionada com sucesso');
       form.reset();

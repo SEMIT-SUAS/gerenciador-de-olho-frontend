@@ -2,7 +2,7 @@ import { useState, type FormEvent, type ChangeEvent } from 'react';
 import type { ServicoCategoriaEditar } from '../../../types/CategoriaServico';
 import { categoriaEditarSchema } from './CategoriaServicoForm/CategoriaSchema';
 import { z } from 'zod';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 interface Props {
   categoria: ServicoCategoriaEditar;

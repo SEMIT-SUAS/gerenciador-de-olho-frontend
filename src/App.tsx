@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 import { DashboardPage } from './pages/DashboardPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
@@ -107,7 +106,6 @@ export function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
-      <ToastContainer />
       <Toaster position="top-center" duration={3000} />
     </BrowserRouter>
   );

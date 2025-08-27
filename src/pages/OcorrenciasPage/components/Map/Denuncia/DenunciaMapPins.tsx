@@ -5,7 +5,6 @@ import { useMapActions } from '@/context/MapActions';
 import type { DenunciaInMap } from '@/types/Denuncia';
 import { DenunciasSelecionadasPolygon } from './DenunciasSelecionadasPolygon';
 import { getConvexHull } from '@/utils/geometry';
-import { DenunciaTooltip } from './DenunciaTooltip';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { divIcon } from 'leaflet';
@@ -87,9 +86,7 @@ export function DenunciaMapPins() {
             eventHandlers={{
               click: () => handleOnDenunciaClick(d),
             }}
-          >
-            {!salvarDenunciasOnclick && <DenunciaTooltip denuncia={d} />}
-          </Marker>
+          />
         );
       })}
 
