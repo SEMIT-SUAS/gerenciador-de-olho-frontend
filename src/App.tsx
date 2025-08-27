@@ -28,6 +28,7 @@ import { VincularDenunciaAAcao } from './pages/OcorrenciasPage/components/SidePa
 import { CriarAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/CriarAcao';
 import { VincularAcaoView } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoView';
 import { useAuth } from './context/AuthContext';
+import { DenunciaDetails } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciaDetails';
 
 export function App() {
   const { isAuthenticated } = useAuth();
@@ -62,6 +63,7 @@ export function App() {
             }
           >
             <Route path="denuncias">
+              <Route path=":id" element={<DenunciaDetails />} />
               <Route
                 path=":id/vincular-denuncia"
                 element={<VincularDenunciaAAcao />}

@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { DenunciaManageInAction } from '../Denuncia/DenunciaManagerInAction';
 import { BackButton } from '../../../../../components/ui/Backbutton';
 import { FaInfoCircle } from 'react-icons/fa';
@@ -27,53 +27,56 @@ export function AcaoDetails() {
   const [isIniciarAcaoOpen, setIsIniciarAcaoOpen] = useState(false);
   const [acaoHistory, setAcaoHistory] = useState<AcaoHistory[]>([]);
   const { salvarDenunciasOnclick } = useMapActions();
+  const [isLoading, setIsLoading] = useState(false);
 
   const params = useParams();
   const navigate = useNavigate();
   const acaoId = Number(params.id);
   const { user } = useAuth();
 
-  useEffect(() => {
-    AcoesService.getAcaoById(acaoId)
-      .then((acaoData) => setAcaoData(acaoData))
-      .catch((error: any) => toast.error(error.message));
-    AcoesService.getAcaoHistory(acaoId)
-      .then((acaoHistory) => setAcaoHistory(acaoHistory))
-      .catch((error: any) => toast.error(error.message));
+  const fetchAcaoDetails = useCallback(async () => {
+    setIsLoading(true); // Inicia o carregamento
+    try {
+      const [acaoDetails, history] = await Promise.all([
+        AcoesService.getAcaoById(acaoId),
+        AcoesService.getAcaoHistory(acaoId),
+      ]);
+      setAcaoData(acaoDetails);
+      setAcaoHistory(history);
+    } catch (error: any) {
+      toast.error(error.message);
+      // Se der erro, talvez redirecionar ou mostrar uma mensagem
+      navigate('/ocorrencias');
+    } finally {
+      setIsLoading(false); // Finaliza o carregamento
+    }
+  }, [acaoId, navigate]);
 
-    return () => {
-      setAcaoHistory([]);
-      setAcaoData(null);
-    };
-  }, [acaoId]);
+  // Carrega os dados iniciais
+  useEffect(() => {
+    fetchAcaoDetails();
+  }, [fetchAcaoDetails]);
 
   const backButton = (
     <BackButton to="/ocorrencias" children="Detalhes da Ação" />
   );
 
-  if (!acaoData) {
+  // O esqueleto de carregamento agora é controlado pelo isLoading
+  if (isLoading || !acaoData) {
     return <SidePanelContentSkeleton backButton={backButton} />;
   }
 
-  const acao = acaoData.acao;
-  const denunciasVinculadas = acaoData.denuncias;
-
+  const { acao, denuncias: denunciasVinculadas } = acaoData;
   const urls = denunciasVinculadas.flatMap((denuncia) => denuncia.urls);
 
   const handleDesvincularDenuncia = (denunciaId: number) => {
-    if (!acao) return;
-
     const denunciasAtualizadas = denunciasVinculadas.filter(
       (d) => d.id !== denunciaId,
     );
-
-    setAcaoData({
-      ...acaoData,
-      denuncias: denunciasAtualizadas,
-    });
+    setAcaoData({ ...acaoData, denuncias: denunciasAtualizadas });
   };
 
-  async function handleInciarAcao() {
+  const handleIniciarAcao = async () => {
     const payload = {
       id: acao.id,
       acaoStatus: {
@@ -84,15 +87,22 @@ export function AcaoDetails() {
       ativo: true,
     };
 
-    AcoesService.updateAcao(payload)
-      .then((acaoAtualizada) => {
-        setAcaoData({ ...acaoData!, acao: acaoAtualizada });
-        toast.success('Ação iniciada com sucesso!');
-      })
-      .catch((error: any) => {
-        toast.error(error.message);
-      });
-  }
+    try {
+      await AcoesService.updateAcao(payload);
+      toast.success('Ação iniciada com sucesso!');
+      await fetchAcaoDetails();
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsIniciarAcaoOpen(false);
+    }
+  };
+
+  const handleUpdateSuccess = async () => {
+    setIsConcluirModalOpen(false);
+    setIsIndeferirModalOpen(false);
+    await fetchAcaoDetails();
+  };
 
   return (
     <div className="flex flex-col h-full space-y-7">
@@ -178,6 +188,7 @@ export function AcaoDetails() {
                       denuncia={denuncia}
                       allowDisvincularItem={canDisvincular}
                       onDisvincular={handleDesvincularDenuncia}
+                      acao={acaoData}
                     />
                   );
                 })}
@@ -230,10 +241,7 @@ export function AcaoDetails() {
           isOpen={isConcluirModalOpen}
           onClose={() => setIsConcluirModalOpen(false)}
           acao={acaoData.acao}
-          onSuccess={(acaoAtualizada) => {
-            setAcaoData({ ...acaoData, acao: acaoAtualizada });
-            setIsConcluirModalOpen(false);
-          }}
+          onSuccess={handleUpdateSuccess}
         />
       )}
 
@@ -242,13 +250,7 @@ export function AcaoDetails() {
           isOpen={isIndeferirModalOpen}
           onClose={() => setIsIndeferirModalOpen(false)}
           acao={acao}
-          onSuccess={(acaoAtualizada) => {
-            setAcaoData({
-              ...acaoData,
-              acao: acaoAtualizada,
-            });
-            setIsConcluirModalOpen(false);
-          }}
+          onSuccess={handleUpdateSuccess}
         />
       )}
 
@@ -258,7 +260,7 @@ export function AcaoDetails() {
           onCancel={() => setIsIniciarAcaoOpen(false)}
           title="Deseja iniciar essa ação?"
           message='Você está prestes a iniciar uma ação, seu status será "Em Andamento". Esta ação não pode ser desfeita.'
-          onConfirm={handleInciarAcao}
+          onConfirm={handleIniciarAcao}
         />
       )}
     </div>

@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useFilters } from '@/context/FiltersContext';
 
 interface ConcluirAcaoModalProps {
   acao: AcaoModel;
@@ -35,6 +36,7 @@ export function ConcluirAcaoModal({
   const [isConcluindoAcao, setIsConcluindoAcao] = useState(false);
   const [motivo, setMotivo] = useState('');
   const { user } = useAuth();
+  const { filtrarData } = useFilters();
 
   const handleConfirmarConclusao = async () => {
     if (!acao || !user || !motivo.trim()) return;
@@ -53,11 +55,16 @@ export function ConcluirAcaoModal({
       };
 
       const acaoAtualizada = await AcoesService.updateAcao(payload);
+      filtrarData({
+        denunciaStatusParam: 'Concluída',
+        acaoStatusParam: 'Concluída',
+        tipoDaDenunciaParam: null,
+      });
 
       onSuccess(acaoAtualizada);
 
       toast.success('Ação concluída com sucesso!');
-      onClose(); // Fecha o modal
+      onClose();
     } catch (error: any) {
       toast.error(error.message || 'Falha ao concluir a ação.');
     } finally {

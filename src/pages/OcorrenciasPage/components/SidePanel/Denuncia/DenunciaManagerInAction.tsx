@@ -5,18 +5,22 @@ import type {
 } from '../../../../../types/Denuncia';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmModal } from '../../../../../components/Modals/ConfirmModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // import { useOcorrencias } from '../../../../../context/OcorrenciasContext';
 // import denunciasService from '../../../../../services/DenunciaService';
 import { getPolygonoCenter } from '@/utils/geometry';
 import { DenunciaService } from '@/services/DenunciaService';
 import { toast } from 'sonner';
 import type { EnderecoModel } from '@/types/Endereco';
+import AcoesService from '@/services/acoesService';
+import type { AcaoDetailsModel } from '@/types/Acao';
+import { useFilters } from '@/context/FiltersContext';
 
 type DenunciaManageInActionProps = {
   denuncia: DenunciaBasicInfoModel;
   allowDisvincularItem: boolean;
   onDisvincular: (denunciaId: number) => void; // <-- 1. Adicionar o callback
+  acao: AcaoDetailsModel;
 };
 
 const formatarEndereco = (
@@ -38,21 +42,46 @@ export function DenunciaManageInAction({
   denuncia,
   allowDisvincularItem,
   onDisvincular,
+  acao,
 }: DenunciaManageInActionProps) {
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
+  const { filtrarData } = useFilters();
   const navigate = useNavigate();
 
   function handleShowDenunciaDetails() {
     navigate(`/ocorrencias/denuncias/${denuncia.id}`);
   }
 
+  useEffect(() => {});
+
   async function handleDeleteDenunciaFromAction() {
     try {
-      setIsOpenConfirmationModal(false); // Fechar modal
-      await DenunciaService.desvincularAcao(denuncia.id);
+      const denunciasRestantes = acao.denuncias.filter(
+        (d) => d.id !== denuncia.id,
+      );
 
+      const coordenadasRestantes = denunciasRestantes.map(
+        (d) => [d.endereco.latitude, d.endereco.longitude] as [number, number],
+      );
+
+      const centerCoordinates = getPolygonoCenter(coordenadasRestantes);
+
+      const payload = {
+        id: acao.acao.id,
+        latitude: centerCoordinates[0],
+        longitude: centerCoordinates[1],
+      };
+
+      await DenunciaService.desvincularAcao(denuncia.id);
+      await AcoesService.vincularDenunciaAcao(payload);
+      filtrarData({
+        denunciaStatusParam: acao.acao.acaoStatus.status,
+        acaoStatusParam: acao.acao.acaoStatus.status,
+        tipoDaDenunciaParam: null,
+      });
       onDisvincular(denuncia.id);
 
+      setIsOpenConfirmationModal(false); // Fechar modal
       toast.success('Denúncia desvinculada com sucesso!');
     } catch (error: any) {
       toast.error(error.message || 'Erro ao desvincular a denúncia.');

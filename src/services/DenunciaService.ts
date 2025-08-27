@@ -93,7 +93,7 @@ export class DenunciaService {
 
   public static async desvincularAcao(denunciaId: number): Promise<void> {
     try {
-      await api.patch(`/denuncia/denuncias/desvincular-acao/${denunciaId}`);
+      await api.patch(`/denuncia/desvincular-acao/${denunciaId}`);
     } catch (error) {
       console.error(
         `Falha ao desvincular ação da denúncia ${denunciaId}:`,

@@ -43,7 +43,8 @@ export function DashboardPage() {
                   {user?.nome}!
                 </h2>
                 <p className="mt-4 text-lg text-gray-600">
-                  Que bom te ver por aqui. Pronto para começar?
+                  Bem-vindo(a) ao seu painel de controle, gerencie o conteúdo e
+                  as funcionalidades.
                 </p>
               </div>
             </div>

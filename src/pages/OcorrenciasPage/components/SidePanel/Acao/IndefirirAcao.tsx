@@ -15,7 +15,6 @@ import { IconProgressX } from '@tabler/icons-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-// Sugestão: Mover esta constante para um arquivo de constantes, como 'src/constants/...'
 const mensagensSugeridasParaIndeferirAcao = [
   'Ação inviável no momento por falta de recursos.',
   'A denúncia associada não procede após verificação.',
@@ -55,6 +54,7 @@ export function IndeferirAcaoModal({
           id: acao.acaoStatus.id,
           status: 'Indeferido',
           motivo: motivo.trim(),
+          gerenciador: user.id,
         },
         ativo: true,
       };
