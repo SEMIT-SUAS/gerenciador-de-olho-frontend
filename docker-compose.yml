@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     ports:
       # Mapeia a porta 80 do host (porta padrão HTTP) para a porta 80 do container
-      - '80:80'
+      - '8070:80'
     # Para o ambiente de produção, não precisamos de volumes ou hot-reloading
     # O container é construído uma vez e serve os arquivos estáticos
     restart: unless-stopped
