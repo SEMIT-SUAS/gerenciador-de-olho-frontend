@@ -32,16 +32,17 @@ interface DadosCadastroGerenciador {
 const login = async (credentials: LoginFormValues): Promise<LoginResponse> => {
   try {
     const body = JSON.stringify(credentials);
-    const response = await api.post<LoginResponse>('/login', body, {
+    const response = await api.post('/login', body, {
       headers: {
         'Content-Type': 'Application/json',
       },
+      responseType: 'json',
     });
 
-    const { token } = response.data;
-    localStorage.setItem('authToken', token);
+    const responseBody = JSON.parse(response.data) as LoginResponse;
+    localStorage.setItem('authToken', responseBody.token);
 
-    return response.data;
+    return responseBody;
   } catch (error: any) {
     if (error.response && error.response.data && error.response.data.message) {
       throw new Error(error.response.data.message);
