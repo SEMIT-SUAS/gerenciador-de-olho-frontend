@@ -31,7 +31,8 @@ interface DadosCadastroGerenciador {
 
 const login = async (credentials: LoginFormValues): Promise<LoginResponse> => {
   try {
-    const response = await api.post<LoginResponse>('/login', credentials, {
+    const body = JSON.stringify(credentials);
+    const response = await api.post<LoginResponse>('/login', body, {
       headers: {
         'Content-Type': 'Application/json',
       },
