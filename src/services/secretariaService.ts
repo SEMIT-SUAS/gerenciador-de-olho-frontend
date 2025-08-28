@@ -26,8 +26,8 @@ export class SecretariaService extends BaseServiceClass {
    */
   public async getAll(): Promise<Secretaria[]> {
     try {
-      const response = await api.get<Secretaria[]>('/secretaria/listar-todas');
-      return response.data;
+      const response = await api.get('/secretaria/listar-todas');
+      return JSON.parse(response.data);
     } catch (error) {
       throw this.getAllError;
     }
@@ -54,11 +54,8 @@ export class SecretariaService extends BaseServiceClass {
     try {
       // É mais comum que um endpoint de criação retorne o objeto criado.
       // Ajustei o retorno para Promise<Secretaria>. Se sua API retorna outra coisa, podemos ajustar.
-      const response = await api.post<Secretaria>(
-        '/secretaria/cadastrar',
-        data,
-      );
-      return response.data;
+      const response = await api.post('/secretaria/cadastrar', data);
+      return JSON.parse(response.data);
     } catch (error) {
       // Tenta extrair uma mensagem de erro mais específica da resposta da API
       if (error instanceof AxiosError && error.response?.data?.message) {
@@ -78,8 +75,8 @@ export class SecretariaService extends BaseServiceClass {
     data: Partial<createSecretaria>,
   ): Promise<Secretaria> {
     try {
-      const response = await api.put<Secretaria>(`/secretaria/${id}`, data);
-      return response.data;
+      const response = await api.put(`/secretaria/${id}`, data);
+      return JSON.parse(response.data);
     } catch (error) {
       throw this.updateError;
     }

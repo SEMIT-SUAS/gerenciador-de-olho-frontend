@@ -2,6 +2,9 @@ import axios from 'axios';
 
 export const api = new axios.Axios({
   baseURL: 'http://10.0.0.159:9090/saoluis-online/api/gerenciador',
+  headers: {
+    'Content-Type': 'Application/json',
+  },
 });
 
 api.interceptors.request.use(
