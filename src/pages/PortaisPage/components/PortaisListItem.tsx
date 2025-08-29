@@ -20,7 +20,7 @@ import { Badge } from '@/components/ui/badge';
 
 interface PortaisListItemProps {
   portal: Portais;
-  setPortais: Dispatch<SetStateAction<Portais[] | null>>;
+  setPortais: Dispatch<SetStateAction<Portais[]>>;
 }
 
 export function PortaisListItem({ portal, setPortais }: PortaisListItemProps) {

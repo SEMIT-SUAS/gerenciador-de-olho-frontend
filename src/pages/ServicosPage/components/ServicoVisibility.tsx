@@ -7,7 +7,7 @@ import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 type ServicoVisibilityProps = {
   servico: ServicosListar;
-  setServicos: Dispatch<SetStateAction<ServicosListar[] | null>>;
+  setServicos: Dispatch<SetStateAction<ServicosListar[]>>;
 };
 
 export function ServicoVisibility({

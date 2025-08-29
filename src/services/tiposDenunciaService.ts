@@ -18,10 +18,8 @@ export class TipoDenunciaService extends BaseServiceClass {
 
   public async getAll(): Promise<TipoDenunciaModel[]> {
     try {
-      const response = await api.get<TipoDenunciaModel[]>(
-        '/tipo-denuncia/listar-ativos',
-      );
-      return response.data;
+      const response = await api.get('/tipo-denuncia/listar-ativos', {});
+      return response.data as TipoDenunciaModel[];
     } catch (error) {
       throw this.getAllError;
     }

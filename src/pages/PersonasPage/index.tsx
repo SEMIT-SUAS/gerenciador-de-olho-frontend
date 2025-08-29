@@ -22,7 +22,7 @@ import {
 import { FormPersona } from './components/PersonasForms';
 
 export function PersonasPage() {
-  const [personas, setPersonas] = useState<Persona[] | null>(null);
+  const [personas, setPersonas] = useState<Persona[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
@@ -38,7 +38,7 @@ export function PersonasPage() {
     });
 
     return () => {
-      setPersonas(null);
+      setPersonas([]);
     };
   }, []);
 

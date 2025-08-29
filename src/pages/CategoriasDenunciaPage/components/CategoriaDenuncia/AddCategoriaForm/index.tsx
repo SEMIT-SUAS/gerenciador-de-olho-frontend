@@ -21,13 +21,11 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
 interface AddCategoriaFormProps {
-  setCategorias: Dispatch<SetStateAction<CategoriaDenunciaModel[] | null>>;
+  setCategorias: Dispatch<SetStateAction<CategoriaDenunciaModel[]>>;
   onSuccess: () => void;
 }
 
-export function AddCategoriaForm({
-  onSuccess,
-}: AddCategoriaFormProps) {
+export function AddCategoriaForm({ onSuccess }: AddCategoriaFormProps) {
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
 
   const form = useForm({

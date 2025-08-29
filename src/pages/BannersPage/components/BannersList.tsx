@@ -15,9 +15,9 @@ import { ListItemSkeleton } from '@/components/Loading/ListItemSkeleton';
 import { IconPhotoOff } from '@tabler/icons-react';
 
 type BannerListProps = {
-  banners: BannerModel[] | null;
+  banners: BannerModel[];
   itemsPerPage: number;
-  setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
+  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
 };
 
 export function BannersList({

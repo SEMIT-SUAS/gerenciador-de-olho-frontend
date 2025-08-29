@@ -15,7 +15,7 @@ interface EditPortalModalProps {
   portal?: Portais;
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  setPortais: Dispatch<SetStateAction<Portais[] | null>>;
+  setPortais: Dispatch<SetStateAction<Portais[]>>;
 }
 
 export function EditPortalModal({

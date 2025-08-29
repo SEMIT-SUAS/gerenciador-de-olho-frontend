@@ -13,7 +13,7 @@ interface EditCategoriaModalProps {
   isOpen: boolean;
   onClose: () => void;
   category: CategoriaDenunciaModel;
-  setCategorias: Dispatch<SetStateAction<CategoriaDenunciaModel[] | null>>;
+  setCategorias: Dispatch<SetStateAction<CategoriaDenunciaModel[]>>;
 }
 
 export function EditCategoriaModal({

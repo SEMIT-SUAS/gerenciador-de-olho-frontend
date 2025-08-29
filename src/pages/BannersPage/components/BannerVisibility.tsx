@@ -7,7 +7,7 @@ import { BannerService } from '@/services/bannersService';
 
 type BannerVisibilityProps = {
   banner: BannerModel;
-  setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
+  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
 };
 
 export function BannerVisibility({

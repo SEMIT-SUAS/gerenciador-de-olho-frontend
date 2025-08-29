@@ -21,7 +21,7 @@ import { BannerService } from '@/services/bannersService';
 import { Switch } from '@/components/ui/switch';
 
 type AddABannerFormProps = {
-  setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
+  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
   onSuccess: () => void;
 };
 
@@ -50,10 +50,7 @@ export function AddABannerForm({ setBanners, onSuccess }: AddABannerFormProps) {
       formData.append('ativo', 'true');
 
       const newBanner = await new BannerService().upload(formData);
-      setBanners((prev) => {
-        if (!prev) return null;
-        return [...prev, newBanner];
-      });
+      setBanners((prevBanners) => [...prevBanners, newBanner]);
 
       toast.success(`Banner "${newBanner.nome}" criado com sucesso!`);
       onSuccess();

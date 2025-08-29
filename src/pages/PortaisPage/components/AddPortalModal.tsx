@@ -16,7 +16,7 @@ import type { Portais } from '@/types/Portais';
 interface AddPortalModalProps {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  setPortais: Dispatch<SetStateAction<Portais[] | null>>;
+  setPortais: Dispatch<SetStateAction<Portais[]>>;
 }
 
 export function AddPortalModal({

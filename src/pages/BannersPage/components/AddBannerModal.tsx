@@ -12,7 +12,7 @@ import type { Dispatch, SetStateAction } from 'react';
 type AddBannerModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
+  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
 };
 
 export function AddBannerModal({

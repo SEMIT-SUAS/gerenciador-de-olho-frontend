@@ -15,8 +15,8 @@ import { IconWorld } from '@tabler/icons-react';
 import { RenderIf } from '@/components/RenderIf';
 
 interface PortaisListProps {
-  portais: Portais[] | null;
-  setPortais: Dispatch<SetStateAction<Portais[] | null>>;
+  portais: Portais[];
+  setPortais: Dispatch<SetStateAction<Portais[]>>;
   itemsPerPage: number;
 }
 

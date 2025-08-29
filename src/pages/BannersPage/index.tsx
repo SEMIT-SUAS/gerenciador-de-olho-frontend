@@ -14,7 +14,7 @@ import { BannerService } from '@/services/bannersService';
 export function BannersPage() {
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
-  const [banners, setBanners] = useState<BannerModel[] | null>(null);
+  const [banners, setBanners] = useState<BannerModel[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpenAddBannerModal, setIsOpenAddBannerModal] = useState(false);
 
@@ -34,7 +34,7 @@ export function BannersPage() {
     });
 
     return () => {
-      setBanners(null);
+      setBanners([]);
     };
   }, []);
 

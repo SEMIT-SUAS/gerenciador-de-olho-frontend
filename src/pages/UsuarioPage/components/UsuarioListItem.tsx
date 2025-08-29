@@ -10,7 +10,7 @@ import { secretariaService } from '@/services/secretariaService';
 
 interface UsuariosListItemProps {
   usuario: UsuarioModel;
-  setUsuarios: Dispatch<SetStateAction<UsuarioModel[] | null>>;
+  setUsuarios: Dispatch<SetStateAction<UsuarioModel[]>>;
   onEdit: (usuario: UsuarioModel) => void;
   onDelete?: (usuario: UsuarioModel) => void;
 }

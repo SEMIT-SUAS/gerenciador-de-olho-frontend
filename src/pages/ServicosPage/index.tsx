@@ -28,12 +28,10 @@ import { ServicosExternosList } from '@/pages/ServicosPage/components/ServicosEx
 import { FormServicoExterno } from '@/pages/ServicosPage/components/ServicosExternosForm/ServicoExternoForm';
 
 export function ServicesPage() {
-  const [cartaDeServicos, setCartaDeServicos] = useState<
-    ServicosListar[] | null
-  >(null);
-  const [servicosExternos, setServicosExternos] = useState<
-    ServicoExterno[] | null
-  >(null);
+  const [cartaDeServicos, setCartaDeServicos] = useState<ServicosListar[]>([]);
+  const [servicosExternos, setServicosExternos] = useState<ServicoExterno[]>(
+    [],
+  );
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
@@ -57,8 +55,8 @@ export function ServicesPage() {
     getAllServicesData();
 
     return () => {
-      setCartaDeServicos(null);
-      setServicosExternos(null);
+      setCartaDeServicos([]);
+      setServicosExternos([]);
     };
   }, []);
 

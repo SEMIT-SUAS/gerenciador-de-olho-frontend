@@ -24,7 +24,7 @@ import {
 import { AddPortalModal } from '@/pages/PortaisPage/components/AddPortalModal';
 
 export function PortaisPage() {
-  const [portais, setPortais] = useState<Portais[] | null>(null);
+  const [portais, setPortais] = useState<Portais[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
@@ -46,7 +46,7 @@ export function PortaisPage() {
     });
 
     return () => {
-      setPortais(null);
+      setPortais([]);
     };
   }, []);
 

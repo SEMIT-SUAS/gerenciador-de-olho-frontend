@@ -26,7 +26,7 @@ import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
 interface EditCategoriaFormProps {
   onSuccess: () => void;
   category: CategoriaDenunciaModel;
-  setCategorias: Dispatch<SetStateAction<CategoriaDenunciaModel[] | null>>;
+  setCategorias: Dispatch<SetStateAction<CategoriaDenunciaModel[]>>;
 }
 
 export function EditCategoriaForm({

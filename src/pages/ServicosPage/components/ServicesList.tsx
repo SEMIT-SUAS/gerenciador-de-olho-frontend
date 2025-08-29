@@ -15,8 +15,8 @@ import { ImageSkeleton } from '@/components/Loading/ImageSkeleton';
 import { ListItemSkeleton } from '@/components/Loading/ListItemSkeleton';
 
 interface ServicesListProps {
-  servicos: ServicosListar[] | null;
-  setServicos: Dispatch<SetStateAction<ServicosListar[] | null>>;
+  servicos: ServicosListar[];
+  setServicos: Dispatch<SetStateAction<ServicosListar[]>>;
   itemsPerPage: number;
 }
 

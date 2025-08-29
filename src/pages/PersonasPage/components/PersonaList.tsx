@@ -15,8 +15,8 @@ import { IconUser } from '@tabler/icons-react';
 import { RenderIf } from '@/components/RenderIf';
 
 interface PersonasListProps {
-  personas: Persona[] | null;
-  setPersonas: Dispatch<SetStateAction<Persona[] | null>>;
+  personas: Persona[];
+  setPersonas: Dispatch<SetStateAction<Persona[]>>;
   onEdit?: (persona: Persona) => void;
   itemsPerPage: number;
 }

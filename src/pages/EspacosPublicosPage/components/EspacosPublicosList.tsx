@@ -6,7 +6,7 @@ import type { Dispatch, SetStateAction } from 'react';
 
 interface EspacosPublicosListProps {
   espacosPublicos: EspacoPublicoModel[] | null;
-  setEspacosPublicos: Dispatch<SetStateAction<EspacoPublicoModel[] | null>>;
+  setEspacosPublicos: Dispatch<SetStateAction<EspacoPublicoModel[]>>;
   itensPerPage: number;
 }
 

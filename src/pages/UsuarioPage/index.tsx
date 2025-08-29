@@ -28,7 +28,7 @@ import { EditUsuarioModal } from './components/EditUsuarioModal';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 export function UsuariosPage() {
-  const [usuarios, setUsuarios] = useState<UsuarioModel[] | null>(null);
+  const [usuarios, setUsuarios] = useState<UsuarioModel[]>([]);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -120,7 +120,7 @@ export function UsuariosPage() {
     });
 
     return () => {
-      setUsuarios(null);
+      setUsuarios([]);
     };
   }, []);
 

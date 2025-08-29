@@ -17,7 +17,7 @@ import type { Secretaria } from '@/types/Secretaria';
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  setUsuarios: Dispatch<SetStateAction<UsuarioModel[] | null>>;
+  setUsuarios: Dispatch<SetStateAction<UsuarioModel[]>>;
   secretarias: Secretaria[];
 }
 

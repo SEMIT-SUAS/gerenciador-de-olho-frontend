@@ -17,7 +17,7 @@ import { FormServicoExterno } from './ServicosExternosForm/ServicoExternoForm';
 
 interface ServiceListItemProps {
   servico: ServicoExterno;
-  setServicos: Dispatch<SetStateAction<ServicoExterno[] | null>>;
+  setServicos: Dispatch<SetStateAction<ServicoExterno[]>>;
 }
 
 export function ServicesExternoListItem({

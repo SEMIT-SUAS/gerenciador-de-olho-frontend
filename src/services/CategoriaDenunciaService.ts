@@ -1,8 +1,6 @@
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import { getAPIFileURL } from '@/utils/getAPIFileURL';
 import { BaseServiceClass } from './BaseServiceClass';
-import type { BannerModel } from '@/types/Banner';
-import { AxiosError } from 'axios';
 import { api } from '@/lib/axios';
 
 export class CategoriaDenunciaService extends BaseServiceClass {
@@ -30,13 +28,19 @@ export class CategoriaDenunciaService extends BaseServiceClass {
 
   public async getAll(): Promise<CategoriaDenunciaModel[]> {
     try {
-      const response = await api.get<CategoriaDenunciaModel[]>(
-        '/categoria-denuncia/listar-ativos',
-      );
-      // Adiciona o mapeamento para transformar a URL do ícone, se necessário
-      return response.data;
+      const response = await api.get('/categoria-denuncia/listar-ativos', {
+        responseType: 'json',
+      });
+
+      if (response.status === 404) {
+        throw this.notFoundError;
+      }
+
+      if (response.status !== 200) {
+        throw new Error('Ocorreu um erro na busca desse Banner');
+      }
+      return response.data as CategoriaDenunciaModel[];
     } catch (error) {
-      // O Axios já rejeita a promise para status não-2xx, então o catch é suficiente.
       throw this.serviceUnavailableError;
     }
   }
@@ -110,96 +114,4 @@ export class CategoriaDenunciaService extends BaseServiceClass {
   //     // TODO: Implementar a lógica de busca
   //     return [];
   //   }
-}
-
-export class BannerService extends BaseServiceClass {
-  protected readonly serviceUnavailableError = new Error(
-    'Serviço de banners indisponível.',
-  );
-  protected readonly notFoundError = new Error('Nenhum banner encontrado.');
-  protected readonly createError = new Error(
-    'Não foi possível criar o banner.',
-  );
-  protected readonly updateError = new Error(
-    'Não foi possível atualizar o banner.',
-  );
-  protected readonly visibilityError = new Error(
-    'Não foi possível alterar a visibilidade do banner.',
-  );
-  protected readonly deleteError = new Error(
-    'Não foi possível deletar o banner.',
-  );
-  protected readonly serverError = new Error(
-    'Erro no servidor ao processar a requisição do banner.',
-  );
-
-  public async getAll(): Promise<BannerModel[]> {
-    try {
-      // O Axios já parseia o JSON por padrão. response.data já é o objeto/array.
-      const response = await api.get<BannerModel[]>('/banner/listar-ativos');
-      return response.data.map((banner) => ({
-        ...banner,
-        imagem: getAPIFileURL(banner.imagem),
-      }));
-    } catch (error) {
-      if (error instanceof AxiosError && error.response?.status === 404) {
-        throw this.notFoundError;
-      }
-      throw this.serviceUnavailableError;
-    }
-  }
-
-  public async upload(formData: FormData): Promise<BannerModel> {
-    try {
-      const response = await api.post<BannerModel>(
-        '/banner/cadastrar',
-        formData,
-      );
-      const newBanner = response.data;
-      newBanner.imagem = getAPIFileURL(newBanner.imagem);
-      return newBanner;
-    } catch (error) {
-      throw this.createError;
-    }
-  }
-
-  public async update(formData: FormData): Promise<BannerModel> {
-    try {
-      const response = await api.put<BannerModel>(
-        '/banner/atualizar',
-        formData,
-      );
-      const updatedBanner = response.data;
-      updatedBanner.imagem = getAPIFileURL(updatedBanner.imagem);
-      return updatedBanner;
-    } catch (error) {
-      throw this.updateError;
-    }
-  }
-
-  public async toggleVisibility(
-    bannerId: number,
-    visible: boolean,
-  ): Promise<void> {
-    try {
-      // Enviando o corpo da requisição como um objeto JS.
-      await api.put('/banner/atualizar/visibilidade', {
-        id: bannerId,
-        visivel: visible,
-      });
-    } catch (error) {
-      throw this.visibilityError;
-    }
-  }
-
-  public async trash(bannerId: number): Promise<void> {
-    try {
-      await api.put('/banner/atualizar/atividade', {
-        id: bannerId,
-        ativo: false,
-      });
-    } catch (error) {
-      throw this.deleteError;
-    }
-  }
 }

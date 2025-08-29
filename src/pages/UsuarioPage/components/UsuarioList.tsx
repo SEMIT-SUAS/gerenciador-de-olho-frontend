@@ -15,8 +15,8 @@ import { ListItemSkeleton } from '@/components/Loading/ListItemSkeleton';
 import { IconUsers } from '@tabler/icons-react';
 
 interface UsuariosListProps {
-  usuarios: UsuarioModel[] | null;
-  setUsuarios: Dispatch<SetStateAction<UsuarioModel[] | null>>;
+  usuarios: UsuarioModel[];
+  setUsuarios: Dispatch<SetStateAction<UsuarioModel[]>>;
   onEdit: (usuario: UsuarioModel) => void;
   onDelete: (usuario: UsuarioModel) => void;
   itemsPerPage: number;

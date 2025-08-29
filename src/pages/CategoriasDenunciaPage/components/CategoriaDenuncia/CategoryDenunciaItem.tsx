@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 
 interface CategoryDenunciaItem {
   category: CategoriaDenunciaModel;
-  setCategories: Dispatch<SetStateAction<CategoriaDenunciaModel[] | null>>;
+  setCategories: Dispatch<SetStateAction<CategoriaDenunciaModel[]>>;
 }
 
 export function CategoryDenunciaItem({

@@ -23,9 +23,9 @@ import { useNavigate } from 'react-router-dom';
 
 export function EspacosPublicosPage() {
   const navigate = useNavigate();
-  const [espacosPublicos, setEspacosPublicos] = useState<
-    EspacoPublicoModel[] | null
-  >(null);
+  const [espacosPublicos, setEspacosPublicos] = useState<EspacoPublicoModel[]>(
+    [],
+  );
 
   const [searchTerm, setSearchTerm] = useState('');
   const [itemsPerPage, setItemsPerPage] = useState(5);

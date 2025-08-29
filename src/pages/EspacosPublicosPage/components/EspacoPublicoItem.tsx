@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 interface EspacoPublicoItemProps {
   espacoPublico: EspacoPublicoModel;
   setEspacosPublicos: React.Dispatch<
-    React.SetStateAction<EspacoPublicoModel[] | null>
+    React.SetStateAction<EspacoPublicoModel[]>
   >;
 }
 

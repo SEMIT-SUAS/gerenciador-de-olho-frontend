@@ -15,8 +15,8 @@ import { ListItemSkeleton } from '@/components/Loading/ListItemSkeleton';
 import { IconExternalLink } from '@tabler/icons-react';
 
 interface ServicosExternosListProps {
-  setServicos: Dispatch<SetStateAction<ServicoExterno[] | null>>;
-  servicos: ServicoExterno[] | null;
+  setServicos: Dispatch<SetStateAction<ServicoExterno[]>>;
+  servicos: ServicoExterno[];
   itemsPerPage: number;
 }
 

@@ -11,7 +11,7 @@ import { textAliases } from '@/utils/textAliases';
 
 type BannerItemProps = {
   banner: BannerModel;
-  setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
+  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
 };
 
 export function BannerItem({ banner, setBanners }: BannerItemProps) {

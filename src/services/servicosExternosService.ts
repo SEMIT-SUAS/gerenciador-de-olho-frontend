@@ -42,10 +42,8 @@ export class ServicoExternoService extends BaseServiceClass {
    */
   public async getAll(): Promise<ServicoExterno[]> {
     try {
-      const response = await api.get<ServicoExterno[]>(
-        '/servico-externo/listar-ativos',
-      );
-      return response.data;
+      const response = await api.get('/servico-externo/listar-ativos');
+      return response.data as ServicoExterno[];
     } catch (error) {
       throw this.getAllError;
     }

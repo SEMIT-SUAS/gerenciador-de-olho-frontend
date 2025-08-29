@@ -7,7 +7,7 @@ import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 interface PersonaVisibilityProps {
   persona: Persona;
-  setPersonas: Dispatch<SetStateAction<Persona[] | null>>;
+  setPersonas: Dispatch<SetStateAction<Persona[]>>;
 }
 
 export function PersonaVisibility({

@@ -8,7 +8,7 @@ import { espacoPublicoService } from '@/services/espacoPublicoService';
 interface EspacoPublicoVisibilityProps {
   espacoPublico: EspacoPublicoModel;
   setEspacosPublicos: React.Dispatch<
-    React.SetStateAction<EspacoPublicoModel[] | null>
+    React.SetStateAction<EspacoPublicoModel[]>
   >;
 }
 

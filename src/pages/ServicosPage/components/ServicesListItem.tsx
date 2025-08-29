@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface ServiceListItemProps {
   servico: ServicosListar;
-  setServicos: Dispatch<SetStateAction<ServicosListar[] | null>>;
+  setServicos: Dispatch<SetStateAction<ServicosListar[]>>;
 }
 
 export function ServicesListItem({

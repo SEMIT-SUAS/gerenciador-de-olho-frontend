@@ -21,7 +21,7 @@ import { BannerService } from '@/services/bannersService';
 
 type EditBannerForm = {
   banner: BannerModel;
-  setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
+  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
   onSuccess: () => void;
 };
 

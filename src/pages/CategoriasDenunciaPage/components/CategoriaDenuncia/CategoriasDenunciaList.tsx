@@ -17,7 +17,7 @@ import type { Dispatch, SetStateAction } from 'react';
 
 interface CategoriasDenunciaListProps {
   categories: CategoriaDenunciaModel[] | null;
-  setCategories: Dispatch<SetStateAction<CategoriaDenunciaModel[] | null>>;
+  setCategories: Dispatch<SetStateAction<CategoriaDenunciaModel[]>>;
   itemsPerPage: number;
 }
 

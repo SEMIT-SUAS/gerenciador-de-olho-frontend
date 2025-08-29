@@ -8,7 +8,7 @@ import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 type CategoryVisibilityProps = {
   category: CategoriaDenunciaModel;
-  setCategories: Dispatch<SetStateAction<CategoriaDenunciaModel[] | null>>;
+  setCategories: Dispatch<SetStateAction<CategoriaDenunciaModel[]>>;
 };
 
 export function CategoryVisibility({

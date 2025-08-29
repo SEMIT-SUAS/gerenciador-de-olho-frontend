@@ -27,7 +27,7 @@ export class SecretariaService extends BaseServiceClass {
   public async getAll(): Promise<Secretaria[]> {
     try {
       const response = await api.get('/secretaria/listar-todas');
-      return JSON.parse(response.data);
+      return response.data;
     } catch (error) {
       throw this.getAllError;
     }

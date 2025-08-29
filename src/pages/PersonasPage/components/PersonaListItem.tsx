@@ -10,7 +10,7 @@ import { PersonaVisibility } from './PersonaVisibility';
 
 interface PersonaListItemProps {
   persona: Persona;
-  setPersonas: Dispatch<SetStateAction<Persona[] | null>>;
+  setPersonas: Dispatch<SetStateAction<Persona[]>>;
   onEdit?: (persona: Persona) => void;
 }
 

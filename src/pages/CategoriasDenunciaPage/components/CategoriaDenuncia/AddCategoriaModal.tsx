@@ -7,7 +7,7 @@ import { AddCategoriaForm } from './AddCategoriaForm';
 interface AddCategoriaModalProps {
   isOpen: boolean;
   onClose: () => void;
-  setCategorias: Dispatch<SetStateAction<CategoriaDenunciaModel[] | null>>;
+  setCategorias: Dispatch<SetStateAction<CategoriaDenunciaModel[]>>;
   reloadCategoriestList: () => Promise<void>;
 }
 

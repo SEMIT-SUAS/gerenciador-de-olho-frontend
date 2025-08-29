@@ -108,7 +108,7 @@ const getAllUsuarios = async (): Promise<UsuarioModel[]> => {
   try {
     const response = await api.get('/usuario/listar-todos');
 
-    return JSON.parse(response.data) as UsuarioModel[];
+    return response.data as UsuarioModel[];
   } catch (error) {
     if (error instanceof AxiosError) {
       if (error.response?.status === 401) {

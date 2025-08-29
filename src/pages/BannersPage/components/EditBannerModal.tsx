@@ -13,7 +13,7 @@ type EditBannerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   bannerToEdit: BannerModel;
-  setBanners: Dispatch<SetStateAction<BannerModel[] | null>>;
+  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
 };
 
 export function EditBannerModal({
