@@ -1,4 +1,4 @@
-import axios, { AxiosError, type AxiosResponse } from 'axios';
+import axios from 'axios';
 
 export const api = new axios.Axios({
   baseURL: 'https://saoluisonline.saoluis.ma.gov.br/api/gerenciador',
@@ -24,24 +24,29 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   // Função para respostas de SUCESSO
-  (response: AxiosResponse) => {
-    // SE A RESPOSTA FOR UMA STRING, TENTE CONVERTÊ-LA PARA JSON
+  (response) => {
     if (typeof response.data === 'string' && response.data) {
       try {
         response.data = JSON.parse(response.data);
       } catch (e) {
-        // Se falhar o parse, não faz nada e retorna a string original.
+        // MELHORIA: Se o parse falhar, vamos tratar como um erro de API.
         console.error(
-          'A resposta da API era uma string que não é um JSON válido:',
+          'A resposta da API era uma string que não é um JSON válido. Rejeitando a promise.',
           e,
+        );
+
+        // Transformamos um "sucesso falso" em um erro real que pode ser capturado pelo .catch()
+        return Promise.reject(
+          new Error(
+            `A API retornou uma resposta em formato inesperado: ${response.data}`,
+          ),
         );
       }
     }
     return response;
   },
   // Função para respostas de ERRO
-  (error: AxiosError) => {
-    // Tratamento de erros globais (como 401 para deslogar)
+  (error) => {
     return Promise.reject(error);
   },
 );

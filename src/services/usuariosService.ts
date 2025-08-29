@@ -39,7 +39,7 @@ const login = async (credentials: LoginFormValues): Promise<LoginResponse> => {
       responseType: 'json',
     });
 
-    const responseBody = JSON.parse(response.data) as LoginResponse;
+    const responseBody = response.data as LoginResponse;
     localStorage.setItem('authToken', responseBody.token);
 
     return responseBody;
