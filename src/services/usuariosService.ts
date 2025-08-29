@@ -7,6 +7,7 @@ import { api } from '@/lib/axios';
 import { type LoginFormValues } from '@/pages/LoginPage/components/loginSchema';
 import { AxiosError } from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { useAuth } from '@/context/AuthContext';
 
 interface LoginResponse {
   token: string;
@@ -217,15 +218,14 @@ const buscarUsuarioPorId = async (id: number): Promise<UsuarioPorId> => {
   }
 };
 
-const excluirUsuario = async (id: number): Promise<string> => {
+const excluirUsuario = async (id: number): Promise<void> => {
   const token = getAuthToken();
   if (!token) {
     throw new Error('Usuário não autenticado.');
   }
 
   try {
-    const response = await api.delete<string>(`/usuario/deletar/${id}`);
-    return response.data;
+    await api.delete(`/usuario/deletar/${id}`);
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
       logout();

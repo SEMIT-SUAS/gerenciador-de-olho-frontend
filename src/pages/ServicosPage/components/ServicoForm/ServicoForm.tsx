@@ -475,7 +475,7 @@ export function ServicoForm({
               control={form.control}
               name="secretariaId"
               render={({ field }) => (
-                <FormItem className="space-y-2">
+                <FormItem className="space-y-2 w-full">
                   <FormLabel className="text-sm font-medium text-gray-700">
                     Secretaria Responsável
                   </FormLabel>
@@ -484,14 +484,14 @@ export function ServicoForm({
                     value={field.value ? String(field.value) : ''}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecione uma secretaria" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {secretarias.map((sec) => (
                         <SelectItem key={sec.id} value={String(sec.id)}>
-                          {sec.nome}
+                          {sec.sigla}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -513,7 +513,7 @@ export function ServicoForm({
                     value={field.value ? String(field.value) : ''}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Selecione uma categoria" />
                       </SelectTrigger>
                     </FormControl>
@@ -547,28 +547,42 @@ export function ServicoForm({
                       key={item.id}
                       control={form.control}
                       name="personaIds"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                const currentValues = field.value ?? [];
-                                return checked
-                                  ? field.onChange([...currentValues, item.id])
-                                  : field.onChange(
-                                      currentValues.filter(
-                                        (v) => v !== item.id,
-                                      ),
-                                    );
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal text-sm text-gray-700">
-                            {item.nome}
-                          </FormLabel>
-                        </FormItem>
-                      )}
+                      render={({ field }) => {
+                        const isChecked = field.value?.includes(item.id);
+
+                        const handleCheckedChange = (
+                          checked: boolean | 'indeterminate',
+                        ) => {
+                          const currentSelectedIds = Array.isArray(field.value)
+                            ? field.value
+                            : [];
+
+                          if (checked) {
+                            field.onChange([...currentSelectedIds, item.id]);
+                          } else {
+                            field.onChange(
+                              currentSelectedIds.filter(
+                                (selectedId) => selectedId !== item.id,
+                              ),
+                            );
+                          }
+                        };
+
+                        return (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                            <FormControl>
+                              <Checkbox
+                                // 3. O JSX agora fica muito mais limpo.
+                                checked={isChecked}
+                                onCheckedChange={handleCheckedChange}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal text-sm text-gray-700">
+                              {item.nome}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
                     />
                   ))}
                 </div>
@@ -598,7 +612,7 @@ export function ServicoForm({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="ativo"
               render={({ field }) => (
@@ -616,7 +630,7 @@ export function ServicoForm({
                   </FormControl>
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
           <div className="flex justify-end pt-5 gap-4">
             <Button

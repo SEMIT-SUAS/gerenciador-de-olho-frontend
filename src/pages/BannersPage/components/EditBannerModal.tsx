@@ -7,20 +7,17 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import type { BannerModel } from '@/types/Banner';
-import type { Dispatch, SetStateAction } from 'react';
 
 type EditBannerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   bannerToEdit: BannerModel;
-  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
 };
 
 export function EditBannerModal({
   isOpen,
-  onClose,
-  setBanners,
   bannerToEdit,
+  onClose,
 }: EditBannerModalProps) {
   if (!isOpen) {
     return null;
@@ -38,11 +35,7 @@ export function EditBannerModal({
           </DialogDescription>
         </DialogHeader>
 
-        <EditBannerForm
-          banner={bannerToEdit}
-          setBanners={setBanners}
-          onSuccess={onClose}
-        />
+        <EditBannerForm banner={bannerToEdit} onSuccess={onClose} />
       </DialogContent>
     </Dialog>
   );

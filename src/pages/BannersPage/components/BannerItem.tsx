@@ -12,9 +12,14 @@ import { textAliases } from '@/utils/textAliases';
 type BannerItemProps = {
   banner: BannerModel;
   setBanners: Dispatch<SetStateAction<BannerModel[]>>;
+  reloadBanners: () => void;
 };
 
-export function BannerItem({ banner, setBanners }: BannerItemProps) {
+export function BannerItem({
+  banner,
+  setBanners,
+  reloadBanners,
+}: BannerItemProps) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenEditBannerModal, setIsOpenEditBannerModal] = useState(false);
 
@@ -85,8 +90,10 @@ export function BannerItem({ banner, setBanners }: BannerItemProps) {
 
       <EditBannerModal
         isOpen={isOpenEditBannerModal}
-        onClose={() => setIsOpenEditBannerModal(false)}
-        setBanners={setBanners}
+        onClose={() => {
+          setIsOpenEditBannerModal(false);
+          reloadBanners();
+        }}
         bannerToEdit={banner}
       />
     </>

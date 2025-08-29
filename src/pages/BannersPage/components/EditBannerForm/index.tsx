@@ -21,15 +21,10 @@ import { BannerService } from '@/services/bannersService';
 
 type EditBannerForm = {
   banner: BannerModel;
-  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
   onSuccess: () => void;
 };
 
-export function EditBannerForm({
-  banner,
-  setBanners,
-  onSuccess,
-}: EditBannerForm) {
+export function EditBannerForm({ banner, onSuccess }: EditBannerForm) {
   const [isSubmitingEditBannerForm, setIsSubmitingEditBannerForm] =
     useState(false);
 
@@ -68,18 +63,7 @@ export function EditBannerForm({
 
     try {
       setIsSubmitingEditBannerForm(true);
-      const dataUpdated = await new BannerService().update(formData);
-
-      setBanners(
-        (prev) =>
-          prev?.map((prevBanner) => {
-            if (prevBanner.id === banner.id) {
-              return dataUpdated;
-            }
-
-            return prevBanner;
-          }) ?? null,
-      );
+      await new BannerService().update(formData);
 
       toast.success('Banner editado com sucesso');
       onSuccess();

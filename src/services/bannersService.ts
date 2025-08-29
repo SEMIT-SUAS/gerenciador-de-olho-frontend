@@ -125,7 +125,9 @@ export class BannerService extends BaseServiceClass {
     }
   }
 
-  public async update(formData: FormData): Promise<BannerModel> {
+  public async update(formData: FormData): Promise<void> {
+    console.log(formData);
+
     try {
       const response = await api.put('/banner/atualizar', formData, {
         headers: {
@@ -137,11 +139,6 @@ export class BannerService extends BaseServiceClass {
       if (response.status !== 200) {
         throw this.updateError;
       }
-
-      const updatedBanner: BannerModel = JSON.parse(response.data);
-      updatedBanner.imagem = getAPIFileURL(updatedBanner.imagem);
-
-      return updatedBanner;
     } catch (error) {
       if (error instanceof Error) {
         throw error;

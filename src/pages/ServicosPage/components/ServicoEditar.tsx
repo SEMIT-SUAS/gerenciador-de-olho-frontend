@@ -55,28 +55,9 @@ function ServicoEditarPage() {
         const dadosFormatadosParaForm: ServicoFormInput = {
           nome: servicoData.nome,
           descricao: servicoData.descricao,
-          publicoDestinado: servicoData.publicoDestinado
-            .split(',')
-            .map((publico) => publico.trim())
-            .filter(
-              (publico): publico is 'Pessoa Física' | 'Pessoa Jurídica' =>
-                publico === 'Pessoa Física' || publico === 'Pessoa Jurídica',
-            ),
-
-          formasSolicitacao: servicoData.formasSolicitacao
-            .split(',')
-            .map((item) => item.trim())
-            .filter(
-              (item): item is 'Presencial' | 'Online' | 'Telefone' =>
-                item === 'Presencial' ||
-                item === 'Online' ||
-                item === 'Telefone',
-            ),
-
-          documentacaoNecessaria: servicoData.documentacaoNecessaria
-            .split(',')
-            .map((s) => s.trim()),
-
+          publicoDestinado: servicoData.publicoDestinado as any,
+          formasSolicitacao: servicoData.formasSolicitacao as any,
+          documentacaoNecessaria: servicoData.documentacaoNecessaria as any,
           prazoAtendimento: servicoData.prazoAtendimento,
           horarioAtendimento: servicoData.horarioAtendimento,
           setorLotacao: servicoData.setorLotacao,
@@ -87,16 +68,14 @@ function ServicoEditarPage() {
           custos: servicoData.custos,
           etapas: servicoData.etapas,
           requisitos: servicoData.requisitos,
-          secretariaId: servicoData.orgao?.id ?? 0,
-          categoriaId: servicoData.categoria?.id ?? 0,
-
-          personaIds: (servicoData.personas ?? [])
-            .map((p) => p.id)
-            .filter((id) => id != null),
-
+          secretariaId: servicoData.orgao,
+          categoriaId: servicoData.categoria,
+          personaIds: servicoData.personas,
           visivel: servicoData.visivel,
           ativo: servicoData.ativo,
         };
+
+        console.log(dadosFormatadosParaForm);
         setServicoParaEditar(dadosFormatadosParaForm);
       } catch (err) {
         toast.error('Erro ao buscar dados para edição do serviço.');
@@ -123,7 +102,7 @@ function ServicoEditarPage() {
 
     try {
       await servicoService.update(payload);
-      navigate(`/servicos/${servicoId}`);
+      navigate(`/servicos`);
     } catch (err: any) {
       toast.error(
         'Erro ao atualizar o serviço: ' +

@@ -25,9 +25,10 @@ export interface Servicos {
   ativo: boolean;
   personas?: Persona[];
 }
+
 export interface UpdateServiceModel {
-  secretariaId: number;
-  categoriaId: number;
+  orgao: number;
+  categoria: number;
   id: number;
   nome: string;
   descricao: string;
@@ -46,5 +47,5 @@ export interface UpdateServiceModel {
   modeloRequerimento?: string;
   visivel: boolean;
   ativo: boolean;
-  personaIds: number[];
+  personas: number[];
 }

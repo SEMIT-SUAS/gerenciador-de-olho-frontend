@@ -18,12 +18,14 @@ type BannerListProps = {
   banners: BannerModel[];
   itemsPerPage: number;
   setBanners: Dispatch<SetStateAction<BannerModel[]>>;
+  reloadBanners: () => void;
 };
 
 export function BannersList({
   itemsPerPage,
   banners,
   setBanners,
+  reloadBanners,
 }: BannerListProps) {
   return (
     <div className="rounded-md border">
@@ -46,6 +48,7 @@ export function BannersList({
                   key={banner.id}
                   banner={banner}
                   setBanners={setBanners}
+                  reloadBanners={reloadBanners}
                 />
               ))}
               elseRender={

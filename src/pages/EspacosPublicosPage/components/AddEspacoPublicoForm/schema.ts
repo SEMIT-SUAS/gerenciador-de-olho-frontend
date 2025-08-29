@@ -4,7 +4,7 @@ export const AddEspacoPublicoFormSchema = z.object({
   name: z.string().trim().min(1, 'O nome é obrigatório'),
   addressRua: z.string().min(1, 'A rua é obrigatória'),
   addressBairro: z.string().min(1, 'O bairro é obrigatório'),
-  maxCapacity: z
+  maxCapacity: z.coerce
     .number('A capacidade máxima deve ser maior que 0')
     .min(1, 'A capacidade máxima deve ser maior que 0'),
   startHour: z.string().min(1, 'Campo obrigatório'),

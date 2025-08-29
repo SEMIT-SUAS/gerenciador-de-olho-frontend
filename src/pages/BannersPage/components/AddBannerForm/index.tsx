@@ -12,8 +12,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useState, type Dispatch, type SetStateAction } from 'react';
-import type { BannerModel } from '@/types/Banner';
+import { useState } from 'react';
 import { AddBannerFormSchema, type AddBannerFormValues } from './types';
 import { Loading } from '@/components/Loading/Loading';
 import { ImageInput } from '@/components/ImageInput';
@@ -21,11 +20,10 @@ import { BannerService } from '@/services/bannersService';
 import { Switch } from '@/components/ui/switch';
 
 type AddABannerFormProps = {
-  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
   onSuccess: () => void;
 };
 
-export function AddABannerForm({ setBanners, onSuccess }: AddABannerFormProps) {
+export function AddABannerForm({ onSuccess }: AddABannerFormProps) {
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
 
   const form = useForm<AddBannerFormValues>({
@@ -49,10 +47,9 @@ export function AddABannerForm({ setBanners, onSuccess }: AddABannerFormProps) {
       formData.append('visivel', `${data.visivel}`);
       formData.append('ativo', 'true');
 
-      const newBanner = await new BannerService().upload(formData);
-      setBanners((prevBanners) => [...prevBanners, newBanner]);
+      await new BannerService().upload(formData);
 
-      toast.success(`Banner "${newBanner.nome}" criado com sucesso!`);
+      toast.success(`Banner "${data.name}" criado com sucesso!`);
       onSuccess();
     } catch (error: any) {
       toast.error(error.message);

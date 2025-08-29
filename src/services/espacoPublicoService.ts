@@ -20,19 +20,22 @@ export class EspacoPublicoService extends BaseServiceClass {
     'Serviço indisponível no momento. Tente novamente mais tarde.',
   );
 
-  /**
-   * Cadastra um novo espaço público.
-   * @param formData Os dados do formulário para o novo espaço.
-   * @returns O espaço público criado.
-   */
-  public async create(formData: FormData): Promise<EspacoPublicoModel> {
+  public async create(formData: FormData): Promise<void> {
     try {
       // É comum que a API retorne o objeto criado. Ajustei o retorno.
       const response = await api.post<EspacoPublicoModel>(
         '/espaco-publico/cadastrar',
         formData,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        },
       );
-      return response.data;
+
+      if (response.status != 201) {
+        throw this.createError;
+      }
     } catch (error) {
       throw this.createError;
     }

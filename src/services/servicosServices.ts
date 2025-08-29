@@ -2,6 +2,7 @@ import { api } from '@/lib/axios';
 import type { Servicos, UpdateServiceModel } from '@/types/Servicos';
 import type { ServicosListar } from '@/types/ServicosListar';
 import { BaseServiceClass } from './BaseServiceClass'; // Supondo o uso de uma classe base
+import { AxiosError } from 'axios';
 
 export class ServicoService extends BaseServiceClass {
   // Erros específicos para o serviço de "Serviços"
@@ -51,9 +52,14 @@ export class ServicoService extends BaseServiceClass {
    * Busca um serviço específico pelo ID.
    * @param id O ID do serviço.
    */
-  public async getById(id: number): Promise<Servicos> {
+  public async getById(id: number): Promise<UpdateServiceModel> {
     try {
-      const response = await api.get<Servicos>(`/servico/buscar/${id}`);
+      const response = await api.get(`/servico/buscar/${id}`, {
+        headers: {
+          'Content-Type': 'Application/json',
+        },
+      });
+
       return response.data;
     } catch (error) {
       throw this.getByIdError;
@@ -65,8 +71,15 @@ export class ServicoService extends BaseServiceClass {
    * @param servico Os dados do serviço a ser criado.
    */
   public async create(servico: Servicos): Promise<Servicos> {
+    const servicoJSON = JSON.stringify(servico);
     try {
-      const response = await api.post<Servicos>('/servico/cadastrar', servico);
+      const response = await api.post<Servicos>(
+        '/servico/cadastrar',
+        servicoJSON,
+        {
+          responseType: 'json',
+        },
+      );
       return response.data;
     } catch (error) {
       throw this.createError;
@@ -83,8 +96,14 @@ export class ServicoService extends BaseServiceClass {
     try {
       const response = await api.put<UpdateServiceModel>(
         '/servico/atualizar',
-        servico,
+        JSON.stringify(servico),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
       );
+
       return response.data;
     } catch (error) {
       throw this.updateError;
@@ -100,13 +119,25 @@ export class ServicoService extends BaseServiceClass {
     id: number,
     visivel: boolean,
   ): Promise<ServicosListar> {
+    // ATENÇÃO: Este é um PALIATIVO.
+    // A conversão manual para JSON e a definição do header não deveriam ser necessárias com Axios.
+    const body = JSON.stringify({ id, visivel });
+
     try {
       const response = await api.put<ServicosListar>(
         '/servico/atualizar/visibilidade',
-        { id, visivel },
+        body,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
       );
       return response.data;
     } catch (error) {
+      if (error instanceof AxiosError && error.response?.status === 404) {
+        throw new Error('Serviço não encontrado para alterar a visibilidade.');
+      }
       throw this.updateError;
     }
   }
@@ -117,11 +148,17 @@ export class ServicoService extends BaseServiceClass {
    * @param ativo O novo estado de atividade.
    */
   public async toggleAtivo(id: number, ativo: boolean): Promise<Servicos> {
+    const body = JSON.stringify({ id, ativo });
     try {
-      const response = await api.put<Servicos>('/servico/atualizar/atividade', {
-        id,
-        ativo,
-      });
+      const response = await api.put<Servicos>(
+        '/servico/atualizar/atividade',
+        body,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
       return response.data;
     } catch (error) {
       throw this.updateError;

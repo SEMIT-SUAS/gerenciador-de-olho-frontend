@@ -6,19 +6,17 @@ import {
   DialogDescription,
   DialogTitle,
 } from '@/components/ui/dialog';
-import type { BannerModel } from '@/types/Banner';
-import type { Dispatch, SetStateAction } from 'react';
 
 type AddBannerModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  setBanners: Dispatch<SetStateAction<BannerModel[]>>;
+  reloadBanners: () => void;
 };
 
 export function AddBannerModal({
   isOpen,
   onClose,
-  setBanners,
+  reloadBanners,
 }: AddBannerModalProps) {
   if (!isOpen) {
     return null;
@@ -36,7 +34,12 @@ export function AddBannerModal({
           </DialogDescription>
         </DialogHeader>
 
-        <AddABannerForm setBanners={setBanners} onSuccess={() => onClose()} />
+        <AddABannerForm
+          onSuccess={() => {
+            onClose();
+            reloadBanners();
+          }}
+        />
       </DialogContent>
     </Dialog>
   );

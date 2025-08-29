@@ -18,24 +18,18 @@ export function BannersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpenAddBannerModal, setIsOpenAddBannerModal] = useState(false);
 
-  async function getAllBanners() {
+  async function loadBanners() {
     try {
-      return await new BannerService().getAll();
+      setBanners([]);
+      const bannersData = await new BannerService().getAll();
+      setBanners(bannersData);
     } catch (error: any) {
       toast.error(error.message);
     }
   }
 
   useEffect(() => {
-    getAllBanners().then((bannersData) => {
-      if (bannersData) {
-        setBanners(bannersData);
-      }
-    });
-
-    return () => {
-      setBanners([]);
-    };
+    loadBanners();
   }, []);
 
   const filteredBanners = banners?.filter((banner) =>
@@ -92,6 +86,7 @@ export function BannersPage() {
             itemsPerPage={itemsPerPage}
             banners={currentBanners}
             setBanners={setBanners}
+            reloadBanners={loadBanners}
           />
 
           <Pagination
@@ -108,7 +103,7 @@ export function BannersPage() {
       <AddBannerModal
         isOpen={isOpenAddBannerModal}
         onClose={() => setIsOpenAddBannerModal(false)}
-        setBanners={setBanners}
+        reloadBanners={loadBanners}
       />
     </>
   );
