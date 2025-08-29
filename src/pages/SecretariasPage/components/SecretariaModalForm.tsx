@@ -27,13 +27,7 @@ import {
 } from '@/components/ui/form';
 import { secretariaSchema, type CreateSecretaria } from './secretariaSchema';
 import { toast } from 'sonner';
-
-const uploadSecretaria = async (data: CreateSecretaria) => {
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-  if (data.nome.toLowerCase() === 'erro') {
-    throw new Error('Erro simulado na API ao tentar cadastrar.');
-  }
-};
+import { secretariaService } from '@/services/secretariaService';
 
 interface SecretariaFormModalProps {
   isOpen: boolean;
@@ -67,7 +61,7 @@ export function SecretariaFormModal({
   const onSubmit = async (data: CreateSecretaria) => {
     setLoading(true);
     try {
-      await uploadSecretaria(data);
+      await secretariaService.create(data);
       toast.success('Secretaria cadastrada com sucesso!');
       onSuccess();
       setIsOpen(false);
