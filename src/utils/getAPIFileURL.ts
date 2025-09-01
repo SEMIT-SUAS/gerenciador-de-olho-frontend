@@ -10,5 +10,5 @@ export function getAPIFileURL(filePath: string | null | undefined): string {
     return '';
   }
 
-  return `/${fileName}`;
+  return `u/${fileName}`;
 }

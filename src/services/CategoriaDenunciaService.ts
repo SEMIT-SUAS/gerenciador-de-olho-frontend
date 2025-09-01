@@ -71,11 +71,7 @@ export class CategoriaDenunciaService extends BaseServiceClass {
         '/categoria-denuncia/atualizar',
         data,
       );
-
-      const updatedCategory = response.data;
-      updatedCategory.icone = getAPIFileURL(updatedCategory.icone);
-
-      return updatedCategory;
+      return response.data;
     } catch (error) {
       throw this.updateError;
     }

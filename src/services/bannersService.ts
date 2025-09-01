@@ -61,10 +61,7 @@ export class BannerService extends BaseServiceClass {
         throw this.createError;
       }
 
-      const newBanner: BannerModel = response.data;
-      newBanner.imagem = getAPIFileURL(newBanner.imagem);
-
-      return newBanner;
+      return response.data;
     } catch (error) {
       if (error instanceof Error) {
         throw error;

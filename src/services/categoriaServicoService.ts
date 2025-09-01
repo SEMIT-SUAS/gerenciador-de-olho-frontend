@@ -83,7 +83,6 @@ export class CategoriaServicoService extends BaseServiceClass {
         '/categoria-servico/atualizar/layout',
         formData,
         {
-          // Mesmo tratamento para resposta em texto puro.
           transformResponse: (data) => data,
         },
       );
