@@ -1,3 +1,4 @@
+// usuarioSchema.ts
 import { z } from 'zod';
 import { unmaskValue } from '@/lib/masks';
 
@@ -8,11 +9,11 @@ export const usuarioSchema = z.object({
     .max(100, { message: 'O nome deve ter no máximo 100 caracteres.' }),
   cpf: z
     .string()
-    .transform((value) => unmaskValue(value)) // Remove a máscara antes de validar
+    .transform((value) => unmaskValue(value))
     .refine((value) => value.length === 11, {
       message: 'CPF deve ter 11 dígitos.',
-    }), // Ex: 000.000.000-00
-  contato: z.string().min(10, { message: 'O contato é obrigatório.' }), // Ex: (99) 99999-9999
+    }),
+  contato: z.string().min(10, { message: 'O contato é obrigatório.' }),
   email: z.string().email({ message: 'Por favor, insira um email válido.' }),
   senha: z
     .string()
@@ -27,4 +28,16 @@ export const usuarioSchema = z.object({
   }),
 });
 
-export type usuarioFormValues = z.infer<typeof usuarioSchema>;
+// ✔️ criar: usa seu schema original (senha obrigatória)
+export const usuarioCreateSchema = usuarioSchema;
+
+// ✔️ editar: mesma coisa, mas com senha opcional
+export const usuarioEditSchema = usuarioSchema.extend({
+  senha: usuarioSchema.shape.senha.optional(),
+});
+
+export type UsuarioCreateValues = z.infer<typeof usuarioCreateSchema>;
+export type UsuarioEditValues = z.infer<typeof usuarioEditSchema>;
+
+// Se você quiser manter o nome antigo para usos genéricos:
+export type usuarioFormValues = UsuarioCreateValues;
