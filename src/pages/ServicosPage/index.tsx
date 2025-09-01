@@ -26,6 +26,7 @@ import { servicoExternoService } from '@/services/servicosExternosService';
 import type { ServicoExterno } from '@/types/ServicoExterno';
 import { ServicosExternosList } from '@/pages/ServicosPage/components/ServicosExternosList';
 import { FormServicoExterno } from '@/pages/ServicosPage/components/ServicosExternosForm/ServicoExternoForm';
+import PageHeader from '@/components/PageHeader';
 
 export function ServicesPage() {
   const [cartaDeServicos, setCartaDeServicos] = useState<ServicosListar[]>([]);
@@ -94,16 +95,24 @@ export function ServicesPage() {
   return (
     <LayoutPage>
       <div className="flex flex-col gap-6 py-4 px-4 md:py-6 md:px-8 lg:py-8 lg:px-36">
-        <div className="w-full max-w-full lg:max-w-[640px]">
+        <PageHeader
+          title={
+            activeTab === 'servicos' ? 'Carta de Serviços' : 'Servicos Externos'
+          }
+          description="Gerencie os serviços públicos disponíveis no aplicativo, garantindo
+            a clareza e a objetividade das informações para os cidadãos."
+        />
+        {/* <div className="w-full max-w-full lg:max-w-[640px]">
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
             {activeTab === 'servicos'
               ? 'Carta de Serviços'
               : 'Serviços Externos'}
           </h2>
           <p className="text-slate-600 text-xs md:text-sm mt-1">
-            Gerencie os serviços disponíveis com clareza e objetividade.
+            Gerencie os serviços públicos disponíveis no aplicativo, garantindo
+            a clareza e a objetividade das informações para os cidadãos.
           </p>
-        </div>
+        </div> */}
 
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="w-full md:w-auto">

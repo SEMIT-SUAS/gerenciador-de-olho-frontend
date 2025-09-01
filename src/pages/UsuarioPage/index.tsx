@@ -26,6 +26,7 @@ import {
 import { AddUsuarioModal } from './components/AddUsuarioModal';
 import { EditUsuarioModal } from './components/EditUsuarioModal';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
+import PageHeader from '@/components/PageHeader';
 
 export function UsuariosPage() {
   const [usuarios, setUsuarios] = useState<UsuarioModel[]>([]);
@@ -158,12 +159,10 @@ export function UsuariosPage() {
   return (
     <LayoutPage>
       <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
-        <div className="max-w-[640px]">
-          <h2 className="text-3xl font-bold tracking-tight">Usuários</h2>
-          <p className="text-slate-600 text-xs sm:text-xs mt-1">
-            Gerencie os usuários cadastrados na plataforma.
-          </p>
-        </div>
+        <PageHeader
+          title="Usuários"
+          description="Gerencie o ciclo de vida dos usuários cadastrados na plataforma, desde a criação até a desativação, controlando suas permissões e perfis de acesso."
+        />
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
           <div className="w-full sm:w-[280px] md:w-[320px]">
