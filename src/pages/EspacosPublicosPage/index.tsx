@@ -53,7 +53,7 @@ export function EspacosPublicosPage() {
   return (
     <>
       <LayoutPage>
-        <div className="flex flex-col gap-6 py-8 px-36">
+        <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
           <div className="w-[50%]">
             <h3 className="scroll-m-20 text-2xl font-bold tracking-tight">
               Espaços públicos
