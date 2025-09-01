@@ -20,6 +20,9 @@ import {
   IconChevronsRight,
 } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
+import { TableHeaderActions } from '@/components/TableHeaderActions';
+import { Pagination } from '@/components/Pagination';
+import PageHeader from '@/components/PageHeader';
 
 export function EspacosPublicosPage() {
   const navigate = useNavigate();
@@ -50,43 +53,33 @@ export function EspacosPublicosPage() {
 
   const itemsPerPageOptions = [5, 10, 15, 20];
 
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
+  const handleAddNew = () => {
+    navigate('/espacos-publicos/add');
+  };
+
   return (
     <>
       <LayoutPage>
         <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
-          <div className="w-[50%]">
-            <h3 className="scroll-m-20 text-2xl font-bold tracking-tight">
-              Espaços públicos
-            </h3>
-
-            <p className="text-slate-600 text-xs">
-              Gerencie com precisão todos os espaços públicos para serviços da
+          <PageHeader
+            title="Espaços públicos"
+            description="Gerencie com precisão todos os espaços públicos para serviços da
               prefeitura. Tenha controle total para adicionar, visualizar,
               editar e remover cada espaço, garantindo informações sempre
-              atualizadas e acessíveis.
-            </p>
-          </div>
+              atualizadas e acessíveis."
+          />
 
-          <div className="flex items-center justify-between gap-4">
-            <div className="relative w-[320px]">
-              <SearchInput
-                placeholder="Pesquise pelo nome"
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
-              />
-            </div>
-
-            <Button
-              className="flex items-center gap-2"
-              onClick={() => navigate('/espacos-publicos/add')}
-            >
-              <PlusIcon className="h-4 w-4" />
-              Adicionar espaço público
-            </Button>
-          </div>
+          <TableHeaderActions
+            searchValue={searchTerm}
+            onSearchChange={handleSearch}
+            buttonText="Adicionar espaço público"
+            onButtonClick={handleAddNew}
+          />
 
           <EspacosPublicosList
             espacosPublicos={currentEspacos}
@@ -94,73 +87,14 @@ export function EspacosPublicosPage() {
             setEspacosPublicos={setEspacosPublicos}
           />
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Itens por página:</span>
-
-              <Select
-                value={itemsPerPage.toString()}
-                onValueChange={(value) => {
-                  setItemsPerPage(Number(value));
-                  setCurrentPage(1);
-                }}
-              >
-                <SelectTrigger className="w-20 h-8">
-                  <SelectValue placeholder={itemsPerPage} />
-                </SelectTrigger>
-                <SelectContent>
-                  {itemsPerPageOptions.map((option) => (
-                    <SelectItem key={option} value={option.toString()}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">
-                Página {currentPage} de {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-              >
-                <IconChevronsLeft stroke={2} />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                <IconChevronLeft stroke={2} />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages || totalPages === 0}
-              >
-                <IconChevronRight />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(totalPages)}
-                disabled={currentPage === totalPages || totalPages === 0}
-              >
-                <IconChevronsRight stroke={2} />
-              </Button>
-            </div>
-          </div>
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={setItemsPerPage}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPages}
+            itemsPerPageOptions={itemsPerPageOptions}
+          />
         </div>
       </LayoutPage>
     </>

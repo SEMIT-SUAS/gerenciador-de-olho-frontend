@@ -44,7 +44,7 @@ export class CategoriaDenunciaService extends BaseServiceClass {
     }
   }
 
-  public async create(data: FormData): Promise<void> {
+  public async create(data: FormData): Promise<CategoriaDenunciaModel> {
     try {
       const response = await api.post<CategoriaDenunciaModel>(
         '/categoria-denuncia/cadastrar',
@@ -58,7 +58,7 @@ export class CategoriaDenunciaService extends BaseServiceClass {
       // const newCategory = response.data;
       // newCategory.icone = getAPIFileURL(newCategory.icone);
 
-      // return newCategory;
+      return response.data;
     } catch (error) {
       throw this.createError;
     }

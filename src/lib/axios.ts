@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 export const api = new axios.Axios({
-  baseURL: 'https://saoluisonline.saoluis.ma.gov.br/api/gerenciador',
-  // baseURL: 'http://192.168.200.51:9090/saoluis-online/api/gerenciador',
+  // baseURL: 'https://saoluisonline.saoluis.ma.gov.br/api/gerenciador',
+  baseURL: 'http://192.168.200.51:9090/saoluis-online/api/gerenciador',
 });
 
 api.interceptors.request.use(

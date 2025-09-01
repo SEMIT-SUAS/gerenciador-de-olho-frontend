@@ -30,6 +30,21 @@ export function PortaisPage() {
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  const handleUpdatePortal = (updatedPortal: Portais) => {
+    setPortais((currentPortais) =>
+      currentPortais.map((p) =>
+        p.id === updatedPortal.id ? updatedPortal : p,
+      ),
+    );
+  };
+
+  // --- (NOVO) Função para lidar com a exclusão de um item ---
+  const handleDeletePortal = (portalId: number | string) => {
+    setPortais((currentPortais) =>
+      currentPortais.filter((p) => p.id !== portalId),
+    );
+  };
+
   async function getAllPortaisData() {
     try {
       return await portalService.getAll();
