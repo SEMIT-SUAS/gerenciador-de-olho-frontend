@@ -9,7 +9,7 @@ import {
 import { Input } from '@/components/ui/input';
 import type { BannerModel } from '@/types/Banner';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, type Dispatch, type SetStateAction } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { EditBannerFormSchema, type EditBannerFormValues } from './types';
 import { ImageInput } from '@/components/ImageInput';

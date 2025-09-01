@@ -116,7 +116,16 @@ export function AddEspacoPublicoForm({ onSuccess }: AddEspacoPublicoFormProps) {
               <FormItem className="flex flex-col">
                 <FormLabel>Capacidade Máxima</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="0" {...field} />
+                  <Input
+                    type="number"
+                    placeholder="0"
+                    {...field}
+                    value={
+                      field.value === undefined || field.value === null
+                        ? ''
+                        : Number(field.value)
+                    }
+                  />
                 </FormControl>
                 <FormMessage className="h-5" />
               </FormItem>

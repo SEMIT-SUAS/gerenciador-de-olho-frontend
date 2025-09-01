@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { DashboardPage } from './pages/DashboardPage';
 import { OcorrenciasProvider } from './context/OcorrenciasContext';
 import { OcorrenciasPage } from './pages/OcorrenciasPage';
-import { ServicoDetalhes } from './pages/ServicosPage/components/ServicoDetalhes';
 import LoginPage from './pages/LoginPage';
 import ServicoEditarPage from './pages/ServicosPage/components/ServicoEditar';
 import ServicoNovo from './pages/ServicosPage/components/ServicoNovo';
@@ -81,7 +80,6 @@ export function App() {
             <Route path="categorias" element={<CategoriasPage />} />
             <Route path="secretarias" element={<SecretariaPage />} />
             <Route path="novo" element={<ServicoNovo />} />
-            <Route path=":id" element={<ServicoDetalhes />} />
             <Route path="editar/:id" element={<ServicoEditarPage />} />
           </Route>
 
