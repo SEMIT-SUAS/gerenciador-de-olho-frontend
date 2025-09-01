@@ -101,8 +101,13 @@ export class PersonaService extends BaseServiceClass {
    * Altera o status de "ativo" de uma persona.
    */
   public async toggleAtivo(id: number, ativo: boolean): Promise<void> {
+    const body = JSON.stringify({ id, ativo });
     try {
-      await api.put('/persona-servico/atualizar/atividade', { id, ativo });
+      await api.put('/persona-servico/atualizar/atividade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     } catch (error) {
       throw this.updateError;
     }

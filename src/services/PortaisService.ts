@@ -34,8 +34,14 @@ export class PortalService extends BaseServiceClass {
    * @param portal Os dados do portal a ser criado.
    */
   public async create(portal: CreatePortal): Promise<Portais> {
+    const body = JSON.stringify(portal);
+
     try {
-      const response = await api.post<Portais>('/portal/cadastrar', portal);
+      const response = await api.post<Portais>('/portal/cadastrar', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       return response.data;
     } catch (error) {
       throw this.createError;
@@ -47,8 +53,14 @@ export class PortalService extends BaseServiceClass {
    * @param portal Os dados do portal a serem atualizados.
    */
   public async update(portal: Portais): Promise<Portais> {
+    const body = JSON.stringify(portal);
+
     try {
-      const response = await api.put<Portais>('/portal/atualizar', portal);
+      const response = await api.put<Portais>('/portal/atualizar', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       return response.data;
     } catch (error) {
       throw this.updateError;
@@ -61,8 +73,14 @@ export class PortalService extends BaseServiceClass {
    * @param ativo O novo estado de atividade.
    */
   public async toggleAtivo(id: number, ativo: boolean): Promise<void> {
+    const body = JSON.stringify({ id, ativo });
+
     try {
-      await api.put('/portal/atualizar/atividade', { id, ativo });
+      await api.put('/portal/atualizar/atividade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     } catch (error) {
       throw this.updateError;
     }
@@ -74,8 +92,14 @@ export class PortalService extends BaseServiceClass {
    * @param visivel O novo estado de visibilidade.
    */
   public async toggleVisibility(id: number, visivel: boolean): Promise<void> {
+    const body = JSON.stringify({ id, visivel });
+
     try {
-      await api.put('/portal/atualizar/visibilidade', { id, visivel });
+      await api.put('/portal/atualizar/visibilidade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     } catch (error) {
       throw this.updateError;
     }

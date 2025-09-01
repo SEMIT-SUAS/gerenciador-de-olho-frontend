@@ -47,17 +47,18 @@ export function SecretariaListItem({
               disabled={isProcessing}
               title="Editar serviço"
             > */}
-            <IconEdit size={18} stroke={2} className="text-gray-400 mr-2" />
+            <IconEdit size={18} stroke={2} className="text-gray-500 mr-2" />
             {/* </button> */}
 
             <button
+              disabled
               aria-label={`Deletar ${secretaria.nome}`}
               onClick={() => setIsOpenDeleteModal(true)}
             >
-              <IconTrash size={18} stroke={2} className="text-black-600 mr-2" />
+              <IconTrash size={18} stroke={2} className="text-gray-500 mr-2" />
             </button>
 
-            <button>
+            <button disabled>
               <IconEye size={18} stroke={2} className="text-gray-500 mr-2" />
             </button>
           </div>

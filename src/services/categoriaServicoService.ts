@@ -100,8 +100,14 @@ export class CategoriaServicoService extends BaseServiceClass {
    * Ativa ou desativa uma categoria.
    */
   public async toggleAtivo(id: number, ativo: boolean): Promise<void> {
+    const body = JSON.stringify({ id, ativo });
+
     try {
-      await api.put('/categoria-servico/atualizar/atividade', { id, ativo });
+      await api.put('/categoria-servico/atualizar/atividade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     } catch (error) {
       throw this.updateError;
     }
@@ -111,10 +117,13 @@ export class CategoriaServicoService extends BaseServiceClass {
    * Altera a visibilidade de uma categoria.
    */
   public async toggleVisivel(id: number, visivel: boolean): Promise<void> {
+    const body = JSON.stringify({ id, visivel });
+
     try {
-      await api.put('/categoria-servico/atualizar/visibilidade', {
-        id,
-        visivel,
+      await api.put('/categoria-servico/atualizar/visibilidade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     } catch (error) {
       throw this.updateError;

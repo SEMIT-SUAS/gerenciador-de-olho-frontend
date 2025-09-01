@@ -50,9 +50,9 @@ export function PersonaListItem({
               src={persona.icone}
               alt={persona.nome}
               className="h-10 w-auto rounded-md object-cover"
-              onError={(e) => {
-                e.currentTarget.src = 'https://via.placeholder.com/40?text=?';
-              }}
+              // onError={(e) => {
+              //   e.currentTarget.src = 'https://via.placeholder.com/40?text=?';
+              // }}
             />
           </div>
         </TableCell>
@@ -67,7 +67,8 @@ export function PersonaListItem({
         <TableCell>
           <div className="flex items-center gap-2">
             <button
-              className="text-black-600 hover:text-black transition-colors"
+              disabled
+              className="text-gray-600 hover:text-black transition-colors"
               onClick={() => onEdit?.(persona)}
               title="Editar persona"
             >

@@ -63,7 +63,6 @@ export function CategoriaListItem({
         <TableCell>{categoria.nome}</TableCell>
         <TableCell>
           <div className="flex gap-2 items-center">
-            {' '}
             {/* ← MELHORADO: flex para alinhamento */}
             <button
               className="text-black-600"
@@ -79,12 +78,10 @@ export function CategoriaListItem({
             >
               <IconTrash size={18} stroke={2} className="text-black-600" />
             </button>
-            <div className="text-black-600">
-              <CategoriaVisibility
-                categoria={categoria}
-                setCategorias={setCategorias}
-              />
-            </div>
+            <CategoriaVisibility
+              categoria={categoria}
+              setCategorias={setCategorias}
+            />
           </div>
         </TableCell>
       </TableRow>

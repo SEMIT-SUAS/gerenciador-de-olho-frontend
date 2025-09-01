@@ -7,7 +7,6 @@ import { api } from '@/lib/axios';
 import { type LoginFormValues } from '@/pages/LoginPage/components/loginSchema';
 import { AxiosError } from 'axios';
 import { jwtDecode } from 'jwt-decode';
-import { useAuth } from '@/context/AuthContext';
 
 interface LoginResponse {
   token: string;
@@ -129,11 +128,18 @@ const getAllUsuarios = async (): Promise<UsuarioModel[]> => {
 export const updateUsuario = async (
   usuario: UsuarioUpdate,
 ): Promise<UsuarioModel> => {
+  const body = JSON.stringify(usuario);
+
   try {
     const response = await api.put<UsuarioModel>(
       `
         /usuario/atualizar`,
-      usuario,
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
     );
     return response.data;
   } catch (error) {
@@ -150,8 +156,14 @@ const cadastrarGerenciador = async (
     throw new Error('Usuário não autenticado.');
   }
 
+  const body = JSON.stringify(dados);
+
   try {
-    const response = await api.post<UsuarioModel>('/usuario/cadastrar', dados);
+    const response = await api.post<UsuarioModel>('/usuario/cadastrar', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {

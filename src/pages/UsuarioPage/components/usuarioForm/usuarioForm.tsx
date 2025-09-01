@@ -168,6 +168,7 @@ export function UsuarioForm({
                   type="password"
                   placeholder="•••••••"
                   disabled={isSubmitting || isEditing}
+                  required={!isEditing}
                   autoComplete="off" // (1)
                   // (2) bloquear autofill até foco
                   readOnly

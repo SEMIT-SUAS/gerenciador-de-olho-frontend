@@ -38,7 +38,7 @@ export function EditUsuarioModal({
         cpf: usuario.cpf,
         contato: usuario.contato,
         email: usuario.email,
-        senha: '',
+        senha: usuario.senha,
         ativo: usuario.ativo,
         secretaria: secretariaDoUsuario!.id,
         perfil: usuario.perfil as 'ADMINISTRADOR' | 'COMUM',
