@@ -20,36 +20,32 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { usuarioSchema, type usuarioFormValues } from './usuarioSchema';
+import { usuarioCreateSchema, type UsuarioCreateValues } from './usuarioSchema';
 import type { Secretaria } from '@/types/Secretaria';
 
-interface UsuarioFormProps {
+interface UsuarioCreateFormProps {
   secretarias: Secretaria[];
-  onSubmit: (data: usuarioFormValues) => void;
+  onSubmit: (data: UsuarioCreateValues) => void;
   isSubmitting: boolean;
   openChange: (open: boolean) => void;
-  defaultValues?: usuarioFormValues;
 }
 
-export function UsuarioForm({
+export function UsuarioCreateForm({
   secretarias,
   onSubmit,
   isSubmitting,
   openChange,
-  defaultValues,
-}: UsuarioFormProps) {
-  const isEditing = !!defaultValues;
-
-  const form = useForm<usuarioFormValues>({
-    resolver: zodResolver(usuarioSchema),
-    defaultValues: defaultValues || {
+}: UsuarioCreateFormProps) {
+  const form = useForm<UsuarioCreateValues>({
+    resolver: zodResolver(usuarioCreateSchema),
+    defaultValues: {
       nome: '',
       cpf: '',
       contato: '',
       email: '',
       senha: '',
       ativo: true,
-      secretaria: undefined,
+      secretaria: 0,
       perfil: 'COMUM',
     },
   });
@@ -57,7 +53,7 @@ export function UsuarioForm({
   return (
     <Form {...form}>
       <form
-        autoComplete="off" // (1) form off
+        autoComplete="off"
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
       >
@@ -71,7 +67,7 @@ export function UsuarioForm({
                 <Input
                   placeholder="Nome completo"
                   disabled={isSubmitting}
-                  autoComplete="off" // (1) input off
+                  autoComplete="off"
                   {...field}
                 />
               </FormControl>
@@ -80,7 +76,6 @@ export function UsuarioForm({
           )}
         />
 
-        {/* Campo CPF com máscara */}
         <FormField
           control={form.control}
           name="cpf"
@@ -90,9 +85,8 @@ export function UsuarioForm({
               <FormControl>
                 <Input
                   placeholder="000.000.000-00"
-                  disabled={isSubmitting || isEditing}
-                  autoComplete="off" // (1)
-                  {...field}
+                  disabled={isSubmitting}
+                  autoComplete="off"
                   value={maskCPF(field.value || '')}
                   onChange={(e) => {
                     const masked = maskCPF(e.target.value);
@@ -106,7 +100,6 @@ export function UsuarioForm({
           )}
         />
 
-        {/* Campo Contato com máscara */}
         <FormField
           control={form.control}
           name="contato"
@@ -117,8 +110,7 @@ export function UsuarioForm({
                 <Input
                   placeholder="(00) 00000-0000"
                   disabled={isSubmitting}
-                  autoComplete="off" // (1)
-                  {...field}
+                  autoComplete="off"
                   value={maskPhone(field.value || '')}
                   onChange={(e) => {
                     const masked = maskPhone(e.target.value);
@@ -140,13 +132,11 @@ export function UsuarioForm({
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
-                  // (3) evitar heurística: não usar type="email"
                   type="text"
                   inputMode="email"
                   placeholder="seu@email.com"
-                  disabled={isSubmitting || isEditing}
-                  autoComplete="off" // (1)
-                  // (2) bloquear autofill até foco
+                  disabled={isSubmitting}
+                  autoComplete="off"
                   readOnly
                   onFocus={(e) => e.currentTarget.removeAttribute('readonly')}
                   {...field}
@@ -167,10 +157,8 @@ export function UsuarioForm({
                 <Input
                   type="password"
                   placeholder="•••••••"
-                  disabled={isSubmitting || isEditing}
-                  required={!isEditing}
-                  autoComplete="off" // (1)
-                  // (2) bloquear autofill até foco
+                  disabled={isSubmitting}
+                  autoComplete="off"
                   readOnly
                   onFocus={(e) => e.currentTarget.removeAttribute('readonly')}
                   {...field}
@@ -190,7 +178,7 @@ export function UsuarioForm({
               <Select
                 onValueChange={(value) => field.onChange(Number(value))}
                 value={field.value ? String(field.value) : ''}
-                disabled={isSubmitting || isEditing}
+                disabled={isSubmitting}
               >
                 <FormControl className="w-full">
                   <SelectTrigger>
@@ -221,8 +209,8 @@ export function UsuarioForm({
               <FormLabel>Perfil</FormLabel>
               <Select
                 onValueChange={field.onChange}
-                defaultValue={field.value}
-                disabled={isSubmitting || isEditing}
+                value={field.value}
+                disabled={isSubmitting}
               >
                 <FormControl className="w-full">
                   <SelectTrigger>
@@ -251,7 +239,7 @@ export function UsuarioForm({
           </Button>
           <Button type="submit" disabled={isSubmitting} className="flex-1">
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isEditing ? 'Salvar Alterações' : 'Cadastrar'}
+            Cadastrar
           </Button>
         </div>
       </form>

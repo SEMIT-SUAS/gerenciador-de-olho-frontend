@@ -1,5 +1,4 @@
-// src/pages/UsuariosPage/components/EditModal.tsx
-
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -7,18 +6,22 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Pencil } from 'lucide-react';
-import type { usuarioFormValues } from './usuarioForm/usuarioSchema';
 import { toast } from 'sonner';
-import { UsuarioForm } from './usuarioForm/usuarioForm';
+
+// MUDANÇA: Import do componente separado
+import { UsuarioEditForm } from './usuarioForm/usuariaFormEdit';
 import type { Secretaria } from '@/types/Secretaria';
 import type { UsuarioPorId } from '@/types/Usuario';
 import usuarioService from '@/services/usuariosService';
+// MUDANÇA: Import do schema separado
+import { type UsuarioEditValues } from './usuarioForm/usuarioSchemaEdit';
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   secretarias: Secretaria[];
   usuario: UsuarioPorId;
+  onUserUpdated?: () => void; // callback para refetch dos dados
 }
 
 export function EditUsuarioModal({
@@ -26,54 +29,81 @@ export function EditUsuarioModal({
   onOpenChange,
   secretarias,
   usuario,
+  onUserUpdated,
 }: Props) {
-  const secretariaDoUsuario = secretarias.find(
-    (s) =>
-      s.nome.trim().toLowerCase() === usuario.secretaria.trim().toLowerCase(),
-  );
+  // MUDANÇA: defaultValues com todos os campos do usuário existente
+  const defaultValues: UsuarioEditValues = {
+    nome: usuario.nome,
+    contato: usuario.contato,
+    email: usuario.email,
+  };
 
-  const defaultValues = usuario
-    ? {
-        nome: usuario.nome,
-        cpf: usuario.cpf,
-        contato: usuario.contato,
-        email: usuario.email,
-        senha: usuario.senha,
-        ativo: usuario.ativo,
-        secretaria: secretariaDoUsuario!.id,
-        perfil: usuario.perfil as 'ADMINISTRADOR' | 'COMUM',
-      }
-    : undefined;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function onSubmit(data: usuarioFormValues) {
+  // Função de submit tipada corretamente para edição
+  async function onSubmit(data: UsuarioEditValues): Promise<void> {
     if (!usuario?.id) {
       toast.error('ID do usuário não fornecido para edição.');
       return;
     }
 
     try {
-      await usuarioService.updateUsuario({ ...data, id: usuario.id });
+      setIsSubmitting(true);
+
+      // MUDANÇA: Enviar apenas os dados editáveis junto com o ID
+      await usuarioService.updateUsuario({
+        id: usuario.id,
+        nome: data.nome,
+        contato: data.contato,
+      });
+
       toast.success('Usuário atualizado com sucesso!');
+
+      // Callback para refetch dos dados na lista
+      if (onUserUpdated) {
+        onUserUpdated();
+      }
+
       onOpenChange(false);
-    } catch (error) {
-      toast.error('Erro ao atualizar usuário.');
+    } catch (error: any) {
+      console.error('Erro ao atualizar usuário:', error);
+
+      // Mensagem de erro mais específica se disponível
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Erro ao atualizar usuário.';
+
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  // Função para lidar com o fechamento do modal
+  function handleOpenChange(open: boolean) {
+    if (!isSubmitting) {
+      onOpenChange(open);
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            <Pencil /> Editar Usuário
+          <DialogTitle className="flex items-center gap-2">
+            <Pencil className="h-4 w-4" />
+            Editar Usuário
           </DialogTitle>
         </DialogHeader>
-        <UsuarioForm
+
+        {/* MUDANÇA: Usar o componente específico de edição */}
+        <UsuarioEditForm
+          defaultValues={defaultValues}
           onSubmit={onSubmit}
           openChange={onOpenChange}
           secretarias={secretarias}
-          isSubmitting={false}
-          defaultValues={defaultValues}
+          isSubmitting={isSubmitting}
         />
       </DialogContent>
     </Dialog>

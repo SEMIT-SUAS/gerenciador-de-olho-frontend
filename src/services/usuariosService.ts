@@ -131,16 +131,11 @@ export const updateUsuario = async (
   const body = JSON.stringify(usuario);
 
   try {
-    const response = await api.put<UsuarioModel>(
-      `
-        /usuario/atualizar`,
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await api.put<UsuarioModel>(`/usuario/atualizar`, body, {
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+    });
     return response.data;
   } catch (error) {
     throw error;

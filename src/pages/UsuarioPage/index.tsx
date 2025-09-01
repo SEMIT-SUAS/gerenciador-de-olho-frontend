@@ -26,6 +26,7 @@ import {
 import { AddUsuarioModal } from './components/AddUsuarioModal';
 import { EditUsuarioModal } from './components/EditUsuarioModal';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
+import { useCallback } from 'react';
 
 export function UsuariosPage() {
   const [usuarios, setUsuarios] = useState<UsuarioModel[]>([]);
@@ -122,6 +123,15 @@ export function UsuariosPage() {
     return () => {
       setUsuarios([]);
     };
+  }, []);
+
+  const reloadUsuarios = useCallback(async () => {
+    try {
+      const data = await usuarioService.getAllUsuarios();
+      if (data) setUsuarios(data);
+    } catch (e) {
+      toast.error('Erro ao recarregar usuários.');
+    }
   }, []);
 
   const filteredUsuarios = usuarios?.filter((usuario) => {
@@ -270,6 +280,7 @@ export function UsuariosPage() {
           onOpenChange={handleCloseEditModal}
           secretarias={secretarias}
           usuario={fetchedUser}
+          onUserUpdated={reloadUsuarios}
         />
       )}
 
