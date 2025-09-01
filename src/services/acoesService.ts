@@ -74,8 +74,13 @@ export default class AcoesService {
   }
 
   public static async updateAcao(payload: any): Promise<AcaoModel> {
+    const body = JSON.stringify(payload);
     try {
-      const response = await api.put(`/acao/atualizar`, payload);
+      const response = await api.put(`/acao/atualizar`, body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (response.status !== 200 && response.status !== 201) {
         throw new Error('Não foi possível atualizar a ação.');

@@ -86,9 +86,6 @@ export class PersonaService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Altera a visibilidade de uma persona.
-   */
   public async toggleVisibility(id: number, visivel: boolean): Promise<void> {
     try {
       await api.put('/persona-servico/atualizar/visibilidade', { id, visivel });
@@ -97,9 +94,6 @@ export class PersonaService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Altera o status de "ativo" de uma persona.
-   */
   public async toggleAtivo(id: number, ativo: boolean): Promise<void> {
     const body = JSON.stringify({ id, ativo });
     try {
