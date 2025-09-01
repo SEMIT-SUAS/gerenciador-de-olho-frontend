@@ -1,5 +1,4 @@
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
-import { getAPIFileURL } from '@/utils/getAPIFileURL';
 import { BaseServiceClass } from './BaseServiceClass';
 import { api } from '@/lib/axios';
 

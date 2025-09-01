@@ -1,5 +1,4 @@
 import type { BannerModel } from '../types/Banner';
-import { getAPIFileURL } from '@/utils/getAPIFileURL';
 import { BaseServiceClass } from './BaseServiceClass';
 import { api } from '@/lib/axios';
 
