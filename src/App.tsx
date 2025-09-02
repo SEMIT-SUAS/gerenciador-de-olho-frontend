@@ -27,6 +27,7 @@ import { CriarAcao } from './pages/OcorrenciasPage/components/SidePanel/Acao/Cri
 import { VincularAcaoView } from './pages/OcorrenciasPage/components/SidePanel/Acao/VincularAcaoView';
 import { useAuth } from './context/AuthContext';
 import { DenunciaDetails } from './pages/OcorrenciasPage/components/SidePanel/Denuncia/DenunciaDetails';
+import { PrivateRoute } from './components/PrivateRoute';
 
 export function App() {
   const { isAuthenticated } = useAuth();
@@ -87,8 +88,8 @@ export function App() {
           <Route path="/banners" element={<BannersPage />} />
           <Route path="/espacos-publicos">
             <Route index element={<EspacosPublicosPage />} />
-            <Route path="add" element={<AddEspacoPublicoPage />} />
-            <Route path="edit/:id" element={<EditEspacoPublicoPage />} />
+            <Route path="adicionar" element={<AddEspacoPublicoPage />} />
+            <Route path="editar/:id" element={<EditEspacoPublicoPage />} />
           </Route>
 
           <Route
@@ -97,7 +98,16 @@ export function App() {
           />
 
           <Route path="/personas" element={<PersonasPage />} />
-          <Route path="/usuarios" element={<UsuariosPage />} />
+
+          <Route
+            path="/usuarios"
+            element={
+              <PrivateRoute allowedRoles={['ADMINISTRADOR']}>
+                <UsuariosPage />
+              </PrivateRoute>
+            }
+          />
+
           <Route path="*" element={<NotFoundPage />} />
         </Route>
 

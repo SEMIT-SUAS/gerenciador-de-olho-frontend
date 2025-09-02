@@ -36,11 +36,6 @@ export class CategoriaServicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Cria uma nova categoria de serviço.
-   * @param categoria Os dados da categoria a ser criada.
-   * @returns Uma mensagem de sucesso em texto.
-   */
   public async create(categoria: createServicoCategoria): Promise<string> {
     const formData = new FormData();
     formData.append('nome', categoria.nome);
@@ -55,7 +50,6 @@ export class CategoriaServicoService extends BaseServiceClass {
         '/categoria-servico/cadastrar',
         formData,
         {
-          // Instrução para o Axios: trate a resposta como texto puro, não tente converter para JSON.
           transformResponse: (data) => data,
         },
       );
@@ -65,11 +59,6 @@ export class CategoriaServicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Edita uma categoria de serviço existente.
-   * @param categoria Os dados da categoria a serem editados.
-   * @returns Uma mensagem de sucesso em texto.
-   */
   public async update(categoria: ServicoCategoriaEditar): Promise<string> {
     const formData = new FormData();
     formData.append('id', categoria.id.toString());
@@ -95,9 +84,6 @@ export class CategoriaServicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Ativa ou desativa uma categoria.
-   */
   public async toggleAtivo(id: number, ativo: boolean): Promise<void> {
     const body = JSON.stringify({ id, ativo });
 

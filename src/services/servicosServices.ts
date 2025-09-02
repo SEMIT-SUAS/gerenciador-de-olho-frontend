@@ -22,9 +22,6 @@ export class ServicoService extends BaseServiceClass {
     'Serviço indisponível. Tente novamente mais tarde.',
   );
 
-  /**
-   * Lista todos os serviços ativos.
-   */
   public async getAll(): Promise<ServicosListar[]> {
     try {
       const response = await api.get<ServicosListar[]>(
@@ -36,9 +33,6 @@ export class ServicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Lista todos os serviços marcados como visíveis.
-   */
   public async getAllVisible(): Promise<Servicos[]> {
     try {
       const response = await api.get<Servicos[]>('/servico/visiveis');
@@ -48,10 +42,6 @@ export class ServicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Busca um serviço específico pelo ID.
-   * @param id O ID do serviço.
-   */
   public async getById(id: number): Promise<UpdateServiceModel> {
     try {
       const response = await api.get(`/servico/buscar/${id}`, {
@@ -66,10 +56,6 @@ export class ServicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Cria um novo serviço.
-   * @param servico Os dados do serviço a ser criado.
-   */
   public async create(servico: Servicos): Promise<Servicos> {
     const servicoJSON = JSON.stringify(servico);
     try {
@@ -86,10 +72,6 @@ export class ServicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Atualiza um serviço existente.
-   * @param servico Os dados do serviço a serem atualizados.
-   */
   public async update(
     servico: UpdateServiceModel,
   ): Promise<UpdateServiceModel> {
@@ -110,17 +92,10 @@ export class ServicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Altera a visibilidade de um serviço.
-   * @param id O ID do serviço.
-   * @param visivel O novo estado de visibilidade.
-   */
   public async toggleVisibility(
     id: number,
     visivel: boolean,
   ): Promise<ServicosListar> {
-    // ATENÇÃO: Este é um PALIATIVO.
-    // A conversão manual para JSON e a definição do header não deveriam ser necessárias com Axios.
     const body = JSON.stringify({ id, visivel });
 
     try {
@@ -142,11 +117,6 @@ export class ServicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Altera o status de "ativo" de um serviço.
-   * @param id O ID do serviço.
-   * @param ativo O novo estado de atividade.
-   */
   public async toggleAtivo(id: number, ativo: boolean): Promise<Servicos> {
     const body = JSON.stringify({ id, ativo });
     try {
@@ -166,5 +136,4 @@ export class ServicoService extends BaseServiceClass {
   }
 }
 
-// Exporta uma instância única (Singleton) do serviço.
 export const servicoService = new ServicoService();

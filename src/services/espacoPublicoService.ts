@@ -22,7 +22,6 @@ export class EspacoPublicoService extends BaseServiceClass {
 
   public async create(formData: FormData): Promise<void> {
     try {
-      // É comum que a API retorne o objeto criado. Ajustei o retorno.
       const response = await api.post<EspacoPublicoModel>(
         '/espaco-publico/cadastrar',
         formData,
@@ -41,10 +40,6 @@ export class EspacoPublicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Busca um espaço público específico pelo ID.
-   * @param espacoPublicoId O ID do espaço público.
-   */
   public async getById(espacoPublicoId: number): Promise<EspacoPublicoModel> {
     try {
       const response = await api.get<EspacoPublicoModel>(
@@ -70,29 +65,26 @@ export class EspacoPublicoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Altera a visibilidade de um espaço público.
-   * @param id O ID do espaço público.
-   * @param visivel O novo estado de visibilidade.
-   */
   public async toggleVisibility(id: number, visivel: boolean): Promise<void> {
+    const body = JSON.stringify({ id, visivel });
     try {
-      // Axios envia o objeto como JSON automaticamente
-      await api.put('/espaco-publico/atualizar/visibilidade', { id, visivel });
+      await api.put('/espaco-publico/atualizar/visibilidade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     } catch (error) {
       throw this.updateError;
     }
   }
 
-  /**
-   * Desativa um espaço público (soft delete).
-   * @param id O ID do espaço público.
-   */
   public async trash(id: number): Promise<void> {
+    const body = JSON.stringify({ id, ativo: false });
     try {
-      await api.put('/espaco-publico/atualizar/atividade', {
-        id,
-        ativo: false,
+      await api.put('/espaco-publico/atualizar/atividade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     } catch (error) {
       throw this.updateError;

@@ -9,7 +9,7 @@ import type { Module } from './types';
 import { useAuth } from '@/context/AuthContext';
 
 export function Navbar() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const handleLogout = () => {
     logout();

@@ -66,15 +66,12 @@ export class ServicoExternoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Atualiza um serviço externo a partir de um FormData.
-   */
   public async update(
     formData: FormData,
   ): Promise<ServicoExterno | { retorno: string }> {
     try {
       const response = await api.put('/servico-externo/atualizar', formData);
-      // Lida com a resposta que pode ser JSON ou texto
+
       if (typeof response.data === 'string') {
         return { retorno: response.data };
       }
@@ -86,10 +83,6 @@ export class ServicoExternoService extends BaseServiceClass {
       throw this.updateError;
     }
   }
-
-  /**
-   * Altera a visibilidade de um serviço externo.
-   */
   public async toggleVisibility(
     id: number,
     visivel: boolean,
@@ -99,7 +92,6 @@ export class ServicoExternoService extends BaseServiceClass {
         '/servico-externo/atualizar/visibilidade',
         { id, visivel },
       );
-      // Lida com a resposta que pode ser JSON ou texto
       if (typeof response.data === 'string') {
         return { retorno: response.data };
       }
@@ -112,18 +104,16 @@ export class ServicoExternoService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Altera o status de "ativo" de um serviço externo.
-   * Este endpoint parece retornar apenas uma mensagem de texto.
-   */
   public async toggleAtivo(id: number, ativo: boolean): Promise<string> {
+    const body = JSON.stringify({ id, ativo });
     try {
       const response = await api.put(
         '/servico-externo/atualizar/atividade',
-        { id, ativo },
+        body,
         {
-          // Diz ao Axios para não tentar parsear a resposta como JSON
-          transformResponse: (data) => data,
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
       );
       return response.data;
@@ -133,5 +123,4 @@ export class ServicoExternoService extends BaseServiceClass {
   }
 }
 
-// Exporta uma instância única (Singleton) do serviço.
 export const servicoExternoService = new ServicoExternoService();
