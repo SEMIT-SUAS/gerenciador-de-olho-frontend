@@ -1,23 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LayoutPage } from '../../components/LayoutPage';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { SearchInput } from '@/components/ui/input';
-import { Plus } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-} from '@tabler/icons-react';
-
 import { categoriaServicoService } from '@/services/categoriaServicoService';
 import type {
   ServicoCategoria,
@@ -26,6 +9,9 @@ import type {
 } from '@/types/CategoriaServico';
 import { CategoriasServicosList } from '@/pages/CategoriaServicoPage/components/Categorialist';
 import { AddCategoriaForm } from '@/pages/CategoriaServicoPage/components/CategoriaServicoForm/CategoriaForm';
+import PageHeader from '@/components/PageHeader';
+import { TableHeaderActions } from '@/components/TableHeaderActions';
+import { Pagination } from '@/components/Pagination';
 
 export function CategoriasPage() {
   const [categorias, setCategorias] = useState<
@@ -90,6 +76,11 @@ export function CategoriasPage() {
     categoria.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
   const totalPages = Math.ceil(
     (filteredCategorias?.length ?? 0) / itemsPerPage,
   );
@@ -100,40 +91,21 @@ export function CategoriasPage() {
       currentPage * itemsPerPage,
     ) || [];
 
-  const itemsPerPageOptions = [8, 16, 24];
+  const itemsPerPageOptions = [5, 10, 15, 20];
 
   return (
     <LayoutPage>
       <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
-        <div className="max-w-[640px]">
-          <h2 className="text-3xl font-bold tracking-tight">Categorias</h2>
-          <p className="text-slate-600 text-sm sm:text-xs mt-1">
-            Gerencie as categorias disponíveis com clareza e objetividade.
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
-          <div className="w-full sm:w-[280px] md:w-[320px]">
-            <SearchInput
-              placeholder="Pesquise por nome"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
-          </div>
-          <div>
-            <Button
-              className="w-full sm:w-auto"
-              onClick={() => setShowCreateModal(true)}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Adicionar categoria
-            </Button>
-          </div>
-        </div>
-
+        <PageHeader
+          title="Categorias"
+          description="Gerencie todas as categorias disponíveis no sistema, garantindo informações sempre organizadas e acessíveis."
+        />
+        <TableHeaderActions
+          searchValue={searchTerm}
+          onSearchChange={handleSearch}
+          buttonText="Adicionar Categoria"
+          onButtonClick={() => setShowCreateModal(true)}
+        />
         <CategoriasServicosList
           itemsPerPage={itemsPerPage}
           categorias={currentCategorias}
@@ -141,78 +113,14 @@ export function CategoriasPage() {
           onEdit={setEditCategoria}
         />
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="hidden sm:inline-flex text-sm text-gray-600">
-              Linhas por página:
-            </span>
-
-            <Select
-              value={itemsPerPage.toString()}
-              onValueChange={(value) => {
-                setItemsPerPage(Number(value));
-                setCurrentPage(1);
-              }}
-            >
-              <SelectTrigger className="w-20 h-8">
-                <SelectValue placeholder={itemsPerPage} />
-              </SelectTrigger>
-              <SelectContent>
-                {itemsPerPageOptions.map((option) => (
-                  <SelectItem key={option} value={option.toString()}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">
-              Página {currentPage} de {totalPages}
-            </span>
-
-            <div className="flex gap-2 items-center">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-              >
-                <IconChevronsLeft stroke={2} />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                <IconChevronLeft stroke={2} />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages || totalPages === 0}
-              >
-                <IconChevronRight />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(totalPages)}
-                disabled={currentPage === totalPages || totalPages === 0}
-              >
-                <IconChevronsRight stroke={2} />
-              </Button>
-            </div>
-          </div>
-        </div>
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          itemsPerPageOptions={itemsPerPageOptions}
+        />
       </div>
 
       {showCreateModal && (

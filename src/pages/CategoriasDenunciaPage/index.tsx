@@ -26,6 +26,7 @@ import { TiposDenunciaList } from './components/TipoDenuncia/TiposDenunciaList';
 import { AddCategoriaModal } from './components/CategoriaDenuncia/AddCategoriaModal';
 import { AddTipoDenunciaModal } from './components/TipoDenuncia/AddTipoDenunciaModal';
 import { EditTipoDenunciaModal } from './components/TipoDenuncia/EditTipoDenunciaModal';
+import PageHeader from '@/components/PageHeader';
 
 export function DenunciaCategoriasPage() {
   // Estados de controle da UI (loading, erro, abas)
@@ -158,20 +159,6 @@ export function DenunciaCategoriasPage() {
       );
     }
 
-    if (error) {
-      return (
-        <div className="text-center h-64 flex flex-col justify-center items-center">
-          <p className="text-red-500 font-semibold">{error}</p>
-          <p className="text-sm text-slate-600">
-            Ocorreu um erro ao buscar os dados. Por favor, tente novamente.
-          </p>
-          <Button onClick={() => window.location.reload()} className="mt-4">
-            Tentar Novamente
-          </Button>
-        </div>
-      );
-    }
-
     if (activeList.length === 0) {
       return (
         <div className="text-center h-64 flex justify-center items-center">
@@ -203,17 +190,14 @@ export function DenunciaCategoriasPage() {
     <>
       <LayoutPage>
         <div className="flex flex-col gap-6 px-4 py-8 lg:px-36">
-          <div className="w-full lg:w-[50%]">
-            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-              {activeTab === 'categorias'
+          <PageHeader
+            title={
+              activeTab === 'categorias'
                 ? 'Categorias de denúncia'
-                : 'Tipos de denúncia'}
-            </h3>
-            <p className="text-slate-600 text-xs">
-              Gerencie com precisão todas as categorias e tipos de uma denúncia.
-            </p>
-          </div>
-
+                : 'Tipos de denúncia'
+            }
+            description="Gerencie as categorias e tipos de denúncia disponíveis no sistema, mantendo registros completos, atualizados e acessíveis a qualquer momento."
+          />
           <div className="flex flex-col items-stretch gap-6 md:flex-row md:items-center md:justify-between">
             <div className="relative w-full md:w-auto">
               <Tabs
@@ -269,7 +253,6 @@ export function DenunciaCategoriasPage() {
         </div>
       </LayoutPage>
 
-      {/* Modais */}
       <AddCategoriaModal
         isOpen={isOpenAddCategoriaModal}
         onClose={() => setIsOpenAddCategoriaModal(false)}
