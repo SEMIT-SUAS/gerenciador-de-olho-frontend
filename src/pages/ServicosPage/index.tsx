@@ -87,7 +87,8 @@ export function ServicesPage() {
           title={
             activeTab === 'servicos' ? 'Carta de Serviços' : 'Servicos Externos'
           }
-          description="Organize os serviços disponíveis de forma centralizada, garantindo maior eficiência e transparência nas operações."
+          description="Gerencie os serviços públicos disponíveis no aplicativo, garantindo
+            a clareza e a objetividade das informações para os cidadãos."
         />
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="w-full md:w-auto">
