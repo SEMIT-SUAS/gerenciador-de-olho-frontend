@@ -18,9 +18,6 @@ export class PersonaService extends BaseServiceClass {
     'Não foi possível atualizar a persona.',
   );
 
-  /**
-   * Lista todas as personas ativas.
-   */
   public async getAll(): Promise<Persona[]> {
     try {
       const response = await api.get<Persona[]>(
@@ -32,9 +29,6 @@ export class PersonaService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Busca uma persona específica pelo ID.
-   */
   public async getById(id: number): Promise<Persona> {
     try {
       const response = await api.get<Persona>(`/persona-servico/buscar/${id}`);
@@ -47,13 +41,8 @@ export class PersonaService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Cria uma nova persona a partir de um FormData.
-   * (Anteriormente 'uploadPersona')
-   */
   public async create(formData: FormData): Promise<Persona> {
     try {
-      // É mais útil que o endpoint de criação retorne o objeto criado.
       const response = await api.post<Persona>(
         '/persona-servico/cadastrar',
         formData,
@@ -67,14 +56,10 @@ export class PersonaService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Atualiza uma persona existente a partir de um FormData.
-   */
   public async update(formData: FormData): Promise<void> {
     try {
       await api.put('/persona-servico/atualizar', formData);
     } catch (error) {
-      // Extrai a mensagem de erro da API se disponível
       if (error instanceof AxiosError && error.response?.data) {
         const errorMessage =
           typeof error.response.data === 'string'
@@ -87,8 +72,13 @@ export class PersonaService extends BaseServiceClass {
   }
 
   public async toggleVisibility(id: number, visivel: boolean): Promise<void> {
+    const body = JSON.stringify({ id, visivel });
     try {
-      await api.put('/persona-servico/atualizar/visibilidade', { id, visivel });
+      await api.put('/persona-servico/atualizar/visibilidade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     } catch (error) {
       throw this.updateError;
     }

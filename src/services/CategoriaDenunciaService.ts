@@ -77,11 +77,12 @@ export class CategoriaDenunciaService extends BaseServiceClass {
   }
 
   public async trash(categoryId: number): Promise<void> {
+    const body = JSON.stringify({ id: categoryId, ativo: false });
     try {
-      // Passamos o objeto diretamente, o Axios o converte para JSON
-      await api.put('/categoria-denuncia/atualizar/atividade', {
-        id: categoryId,
-        ativo: false,
+      await api.put('/categoria-denuncia/atualizar/atividade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     } catch (error) {
       throw this.deleteError;
@@ -92,10 +93,12 @@ export class CategoriaDenunciaService extends BaseServiceClass {
     categoryId: number,
     visibility: boolean,
   ): Promise<void> {
+    const body = JSON.stringify({ id: categoryId, visibility });
     try {
-      await api.put('/categoria-denuncia/atualizar/visibilidade', {
-        id: categoryId,
-        visivel: visibility,
+      await api.put('/categoria-denuncia/atualizar/visibilidade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     } catch (error) {
       throw this.visibilityError;

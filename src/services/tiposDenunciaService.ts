@@ -42,6 +42,11 @@ export class TipoDenunciaService extends BaseServiceClass {
       const response = await api.put<TipoDenunciaModel>(
         '/tipo-denuncia/atualizar',
         formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
       );
       return response.data;
     } catch (error) {
@@ -50,17 +55,27 @@ export class TipoDenunciaService extends BaseServiceClass {
   }
 
   public async toggleAtivo(id: number, ativo: boolean): Promise<void> {
+    const body = JSON.stringify({ id, ativo });
     try {
-      // O Axios converte o objeto para JSON e define os headers automaticamente
-      await api.put('/tipo-denuncia/atualizar/atividade', { id, ativo });
+      await api.put('/tipo-denuncia/atualizar/atividade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     } catch (error) {
       throw this.updateError;
     }
   }
 
   public async toggleVisibility(id: number, visivel: boolean): Promise<void> {
+    const body = JSON.stringify({ id, visivel });
+
     try {
-      await api.put('/tipo-denuncia/atualizar/visibilidade', { id, visivel });
+      await api.put('/tipo-denuncia/atualizar/visibilidade', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     } catch (error) {
       throw this.updateError;
     }

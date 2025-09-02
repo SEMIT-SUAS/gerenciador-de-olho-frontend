@@ -4,7 +4,6 @@ import { BaseServiceClass } from './BaseServiceClass'; // Supondo que você tenh
 import { AxiosError } from 'axios';
 
 export class SecretariaService extends BaseServiceClass {
-  // Definindo mensagens de erro para o serviço
   protected readonly getAllError = new Error(
     'Não foi possível listar as secretarias.',
   );
@@ -21,9 +20,6 @@ export class SecretariaService extends BaseServiceClass {
     'Não foi possível deletar a secretaria.',
   );
 
-  /**
-   * Busca todas as secretarias.
-   */
   public async getAll(): Promise<Secretaria[]> {
     try {
       const response = await api.get('/secretaria/listar-todas');
@@ -33,12 +29,8 @@ export class SecretariaService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Busca uma secretaria específica pelo seu ID.
-   */
   public async getById(id: number): Promise<Secretaria> {
     try {
-      // Este método já estava correto, apenas o integramos na classe
       const response = await api.get<Secretaria>(`/secretaria/buscar/${id}`);
       return response.data;
     } catch (error) {
@@ -46,10 +38,6 @@ export class SecretariaService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Cria uma nova secretaria. (Anteriormente 'uploadSecretaria')
-   * @param data Os dados da secretaria a ser criada.
-   */
   public async create(data: createSecretaria): Promise<Secretaria> {
     try {
       const body = JSON.stringify(data);
@@ -60,7 +48,6 @@ export class SecretariaService extends BaseServiceClass {
       });
       return response.data;
     } catch (error) {
-      // Tenta extrair uma mensagem de erro mais específica da resposta da API
       if (error instanceof AxiosError && error.response?.data?.message) {
         throw new Error(error.response.data.message);
       }
@@ -68,11 +55,6 @@ export class SecretariaService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Atualiza uma secretaria existente.
-   * @param id O ID da secretaria a ser atualizada.
-   * @param data Os novos dados para a secretaria.
-   */
   public async update(
     id: number,
     data: Partial<createSecretaria>,
@@ -85,10 +67,6 @@ export class SecretariaService extends BaseServiceClass {
     }
   }
 
-  /**
-   * Deleta (ou desativa) uma secretaria.
-   * @param id O ID da secretaria a ser deletada.
-   */
   public async delete(id: number): Promise<void> {
     try {
       await api.delete(`/secretaria/${id}`);
@@ -104,5 +82,4 @@ export class SecretariaService extends BaseServiceClass {
   }
 }
 
-// Exportando uma instância única (Singleton) para ser usada na aplicação
 export const secretariaService = new SecretariaService();
