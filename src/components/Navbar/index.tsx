@@ -42,48 +42,53 @@ export function Navbar() {
 
         <div className="hidden items-center gap-4 lg:flex">
           <ul className="flex items-center gap-5">
-            {modules.map((module) => (
-              <li key={module.title} className="group relative">
-                {!module.childs || module.childs.length === 0 ? (
-                  <Link
-                    to={module.to || '#'}
-                    className="relative flex items-center justify-start gap-2 px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-300 group-hover:justify-center"
-                  >
-                    <IconCircleFilled
-                      size={'6px'}
-                      className="text-primary opacity-100 transition-opacity duration-300 group-hover:opacity-0"
-                    />
-                    <span className="relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-full after:origin-center after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 group-hover:after:scale-x-150">
-                      {module.title}
-                    </span>
-                  </Link>
-                ) : (
-                  <>
-                    <button className="relative flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700">
+            {modules
+              .filter(
+                (module) =>
+                  !module.roles || module.roles.includes(user!.perfil),
+              )
+              .map((module) => (
+                <li key={module.title} className="group relative">
+                  {!module.childs || module.childs.length === 0 ? (
+                    <Link
+                      to={module.to || '#'}
+                      className="relative flex items-center justify-start gap-2 px-4 py-3 text-sm font-medium text-gray-700 transition-all duration-300 group-hover:justify-center"
+                    >
                       <IconCircleFilled
                         size={'6px'}
                         className="text-primary opacity-100 transition-opacity duration-300 group-hover:opacity-0"
                       />
-                      <span className="relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-full after:origin-center after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 group-hover:after:scale-x-100">
+                      <span className="relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-full after:origin-center after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 group-hover:after:scale-x-150">
                         {module.title}
                       </span>
-                    </button>
-                    <ul className="absolute left-0 top-full z-10 mt-2 w-56 origin-top scale-95 transform rounded-lg border border-gray-200 bg-white p-2 shadow-lg opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 group-hover:visible">
-                      {module.childs.map((child) => (
-                        <li key={child.to}>
-                          <Link
-                            to={child.to}
-                            className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            {child.title}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </li>
-            ))}
+                    </Link>
+                  ) : (
+                    <>
+                      <button className="relative flex items-center gap-2 px-4 py-3 text-sm font-medium text-gray-700">
+                        <IconCircleFilled
+                          size={'6px'}
+                          className="text-primary opacity-100 transition-opacity duration-300 group-hover:opacity-0"
+                        />
+                        <span className="relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-full after:origin-center after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 group-hover:after:scale-x-100">
+                          {module.title}
+                        </span>
+                      </button>
+                      <ul className="absolute left-0 top-full z-10 mt-2 w-56 origin-top scale-95 transform rounded-lg border border-gray-200 bg-white p-2 shadow-lg opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 group-hover:visible">
+                        {module.childs.map((child) => (
+                          <li key={child.to}>
+                            <Link
+                              to={child.to}
+                              className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              {child.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </li>
+              ))}
           </ul>
           <Link
             to="/login"
@@ -114,22 +119,27 @@ export function Navbar() {
 
               <div className="flex-1">
                 <nav className="grid items-start gap-1 text-md text-gray-700">
-                  {modules.map((module) =>
-                    !module.childs || module.childs.length === 0 ? (
-                      renderMobileLink(module)
-                    ) : (
-                      <div key={module.title} className="text-gray-700">
-                        <div className="flex items-center gap-3 px-3 py-2">
-                          <span className="text-md">{module.title}</span>
+                  {modules
+                    .filter(
+                      (module) =>
+                        !module.roles || module.roles.includes(user!.perfil),
+                    )
+                    .map((module) =>
+                      !module.childs || module.childs.length === 0 ? (
+                        renderMobileLink(module)
+                      ) : (
+                        <div key={module.title} className="text-gray-700">
+                          <div className="flex items-center gap-3 px-3 py-2">
+                            <span className="text-md">{module.title}</span>
+                          </div>
+                          <div className="ml-5 flex flex-col border-l pl-3">
+                            {module.childs.map((child) =>
+                              renderMobileLink({ ...child }),
+                            )}
+                          </div>
                         </div>
-                        <div className="ml-5 flex flex-col border-l pl-3">
-                          {module.childs.map((child) =>
-                            renderMobileLink({ ...child }),
-                          )}
-                        </div>
-                      </div>
-                    ),
-                  )}
+                      ),
+                    )}
                 </nav>
               </div>
 
