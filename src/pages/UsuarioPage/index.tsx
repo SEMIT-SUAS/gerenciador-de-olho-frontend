@@ -18,7 +18,7 @@ export function UsuariosPage() {
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -130,7 +130,7 @@ export function UsuariosPage() {
       ) || []
     : [];
 
-  const itemsPerPageOptions = [5, 10, 15, 20];
+  const itemsPerPageOptions = [5, 10, 15];
 
   function handleSearchChange(value: string) {
     setSearchTerm(value);

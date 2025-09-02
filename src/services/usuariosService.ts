@@ -230,14 +230,18 @@ const buscarUsuarioPorId = async (id: number): Promise<UsuarioPorId> => {
   }
 };
 
-const excluirUsuario = async (id: number): Promise<void> => {
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('Usuário não autenticado.');
-  }
-
+const excluirUsuario = async (userId: number): Promise<void> => {
   try {
-    await api.delete(`/usuario/deletar/${id}`);
+    const body = JSON.stringify({
+      id: userId,
+      ativo: false,
+    });
+
+    await api.put(`/usuario/atualizar/atividade`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 401) {
       logout();
