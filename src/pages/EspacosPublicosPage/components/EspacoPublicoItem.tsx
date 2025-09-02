@@ -66,9 +66,9 @@ export function EspacoPublicoItem({
                 setEspacosPublicos={setEspacosPublicos}
               />
 
-              <Button asChild disabled>
+              <Button asChild>
                 <Link
-                  to={`/espacos-publicos/edit/${espacoPublico.id}`}
+                  to={`/espacos-publicos/editar/${espacoPublico.id}`}
                   title="Editar espaço"
                   className="text-gray-500"
                 >

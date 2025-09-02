@@ -39,6 +39,10 @@
   animation: pulse 1s infinite ease-in-out;
 }
 
+.time-input-no-icon::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
 .degrade-completo {
   background-image: linear-gradient(
     to right,

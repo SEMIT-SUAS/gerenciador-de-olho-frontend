@@ -35,13 +35,17 @@ export function EditEspacoPublicoPage() {
   }
 
   return (
-    <LayoutPage additionalStyles="mx-auto p-10 space-y-6">
-      <h1 className="text-3xl font-bold">Editar Espaço Público</h1>
+    <LayoutPage>
+      <div className="max-w-4xl mx-auto p-6">
+        <h1 className="text-3xl font-bold text-center mb-10">
+          Editar Espaço Público
+        </h1>
 
-      <EditEspacoPublicoForm
-        onSuccess={() => navigate('/espacos-publicos')}
-        espacoPublico={espacoPublico!}
-      />
+        <EditEspacoPublicoForm
+          onSuccess={() => navigate('/espacos-publicos')}
+          espacoPublico={espacoPublico!}
+        />
+      </div>
     </LayoutPage>
   );
 }

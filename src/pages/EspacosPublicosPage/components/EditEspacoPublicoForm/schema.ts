@@ -8,6 +8,7 @@ export const EditEspacoPublicoFormSchema = z.object({
   startHour: z.string().min(1, 'Hora de início é obrigatória'),
   endHour: z.string().min(1, 'Hora de fim é obrigatória'),
   files: z.array(z.instanceof(File)).optional(),
+  visivel: z.boolean(),
 });
 
 export type EditEspacoPublicoFormValues = z.infer<

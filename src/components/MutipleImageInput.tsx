@@ -1,4 +1,10 @@
-import { useCallback, useState, useRef } from 'react';
+import {
+  useCallback,
+  useState,
+  useRef,
+  type SetStateAction,
+  type Dispatch,
+} from 'react';
 import { IconPhoto, IconPlus, IconX } from '@tabler/icons-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -9,6 +15,8 @@ type MultipleImageInputProps = {
   onChange: (files: File[]) => void;
   className?: string;
   maxFiles?: number;
+  setDeletedFiles: Dispatch<SetStateAction<string[]>>;
+  deletedFiles: string[];
 };
 
 export function MultipleImageInput({
@@ -16,6 +24,8 @@ export function MultipleImageInput({
   onChange,
   className = '',
   maxFiles = 10,
+  setDeletedFiles,
+  deletedFiles,
 }: MultipleImageInputProps) {
   const [previews, setPreviews] = useState<(string | File)[]>(initialImageUrls);
   const [dragActive, setDragActive] = useState(false);
@@ -65,7 +75,12 @@ export function MultipleImageInput({
     }
   };
 
-  const removeImage = (indexToRemove: number) => {
+  const removeImage = (indexToRemove: number, url: string) => {
+    const urlSemParams = url.split('?')[0];
+    const ultimoIndiceBarra = urlSemParams.lastIndexOf('/');
+    const fileName = urlSemParams.substring(ultimoIndiceBarra + 1);
+
+    setDeletedFiles([...deletedFiles, fileName]);
     const updatedPreviews = previews.filter(
       (_, index) => index !== indexToRemove,
     );
@@ -128,7 +143,7 @@ export function MultipleImageInput({
               <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               <button
                 type="button"
-                onClick={() => removeImage(index)}
+                onClick={() => removeImage(index, preview as string)}
                 aria-label="Remover imagem"
                 className="absolute right-1.5 top-1.5 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/70 text-slate-800 opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-white hover:text-red-500 group-hover:opacity-100"
               >

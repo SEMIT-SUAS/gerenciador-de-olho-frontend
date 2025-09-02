@@ -20,6 +20,10 @@ export class EspacoPublicoService extends BaseServiceClass {
     'Serviço indisponível no momento. Tente novamente mais tarde.',
   );
 
+  protected readonly deleteError = new Error(
+    'Não foi possível apagar arquivos no momento. Tente novamente mais tarde.',
+  );
+
   public async create(formData: FormData): Promise<void> {
     try {
       const response = await api.post<EspacoPublicoModel>(
@@ -90,7 +94,21 @@ export class EspacoPublicoService extends BaseServiceClass {
       throw this.updateError;
     }
   }
+
+  public async deleteFile(espacoPublicoId: string, fileName: string) {
+    try {
+      await api.delete(
+        `/espaco-publico/${espacoPublicoId}/arquivos/${fileName}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+    } catch (error) {
+      throw this.deleteError;
+    }
+  }
 }
 
-// Exporta uma instância única (Singleton) para ser usada em toda a aplicação.
 export const espacoPublicoService = new EspacoPublicoService();

@@ -16,7 +16,12 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AddressService } from '@/services/AddressService';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
-import { EditEspacoPublicoFormSchema } from './schema';
+import {
+  EditEspacoPublicoFormSchema,
+  type EditEspacoPublicoFormValues,
+} from './schema';
+import { espacoPublicoService } from '@/services/espacoPublicoService';
+import { useParams } from 'react-router-dom';
 
 interface EditEspacoPublicoFormProps {
   espacoPublico: EspacoPublicoModel;
@@ -25,12 +30,16 @@ interface EditEspacoPublicoFormProps {
 
 export function EditEspacoPublicoForm({
   espacoPublico,
+  onSuccess,
 }: EditEspacoPublicoFormProps) {
-  const [isSubmittingForm] = useState(false);
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
   const [position, setPosition] = useState<[number, number]>([
     espacoPublico.latitude,
     espacoPublico.longitude,
   ]);
+  const [deletedFiles, setDeletedFiles] = useState<string[]>([]);
+
+  const { id } = useParams();
 
   const form = useForm({
     resolver: zodResolver(EditEspacoPublicoFormSchema),
@@ -56,38 +65,46 @@ export function EditEspacoPublicoForm({
     }
   }, [position]);
 
-  // async function onSubmit(values: EditEspacoPublicoFormValues) {
-  //     if (!position) return;
+  async function onSubmit(values: EditEspacoPublicoFormValues) {
+    if (!position) return;
 
-  //     try {
-  //         setIsSubmittingForm(true);
-  //           const formData = new FormData();
-  //           formData.append('nome', values.name);
-  //           formData.append('estado', 'Maranhão');
-  //           formData.append('cidade', 'São Luís');
-  //           formData.append('bairro', values.addressBairro);
-  //           formData.append('rua', values.addressRua);
-  //           formData.append('latitude', position[0].toString());
-  //       formData.append('longitude', position[1].toString());
-  //       formData.append('capacidade_maxima', values.maxCapacity.toString());
-  //       formData.append('hora_inicio', values.startHour);
-  //       formData.append('hora_fim', values.endHour);
-  //       formData.append('visivel', values.visivel.toString());
-  //       formData.append('ativo', 'true');
+    try {
+      setIsSubmittingForm(true);
+      const formData = new FormData();
+      formData.append('nome', values.name);
+      formData.append('estado', 'Maranhão');
+      formData.append('cidade', 'São Luís');
+      formData.append('bairro', values.addressBairro);
+      formData.append('rua', values.addressRua);
+      formData.append('latitude', position[0].toString());
+      formData.append('longitude', position[1].toString());
+      formData.append('capacidade_maxima', values.maxCapacity.toString());
+      formData.append('hora_inicio', values.startHour);
+      formData.append('hora_fim', values.endHour);
+      formData.append('visivel', values.visivel.toString());
+      formData.append('ativo', 'true');
 
-  //       values.files.forEach((file) => {
-  //           formData.append('arquivos', file);
-  //         });
+      values.files?.forEach((file) => {
+        formData.append('arquivos', file);
+      });
 
-  //         await espacoPublicoService.create(formData);
-  //         onSuccess();
-  //         toast.success('Espaço público cadastrado com sucesso!');
-  //     } catch (error: any) {
-  //         toast.error(error.message);
-  //       } finally {
-  //           setIsSubmittingForm(false);
-  //         }
-  //       }
+      if (deletedFiles.length > 0) {
+        await Promise.all(
+          deletedFiles.map((file) =>
+            espacoPublicoService.deleteFile(id!, file),
+          ),
+        );
+      }
+
+      await espacoPublicoService.create(formData);
+      onSuccess();
+      toast.success('Espaço público cadastrado com sucesso!');
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsSubmittingForm(false);
+    }
+  }
 
   return (
     <Form {...form}>
@@ -134,7 +151,11 @@ export function EditEspacoPublicoForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input type="time" {...field} className="w-full" />
+                        <Input
+                          type="time"
+                          {...field}
+                          className="w-full time-input-no-icon"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -153,7 +174,11 @@ export function EditEspacoPublicoForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input type="time" {...field} className="w-full" />
+                        <Input
+                          type="time"
+                          {...field}
+                          className="w-full time-input-no-icon"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -230,6 +255,8 @@ export function EditEspacoPublicoForm({
                   initialImageUrls={espacoPublico.arquivos}
                   maxFiles={5}
                   className="w-full"
+                  setDeletedFiles={setDeletedFiles}
+                  deletedFiles={deletedFiles}
                 />
               </FormControl>
               <FormMessage className="h-5" />
