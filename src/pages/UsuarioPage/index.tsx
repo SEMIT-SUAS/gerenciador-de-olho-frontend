@@ -4,29 +4,14 @@ import type { Secretaria } from '@/types/Secretaria';
 import usuarioService from '@/services/usuariosService';
 import { secretariaService } from '@/services/secretariaService';
 import { toast } from 'sonner';
-
 import { UsuariosList } from '@/pages/UsuarioPage/components/UsuarioList';
 import { LayoutPage } from '../../components/LayoutPage';
-import { Button } from '@/components/ui/button';
-import { SearchInput } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Plus } from 'lucide-react';
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-} from '@tabler/icons-react';
 import { AddUsuarioModal } from './components/AddUsuarioModal';
 import { EditUsuarioModal } from './components/EditUsuarioModal';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import PageHeader from '@/components/PageHeader';
+import { Pagination } from '@/components/Pagination';
+import { TableHeaderActions } from '@/components/TableHeaderActions';
 
 export function UsuariosPage() {
   const [usuarios, setUsuarios] = useState<UsuarioModel[]>([]);
@@ -41,7 +26,6 @@ export function UsuariosPage() {
   const [fetchedUser, setFetchedUser] = useState<UsuarioPorId | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [usuario, setUsuario] = useState<UsuarioModel | null>(null);
-  // const [isLoading, setIsLoading] = useState(false);
 
   const handleEdit = (usuario: UsuarioModel) => {
     setIsEditModalOpen(true);
@@ -146,13 +130,10 @@ export function UsuariosPage() {
       ) || []
     : [];
 
-  function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
-  }
+  const itemsPerPageOptions = [5, 10, 15, 20];
 
-  function handleItemsPerPageChange(value: string) {
-    setItemsPerPage(Number(value));
+  function handleSearchChange(value: string) {
+    setSearchTerm(value);
     setCurrentPage(1);
   }
 
@@ -161,27 +142,15 @@ export function UsuariosPage() {
       <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
         <PageHeader
           title="Usuários"
-          description="Gerencie o ciclo de vida dos usuários cadastrados na plataforma, desde a criação até a desativação, controlando suas permissões e perfis de acesso."
+          description="Gerencie todos os usuários do sistema, assegurando cadastros atualizados e acesso controlado às funcionalidades."
         />
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
-          <div className="w-full sm:w-[280px] md:w-[320px]">
-            <SearchInput
-              placeholder="Pesquise por nome ou secretaria"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-          </div>
-          <div>
-            <Button
-              className="w-full sm:w-auto"
-              onClick={() => setIsFormOpen(true)}
-            >
-              <Plus className="h-4 w-4" />
-              Adicionar Usuário
-            </Button>
-          </div>
-        </div>
+        <TableHeaderActions
+          searchValue={searchTerm}
+          onSearchChange={handleSearchChange}
+          buttonText="Adicionar Usuário"
+          onButtonClick={() => setIsFormOpen(true)}
+        />
 
         <UsuariosList
           itemsPerPage={itemsPerPage}
@@ -190,70 +159,14 @@ export function UsuariosPage() {
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
         />
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="hidden sm:inline-flex text-sm text-gray-600">
-              Linhas por página:
-            </span>
-            <Select
-              value={itemsPerPage.toString()}
-              onValueChange={handleItemsPerPageChange}
-            >
-              <SelectTrigger className="w-20 h-8">
-                <SelectValue placeholder={itemsPerPage} />
-              </SelectTrigger>
-              <SelectContent>
-                {[8, 16, 24].map((option) => (
-                  <SelectItem key={option} value={option.toString()}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">
-              Página {totalPages > 0 ? currentPage : 0} de {totalPages}
-            </span>
-            <div className="flex gap-2">
-              <Button
-                className="hidden sm:inline-flex"
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-              >
-                <IconChevronsLeft />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <IconChevronLeft />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(currentPage + 1)}
-                disabled={currentPage === totalPages || totalPages === 0}
-              >
-                <IconChevronRight />
-              </Button>
-              <Button
-                className="hidden sm:inline-flex"
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(totalPages)}
-                disabled={currentPage === totalPages || totalPages === 0}
-              >
-                <IconChevronsRight />
-              </Button>
-            </div>
-          </div>
-        </div>
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          itemsPerPageOptions={itemsPerPageOptions}
+        />
       </div>
 
       <AddUsuarioModal

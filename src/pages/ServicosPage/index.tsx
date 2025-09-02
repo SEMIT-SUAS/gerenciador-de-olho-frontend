@@ -9,24 +9,12 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SearchInput } from '@/components/ui/input';
 import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-} from '@tabler/icons-react';
 import { servicoExternoService } from '@/services/servicosExternosService';
 import type { ServicoExterno } from '@/types/ServicoExterno';
 import { ServicosExternosList } from '@/pages/ServicosPage/components/ServicosExternosList';
 import { FormServicoExterno } from '@/pages/ServicosPage/components/ServicosExternosForm/ServicoExternoForm';
 import PageHeader from '@/components/PageHeader';
+import { Pagination } from '@/components/Pagination';
 
 export function ServicesPage() {
   const [cartaDeServicos, setCartaDeServicos] = useState<ServicosListar[]>([]);
@@ -90,7 +78,7 @@ export function ServicesPage() {
       ) || []
     : [];
 
-  const itemsPerPageOptions = [8, 16, 24];
+  const itemsPerPageOptions = [5, 10, 15, 20];
 
   return (
     <LayoutPage>
@@ -102,18 +90,6 @@ export function ServicesPage() {
           description="Gerencie os serviços públicos disponíveis no aplicativo, garantindo
             a clareza e a objetividade das informações para os cidadãos."
         />
-        {/* <div className="w-full max-w-full lg:max-w-[640px]">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
-            {activeTab === 'servicos'
-              ? 'Carta de Serviços'
-              : 'Serviços Externos'}
-          </h2>
-          <p className="text-slate-600 text-xs md:text-sm mt-1">
-            Gerencie os serviços públicos disponíveis no aplicativo, garantindo
-            a clareza e a objetividade das informações para os cidadãos.
-          </p>
-        </div> */}
-
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="w-full md:w-auto">
             <Tabs
@@ -190,82 +166,14 @@ export function ServicesPage() {
           )}
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="hidden sm:inline-flex text-sm text-gray-600">
-              Linhas por página:
-            </span>
-
-            <Select
-              value={itemsPerPage.toString()}
-              onValueChange={(value) => {
-                setItemsPerPage(Number(value));
-                setCurrentPage(1);
-              }}
-            >
-              <SelectTrigger className="w-20 h-8">
-                <SelectValue placeholder={itemsPerPage} />
-              </SelectTrigger>
-              <SelectContent>
-                {itemsPerPageOptions.map((option) => (
-                  <SelectItem key={option} value={option.toString()}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">
-              Página {currentPage} de {totalPages}
-            </span>
-
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-                className="p-2"
-              >
-                <IconChevronsLeft stroke={2} className="h-4 w-4" />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="p-2"
-              >
-                <IconChevronLeft stroke={2} className="h-4 w-4" />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages || totalPages === 0}
-                className="p-2"
-              >
-                <IconChevronRight className="h-4 w-4" />
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(totalPages)}
-                disabled={currentPage === totalPages || totalPages === 0}
-                className="p-2"
-              >
-                <IconChevronsRight stroke={2} className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
+          itemsPerPageOptions={itemsPerPageOptions}
+        />
       </div>
 
       {isCreateModalOpen && (

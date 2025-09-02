@@ -23,8 +23,8 @@ export function TableHeaderActions({
   };
 
   return (
-    <div className="flex items-center justify-between gap-4">
-      <div className="relative w-[320px]">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+      <div className="relative w-full sm:w-[320px]">
         <SearchInput
           placeholder={searchPlaceholder}
           value={searchValue}
@@ -32,7 +32,10 @@ export function TableHeaderActions({
         />
       </div>
 
-      <Button className="flex items-center gap-2" onClick={onButtonClick}>
+      <Button
+        className="flex items-center justify-center gap-2 w-full sm:w-auto"
+        onClick={onButtonClick}
+      >
         <PlusIcon className="h-4 w-4" />
         {buttonText}
       </Button>

@@ -40,20 +40,22 @@ export function EspacoPublicoItem({
 
   return (
     <>
-      <div className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden flex flex-col transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
-        <img
-          src={firstImage}
-          alt={`Imagem de ${espacoPublico.nome}`}
-          className="w-full h-48 object-cover"
-        />
+      <div className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden flex flex-col transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 h-full">
+        <div className="relative w-full">
+          <img
+            src={firstImage}
+            alt={`Imagem de ${espacoPublico.nome}`}
+            className="w-full h-48 object-cover"
+          />
+        </div>
 
         <div className="p-4 flex-grow flex flex-col">
           <div className="flex justify-between items-start mb-2">
-            <h3 className="font-bold text-lg text-gray-800">
+            <h3 className="font-bold text-lg text-gray-800 line-clamp-2 break-words">
               {espacoPublico.nome}
             </h3>
           </div>
-          <p className="text-sm text-gray-600 mb-4 flex-grow">
+          <p className="text-sm text-gray-600 mb-4 flex-grow line-clamp-2">
             {espacoPublico.bairro}, {espacoPublico.cidade}
           </p>
 
@@ -68,7 +70,6 @@ export function EspacoPublicoItem({
                 <Link
                   to={`/espacos-publicos/edit/${espacoPublico.id}`}
                   title="Editar espaço"
-                  // className="text-green-500 hover:text-green-700"
                   className="text-gray-500"
                 >
                   <IconPencil stroke={2} size={18} />
@@ -76,8 +77,9 @@ export function EspacoPublicoItem({
               </Button>
 
               <button
-                className="text-red-500 hover:text-red-700"
+                className="text-red-500 hover:text-red-700 p-2 rounded transition-colors"
                 onClick={() => setIsOpenConfirmationDeleteModal(true)}
+                title="Excluir espaço"
               >
                 <IconTrash stroke={2} size={18} />
               </button>
