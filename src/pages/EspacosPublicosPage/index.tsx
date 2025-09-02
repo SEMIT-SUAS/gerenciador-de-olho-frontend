@@ -3,22 +3,6 @@ import { LayoutPage } from '../../components/LayoutPage';
 import type { EspacoPublicoModel } from '@/types/EspacoPublico';
 import { espacoPublicoService } from '@/services/espacoPublicoService';
 import { EspacosPublicosList } from '@/pages/EspacosPublicosPage/components/EspacosPublicosList';
-import { SearchInput } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { PlusIcon } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-} from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { TableHeaderActions } from '@/components/TableHeaderActions';
 import { Pagination } from '@/components/Pagination';
@@ -68,12 +52,8 @@ export function EspacosPublicosPage() {
         <div className="flex flex-col gap-4 py-4 px-4 sm:gap-5 sm:py-6 sm:px-6 md:px-8 lg:px-12 xl:px-36">
           <PageHeader
             title="Espaços públicos"
-            description="Gerencie com precisão todos os espaços públicos para serviços da
-              prefeitura. Tenha controle total para adicionar, visualizar,
-              editar e remover cada espaço, garantindo informações sempre
-              atualizadas e acessíveis."
+            description="Gerencie os espaços públicos destinados aos serviços da prefeitura, assegurando registros precisos, atualizados e de fácil acesso."
           />
-
           <TableHeaderActions
             searchValue={searchTerm}
             onSearchChange={handleSearch}
