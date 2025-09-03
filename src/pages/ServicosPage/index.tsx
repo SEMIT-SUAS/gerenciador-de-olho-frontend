@@ -3,8 +3,12 @@ import { LayoutPage } from '../../components/LayoutPage';
 import { servicoService } from '@/services/servicosServices';
 import { toast } from 'sonner';
 import type { ServicosListar } from '@/types/ServicosListar';
+import { Button } from '@/components/ui/button';
 import { ServicesList } from './components/ServicesList';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SearchInput } from '@/components/ui/input';
+import { Link } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import { servicoExternoService } from '@/services/servicosExternosService';
 import type { ServicoExterno } from '@/types/ServicoExterno';
 import { ServicosExternosList } from '@/pages/ServicosPage/components/ServicosExternosList';
@@ -114,7 +118,7 @@ export function ServicesPage() {
             </Tabs>
           </div>
 
-          <TableHeaderActions
+          {/* <TableHeaderActions
             searchValue={searchTerm}
             onSearchChange={handleHeaderSearchChange}
             searchPlaceholder={
@@ -133,8 +137,44 @@ export function ServicesPage() {
               } else {
                 setIsCreateModalOpen(true);
               }
-            }}
-          />
+            }} */}
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div className="w-full sm:w-[280px] md:w-[320px]">
+              <SearchInput
+                placeholder="Pesquise por nome"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full"
+              />
+            </div>
+
+            {activeTab === 'servicos' ? (
+              <Button asChild className="w-full sm:w-auto">
+                <Link to={'/servicos/novo'}>
+                  <span className="flex items-center justify-center">
+                    <Plus className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">Adicionar serviço</span>
+                    <span className="sm:hidden">Adicionar</span>
+                  </span>
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="w-full sm:w-auto"
+              >
+                <span className="flex items-center justify-center">
+                  <Plus className="mr-2 h-4 w-4" />
+                  <span className="hidden sm:inline">Adicionar serviço</span>
+                  <span className="sm:hidden">Adicionar</span>
+                </span>
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="w-full">
