@@ -11,8 +11,8 @@ import { TableHeaderActions } from '@/components/TableHeaderActions';
 
 export function SecretariaPage() {
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [__, setLoading] = useState(true);
+  const [_, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
