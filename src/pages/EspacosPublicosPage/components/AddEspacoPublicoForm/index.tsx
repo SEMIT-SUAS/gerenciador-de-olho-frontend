@@ -78,7 +78,7 @@ export function AddEspacoPublicoForm({ onSuccess }: AddEspacoPublicoFormProps) {
         formData.append('arquivos', file);
       });
 
-      await espacoPublicoService.create(formData);
+      await espacoPublicoService.update(formData);
       onSuccess();
       toast.success('Espaço público cadastrado com sucesso!');
     } catch (error: any) {
@@ -142,7 +142,11 @@ export function AddEspacoPublicoForm({ onSuccess }: AddEspacoPublicoFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input type="time" {...field} className="w-full" />
+                        <Input
+                          type="time"
+                          {...field}
+                          className="w-full time-input-no-icon"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -161,7 +165,11 @@ export function AddEspacoPublicoForm({ onSuccess }: AddEspacoPublicoFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input type="time" {...field} className="w-full" />
+                        <Input
+                          type="time"
+                          {...field}
+                          className="w-full time-input-no-icon"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

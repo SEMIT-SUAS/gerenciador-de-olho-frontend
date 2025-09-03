@@ -15,8 +15,8 @@ type MultipleImageInputProps = {
   onChange: (files: File[]) => void;
   className?: string;
   maxFiles?: number;
-  setDeletedFiles: Dispatch<SetStateAction<string[]>>;
-  deletedFiles: string[];
+  setDeletedFiles?: Dispatch<SetStateAction<string[] | undefined>>;
+  deletedFiles?: string[] | undefined;
 };
 
 export function MultipleImageInput({
@@ -75,16 +75,18 @@ export function MultipleImageInput({
     }
   };
 
-  const removeImage = (indexToRemove: number, url: string) => {
-    const urlSemParams = url.split('?')[0];
-    const ultimoIndiceBarra = urlSemParams.lastIndexOf('/');
-    const fileName = urlSemParams.substring(ultimoIndiceBarra + 1);
+  const removeImage = (indexToRemove: number, fileName: string) => {
+    // const urlSemParams = url.split('?')[0];
+    // const ultimoIndiceBarra = urlSemParams.lastIndexOf('/');
+    // const fileName = urlSemParams.substring(ultimoIndiceBarra + 1);
 
-    setDeletedFiles([...deletedFiles, fileName]);
-    const updatedPreviews = previews.filter(
-      (_, index) => index !== indexToRemove,
-    );
-    updateFiles(updatedPreviews);
+    if (deletedFiles && setDeletedFiles) {
+      setDeletedFiles([...deletedFiles, fileName]);
+      const updatedPreviews = previews.filter(
+        (_, index) => index !== indexToRemove,
+      );
+      updateFiles(updatedPreviews);
+    }
   };
 
   const handleDragEvents = (

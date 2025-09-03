@@ -43,7 +43,7 @@ export function EspacosPublicosPage() {
   };
 
   const handleAddNew = () => {
-    navigate('/espacos-publicos/add');
+    navigate('/espacos-publicos/adicionar');
   };
 
   return (

@@ -37,7 +37,10 @@ export function EditEspacoPublicoForm({
     espacoPublico.latitude,
     espacoPublico.longitude,
   ]);
-  const [deletedFiles, setDeletedFiles] = useState<string[]>([]);
+  const [deletedFiles, setDeletedFiles] = useState<string[] | undefined>([]);
+  // const [files, setFiles] = useState<string[] | undefined>([]);
+
+  // setFiles(espacoPublico.arquivos);
 
   const { id } = useParams();
 
@@ -51,8 +54,22 @@ export function EditEspacoPublicoForm({
       startHour: espacoPublico.horaInicio,
       endHour: espacoPublico.horaFim,
       files: undefined,
+      visivel: espacoPublico.visivel,
     },
   });
+
+  function removeURL(url: string) {
+    const urlSemParams = url.split('?')[0];
+    const ultimoIndiceBarra = urlSemParams.lastIndexOf('/');
+    const fileName = urlSemParams.substring(ultimoIndiceBarra + 1);
+    return fileName;
+  }
+
+  if (deletedFiles && deletedFiles.length > 0) {
+    espacoPublico.arquivos = espacoPublico.arquivos.filter(
+      (url) => !deletedFiles.includes(url),
+    );
+  }
 
   useEffect(() => {
     if (position) {
@@ -65,50 +82,53 @@ export function EditEspacoPublicoForm({
     }
   }, [position]);
 
-  async function onSubmit(values: EditEspacoPublicoFormValues) {
-    if (!position) return;
-
+  async function onSubmit(espacoPublico: EditEspacoPublicoFormValues) {
     try {
       setIsSubmittingForm(true);
       const formData = new FormData();
-      formData.append('nome', values.name);
+      formData.append('id', id!);
+      formData.append('nome', espacoPublico.name);
       formData.append('estado', 'Maranhão');
       formData.append('cidade', 'São Luís');
-      formData.append('bairro', values.addressBairro);
-      formData.append('rua', values.addressRua);
+      formData.append('bairro', espacoPublico.addressBairro);
+      formData.append('rua', espacoPublico.addressRua);
       formData.append('latitude', position[0].toString());
       formData.append('longitude', position[1].toString());
-      formData.append('capacidade_maxima', values.maxCapacity.toString());
-      formData.append('hora_inicio', values.startHour);
-      formData.append('hora_fim', values.endHour);
-      formData.append('visivel', values.visivel.toString());
+      formData.append(
+        'capacidade_maxima',
+        espacoPublico.maxCapacity.toString(),
+      );
+      formData.append('hora_inicio', espacoPublico.startHour);
+      formData.append('hora_fim', espacoPublico.endHour);
       formData.append('ativo', 'true');
 
-      values.files?.forEach((file) => {
+      espacoPublico.files?.forEach((file) => {
         formData.append('arquivos', file);
       });
 
-      if (deletedFiles.length > 0) {
+      if (deletedFiles && deletedFiles.length > 0) {
         await Promise.all(
           deletedFiles.map((file) =>
-            espacoPublicoService.deleteFile(id!, file),
+            espacoPublicoService.deleteFile(id!, removeURL(file)),
           ),
         );
       }
 
-      await espacoPublicoService.create(formData);
+      await espacoPublicoService.update(formData);
       onSuccess();
-      toast.success('Espaço público cadastrado com sucesso!');
+      toast.success('Espaço público atualizado com sucesso!');
     } catch (error: any) {
+      alert(error.message);
       toast.error(error.message);
     } finally {
+      setDeletedFiles(undefined);
       setIsSubmittingForm(false);
     }
   }
 
   return (
     <Form {...form}>
-      <form className="space-y-6">
+      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2 lg:grid-cols-3">
           <FormField
             control={form.control}

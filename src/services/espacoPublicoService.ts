@@ -44,6 +44,23 @@ export class EspacoPublicoService extends BaseServiceClass {
     }
   }
 
+  public async update(formData: FormData): Promise<EspacoPublicoModel> {
+    try {
+      const response = await api.put<EspacoPublicoModel>(
+        '/espaco-publico/atualizar',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      throw this.updateError;
+    }
+  }
+
   public async getById(espacoPublicoId: number): Promise<EspacoPublicoModel> {
     try {
       const response = await api.get<EspacoPublicoModel>(
