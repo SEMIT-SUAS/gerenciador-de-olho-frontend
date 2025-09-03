@@ -79,7 +79,7 @@ export function DenunciaDetails() {
   // --- SIDE EFFECTS ---
   useEffect(() => {
     if (denuncia) {
-      setZoomTo({ lat: denuncia.latitude, lng: denuncia.longitude, level: 15 });
+      setZoomTo({ lat: denuncia.latitude, lng: denuncia.longitude, level: 22 });
     }
     return () => setZoomTo(null);
   }, [denuncia, setZoomTo]);

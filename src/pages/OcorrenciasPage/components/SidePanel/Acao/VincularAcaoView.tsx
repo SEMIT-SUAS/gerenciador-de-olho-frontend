@@ -19,13 +19,19 @@ import type { AcaoDetailsModel } from '@/types/Acao';
 import { getPolygonoCenter } from '@/utils/geometry';
 import type { DenunciaInMap } from '@/types/Denuncia';
 import { useMapActions } from '@/context/MapActions';
+import L from 'leaflet';
 
 export function VincularAcaoView() {
   const { setSalvarDenunciasOnClick } = useMapActions();
+  const { denunciasDoBairro } = useFilters();
 
   const [isOpenConfirmationModal, setIsOpenConfirmationModal] = useState(false);
   const [acaoData, setAcaoData] = useState<AcaoDetailsModel | null>(null);
-  const { denunciasSelecionadas, setDenunciasSelecionadas } = useMapActions();
+  const {
+    denunciasSelecionadas,
+    setDenunciasSelecionadas,
+    denunciasVinculadas,
+  } = useMapActions();
 
   const { filtrarData, setIsVisibleAcoesInMap } = useFilters();
   const params = useParams();
@@ -37,6 +43,11 @@ export function VincularAcaoView() {
       .then((acaoDataResponse) => setAcaoData(acaoDataResponse))
       .catch(() => toast.error('Erro ao buscar detalhes da ação.'));
   }, [acaoId]);
+
+  // 2 - Pegar pontos de cada um e desenhar o poligono para medir
+  // 3 - Pegar denuncias disponiveis no bairro
+  // 4 - Calcular se está dentro do raio
+  // 5 - listar na tela caso estejam dentro do raio
 
   useEffect(() => {
     setSalvarDenunciasOnClick(true);
@@ -69,6 +80,30 @@ export function VincularAcaoView() {
     );
   };
 
+  const handleAgruparProximas = () => {
+    if (denunciasVinculadas.length === 0) {
+      alert('Não há um agrupamento inicial para expandir.');
+      return;
+    }
+
+    const centroide = L.latLng(
+      acaoData!.acao.latitude,
+      acaoData!.acao.longitude,
+    );
+
+    const raio = Math.max(
+      ...denunciasVinculadas.map((d) =>
+        centroide.distanceTo([d.latitude, d.longitude]),
+      ),
+    );
+
+    const denunciasRaio = denunciasDoBairro.filter(
+      (d) => centroide.distanceTo([d.latitude, d.longitude]) <= raio,
+    );
+
+    setDenunciasSelecionadas([...denunciasSelecionadas, ...denunciasRaio]);
+  };
+
   async function handleConfirmarVinculo() {
     if (!acaoData || denunciasSelecionadas.length === 0) {
       toast.error('Selecione pelo menos uma denúncia para vincular.');
@@ -77,30 +112,6 @@ export function VincularAcaoView() {
 
     try {
       setIsOpenConfirmationModal(false);
-
-      // const todasCoordenadas = [
-      //   ...acaoData.denuncias
-      //     .filter(
-      //       (d) =>
-      //         typeof d.endereco === 'object' && // Garante que 'endereco' é um objeto
-      //         d.endereco !== null && // E que não é nulo
-      //         'latitude' in d.endereco && // E que a chave 'latitude' existe no objeto
-      //         'longitude' in d.endereco, // E que a chave 'longitude' também existe
-      //     )
-      //     .map((d) => {
-      //       return [
-      //         (d.endereco as any).latitude,
-      //         (d.endereco as any).longitude,
-      //       ] as [number, number];
-      //     }),
-
-      //   ...denunciasSelecionadas
-      //     .filter(
-      //       (d) =>
-      //         typeof d.latitude === 'number' && typeof d.longitude === 'number',
-      //     )
-      //     .map((d) => [d.latitude, d.longitude] as [number, number]),
-      // ];
 
       const todasCoordenadas = [
         ...acaoData.denuncias.map(
@@ -197,6 +208,9 @@ export function VincularAcaoView() {
           disabled={denunciasSelecionadas.length === 0}
         >
           Vincular {denunciasSelecionadas.length} denúncia(s)
+        </Button>
+        <Button onClick={handleAgruparProximas} variant={'outline'}>
+          Selecionar denúncias dentro do raio
         </Button>
       </div>
 

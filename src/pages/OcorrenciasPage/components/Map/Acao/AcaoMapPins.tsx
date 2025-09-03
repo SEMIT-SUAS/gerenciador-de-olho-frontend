@@ -10,8 +10,12 @@ import { Icon } from 'leaflet';
 export function AcaoMapPins() {
   const { isVisibleAcoesInMap, denunciasDoBairro, acoesDoBairro } =
     useFilters();
-  const { salvarAcaoOnclick, toggleAcaoSelecionada, acaoSelecionada } =
-    useMapActions();
+  const {
+    salvarAcaoOnclick,
+    toggleAcaoSelecionada,
+    acaoSelecionada,
+    setDenunciaVinculadas,
+  } = useMapActions();
 
   const navigate = useNavigate();
 
@@ -20,6 +24,11 @@ export function AcaoMapPins() {
       toggleAcaoSelecionada(acao);
     } else {
       navigate(`/ocorrencias/acoes/${acao.id}`);
+      setDenunciaVinculadas(
+        denunciasDoBairro
+          .filter((denunciaBairro) => denunciaBairro.idAcao === acao?.id)
+          .map((denuncia) => denuncia),
+      );
     }
   }
 
