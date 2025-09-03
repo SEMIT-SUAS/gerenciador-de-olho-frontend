@@ -3,18 +3,15 @@ import { LayoutPage } from '../../components/LayoutPage';
 import { servicoService } from '@/services/servicosServices';
 import { toast } from 'sonner';
 import type { ServicosListar } from '@/types/ServicosListar';
-import { Button } from '@/components/ui/button';
 import { ServicesList } from './components/ServicesList';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SearchInput } from '@/components/ui/input';
-import { Link } from 'react-router-dom';
-import { Plus } from 'lucide-react';
 import { servicoExternoService } from '@/services/servicosExternosService';
 import type { ServicoExterno } from '@/types/ServicoExterno';
 import { ServicosExternosList } from '@/pages/ServicosPage/components/ServicosExternosList';
 import { FormServicoExterno } from '@/pages/ServicosPage/components/ServicosExternosForm/ServicoExternoForm';
 import PageHeader from '@/components/PageHeader';
 import { Pagination } from '@/components/Pagination';
+import { TableHeaderActions } from '@/components/TableHeaderActions';
 
 export function ServicesPage() {
   const [cartaDeServicos, setCartaDeServicos] = useState<ServicosListar[]>([]);
@@ -80,6 +77,11 @@ export function ServicesPage() {
 
   const itemsPerPageOptions = [5, 10, 15, 20];
 
+  const handleHeaderSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
   return (
     <LayoutPage>
       <div className="flex flex-col gap-6 py-4 px-4 md:py-6 md:px-8 lg:py-8 lg:px-36">
@@ -112,42 +114,27 @@ export function ServicesPage() {
             </Tabs>
           </div>
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="w-full sm:w-[280px] md:w-[320px]">
-              <SearchInput
-                placeholder="Pesquise por nome"
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="w-full"
-              />
-            </div>
-
-            {activeTab === 'servicos' ? (
-              <Button asChild className="w-full sm:w-auto">
-                <Link to={'/servicos/novo'}>
-                  <span className="flex items-center justify-center">
-                    <Plus className="mr-2 h-4 w-4" />
-                    <span className="hidden sm:inline">Adicionar serviço</span>
-                    <span className="sm:hidden">Adicionar</span>
-                  </span>
-                </Link>
-              </Button>
-            ) : (
-              <Button
-                onClick={() => setIsCreateModalOpen(true)}
-                className="w-full sm:w-auto"
-              >
-                <span className="flex items-center justify-center">
-                  <Plus className="mr-2 h-4 w-4" />
-                  <span className="hidden sm:inline">Adicionar serviço</span>
-                  <span className="sm:hidden">Adicionar</span>
-                </span>
-              </Button>
-            )}
-          </div>
+          <TableHeaderActions
+            searchValue={searchTerm}
+            onSearchChange={handleHeaderSearchChange}
+            searchPlaceholder={
+              activeTab === 'servicos'
+                ? 'Pesquise por serviços...'
+                : 'Pesquise por serviços externos...'
+            }
+            buttonText={
+              activeTab === 'servicos'
+                ? 'Adicionar serviço'
+                : 'Adicionar serviço externo'
+            }
+            onButtonClick={() => {
+              if (activeTab === 'servicos') {
+                setIsCreateModalOpen(true);
+              } else {
+                setIsCreateModalOpen(true);
+              }
+            }}
+          />
         </div>
 
         <div className="w-full">

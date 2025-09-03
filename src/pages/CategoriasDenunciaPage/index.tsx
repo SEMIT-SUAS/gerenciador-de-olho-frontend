@@ -1,32 +1,23 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { PlusIcon, Loader2 } from 'lucide-react';
-
-// Tipos de Dados (Models)
+import { Loader2 } from 'lucide-react';
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import type { Secretaria } from '@/types/Secretaria';
-
-// Serviços
 import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
 import { TipoDenunciaService } from '@/services/tiposDenunciaService';
 import { secretariaService } from '@/services/secretariaService';
-
-// Componentes da UI e Layout
 import { LayoutPage } from '../../components/LayoutPage';
-import { SearchInput } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/Pagination';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-// Componentes Específicos da Página
 import { CategoriasDenunciaList } from './components/CategoriaDenuncia/CategoriasDenunciaList';
 import { TiposDenunciaList } from './components/TipoDenuncia/TiposDenunciaList';
 import { AddCategoriaModal } from './components/CategoriaDenuncia/AddCategoriaModal';
 import { AddTipoDenunciaModal } from './components/TipoDenuncia/AddTipoDenunciaModal';
 import { EditTipoDenunciaModal } from './components/TipoDenuncia/EditTipoDenunciaModal';
 import PageHeader from '@/components/PageHeader';
+import { TableHeaderActions } from '@/components/TableHeaderActions';
 
 export function DenunciaCategoriasPage() {
   // Estados de controle da UI (loading, erro, abas)
@@ -85,7 +76,6 @@ export function DenunciaCategoriasPage() {
     }
   }, []);
 
-  // Efeito para carregar todos os dados iniciais de uma vez
   useEffect(() => {
     async function loadInitialData() {
       setIsLoading(true);
@@ -100,7 +90,6 @@ export function DenunciaCategoriasPage() {
     loadInitialData();
   }, [loadDenunciaCategories, loadDenunciaTipos, loadSecretarias]);
 
-  // Efeito para garantir que a aba na URL seja sempre válida
   useEffect(() => {
     const tabFromUrl = queryParams.get('tab');
     if (!tabFromUrl || !['categorias', 'tipos'].includes(tabFromUrl)) {
@@ -108,7 +97,6 @@ export function DenunciaCategoriasPage() {
     }
   }, [location.search, location.pathname, navigate, queryParams]);
 
-  // Handlers de eventos da UI
   const handleTabChange = (newTab: string) => {
     navigate(`${location.pathname}?tab=${newTab}`);
     setSearchTerm('');
@@ -125,7 +113,6 @@ export function DenunciaCategoriasPage() {
     setTipoParaEditar(null);
   };
 
-  // Lógica de filtragem e paginação
   const filteredCategorias = categorias?.filter((categoria) =>
     categoria.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
@@ -148,6 +135,19 @@ export function DenunciaCategoriasPage() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
+
+  const handleHeaderSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
+  const handleHeaderButtonClick = () => {
+    if (activeTab === 'categorias') {
+      setIsOpenAddCategoriaModal(true);
+    } else {
+      setIsOpenAddTipoModal(true);
+    }
+  };
 
   const renderContent = () => {
     if (isLoading) {
@@ -212,30 +212,21 @@ export function DenunciaCategoriasPage() {
               </Tabs>
             </div>
 
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <SearchInput
-                className="w-full"
-                placeholder="Pesquise pelo nome"
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
-              />
-              <Button
-                className="flex items-center justify-center gap-2"
-                onClick={() => {
-                  activeTab === 'categorias'
-                    ? setIsOpenAddCategoriaModal(true)
-                    : setIsOpenAddTipoModal(true);
-                }}
-              >
-                <PlusIcon className="h-4 w-4" />
-                {activeTab === 'categorias'
+            <TableHeaderActions
+              searchValue={searchTerm}
+              onSearchChange={handleHeaderSearchChange}
+              searchPlaceholder={
+                activeTab === 'categorias'
+                  ? 'Pesquise por categoria'
+                  : 'Pesquise por tipo'
+              }
+              buttonText={
+                activeTab === 'categorias'
                   ? 'Adicionar Categoria'
-                  : 'Adicionar Tipo'}
-              </Button>
-            </div>
+                  : 'Adicionar Tipo'
+              }
+              onButtonClick={handleHeaderButtonClick}
+            />
           </div>
 
           <div className="min-h-[300px]">{renderContent()}</div>
