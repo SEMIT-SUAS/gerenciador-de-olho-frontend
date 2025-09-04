@@ -25,7 +25,6 @@ export function MultipleImageInput({
   className = '',
   maxFiles = 10,
   setDeletedFiles,
-  deletedFiles,
 }: MultipleImageInputProps) {
   const [previews, setPreviews] = useState<(string | File)[]>(initialImageUrls);
   const [dragActive, setDragActive] = useState(false);
@@ -89,7 +88,7 @@ export function MultipleImageInput({
   //   }
   // };
 
-  const removeImage = (indexToRemove: number, preview: string | File) => {
+  const removeImage = (indexToRemove: number) => {
     setPreviews((prev) => {
       const removed = prev[indexToRemove];
 
@@ -172,7 +171,7 @@ export function MultipleImageInput({
 
               <button
                 type="button"
-                onClick={() => removeImage(index, preview as string)}
+                onClick={() => removeImage(index)}
                 aria-label="Remover imagem"
                 className="absolute right-1.5 top-1.5 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/70 text-slate-800 opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-white hover:text-red-500 group-hover:opacity-100"
               >
