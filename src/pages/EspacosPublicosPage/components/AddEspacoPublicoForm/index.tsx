@@ -78,7 +78,7 @@ export function AddEspacoPublicoForm({ onSuccess }: AddEspacoPublicoFormProps) {
         formData.append('arquivos', file);
       });
 
-      await espacoPublicoService.update(formData);
+      await espacoPublicoService.create(formData);
       onSuccess();
       toast.success('Espaço público cadastrado com sucesso!');
     } catch (error: any) {

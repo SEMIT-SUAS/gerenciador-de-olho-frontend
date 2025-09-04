@@ -8,13 +8,19 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from 'leaflet';
 
 export function AcaoMapPins() {
-  const { isVisibleAcoesInMap, denunciasDoBairro, acoesDoBairro } =
-    useFilters();
+  const {
+    isVisibleAcoesInMap,
+    denunciasDoBairro,
+    acoesDoBairro,
+    setAcoesDoBairro,
+  } = useFilters();
   const {
     salvarAcaoOnclick,
     toggleAcaoSelecionada,
     acaoSelecionada,
     setDenunciaVinculadas,
+    denunciasVinculadas,
+    salvarDenunciasOnclick,
   } = useMapActions();
 
   const navigate = useNavigate();
@@ -30,10 +36,6 @@ export function AcaoMapPins() {
           .map((denuncia) => denuncia),
       );
     }
-  }
-
-  if (!isVisibleAcoesInMap) {
-    return null;
   }
 
   function handleGetActionIcon(acao: AcaoInMap) {
@@ -53,12 +55,19 @@ export function AcaoMapPins() {
   return (
     <>
       {acoesDoBairro.map((a) => {
-        const denunciasVinculadas = denunciasDoBairro.filter(
+        const denunciasVinculadasAcao = denunciasDoBairro.filter(
           (d) =>
             d.idAcao === a.id && denunciasDoBairro.find((df) => d.id === df.id),
         );
 
         const acaoPolygonCoords = getConvexHull(
+          denunciasVinculadasAcao.map((d) => ({
+            lat: d.latitude,
+            lon: d.longitude,
+          })),
+        );
+
+        const acaoPolygonVincularCoords = getConvexHull(
           denunciasVinculadas.map((d) => ({
             lat: d.latitude,
             lon: d.longitude,
@@ -67,17 +76,23 @@ export function AcaoMapPins() {
 
         return (
           <div key={`acao-group-${a.id}`}>
-            <Marker
-              key={`a-${a.id}`}
-              position={[a.latitude, a.longitude]}
-              icon={handleGetActionIcon(a)}
-              eventHandlers={{
-                click: () => handleOnAcaoClick(a),
-              }}
-            ></Marker>
+            {isVisibleAcoesInMap && (
+              <Marker
+                key={`a-${a.id}`}
+                position={[a.latitude, a.longitude]}
+                icon={handleGetActionIcon(a)}
+                eventHandlers={{
+                  click: () => handleOnAcaoClick(a),
+                }}
+              ></Marker>
+            )}
 
-            {denunciasVinculadas.length > 0 && (
+            {denunciasVinculadasAcao.length > 0 && (
               <AcaoPolygon coordinates={acaoPolygonCoords} />
+            )}
+
+            {salvarDenunciasOnclick && (
+              <AcaoPolygon coordinates={acaoPolygonVincularCoords} />
             )}
           </div>
         );

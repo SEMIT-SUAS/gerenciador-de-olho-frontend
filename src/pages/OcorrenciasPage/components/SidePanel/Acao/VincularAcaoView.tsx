@@ -31,6 +31,7 @@ export function VincularAcaoView() {
     denunciasSelecionadas,
     setDenunciasSelecionadas,
     denunciasVinculadas,
+    toggleDenunciaSelecionadas,
   } = useMapActions();
 
   const { filtrarData, setIsVisibleAcoesInMap } = useFilters();
@@ -43,11 +44,6 @@ export function VincularAcaoView() {
       .then((acaoDataResponse) => setAcaoData(acaoDataResponse))
       .catch(() => toast.error('Erro ao buscar detalhes da ação.'));
   }, [acaoId]);
-
-  // 2 - Pegar pontos de cada um e desenhar o poligono para medir
-  // 3 - Pegar denuncias disponiveis no bairro
-  // 4 - Calcular se está dentro do raio
-  // 5 - listar na tela caso estejam dentro do raio
 
   useEffect(() => {
     setSalvarDenunciasOnClick(true);
@@ -72,13 +68,13 @@ export function VincularAcaoView() {
     };
   }, []);
 
-  const handleToggleDenuncia = (denuncia: DenunciaInMap) => {
-    setDenunciasSelecionadas((prev) =>
-      prev.some((d) => d.id === denuncia.id)
-        ? prev.filter((d) => d.id !== denuncia.id)
-        : [...prev, denuncia],
-    );
-  };
+  // const handleToggleDenuncia = (denuncia: DenunciaInMap) => {
+  //   setDenunciasSelecionadas((prev) =>
+  //     prev.some((d) => d.id === denuncia.id)
+  //       ? prev.filter((d) => d.id !== denuncia.id)
+  //       : [...prev, denuncia],
+  //   );
+  // };
 
   const handleAgruparProximas = () => {
     if (denunciasVinculadas.length === 0) {
@@ -86,19 +82,28 @@ export function VincularAcaoView() {
       return;
     }
 
-    const centroide = L.latLng(
-      acaoData!.acao.latitude,
-      acaoData!.acao.longitude,
+    const centroideCalculado = denunciasVinculadas.reduce(
+      (acc, d) => {
+        acc.lat += d.latitude;
+        acc.lng += d.longitude;
+        return acc;
+      },
+      { lat: 0, lng: 0 },
+    );
+
+    const centroideReal = L.latLng(
+      centroideCalculado.lat / denunciasVinculadas.length,
+      centroideCalculado.lng / denunciasVinculadas.length,
     );
 
     const raio = Math.max(
       ...denunciasVinculadas.map((d) =>
-        centroide.distanceTo([d.latitude, d.longitude]),
+        centroideReal.distanceTo([d.latitude, d.longitude]),
       ),
     );
 
     const denunciasRaio = denunciasDoBairro.filter(
-      (d) => centroide.distanceTo([d.latitude, d.longitude]) <= raio,
+      (d) => centroideReal.distanceTo([d.latitude, d.longitude]) <= raio,
     );
 
     setDenunciasSelecionadas([...denunciasSelecionadas, ...denunciasRaio]);
@@ -186,7 +191,7 @@ export function VincularAcaoView() {
                       <CardDescription>
                         <Button
                           size="icon"
-                          onClick={() => handleToggleDenuncia(denuncia)}
+                          onClick={() => toggleDenunciaSelecionadas(denuncia)}
                         >
                           <IconTrash />
                         </Button>
