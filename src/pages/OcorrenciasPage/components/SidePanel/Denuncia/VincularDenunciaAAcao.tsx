@@ -47,9 +47,6 @@ export function VincularDenunciaAAcao() {
   const denunciaId = Number(params.id);
   const navigate = useNavigate();
 
-  // --- DATA FETCHING AND LOGIC (MEMOIZED FUNCTIONS) ---
-
-  // Função para buscar a denúncia principal, agora memoizada com useCallback
   const fetchDenuncia = useCallback(async () => {
     try {
       const denunciaData = await DenunciaService.getById(denunciaId);
@@ -59,7 +56,6 @@ export function VincularDenunciaAAcao() {
     }
   }, [denunciaId]);
 
-  // Função para vincular a denúncia, agora memoizada com useCallback
   const handleVincularDenuncia = useCallback(async () => {
     if (!denuncia || !acaoData) {
       toast.error('Por favor, selecione uma denúncia e uma ação.');

@@ -11,6 +11,7 @@ import type { AcaoInMap } from '../types/Acao';
 import { type DenunciaInMap, type DenunciaModel } from '../types/Denuncia';
 import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
 import { useFilters } from './FiltersContext';
+import { toast } from 'sonner';
 
 type SelectAcoesOuDenunciasProps = {
   salvarDenunciasOnclick: boolean;
@@ -125,6 +126,16 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
         denuncias.filter((d) => d.id !== newDenuncia.id),
       );
     } else {
+      if (denunciasSelecionadas.length > 0) {
+        const referenceType = denunciasSelecionadas[0].nomeTipoDenuncia;
+        if (newDenuncia.nomeTipoDenuncia !== referenceType) {
+          toast.error(
+            `Apenas denúncias do tipo "${referenceType}" podem ser selecionadas em conjunto.`,
+          );
+          return;
+        }
+      }
+
       setDenunciasSelecionadas((denuncias) => [...denuncias, newDenuncia]);
     }
   }
@@ -132,7 +143,6 @@ export function MapActionsProvider({ children }: { children: ReactNode }) {
   function toggleAcaoSelecionada(acao: AcaoInMap) {
     if (acaoSelecionada?.id === acao.id) {
       setAcaoSelecionada(null);
-      console.log(acaoSelecionada);
     } else {
       setAcaoSelecionada(acao);
       // setDenunciaVinculadas(
