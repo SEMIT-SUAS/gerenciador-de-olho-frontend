@@ -19,31 +19,24 @@ export function CategoriasPage() {
   >(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editCategoria, setEditCategoria] = useState<
     (ServicoCategoria & { id: number }) | null
   >(null);
 
-  async function getAllCategoriasData() {
+  async function loadCategorias() {
     try {
-      return await categoriaServicoService.getAll();
+      const categoriasData = await categoriaServicoService.getAll();
+      setCategorias(categoriasData)
     } catch (error: any) {
       toast.error(error.message || 'Erro ao buscar as categorias.');
     }
   }
 
   useEffect(() => {
-    getAllCategoriasData().then((categoriasData) => {
-      if (categoriasData) {
-        setCategorias(categoriasData);
-      }
-    });
-
-    return () => {
-      setCategorias(null);
-    };
+    loadCategorias()
   }, []);
 
   const handleSubmitCategoria = async (
@@ -111,6 +104,7 @@ export function CategoriasPage() {
           categorias={currentCategorias}
           setCategorias={setCategorias}
           onEdit={setEditCategoria}
+          reloadCategorias={loadCategorias}
         />
 
         <Pagination

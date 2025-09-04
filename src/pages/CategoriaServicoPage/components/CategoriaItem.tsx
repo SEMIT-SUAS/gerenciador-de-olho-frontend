@@ -6,9 +6,10 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { CategoriaVisibility } from '@/pages/CategoriaServicoPage/components/CategoriaVisibility';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
+import { Draggable } from '@hello-pangea/dnd';
 
 interface CategoriaListItemProps {
-  categoria: ServicoCategoria & { id: number };
+  categoria: ServicoCategoria
   setCategorias: Dispatch<
     SetStateAction<(ServicoCategoria & { id: number })[] | null>
   >; // ← ATUALIZADO: Adicionado | null
@@ -47,44 +48,51 @@ export function CategoriaListItem({
     typeof categoria.icone === 'string'
       ? categoria.icone
       : categoria.icone instanceof File
-      ? URL.createObjectURL(categoria.icone)
-      : '';
+        ? URL.createObjectURL(categoria.icone)
+        : '';
 
   return (
     <>
-      <TableRow key={categoria.id}>
-        <TableCell>
-          <img
-            src={src}
-            alt={categoria.nome}
-            className="w-10 h-10 rounded object-cover"
-          />
-        </TableCell>
-        <TableCell>{categoria.nome}</TableCell>
-        <TableCell>
-          <div className="flex gap-2 items-center">
-            {/* ← MELHORADO: flex para alinhamento */}
-            <button
-              className="text-black-600"
-              onClick={() => onEdit(categoria)}
-              title="Editar categoria"
-            >
-              <IconEdit size={18} stroke={2} className="text-black-600" />
-            </button>
-            <button
-              onClick={() => setIsOpenDeleteModal(true)}
-              className="text-black-600"
-              title="Excluir categoria"
-            >
-              <IconTrash size={18} stroke={2} className="text-black-600" />
-            </button>
-            <CategoriaVisibility
-              categoria={categoria}
-              setCategorias={setCategorias}
-            />
-          </div>
-        </TableCell>
-      </TableRow>
+      <Draggable draggableId={String(categoria.id)} index={categoria.ordenador}>
+        {(provided) => (
+          <TableRow key={categoria.id}
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}>
+            <TableCell>
+              <img
+                src={src}
+                alt={categoria.nome}
+                className="w-10 h-10 rounded object-cover"
+              />
+            </TableCell>
+            <TableCell>{categoria.nome}</TableCell>
+            <TableCell>
+              <div className="flex gap-2 items-center">
+                {/* ← MELHORADO: flex para alinhamento */}
+                <button
+                  className="text-black-600"
+                  onClick={() => onEdit(categoria)}
+                  title="Editar categoria"
+                >
+                  <IconEdit size={18} stroke={2} className="text-black-600" />
+                </button>
+                <button
+                  onClick={() => setIsOpenDeleteModal(true)}
+                  className="text-black-600"
+                  title="Excluir categoria"
+                >
+                  <IconTrash size={18} stroke={2} className="text-black-600" />
+                </button>
+                <CategoriaVisibility
+                  categoria={categoria}
+                  setCategorias={setCategorias}
+                />
+              </div>
+            </TableCell>
+          </TableRow>
+        )}
+      </Draggable >
 
       <ConfirmModal
         isOpen={isOpenDeleteModal}
