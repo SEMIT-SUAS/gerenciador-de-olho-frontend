@@ -17,7 +17,6 @@ import {
 import { IconTrash } from '@tabler/icons-react';
 import type { AcaoDetailsModel } from '@/types/Acao';
 import { getPolygonoCenter } from '@/utils/geometry';
-import type { DenunciaInMap } from '@/types/Denuncia';
 import { useMapActions } from '@/context/MapActions';
 import L from 'leaflet';
 

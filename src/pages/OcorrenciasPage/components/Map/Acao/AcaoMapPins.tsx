@@ -8,12 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from 'leaflet';
 
 export function AcaoMapPins() {
-  const {
-    isVisibleAcoesInMap,
-    denunciasDoBairro,
-    acoesDoBairro,
-    setAcoesDoBairro,
-  } = useFilters();
+  const { isVisibleAcoesInMap, denunciasDoBairro, acoesDoBairro } =
+    useFilters();
   const {
     salvarAcaoOnclick,
     toggleAcaoSelecionada,

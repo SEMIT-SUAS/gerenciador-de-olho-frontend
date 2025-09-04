@@ -10,7 +10,6 @@ import {
 import type { AcaoInMap } from '../types/Acao';
 import { type DenunciaInMap, type DenunciaModel } from '../types/Denuncia';
 import type { NumeroDeDenunciasPorBairro } from '@/types/Bairro';
-import { useFilters } from './FiltersContext';
 import { toast } from 'sonner';
 
 type SelectAcoesOuDenunciasProps = {
@@ -55,7 +54,6 @@ const MapActionsContext = createContext<
 >(undefined);
 
 export function MapActionsProvider({ children }: { children: ReactNode }) {
-  const { denunciasDoBairro } = useFilters();
   const [currentBairroId, setCurrentBairroId] = useState<null | number>(null);
 
   const [disableMapFilters, setDisableMapFilters] = useState(false);
