@@ -69,7 +69,7 @@ export function CategoryDenunciaItem({
 
         <TableCell className="p-3">
           {category.destaque && (
-            <Badge className="md:table-cell">
+            <Badge className="md:table-cell" variant="outline">
               <div className="flex items-center gap-2">
                 <IconStarFilled className="text-yellow-300" size={'12px'} />
                 Destacado

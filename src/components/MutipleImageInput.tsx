@@ -123,7 +123,7 @@ export function MultipleImageInput({
   return (
     <div
       className={cn(
-        'w-full min-w-0 h-[220px] overflow-y-auto [scrollbar-gutter:stable]',
+        'w-full min-w-0 h-[180px] overflow-y-auto [scrollbar-gutter:stable]',
         'rounded-lg border-2 border-dashed bg-slate-50 p-4 transition-colors duration-300 dark:bg-slate-800/80',
         dragActive
           ? 'border-blue-500'
