@@ -118,14 +118,6 @@ export function ServicesExternoListItem({
                 Sem imagem
               </div>
             )}
-            {!servico.visivel && (
-              <div className="absolute -top-1 -right-1">
-                <IconEyeOff
-                  size={16}
-                  className="text-gray-500 bg-white rounded-full p-0.5"
-                />
-              </div>
-            )}
           </div>
         </TableCell>
 
@@ -134,13 +126,8 @@ export function ServicesExternoListItem({
             <span className="font-medium">{servico.nome}</span>
             <div className="flex gap-2 mt-1">
               {!servico.ativo && (
-                <span className="text-xs bg-red-100 text-black px-2 py-0.5 rounded">
+                <span className="text-xs text-black px-2 py-0.5 rounded">
                   Inativo
-                </span>
-              )}
-              {!servico.visivel && (
-                <span className="text-xs bg-gray-100 text-black px-2 py-0.5 rounded">
-                  Oculto
                 </span>
               )}
             </div>
