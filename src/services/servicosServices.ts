@@ -63,7 +63,9 @@ export class ServicoService extends BaseServiceClass {
         '/servico/cadastrar',
         servicoJSON,
         {
-          responseType: 'json',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
       );
       return response.data;
