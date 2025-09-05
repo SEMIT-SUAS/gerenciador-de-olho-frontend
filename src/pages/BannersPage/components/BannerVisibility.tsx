@@ -4,6 +4,7 @@ import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { Loading } from '@/components/Loading/Loading';
 import { toast } from 'sonner';
 import { BannerService } from '@/services/bannersService';
+import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 
 type BannerVisibilityProps = {
   banner: BannerModel;
@@ -15,6 +16,7 @@ export function BannerVisibility({
   setBanners,
 }: BannerVisibilityProps) {
   const [isChangingVisibility, setIsChangingVisibility] = useState(false);
+  const [isOpenConfirm, setIsOpenConfirm] = useState(false);
 
   async function handleOnClickButton() {
     try {
@@ -37,14 +39,26 @@ export function BannerVisibility({
   }
 
   return (
-    <button onClick={handleOnClickButton}>
-      {isChangingVisibility ? (
-        <Loading className="size-[18px]" />
-      ) : banner.visivel ? (
-        <IconEye stroke={2.3} size={18} />
-      ) : (
-        <IconEyeOff stroke={2.3} size={18} />
-      )}
-    </button>
+    <>
+      <button onClick={() => setIsOpenConfirm(true)} className="text-black-500">
+        {isChangingVisibility ? (
+          <Loading className="size-[18px]" />
+        ) : banner.visivel ? (
+          <IconEye stroke={2.3} size={18} />
+        ) : (
+          <IconEyeOff stroke={2.3} size={18} />
+        )}
+      </button>
+
+      <ConfirmModal
+        isOpen={isOpenConfirm}
+        title={`Ocultar ${banner.nome}?`}
+        message={`Tem certeza que deseja ${
+          banner.visivel ? 'ocultar' : 'tornar visível'
+        } este banner?`}
+        onConfirm={handleOnClickButton}
+        onCancel={() => setIsOpenConfirm(false)}
+      />
+    </>
   );
 }

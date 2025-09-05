@@ -67,8 +67,7 @@ export function PersonaListItem({
         <TableCell>
           <div className="flex items-center gap-2">
             <button
-              disabled
-              className="text-gray-600 hover:text-black transition-colors"
+              className="text-black-600 hover:text-black transition-colors"
               onClick={() => onEdit?.(persona)}
               title="Editar persona"
             >
