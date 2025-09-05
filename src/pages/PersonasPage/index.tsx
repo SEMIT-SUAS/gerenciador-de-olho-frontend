@@ -9,7 +9,7 @@ import { Pagination } from '@/components/Pagination';
 import { PersonasList } from './components/PersonaList';
 
 export function PersonasPage() {
-  const [personas, setPersonas] = useState<Persona[]>([]);
+  const [personas, setPersonas] = useState<Persona[] | null>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);

@@ -7,14 +7,14 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { ServicoCategoria } from '@/types/CategoriaServico';
-import type { Dispatch, SetStateAction } from 'react';
+import { useCallback, type Dispatch, type SetStateAction } from 'react';
 import { CategoriaListItem } from './CategoriaItem';
 import { ImageSkeleton } from '@/components/Loading/ImageSkeleton';
 import { ListItemSkeleton } from '@/components/Loading/ListItemSkeleton';
 import { IconCategory } from '@tabler/icons-react';
-import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { toast } from 'sonner';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import { CategoriaServicoService } from '@/services/categoriaServicoService';
+import { useReorder } from '@/hooks/useReorder';
 
 interface CategoriasServicosListProps {
   categorias: (ServicoCategoria & { id: number })[] | null;
@@ -23,7 +23,7 @@ interface CategoriasServicosListProps {
   >;
   onEdit: (categoria: ServicoCategoria & { id: number }) => void;
   itemsPerPage: number;
-  reloadCategorias: () => void
+  reloadCategorias: () => void;
 }
 
 export function CategoriasServicosList({
@@ -32,42 +32,63 @@ export function CategoriasServicosList({
   onEdit,
   itemsPerPage,
 }: CategoriasServicosListProps) {
-  async function handleDragEnd(result: any) {
-    if (!result.destination || !categorias) {
-      return;
-    }
+  // async function handleDragEnd(result: any) {
+  //   if (!result.destination || !categorias) {
+  //     return;
+  //   }
 
-    const sourceIndex = result.source.index;
-    const destinationIndex = result.destination.index;
+  //   const sourceIndex = result.source.index;
+  //   const destinationIndex = result.destination.index;
 
-    if (sourceIndex === destinationIndex) {
-      return;
-    }
+  //   if (sourceIndex === destinationIndex) {
+  //     return;
+  //   }
 
-    const originalCategorias = [...categorias];
-    const items = Array.from(categorias);
+  //   const originalCategorias = [...categorias];
+  //   const items = Array.from(categorias);
 
-    const [reorderedItem] = items.splice(sourceIndex, 1);
-    items.splice(destinationIndex, 0, reorderedItem);
+  //   setCategorias(items);
 
-    const categoriaId = Number(result.dragglableId)
+  //   const [reorderedItem] = items.splice(sourceIndex, 1);
+  //   items.splice(destinationIndex, 0, reorderedItem);
 
-    try {
+  //   const categoriaId = Number(result.draggableId);
+
+  //   try {
+  //     await new CategoriaServicoService().toggleOrdenacao(
+  //       categoriaId,
+  //       destinationIndex + 1,
+  //     );
+
+  //     // setCategorias(novaLista);
+  //   } catch (error: any) {
+  //     toast.error('Não foi possível salvar a nova ordem. Tente novamente.');
+  //     setCategorias(originalCategorias);
+  //   }
+  // }
+
+  const handleSaveOrder = useCallback(
+    async (categoriaId: number, newPosition: number) => {
       await new CategoriaServicoService().toggleOrdenacao(
         categoriaId,
-        destinationIndex,
+        newPosition + 1,
       );
-    } catch (error: any) {
-      toast.error('Não foi possível salvar a nova ordem. Tente novamente.');
-      setCategorias(originalCategorias);
-    }
-  }
+    },
+    [],
+  );
+
+  const { handleDragEnd } = useReorder({
+    items: categorias,
+    setItems: setCategorias,
+    onSaveOrder: handleSaveOrder,
+  });
 
   return (
     <div className="rounded-md border">
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-[3%]"></TableHead>
             <TableHead>Ícone</TableHead>
             <TableHead>Nome</TableHead>
             <TableHead className="w-[10%]">Ações</TableHead>
@@ -83,11 +104,18 @@ export function CategoriasServicosList({
                     <TableRow key={`skeleton-${idx}`}>
                       <TableCell className="border-r">
                         <div className="flex items-center justify-center">
-                          <ImageSkeleton height={24} width={24} className="rounded" />
+                          <ImageSkeleton
+                            height={24}
+                            width={24}
+                            className="rounded"
+                          />
                         </div>
                       </TableCell>
                       <TableCell className="border-r">
-                        <ListItemSkeleton titleWidth="3/4" className="p-0 border-0" />
+                        <ListItemSkeleton
+                          titleWidth="3/4"
+                          className="p-0 border-0"
+                        />
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
@@ -120,14 +148,17 @@ export function CategoriasServicosList({
                 )}
 
                 {categorias &&
-                  categorias.map((categoria) => (
-                    <CategoriaListItem
-                      key={categoria.id}
-                      categoria={categoria}
-                      setCategorias={setCategorias}
-                      onEdit={onEdit}
-                    />
-                  ))}
+                  categorias.map((categoria, index) => {
+                    return (
+                      <CategoriaListItem
+                        key={categoria.id}
+                        categoria={categoria}
+                        setCategorias={setCategorias}
+                        onEdit={onEdit}
+                        index={index} // <<< PASSE O INDEX COMO PROP
+                      />
+                    );
+                  })}
                 {provided.placeholder}
               </TableBody>
             )}

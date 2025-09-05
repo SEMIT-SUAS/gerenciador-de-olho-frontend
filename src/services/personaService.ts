@@ -96,6 +96,25 @@ export class PersonaService extends BaseServiceClass {
       throw this.updateError;
     }
   }
+
+  public async toggleOrdenacao(
+    personaId: number,
+    newOrdem: number,
+  ): Promise<Persona[]> {
+    try {
+      const response = await api.put(
+        `/persona-servico/atualizar/${personaId}/ordem/${newOrdem}`,
+      );
+
+      if (response.status != 200) {
+        throw new Error('Não foi possível alterar a ordem desse item');
+      }
+
+      return response.data;
+    } catch (error) {
+      throw this.updateError;
+    }
+  }
 }
 
 // Exporta uma instância única (Singleton) do serviço.

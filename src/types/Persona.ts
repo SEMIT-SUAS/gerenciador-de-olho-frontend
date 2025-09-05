@@ -2,6 +2,7 @@ export interface Persona {
   id: number;
   nome: string;
   icone: string;
+  ordenador: number;
   visivel: boolean;
   ativo: boolean;
 }

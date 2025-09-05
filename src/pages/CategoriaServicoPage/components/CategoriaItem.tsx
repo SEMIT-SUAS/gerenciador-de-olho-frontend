@@ -3,23 +3,25 @@ import type { ServicoCategoria } from '@/types/CategoriaServico';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { toast } from 'sonner';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconGripVertical, IconTrash } from '@tabler/icons-react';
 import { CategoriaVisibility } from '@/pages/CategoriaServicoPage/components/CategoriaVisibility';
 import { ConfirmModal } from '@/components/Modals/ConfirmModal';
 import { Draggable } from '@hello-pangea/dnd';
 
 interface CategoriaListItemProps {
-  categoria: ServicoCategoria
+  categoria: ServicoCategoria;
   setCategorias: Dispatch<
     SetStateAction<(ServicoCategoria & { id: number })[] | null>
   >; // ← ATUALIZADO: Adicionado | null
   onEdit: (categoria: ServicoCategoria & { id: number }) => void;
+  index: number; // <<< RECEBA O INDEX AQUI
 }
 
 export function CategoriaListItem({
   categoria,
   setCategorias,
   onEdit,
+  index, // <<< USE O INDEX AQUI
 }: CategoriaListItemProps) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
 
@@ -48,17 +50,27 @@ export function CategoriaListItem({
     typeof categoria.icone === 'string'
       ? categoria.icone
       : categoria.icone instanceof File
-        ? URL.createObjectURL(categoria.icone)
-        : '';
+      ? URL.createObjectURL(categoria.icone)
+      : '';
 
   return (
     <>
-      <Draggable draggableId={String(categoria.id)} index={categoria.ordenador}>
+      <Draggable draggableId={String(categoria.id)} index={index}>
         {(provided) => (
-          <TableRow key={categoria.id}
+          <TableRow
+            key={categoria.id}
             ref={provided.innerRef}
             {...provided.draggableProps}
-            {...provided.dragHandleProps}>
+            className="bg-white"
+          >
+            <TableCell>
+              <button
+                {...provided.dragHandleProps}
+                className="size-7 hover:bg-gray-300 items-center justify-center flex rounded-md"
+              >
+                <IconGripVertical className="text-muted-foreground size-4" />
+              </button>
+            </TableCell>
             <TableCell>
               <img
                 src={src}
@@ -69,7 +81,6 @@ export function CategoriaListItem({
             <TableCell>{categoria.nome}</TableCell>
             <TableCell>
               <div className="flex gap-2 items-center">
-                {/* ← MELHORADO: flex para alinhamento */}
                 <button
                   className="text-black-600"
                   onClick={() => onEdit(categoria)}
@@ -92,7 +103,7 @@ export function CategoriaListItem({
             </TableCell>
           </TableRow>
         )}
-      </Draggable >
+      </Draggable>
 
       <ConfirmModal
         isOpen={isOpenDeleteModal}
