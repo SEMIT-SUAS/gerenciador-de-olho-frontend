@@ -114,6 +114,25 @@ export class CategoriaServicoService extends BaseServiceClass {
       throw this.updateError;
     }
   }
+
+  public async toggleOrdenacao(
+    categoriaId: number,
+    newOrdem: number,
+  ): Promise<ServicoCategoria[]> {
+    try {
+      const response = await api.put(
+        `/categoria-servico/atualizar/${categoriaId}/ordem/${newOrdem}`,
+      );
+
+      if (response.status != 200) {
+        throw new Error('Não foi possível alterar a ordem desse item');
+      }
+
+      return response.data;
+    } catch (error) {
+      throw this.updateError;
+    }
+  }
 }
 
 // Exporta uma instância única (Singleton) do serviço.

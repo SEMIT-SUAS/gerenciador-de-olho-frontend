@@ -2,25 +2,17 @@ import { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { PlusIcon, Loader2 } from 'lucide-react';
-
-// Tipos de Dados (Models)
 import type { CategoriaDenunciaModel } from '@/types/CategoriaDenuncia';
 import type { TipoDenunciaModel } from '@/types/TipoDenuncia';
 import type { Secretaria } from '@/types/Secretaria';
-
-// Serviços
 import { CategoriaDenunciaService } from '@/services/CategoriaDenunciaService';
 import { TipoDenunciaService } from '@/services/tiposDenunciaService';
 import { secretariaService } from '@/services/secretariaService';
-
-// Componentes da UI e Layout
 import { LayoutPage } from '../../components/LayoutPage';
 import { SearchInput } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Pagination } from '@/components/Pagination';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-// Componentes Específicos da Página
 import { CategoriasDenunciaList } from './components/CategoriaDenuncia/CategoriasDenunciaList';
 import { TiposDenunciaList } from './components/TipoDenuncia/TiposDenunciaList';
 import { AddCategoriaModal } from './components/CategoriaDenuncia/AddCategoriaModal';
@@ -29,7 +21,6 @@ import { EditTipoDenunciaModal } from './components/TipoDenuncia/EditTipoDenunci
 import PageHeader from '@/components/PageHeader';
 
 export function DenunciaCategoriasPage() {
-  // Estados de controle da UI (loading, erro, abas)
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const location = useLocation();
@@ -37,25 +28,21 @@ export function DenunciaCategoriasPage() {
   const queryParams = new URLSearchParams(location.search);
   const activeTab = queryParams.get('tab') || 'categorias';
 
-  // Estados de dados
   const [categorias, setCategorias] = useState<CategoriaDenunciaModel[]>([]);
   const [tipos, setTipos] = useState<TipoDenunciaModel[]>([]);
   const [secretarias, setSecretarias] = useState<Secretaria[]>([]);
 
-  // Estados de controle de modais
   const [isOpenAddCategoriaModal, setIsOpenAddCategoriaModal] = useState(false);
   const [IsOpenAddTipoModal, setIsOpenAddTipoModal] = useState(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [tipoParaEditar, setTipoParaEditar] =
     useState<TipoDenunciaModel | null>(null);
 
-  // Estados de filtro e paginação
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPageOptions = [5, 10, 15];
   const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageOptions[0]);
 
-  // Funções de carregamento de dados com useCallback para otimização
   const loadDenunciaCategories = useCallback(async () => {
     try {
       const categoriesData = await new CategoriaDenunciaService().getAll();
@@ -64,7 +51,7 @@ export function DenunciaCategoriasPage() {
       setError('Falha ao carregar as categorias.');
       toast.error(error.message);
     }
-  }, []);
+  }, [categorias])
 
   const loadDenunciaTipos = useCallback(async () => {
     try {
@@ -74,7 +61,7 @@ export function DenunciaCategoriasPage() {
       setError('Falha ao carregar os tipos de denúncia.');
       toast.error(error.message);
     }
-  }, []);
+  }, [tipos])
 
   const loadSecretarias = useCallback(async () => {
     try {
@@ -98,7 +85,7 @@ export function DenunciaCategoriasPage() {
       setIsLoading(false);
     }
     loadInitialData();
-  }, [loadDenunciaCategories, loadDenunciaTipos, loadSecretarias]);
+  }, []);
 
   // Efeito para garantir que a aba na URL seja sempre válida
   useEffect(() => {
@@ -125,7 +112,6 @@ export function DenunciaCategoriasPage() {
     setTipoParaEditar(null);
   };
 
-  // Lógica de filtragem e paginação
   const filteredCategorias = categorias?.filter((categoria) =>
     categoria.nome.toLowerCase().includes(searchTerm.toLowerCase()),
   );
